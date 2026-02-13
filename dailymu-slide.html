@@ -1155,9 +1155,60 @@
 <div class="slide-viewport" id="slideViewport">
 
   <!-- ============================== -->
+  <!-- SLIDE 0: INDEX                 -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-violet active" data-slide="index">
+    <div class="deco-circle" style="width:420px;height:420px;background:var(--secondary-border-mid);top:-120px;right:-100px;"></div>
+    <div class="deco-circle" style="width:280px;height:280px;background:var(--primary-border-mid);bottom:-80px;left:-80px;"></div>
+    <div class="deco-dots" style="bottom:12%;right:8%;"></div>
+
+    <div class="cover-content" style="gap:var(--spacing-4);">
+      <svg class="cover-logo" viewBox="0 0 188.81 161.84" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#01a9e0" d="M185.97,121.86c-.33-3.44-3.21-9.32-10.64-9.32-6.27,0-8.82,5.22-9.7,9.19-.58,2.63-2.91,8.93-8.23,13.44-6.42,5.45-9.81,5.14-14.46,6.62-4.64,1.48-7.06,3.92-7.87,7.87-.13.66-.2,1.34-.2,2.04,0,2.44.87,4.68,2.31,6.43,1.44,1.75,3.46,3.01,5.77,3.48.66.13,1.34.2,2.04.2h33.72c5.53,0,10.01-4.44,10.11-9.95l-.04-1.23-2.8-28.77Z"/>
+        <path fill="#65489d" d="M121.39,26.98c0,37.65-.01,39.92-.01,39.92,0,14.54-11.88,27.2-26.42,27.5-15.15.3-27.53-11.89-27.53-26.97h0V10.13c0-5.6-4.54-10.13-10.14-10.13H23.62c-5.6,0-10.14,4.53-10.14,10.13v57.29h0c0,45.41,37.39,82.08,83.06,80.9,43.99-1.13,78.78-37.77,78.78-81.77L175.29.02h-26.93c-12.6,0-26.97,9.45-26.97,26.96"/>
+        <path fill="#ef4f98" d="M67.43,10.07C67.39,4.51,62.88.02,57.32.02H23.6C18.03.02,13.52,4.51,13.49,10.07v.05S.17,149.88.17,149.88c-.11.6-.17,1.21-.17,1.84,0,5.59,4.53,10.12,10.11,10.12h33.72c5.59,0,10.12-4.53,10.12-10.12,0,0,.49-5.14,1.29-13.47,3.37-35.25,12.2-127.57,12.2-128.12v-.07Z"/>
+        <path fill="#282160" d="M55.23,138.26c3.88,2.15,7.96,3.99,12.2,5.49V10.13c0,.55-8.83,92.88-12.2,128.13"/>
+      </svg>
+
+      <h1 class="title-xl"><span class="gradient-text">DailyMu Calendar</span></h1>
+      <p class="body-lg" style="color:var(--gray-fg-mid-on-white);max-width:460px;">Muniverse &mdash; Weekly Update Presentations</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-5);width:100%;max-width:680px;margin-top:var(--spacing-4);">
+        <!-- Week 1 -->
+        <button onclick="goToSlide(1)" style="cursor:pointer;border:2px solid var(--primary-border-mid);background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:var(--spacing-6) var(--spacing-4);display:flex;flex-direction:column;align-items:center;gap:var(--spacing-3);transition:all 0.2s ease;box-shadow:var(--shadow-md);" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='var(--shadow-lg)';this.style.borderColor='var(--primary-fg-high)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-md)';this.style.borderColor='var(--primary-border-mid)'">
+          <span style="font-size:clamp(28px,3vw,42px);font-weight:800;color:var(--primary-fg-high);">W1</span>
+          <span style="font-size:clamp(13px,1.2vw,18px);font-weight:700;color:var(--gray-fg-high);">Week 1</span>
+          <span style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-mid-on-white);">13 Feb 2026</span>
+          <span class="tag tag-primary" style="margin-top:var(--spacing-1);">View Slides</span>
+        </button>
+
+        <!-- Week 2 -->
+        <button disabled style="cursor:default;border:2px dashed var(--gray-bg-midgray);background:rgba(255,255,255,0.5);border-radius:var(--radius-lg);padding:var(--spacing-6) var(--spacing-4);display:flex;flex-direction:column;align-items:center;gap:var(--spacing-3);opacity:0.55;">
+          <span style="font-size:clamp(28px,3vw,42px);font-weight:800;color:var(--gray-fg-low-on-white);">W2</span>
+          <span style="font-size:clamp(13px,1.2vw,18px);font-weight:700;color:var(--gray-fg-low-on-white);">Week 2</span>
+          <span style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-low-on-white);">20 Feb 2026</span>
+          <span class="tag" style="background:var(--gray-bg-lightgray);color:var(--gray-fg-low-on-white);margin-top:var(--spacing-1);">Coming Soon</span>
+        </button>
+
+        <!-- Week 3 -->
+        <button disabled style="cursor:default;border:2px dashed var(--gray-bg-midgray);background:rgba(255,255,255,0.5);border-radius:var(--radius-lg);padding:var(--spacing-6) var(--spacing-4);display:flex;flex-direction:column;align-items:center;gap:var(--spacing-3);opacity:0.55;">
+          <span style="font-size:clamp(28px,3vw,42px);font-weight:800;color:var(--gray-fg-low-on-white);">W3</span>
+          <span style="font-size:clamp(13px,1.2vw,18px);font-weight:700;color:var(--gray-fg-low-on-white);">Week 3</span>
+          <span style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-low-on-white);">27 Feb 2026</span>
+          <span class="tag" style="background:var(--gray-bg-lightgray);color:var(--gray-fg-low-on-white);margin-top:var(--spacing-1);">Coming Soon</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="present-hint">
+      กดปุ่ม <kbd>F</kbd> เพื่อเข้าโหมด Present
+    </div>
+  </div>
+
+  <!-- ============================== -->
   <!-- SLIDE 1: COVER                 -->
   <!-- ============================== -->
-  <div class="slide bg-gradient-pastel active" data-slide="0">
+  <div class="slide bg-gradient-pastel" data-slide="0">
     <div class="deco-circle" style="width:400px;height:400px;background:var(--primary-border-mid);top:-100px;right:-80px;"></div>
     <div class="deco-circle" style="width:300px;height:300px;background:var(--secondary-border-mid);bottom:-60px;left:-60px;"></div>
     <div class="deco-dots" style="top:15%;left:5%;"></div>
@@ -1188,9 +1239,6 @@
       <img class="cover-character" src="Images/DailyMu_Character_Welcome.png" alt="Welcome">
     </div>
 
-    <div class="present-hint" id="presentHint">
-      กดปุ่ม <kbd>F</kbd> เพื่อเข้าโหมด Present
-    </div>
   </div>
 
   <!-- ============================== -->
@@ -1677,8 +1725,8 @@
       <span class="slide-number">10 / 16</span>
     </div>
 
-    <div class="slide-content" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;">
-      <img src="Images/image-mucard.png" alt="MuCard Visual Design" style="max-height:85vh;max-width:95%;object-fit:contain;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);">
+    <div class="slide-content" style="flex:1;display:flex;align-items:flex-start;justify-content:center;min-height:0;padding-top:1%;">
+      <img src="Images/image-mucard.png" alt="MuCard Visual Design" style="max-height:60vh;max-width:95%;object-fit:contain;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);">
     </div>
   </div>
 
@@ -1780,15 +1828,15 @@
         <h2 class="title-md">Figma Screens <span class="text-gray" style="font-weight:400;font-size:0.7em;">&mdash; Onboarding</span></h2>
       </div>
 
-      <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-4);min-height:0;align-items:center;">
-        <div style="background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;display:flex;align-items:center;justify-content:center;height:100%;min-height:50vh;">
-          <img src="Images/Week01/1-Onboarding-1.png" alt="Onboarding 1" style="width:100%;height:100%;object-fit:contain;">
+      <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-4);min-height:0;align-items:stretch;">
+        <div style="position:relative;background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;min-height:0;">
+          <img src="Images/Week01/1-Onboarding-1.png" alt="Onboarding 1" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:top;">
         </div>
-        <div style="background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;display:flex;align-items:center;justify-content:center;height:100%;min-height:50vh;">
-          <img src="Images/Week01/2-Onboarding-2.png" alt="Onboarding 2" style="width:100%;height:100%;object-fit:contain;">
+        <div style="position:relative;background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;min-height:0;">
+          <img src="Images/Week01/2-Onboarding-2.png" alt="Onboarding 2" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:top;">
         </div>
-        <div style="background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;display:flex;align-items:center;justify-content:center;height:100%;min-height:50vh;">
-          <img src="Images/Week01/3-Onboarding.png" alt="Onboarding 3" style="width:100%;height:100%;object-fit:contain;">
+        <div style="position:relative;background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;min-height:0;">
+          <img src="Images/Week01/3-Onboarding.png" alt="Onboarding 3" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:top;">
         </div>
       </div>
     </div>
@@ -1813,15 +1861,15 @@
         <h2 class="title-md">Figma Screens <span class="text-gray" style="font-weight:400;font-size:0.7em;">&mdash; Auth Flow</span></h2>
       </div>
 
-      <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-4);min-height:0;align-items:center;">
-        <div style="background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;display:flex;align-items:center;justify-content:center;height:100%;min-height:50vh;">
-          <img src="Images/Week01/4-LOGIN.png" alt="Login" style="width:100%;height:100%;object-fit:contain;">
+      <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-4);min-height:0;align-items:stretch;">
+        <div style="position:relative;background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;min-height:0;">
+          <img src="Images/Week01/4-LOGIN.png" alt="Login" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:top;">
         </div>
-        <div style="background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;display:flex;align-items:center;justify-content:center;height:100%;min-height:50vh;">
-          <img src="Images/Week01/5-PWSETUP.png" alt="Password Setup" style="width:100%;height:100%;object-fit:contain;">
+        <div style="position:relative;background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;min-height:0;">
+          <img src="Images/Week01/5-PWSETUP.png" alt="Password Setup" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:top;">
         </div>
-        <div style="background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;display:flex;align-items:center;justify-content:center;height:100%;min-height:50vh;">
-          <img src="Images/Week01/6-REGISTER.png" alt="Register" style="width:100%;height:100%;object-fit:contain;">
+        <div style="position:relative;background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;min-height:0;">
+          <img src="Images/Week01/6-REGISTER.png" alt="Register" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:top;">
         </div>
       </div>
     </div>
@@ -1979,8 +2027,8 @@
     // Update dropdown active state
     if (typeof buildDropdownMenu === 'function') buildDropdownMenu();
 
-    // Minimal nav on calendar slide (slide 4, data-slide="3") — keep buttons, hide dots
-    const isCalendar = currentSlide === 3;
+    // Minimal nav on calendar slide (slide 5, data-slide="3") — keep buttons, hide dots
+    const isCalendar = currentSlide === 4;
     kbdHint.style.opacity = isCalendar ? '0' : '';
     navBar.style.background = isCalendar ? 'none' : '';
     navBar.querySelectorAll('.nav-btn, .nav-home-btn').forEach(btn => {
@@ -2116,7 +2164,8 @@
 
   // Page dropdown — slide titles
   const slideTitles = [
-    'Cover',
+    'Index',
+    'Cover — Week 1',
     'Agenda',
     'Planning กับทีม',
     'Sprint Timeline',
