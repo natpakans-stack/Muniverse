@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Register + Password Setup Preview</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LINE+Seed+Sans+TH:wght@100;300;400;700;800&display=swap" rel="stylesheet">
+  <style>
+    /*
+     * ============================================================
+     * CSS Variables → Figma Variable Token Mapping
+     * ============================================================
+     * Naming convention: --{category}-{property}-{variant}
+     * Maps 1:1 to Figma Variables: semantic/{category}/{property}/{variant}
+     *
+     * After html.to.design import, use this mapping to rebind
+     * auto-named Figma colors to the correct Variables:
+     *
+     *   Figma auto-name    →  CSS Variable                →  Figma Variable path
+     *   ─────────────────────────────────────────────────────────────────────────
+     *   Moody Blue (#7279FB) →  --primary-bg-mid           →  semantic/primary/bg/mid
+     *   Dark Violet (#5A60D6) → --support-pink-bg-high     →  semantic/support/violet/bg/high
+     *   Lavender (#F1F2FF)  →  --primary-bg-lowest          →  semantic/primary/bg/lowest
+     *   Moody Blue         →  --secondary-fg-high          →  semantic/secondary/fg/high
+     *   Crimson (#EA244F)  →  --error-fg-high              →  semantic/error/fg/high
+     *   Fruit Salad        →  --success-bg-high            →  semantic/success/bg/high
+     *   Saffron            →  --warning-bg-high            →  semantic/warning/bg/high
+     *   Shark (#1B1D22)    →  --gray-neutral-fg-high       →  semantic/gray-neutral/fg/high
+     *   Pale Sky (#6A6E83) →  --gray-neutral-fg-mid        →  semantic/gray-neutral/fg/mid-on-white
+     *   Manatee (#9A9DAD)  →  --gray-neutral-fg-low        →  semantic/gray-neutral/fg/low-on-white
+     *   White (#FFFFFF)    →  --gray-neutral-bg-white       →  semantic/gray-neutral/bg/white
+     *   Athens Gray        →  --gray-neutral-bg-lightgray   →  semantic/gray-neutral/bg/lightgray
+     *   Mischka (#EBECEF)  →  --gray-neutral-border-mid    →  semantic/gray-neutral/border/midgray
+     *   Ghost (#CFD1D9)    →  --gray-neutral-border-dark   →  semantic/gray-neutral/border/darkgray
+     * ============================================================
+     */
+
+    /* Light Theme (default) */
+    :root {
+      /* Primary */
+      --primary-bg-mid: #7279FB;
+      --support-pink-bg-high: #5A60D6;
+      --primary-bg-lowest: #F1F2FF;
+
+      /* Secondary */
+      --secondary-fg-high: #7279FB;
+
+      /* Social Brand (constant) */
+      --brand-google: #4285F4;
+      --brand-apple: #000000;
+      --brand-facebook: #1877F2;
+
+      /* Error */
+      --error-fg-high: #EA244F;
+      --error-bg-lowest: #FDE9ED;
+
+      /* Success */
+      --success-bg-high: #559652;
+      --success-bg-lowest: #F0F8F0;
+
+      /* Warning */
+      --warning-bg-high: #F8C135;
+
+      /* Gray Neutral — Foreground */
+      --gray-neutral-fg-high: #1B1D22;
+      --gray-neutral-fg-mid: #6A6E83;
+      --gray-neutral-fg-low: #9A9DAD;
+
+      /* Gray Neutral — Background */
+      --gray-neutral-bg-white: #FFFFFF;
+      --gray-neutral-bg-lightgray: #F8F8F9;
+      --gray-neutral-bg-black: #1B1D22;
+
+      /* Gray Neutral — Border */
+      --gray-neutral-border-mid: #EBECEF;
+      --gray-neutral-border-dark: #CFD1D9;
+
+      /* Disabled */
+      --disabled-bg-low: #EBECEF;
+      --disabled-fg-on-white: #9A9DAD;
+      --disabled-border-low: #9A9DAD;
+
+      /* Info */
+      --info-fg: #0386B3;
+      --info-bg: #E0F4FB;
+      --info-text: #000000;
+
+      /* Focus Ring */
+      --focus-ring-secondary: rgba(114, 121, 251, 0.12);
+      --focus-ring-primary: rgba(114, 121, 251, 0.12);
+
+      /* State Overlays */
+      --overlay-success: rgba(16, 185, 129, 0.1);
+      --overlay-warning: rgba(245, 158, 11, 0.1);
+      --overlay-error: rgba(239, 68, 68, 0.1);
+
+      /* Shimmer */
+      --shimmer-highlight: #F8F8F9;
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+      /* Primary */
+      --primary-bg-mid: #AAAFFD;
+      --support-pink-bg-high: #7279FB;
+      --primary-bg-lowest: #2A2B4A;
+
+      /* Secondary */
+      --secondary-fg-high: #AAAFFD;
+
+      /* Social Brand */
+      --brand-apple: #FFFFFF;
+
+      /* Error */
+      --error-fg-high: #F27C95;
+      --error-bg-lowest: #3D1520;
+
+      /* Success */
+      --success-bg-high: #6ABC66;
+      --success-bg-lowest: #1A2E1A;
+
+      /* Warning */
+      --warning-bg-high: #FBDA86;
+
+      /* Gray Neutral — Foreground */
+      --gray-neutral-fg-high: #FFFFFF;
+      --gray-neutral-fg-mid: #CFD1D9;
+      --gray-neutral-fg-low: #9A9DAD;
+
+      /* Gray Neutral — Background */
+      --gray-neutral-bg-white: #1B1D22;
+      --gray-neutral-bg-lightgray: #2A2C33;
+
+      /* Gray Neutral — Border */
+      --gray-neutral-border-mid: #3F414E;
+      --gray-neutral-border-dark: #6A6E83;
+
+      /* Disabled */
+      --disabled-bg-low: #3F414E;
+      --disabled-fg-on-white: #6A6E83;
+      --disabled-border-low: #6A6E83;
+
+      /* Info */
+      --info-fg: #9BDCF3;
+      --info-bg: #0C4A6E;
+      --info-text: #E0F2FE;
+
+      /* Focus Ring */
+      --focus-ring-secondary: rgba(170, 175, 253, 0.16);
+      --focus-ring-primary: rgba(170, 175, 253, 0.16);
+
+      /* State Overlays */
+      --overlay-success: rgba(52, 211, 153, 0.15);
+      --overlay-warning: rgba(251, 191, 36, 0.15);
+      --overlay-error: rgba(248, 113, 113, 0.15);
+
+      /* Shimmer */
+      --shimmer-highlight: #4A4C55;
+    }
+
+    body { margin: 0; padding: 0; overflow-x: hidden; }
+    input, button, textarea, select {
+      font-family: "LINE Seed Sans TH", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+    input::placeholder {
+      font-family: "LINE Seed Sans TH", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const SocialRegisterPreview = () => {
+      const [isDark, setIsDark] = React.useState(false);
+      const [currentScreen, setCurrentScreen] = React.useState('login');
+      const [screenState, setScreenState] = React.useState('default');
+      const [showLoginPw, setShowLoginPw] = React.useState(false);
+      const [showRegPw, setShowRegPw] = React.useState(false);
+      const [showSetupPw, setShowSetupPw] = React.useState(false);
+      const [showSetupConfirm, setShowSetupConfirm] = React.useState(false);
+      const [showResetPw, setShowResetPw] = React.useState(false);
+      const [showResetConfirm, setShowResetConfirm] = React.useState(false);
+      const [dismissedToast, setDismissedToast] = React.useState(null);
+
+      const EyeIcon = ({ show, onClick, color }) => (
+        <div onClick={onClick} style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', display: 'flex', padding: '4px' }}>
+          {show ? (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          ) : (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+              <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          )}
+        </div>
+      );
+
+      const CursorBlink = ({ color }) => (
+        <div style={{
+          position: 'absolute',
+          left: '16px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: '2px',
+          height: '22px',
+          background: color,
+          borderRadius: '1px',
+          animation: 'blink 1s ease-in-out infinite',
+        }}/>
+      );
+
+      const IOSKeyboard = ({ isDark, theme, accent }) => {
+        const kbBg = isDark ? '#0B0B0B' : '#D2D3D9';
+        const keyBg = isDark ? '#4A4A4C' : '#FFFFFF';
+        const keyColor = isDark ? '#FFFFFF' : '#000000';
+        const fnBg = isDark ? '#313133' : '#A8AAB2';
+        const sf = '-apple-system, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif';
+        const row1 = ['q','w','e','r','t','y','u','i','o','p'];
+        const row2 = ['a','s','d','f','g','h','j','k','l'];
+        const row3 = ['z','x','c','v','b','n','m'];
+        const keyBase = {
+          height: '42px',
+          background: keyBg,
+          border: 'none',
+          borderRadius: '5px',
+          fontFamily: sf,
+          fontSize: '22px',
+          fontWeight: '400',
+          letterSpacing: '-0.4px',
+          color: keyColor,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: isDark ? '0 1px 0 rgba(0,0,0,0.6)' : '0 1px 0 rgba(0,0,0,0.35)',
+        };
+        const fnBase = {
+          ...keyBase,
+          flex: 'none',
+          background: fnBg,
+          fontSize: '15px',
+          fontWeight: '400',
+          letterSpacing: '0px',
+        };
+        return (
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: kbBg,
+            padding: '8px 3px 28px 3px',
+            zIndex: 20,
+            fontFamily: sf,
+          }}>
+            {/* QuickType bar */}
+            <div style={{
+              display: 'flex',
+              padding: '0 4px 8px 4px',
+              borderBottom: `0.5px solid ${isDark ? '#3A3A3C' : '#B8B8BB'}`,
+              marginBottom: '8px',
+            }}>
+              {['"your"', '"@"', '"email.com"'].map((s, i) => (
+                <div key={i} style={{
+                  flex: 1,
+                  textAlign: 'center',
+                  padding: '6px 0',
+                  fontSize: '15px',
+                  fontFamily: sf,
+                  fontWeight: '400',
+                  color: keyColor,
+                  borderRight: i < 2 ? `0.5px solid ${isDark ? '#3A3A3C' : '#B8B8BB'}` : 'none',
+                }}>{s.replace(/"/g, '')}</div>
+              ))}
+            </div>
+            {/* Row 1 - QWERTY */}
+            <div style={{ display: 'flex', gap: '6px', padding: '0 3px', marginBottom: '12px' }}>
+              {row1.map((k, i) => <div key={i} style={{...keyBase, flex: 1}}>{k}</div>)}
+            </div>
+            {/* Row 2 - ASDF (indented) */}
+            <div style={{ display: 'flex', gap: '6px', padding: '0 20px', marginBottom: '12px' }}>
+              {row2.map((k, i) => <div key={i} style={{...keyBase, flex: 1}}>{k}</div>)}
+            </div>
+            {/* Row 3 - ZXCV with Shift & Backspace */}
+            <div style={{ display: 'flex', gap: '6px', padding: '0 3px', marginBottom: '12px' }}>
+              <div style={{...fnBase, width: '44px'}}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={keyColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 19V5M5 12l7-7 7 7"/>
+                </svg>
+              </div>
+              {row3.map((k, i) => <div key={i} style={{...keyBase, flex: 1}}>{k}</div>)}
+              <div style={{...fnBase, width: '44px'}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={keyColor} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 5H9l-6 7 6 7h11a1 1 0 001-1V6a1 1 0 00-1-1z"/>
+                  <line x1="17" y1="9" x2="13" y2="15"/>
+                  <line x1="13" y1="9" x2="17" y2="15"/>
+                </svg>
+              </div>
+            </div>
+            {/* Row 4 - Bottom row */}
+            <div style={{ display: 'flex', gap: '6px', padding: '0 3px' }}>
+              <div style={{...fnBase, width: '50px', fontSize: '16px', letterSpacing: '-0.3px'}}>123</div>
+              <div style={{...fnBase, width: '38px'}}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill={keyColor}>
+                  <circle cx="12" cy="18" r="2"/>
+                  <path d="M7 11a5 5 0 0110 0" fill="none" stroke={keyColor} strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div style={{...keyBase, flex: 1, fontSize: '16px', letterSpacing: '-0.3px'}}>space</div>
+              <div style={{...fnBase, width: '88px', fontSize: '16px', letterSpacing: '-0.3px', background: accent || theme.primary, color: '#FFFFFF', fontWeight: '700'}}>Go</div>
+            </div>
+          </div>
+        );
+      };
+
+      const SocialCircleButtons = ({ isDark, theme, hasError, dividerText }) => (
+        <>
+          {/* Divider */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            marginTop: '32px',
+          }}>
+            <div style={{ flex: 1, height: '1px', background: theme.border }}/>
+            <span style={{ fontSize: '14px', color: theme.textSecondary }}>{dividerText}</span>
+            <div style={{ flex: 1, height: '1px', background: theme.border }}/>
+          </div>
+          {/* Social Circle Buttons */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginTop: '20px' }}>
+            {/* Google */}
+            <button style={{
+              width: '56px', height: '56px', borderRadius: '50%',
+              background: theme.background,
+              border: `1px solid ${hasError ? theme.error : theme.border}`,
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
+            }}>
+              <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+            </button>
+            {/* Facebook */}
+            <button style={{
+              width: '56px', height: '56px', borderRadius: '50%',
+              background: theme.background,
+              border: `1px solid ${hasError ? theme.error : theme.border}`,
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
+            }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#1877F2">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </button>
+            {/* Apple */}
+            <button style={{
+              width: '56px', height: '56px', borderRadius: '50%',
+              background: theme.background,
+              border: `1px solid ${hasError ? theme.error : theme.border}`,
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
+            }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill={theme.apple}>
+                <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+              </svg>
+            </button>
+          </div>
+        </>
+      );
+
+      const SkeletonScreen = ({ type }) => {
+        const Bone = ({ width, height, borderRadius = '8px', style = {} }) => (
+          <div style={{
+            width,
+            height,
+            borderRadius,
+            background: `linear-gradient(90deg, ${theme.border} 25%, ${theme.shimmerHighlight} 37%, ${theme.border} 63%)`,
+            backgroundSize: '400px 100%',
+            animation: 'shimmer 1.4s ease-in-out infinite',
+            ...style,
+          }}/>
+        );
+        return (
+          <>
+            <Bone width="40px" height="40px" borderRadius="12px" style={{ marginBottom: '20px' }} />
+            <Bone width="160px" height="28px" borderRadius="6px" style={{ marginBottom: '12px' }} />
+            <Bone width="260px" height="16px" borderRadius="4px" style={{ marginBottom: '8px' }} />
+            <Bone width="200px" height="16px" borderRadius="4px" style={{ marginBottom: '32px' }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div>
+                <Bone width="40px" height="14px" borderRadius="4px" style={{ marginBottom: '8px' }} />
+                <Bone width="100%" height="56px" borderRadius="12px" />
+              </div>
+              {type !== 'forgot-password' && (
+                <div>
+                  <Bone width="60px" height="14px" borderRadius="4px" style={{ marginBottom: '8px' }} />
+                  <Bone width="100%" height="56px" borderRadius="12px" />
+                </div>
+              )}
+              {type === 'password-setup' && (
+                <div>
+                  <Bone width="100px" height="14px" borderRadius="4px" style={{ marginBottom: '8px' }} />
+                  <Bone width="100%" height="56px" borderRadius="12px" />
+                </div>
+              )}
+            </div>
+            <Bone width="100%" height="56px" borderRadius="12px" style={{ marginTop: '32px' }} />
+            {(type === 'login' || type === 'register' || type === 'forgot-password') && (
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+                <Bone width="160px" height="14px" borderRadius="4px" />
+              </div>
+            )}
+            {(type === 'login' || type === 'register') && (
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '32px' }}>
+                  <div style={{ flex: 1, height: '1px', background: theme.border }}/>
+                  <Bone width="100px" height="14px" borderRadius="4px" />
+                  <div style={{ flex: 1, height: '1px', background: theme.border }}/>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginTop: '20px' }}>
+                  <Bone width="56px" height="56px" borderRadius="50%" />
+                  <Bone width="56px" height="56px" borderRadius="50%" />
+                  <Bone width="56px" height="56px" borderRadius="50%" />
+                </div>
+              </>
+            )}
+            {type === 'password-setup' && (
+              <Bone width="100%" height="80px" borderRadius="6px" style={{ marginTop: '16px' }} />
+            )}
+          </>
+        );
+      };
+
+      const loginStates = [
+        { key: 'default', label: 'Default' },
+        { key: 'focus', label: 'Focus' },
+        { key: 'empty-error', label: 'Empty Fields' },
+        { key: 'invalid-email', label: 'Invalid Email' },
+        { key: 'wrong-password', label: 'Wrong Password' },
+        { key: 'not-found', label: 'Account Not Found' },
+        { key: 'loading', label: 'Loading' },
+        { key: 'social-error', label: 'Social Login Error' },
+        { key: 'skeleton', label: 'Skeleton' },
+        { key: 'password-visible', label: 'Show Password' },
+      ];
+
+      const registerStates = [
+        { key: 'default', label: 'Default' },
+        { key: 'focus', label: 'Focus' },
+        { key: 'empty-error', label: 'Empty Fields' },
+        { key: 'invalid-email', label: 'Invalid Email' },
+        { key: 'weak-password', label: 'Weak Password' },
+        { key: 'email-exists', label: 'Email Exists' },
+        { key: 'loading', label: 'Loading' },
+        { key: 'social-error', label: 'Social Login Error' },
+        { key: 'skeleton', label: 'Skeleton' },
+        { key: 'password-visible', label: 'Show Password' },
+      ];
+
+      const passwordSetupStates = [
+        { key: 'default', label: 'Default' },
+        { key: 'focus', label: 'Focus' },
+        { key: 'empty-error', label: 'Empty Fields' },
+        { key: 'weak-password', label: 'Weak Password' },
+        { key: 'mismatch', label: 'Mismatch' },
+        { key: 'loading', label: 'Loading' },
+        { key: 'success', label: 'Success' },
+        { key: 'skeleton', label: 'Skeleton' },
+        { key: 'password-visible', label: 'Show Password' },
+      ];
+
+      const forgotPasswordStates = [
+        { key: 'default', label: 'Default' },
+        { key: 'focus', label: 'Focus' },
+        { key: 'empty-error', label: 'Empty Fields' },
+        { key: 'invalid-email', label: 'Invalid Email' },
+        { key: 'not-found', label: 'Not Found' },
+        { key: 'social-only', label: 'Social Only' },
+        { key: 'loading', label: 'Loading' },
+        { key: 'success', label: 'Success' },
+        { key: 'skeleton', label: 'Skeleton' },
+      ];
+
+      const resetPasswordStates = [
+        { key: 'default', label: 'Default' },
+        { key: 'focus', label: 'Focus' },
+        { key: 'empty-error', label: 'Empty Fields' },
+        { key: 'weak-password', label: 'Weak Password' },
+        { key: 'mismatch', label: 'Mismatch' },
+        { key: 'loading', label: 'Loading' },
+        { key: 'success', label: 'Success' },
+        { key: 'token-expired', label: 'Token Expired' },
+        { key: 'skeleton', label: 'Skeleton' },
+        { key: 'password-visible', label: 'Show Password' },
+      ];
+
+      /*
+       * Design Tokens — CSS Variables → Figma Variables
+       * Theme switching handled via [data-theme] on <html>
+       * CSS var names map 1:1 to: semantic/{category}/{property}/{variant}
+       */
+      React.useEffect(() => {
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      }, [isDark]);
+
+      const theme = {
+        primary:        'var(--primary-bg-mid)',            /* semantic/primary/bg/mid */
+        primaryHover:   'var(--support-pink-bg-high)',      /* semantic/support/pink/bg/high */
+        primaryLowest:  'var(--primary-bg-lowest)',         /* semantic/primary/bg/lowest */
+        secondary:      'var(--secondary-fg-high)',         /* semantic/secondary/fg/high */
+        google:         'var(--brand-google)',
+        apple:          'var(--brand-apple)',
+        facebook:       'var(--brand-facebook)',
+        error:          'var(--error-fg-high)',             /* semantic/error/fg/high */
+        errorBg:        'var(--error-bg-lowest)',           /* semantic/error/bg/lowest */
+        success:        'var(--success-bg-high)',           /* semantic/success/bg/high */
+        successBg:      'var(--success-bg-lowest)',         /* semantic/success/bg/lowest */
+        warning:        'var(--warning-bg-high)',           /* semantic/warning/bg/high */
+        textPrimary:    'var(--gray-neutral-fg-high)',      /* semantic/gray-neutral/fg/high */
+        textSecondary:  'var(--gray-neutral-fg-mid)',       /* semantic/gray-neutral/fg/mid-on-white */
+        textTertiary:   'var(--gray-neutral-fg-low)',       /* semantic/gray-neutral/fg/low-on-white */
+        placeholder:    'var(--gray-neutral-fg-low)',       /* semantic/gray-neutral/fg/low-on-white */
+        background:     'var(--gray-neutral-bg-white)',     /* semantic/gray-neutral/bg/white */
+        surface:        'var(--gray-neutral-bg-lightgray)', /* semantic/gray-neutral/bg/lightgray */
+        border:         'var(--gray-neutral-border-mid)',   /* semantic/gray-neutral/border/midgray */
+        borderDark:     'var(--gray-neutral-border-dark)',  /* semantic/gray-neutral/border/darkgray */
+        disabled:       'var(--disabled-bg-low)',           /* semantic/disabled/bg/low */
+        disabledFg:     'var(--disabled-fg-on-white)',      /* semantic/disabled/fg/on-white */
+        disabledBorder: 'var(--disabled-border-low)',       /* semantic/disabled/border/low */
+        infoFg:         'var(--info-fg)',
+        infoBg:         'var(--info-bg)',
+        infoText:       'var(--info-text)',
+        focusRingSecondary: 'var(--focus-ring-secondary)',
+        focusRingPrimary:   'var(--focus-ring-primary)',
+        overlaySuccess: 'var(--overlay-success)',
+        overlayWarning: 'var(--overlay-warning)',
+        overlayError:   'var(--overlay-error)',
+        shimmerHighlight: 'var(--shimmer-highlight)',
+      };
+
+      return (
+        <div style={{
+          fontFamily: '"LINE Seed Sans TH", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          background: 'linear-gradient(135deg, #5A60D6 0%, #AAAFFD 100%)',
+          minHeight: '100vh',
+          padding: '40px 20px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '24px',
+        }}>
+          {/* Controls */}
+          <div style={{
+            display: 'flex',
+            gap: '8px',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}>
+            <button
+              onClick={() => setIsDark(!isDark)}
+              style={{
+                padding: '8px 16px',
+                background: 'rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(10px)',
+                border: 'none',
+                borderRadius: '20px',
+                color: 'white',
+                fontWeight: '700',
+                fontSize: '12px',
+                cursor: 'pointer',
+              }}
+            >
+              {isDark ? '☀️ Light' : '🌙 Dark'}
+            </button>
+
+            {['login', 'register', 'password-setup', 'forgot-password', 'reset-password'].map(screen => (
+              <button
+                key={screen}
+                onClick={() => { setCurrentScreen(screen); setScreenState('default'); setDismissedToast(null); }}
+                style={{
+                  padding: '8px 16px',
+                  background: currentScreen === screen ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.15)',
+                  border: currentScreen === screen ? '2px solid rgba(255,255,255,0.5)' : '2px solid transparent',
+                  borderRadius: '20px',
+                  color: 'white',
+                  fontWeight: currentScreen === screen ? '700' : '500',
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                }}
+              >
+                {screen === 'login' ? '🔑 Login' : screen === 'register' ? '📝 Register' : screen === 'password-setup' ? '🔐 Password Setup' : screen === 'forgot-password' ? '🔓 Forgot PW' : '🔄 Reset PW'}
+              </button>
+            ))}
+          </div>
+
+          {/* Edge Case Sub-controls */}
+          {(() => {
+            const statesMap = {
+              login: loginStates,
+              register: registerStates,
+              'password-setup': passwordSetupStates,
+              'forgot-password': forgotPasswordStates,
+              'reset-password': resetPasswordStates,
+            };
+            const states = statesMap[currentScreen];
+            if (!states) return null;
+            return (
+              <div style={{
+                display: 'flex',
+                gap: '6px',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                maxWidth: '600px',
+              }}>
+                {states.map(s => (
+                  <button
+                    key={s.key}
+                    onClick={() => { setScreenState(s.key); setDismissedToast(null); }}
+                    style={{
+                      padding: '6px 12px',
+                      background: screenState === s.key ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.1)',
+                      border: screenState === s.key ? '2px solid rgba(255,255,255,0.6)' : '2px solid transparent',
+                      borderRadius: '16px',
+                      color: 'white',
+                      fontWeight: screenState === s.key ? '700' : '400',
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
+
+          {/* iPhone Frame */}
+          <div style={{
+            width: '390px',
+            height: '844px',
+            background: theme.background,
+            borderRadius: '48px',
+            boxShadow: '0 20px 25px rgba(0,0,0,0.1)',
+            overflow: 'hidden',
+            position: 'relative',
+          }}>
+            {/* Dynamic Island */}
+            <div style={{
+              position: 'absolute',
+              top: '12px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '126px',
+              height: '38px',
+              background: '#000000',
+              borderRadius: '20px',
+              zIndex: 10,
+            }}/>
+
+            {/* Status Bar */}
+            <div style={{
+              height: '54px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '0 24px',
+              paddingTop: '12px',
+              position: 'relative',
+              zIndex: 5,
+            }}>
+              <span style={{
+                fontSize: '16px',
+                fontWeight: '700',
+                color: theme.textPrimary,
+                letterSpacing: '0px',
+              }}>9:41</span>
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                {/* Cellular Signal */}
+                <svg width="17" height="12" viewBox="0 0 17 12" fill={theme.textPrimary}>
+                  <rect x="0" y="9" width="3" height="3" rx="0.5"/>
+                  <rect x="4.5" y="6" width="3" height="6" rx="0.5"/>
+                  <rect x="9" y="3" width="3" height="9" rx="0.5"/>
+                  <rect x="13.5" y="0" width="3" height="12" rx="0.5"/>
+                </svg>
+                {/* WiFi */}
+                <svg width="16" height="12" viewBox="0 0 16 12" fill={theme.textPrimary}>
+                  <path d="M8 9.6a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8z"/>
+                  <path d="M4.7 8.3a4.7 4.7 0 0 1 6.6 0" fill="none" stroke={theme.textPrimary} strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M2.1 5.7a8.3 8.3 0 0 1 11.8 0" fill="none" stroke={theme.textPrimary} strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+                {/* Battery */}
+                <svg width="27" height="13" viewBox="0 0 27 13" fill="none">
+                  <rect x="0.5" y="0.5" width="22" height="12" rx="2.5" stroke={theme.textPrimary} strokeOpacity="0.35"/>
+                  <path d="M23.5 4.5v4a2 2 0 0 0 2-2v0a2 2 0 0 0-2-2z" fill={theme.textPrimary} fillOpacity="0.4"/>
+                  <rect x="2" y="2" width="18" height="9" rx="1.5" fill={theme.textPrimary}/>
+                </svg>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div style={{
+              height: 'calc(100% - 54px - 20px)',
+              overflowY: 'auto',
+              padding: '24px 16px',
+            }}>
+              {screenState === 'skeleton' ? (
+                <SkeletonScreen type={currentScreen} />
+              ) : currentScreen === 'login' ? (
+                /* Login Screen */
+                <>
+                  <button style={{
+                    width: '40px', height: '40px', borderRadius: '8px',
+                    background: theme.background, border: `1px solid ${theme.border}`,
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: 0, marginBottom: '20px',
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={theme.textPrimary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                  </button>
+                  <h1 style={{
+                    fontSize: '32px',
+                    fontWeight: '700',
+                    color: theme.textPrimary,
+                    margin: '0 0 8px 0',
+                  }}>เข้าสู่ระบบ</h1>
+                  <p style={{
+                    fontSize: '16px',
+                    color: theme.textSecondary,
+                    margin: '0 0 32px 0',
+                    lineHeight: '1.5',
+                  }}>ยินดีต้อนรับกลับ! เข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+
+                  {/* Email/Password Form */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {/* Email */}
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: theme.textPrimary,
+                        marginBottom: '8px',
+                      }}>อีเมล</label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type="email"
+                          placeholder="your@email.com"
+                          value={screenState === 'empty-error' ? '' : screenState === 'invalid-email' ? 'userexample' : screenState === 'not-found' ? 'unknown@email.com' : (screenState !== 'default' && screenState !== 'focus') ? 'user@example.com' : undefined}
+                          readOnly={screenState !== 'default'}
+                          style={{
+                            width: '100%',
+                            height: '56px',
+                            padding: '0 16px',
+                            fontSize: '16px',
+                            color: theme.textPrimary,
+                            background: theme.background,
+                            border: `1px solid ${screenState === 'focus' ? theme.secondary : (screenState === 'empty-error' || screenState === 'invalid-email' || screenState === 'not-found') ? theme.error : theme.border}`,
+                            boxShadow: screenState === 'focus' ? `0 0 0 4px ${theme.focusRingSecondary}` : 'none',
+                            borderRadius: '8px',
+                            boxSizing: 'border-box',
+                            outline: 'none',
+                          }}
+                        />
+                        {screenState === 'focus' && <CursorBlink color={theme.secondary} />}
+                      </div>
+                      {screenState === 'empty-error' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกอีเมล</p>
+                      )}
+                      {screenState === 'invalid-email' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รูปแบบอีเมลไม่ถูกต้อง</p>
+                      )}
+                      {screenState === 'not-found' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>ไม่พบอีเมลนี้ในระบบ</p>
+                      )}
+                    </div>
+
+                    {/* Password */}
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: theme.textPrimary,
+                        marginBottom: '8px',
+                      }}>รหัสผ่าน</label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type={screenState === 'password-visible' || showLoginPw ? 'text' : 'password'}
+                          placeholder="กรอกรหัสผ่าน"
+                          value={screenState === 'empty-error' ? '' : screenState === 'wrong-password' ? '••••••' : screenState === 'password-visible' ? 'MyP@ss123!' : (screenState !== 'default' && screenState !== 'focus') ? '••••••••' : undefined}
+                          readOnly={screenState !== 'default'}
+                          style={{
+                            width: '100%',
+                            height: '56px',
+                            padding: '0 48px 0 16px',
+                            fontSize: '16px',
+                            color: theme.textPrimary,
+                            background: theme.background,
+                            border: `1px solid ${(screenState === 'empty-error' || screenState === 'wrong-password') ? theme.error : theme.border}`,
+                            borderRadius: '8px',
+                            boxSizing: 'border-box',
+                            outline: 'none',
+                          }}
+                        />
+                        <EyeIcon show={screenState === 'password-visible' || showLoginPw} onClick={() => setShowLoginPw(!showLoginPw)} color={theme.textSecondary} />
+                      </div>
+                      {screenState === 'empty-error' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกรหัสผ่าน</p>
+                      )}
+                      <div style={{ display: 'flex', justifyContent: screenState === 'wrong-password' ? 'space-between' : 'flex-end', alignItems: 'center', marginTop: '4px' }}>
+                        {screenState === 'wrong-password' && (
+                          <span style={{ fontSize: '12px', color: theme.error }}>รหัสผ่านไม่ถูกต้อง เหลืออีก 3 ครั้ง</span>
+                        )}
+                        <a href="#" style={{
+                          fontSize: '12px',
+                          color: theme.secondary,
+                          textDecoration: 'none',
+                          fontWeight: '500',
+                          flexShrink: 0,
+                        }}>ลืมรหัสผ่าน?</a>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Login Button */}
+                  <button style={{
+                    width: '100%',
+                    height: '56px',
+                    background: theme.secondary,
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    marginTop: '32px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                  }}>
+                    {screenState === 'loading' ? (
+                      <>
+                        <div style={{
+                          width: '20px',
+                          height: '20px',
+                          border: '2px solid rgba(255,255,255,0.3)',
+                          borderTopColor: 'white',
+                          borderRadius: '50%',
+                          animation: 'spin 0.8s linear infinite',
+                        }}/>
+                        กำลังเข้าสู่ระบบ...
+                      </>
+                    ) : (
+                      'เข้าสู่ระบบ'
+                    )}
+                  </button>
+
+                  {/* Sign up link */}
+                  <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                    <span style={{ fontSize: '14px', color: theme.textSecondary }}>
+                      ยังไม่มีบัญชี?{' '}
+                    </span>
+                    <a href="#" style={{
+                      fontSize: '14px',
+                      color: theme.secondary,
+                      fontWeight: '700',
+                      textDecoration: 'none',
+                    }}>สมัครสมาชิก</a>
+                  </div>
+
+                  <SocialCircleButtons isDark={isDark} theme={theme} hasError={screenState === 'social-error'} dividerText="หรือเข้าสู่ระบบด้วย" />
+                </>
+              ) : currentScreen === 'register' ? (
+                /* Register Screen with Social */
+                <>
+                  <button style={{
+                    width: '40px', height: '40px', borderRadius: '8px',
+                    background: theme.background, border: `1px solid ${theme.border}`,
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: 0, marginBottom: '20px',
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={theme.textPrimary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                  </button>
+                  <h1 style={{
+                    fontSize: '32px',
+                    fontWeight: '700',
+                    color: theme.textPrimary,
+                    margin: '0 0 8px 0',
+                  }}>สมัครสมาชิก</h1>
+                  <p style={{
+                    fontSize: '16px',
+                    color: theme.textSecondary,
+                    margin: '0 0 32px 0',
+                    lineHeight: '1.5',
+                  }}>สร้างบัญชีใหม่เพื่อเริ่มต้นใช้งาน</p>
+
+                  {/* Email/Password Form */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: theme.textPrimary,
+                        marginBottom: '8px',
+                      }}>อีเมล</label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type="email"
+                          placeholder="your@email.com"
+                          value={screenState === 'empty-error' ? '' : screenState === 'invalid-email' ? 'userexample' : screenState === 'email-exists' ? 'existing@email.com' : (screenState !== 'default' && screenState !== 'focus') ? 'user@example.com' : undefined}
+                          readOnly={screenState !== 'default'}
+                          style={{
+                            width: '100%',
+                            height: '56px',
+                            padding: '0 16px',
+                            fontSize: '16px',
+                            color: theme.textPrimary,
+                            background: theme.background,
+                            border: `1px solid ${screenState === 'focus' ? theme.primary : (screenState === 'empty-error' || screenState === 'invalid-email' || screenState === 'email-exists') ? theme.error : theme.border}`,
+                            boxShadow: screenState === 'focus' ? `0 0 0 4px ${theme.focusRingPrimary}` : 'none',
+                            borderRadius: '8px',
+                            boxSizing: 'border-box',
+                            outline: 'none',
+                          }}
+                        />
+                        {screenState === 'focus' && <CursorBlink color={theme.primary} />}
+                      </div>
+                      {screenState === 'empty-error' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกอีเมล</p>
+                      )}
+                      {screenState === 'invalid-email' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รูปแบบอีเมลไม่ถูกต้อง</p>
+                      )}
+                      {screenState === 'email-exists' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>อีเมลนี้ถูกใช้งานแล้ว</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: theme.textPrimary,
+                        marginBottom: '8px',
+                      }}>รหัสผ่าน</label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type={screenState === 'password-visible' || showRegPw ? 'text' : 'password'}
+                          placeholder="ขั้นต่ำ 8 ตัวอักษร"
+                          value={screenState === 'empty-error' ? '' : screenState === 'weak-password' ? '123' : screenState === 'password-visible' ? 'Str0ng!Pass' : (screenState !== 'default' && screenState !== 'focus') ? '••••••••' : undefined}
+                          readOnly={screenState !== 'default'}
+                          style={{
+                            width: '100%',
+                            height: '56px',
+                            padding: '0 48px 0 16px',
+                            fontSize: '16px',
+                            color: theme.textPrimary,
+                            background: theme.background,
+                            border: `1px solid ${(screenState === 'empty-error' || screenState === 'weak-password') ? theme.error : theme.border}`,
+                            borderRadius: '8px',
+                            boxSizing: 'border-box',
+                            outline: 'none',
+                          }}
+                        />
+                        <EyeIcon show={screenState === 'password-visible' || showRegPw} onClick={() => setShowRegPw(!showRegPw)} color={theme.textSecondary} />
+                      </div>
+                      {screenState === 'empty-error' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกรหัสผ่าน</p>
+                      )}
+                      {screenState === 'weak-password' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <button style={{
+                    width: '100%',
+                    height: '56px',
+                    background: theme.primary,
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    marginTop: '32px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                  }}>
+                    {screenState === 'loading' ? (
+                      <>
+                        <div style={{
+                          width: '20px',
+                          height: '20px',
+                          border: '2px solid rgba(255,255,255,0.3)',
+                          borderTopColor: 'white',
+                          borderRadius: '50%',
+                          animation: 'spin 0.8s linear infinite',
+                        }}/>
+                        กำลังสมัครสมาชิก...
+                      </>
+                    ) : (
+                      'สมัครสมาชิก'
+                    )}
+                  </button>
+
+                  <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                    <span style={{ fontSize: '14px', color: theme.textSecondary }}>
+                      มีบัญชีอยู่แล้ว?{' '}
+                    </span>
+                    <a href="#" style={{
+                      fontSize: '14px',
+                      color: theme.primary,
+                      fontWeight: '700',
+                      textDecoration: 'none',
+                    }}>เข้าสู่ระบบ</a>
+                  </div>
+
+                  <SocialCircleButtons isDark={isDark} theme={theme} hasError={screenState === 'social-error'} dividerText="หรือสมัครด้วย" />
+                </>
+              ) : currentScreen === 'password-setup' ? (
+                /* Force Password Setup Screen */
+                <>
+                  <button style={{
+                    width: '40px', height: '40px', borderRadius: '8px',
+                    background: theme.background, border: `1px solid ${theme.border}`,
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: 0, marginBottom: '20px',
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={theme.textPrimary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                  </button>
+                  <h1 style={{
+                    fontSize: '32px',
+                    fontWeight: '700',
+                    color: theme.textPrimary,
+                    margin: '0 0 8px 0',
+                  }}>ตั้งรหัสผ่าน</h1>
+                  <p style={{
+                    fontSize: '16px',
+                    color: theme.textSecondary,
+                    margin: '0 0 32px 0',
+                    lineHeight: '1.5',
+                  }}>ตั้งรหัสผ่านเพื่อให้คุณสามารถเข้าสู่ระบบด้วยอีเมลได้ในอนาคต</p>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {/* Email (Disabled) */}
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: theme.textPrimary,
+                        marginBottom: '8px',
+                      }}>อีเมล</label>
+                      <input
+                        type="email"
+                        value="user@example.com"
+                        disabled
+                        style={{
+                          width: '100%',
+                          height: '56px',
+                          padding: '0 16px',
+                          fontSize: '16px',
+                          color: theme.textSecondary,
+                          background: theme.disabled,
+                          border: `1px solid ${theme.border}`,
+                          borderRadius: '8px',
+                          boxSizing: 'border-box',
+                          cursor: 'not-allowed',
+                          outline: 'none',
+                        }}
+                      />
+                    </div>
+
+                    {/* Password */}
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: theme.textPrimary,
+                        marginBottom: '8px',
+                      }}>รหัสผ่าน</label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type={screenState === 'password-visible' || showSetupPw ? 'text' : 'password'}
+                          placeholder="ขั้นต่ำ 8 ตัวอักษร"
+                          value={screenState === 'empty-error' ? '' : screenState === 'weak-password' ? '123' : screenState === 'password-visible' ? 'MyP@ss123!' : screenState === 'mismatch' ? '••••••••' : screenState === 'success' ? '••••••••' : (screenState !== 'default' && screenState !== 'focus') ? '••••••••' : undefined}
+                          readOnly={screenState !== 'default'}
+                          style={{
+                            width: '100%',
+                            height: '56px',
+                            padding: '0 48px 0 16px',
+                            fontSize: '16px',
+                            color: theme.textPrimary,
+                            background: theme.background,
+                            border: `1px solid ${screenState === 'focus' ? theme.primary : (screenState === 'empty-error' || screenState === 'weak-password') ? theme.error : theme.border}`,
+                            boxShadow: screenState === 'focus' ? `0 0 0 4px ${theme.focusRingPrimary}` : 'none',
+                            borderRadius: '8px',
+                            boxSizing: 'border-box',
+                            outline: 'none',
+                          }}
+                        />
+                        <EyeIcon show={screenState === 'password-visible' || showSetupPw} onClick={() => setShowSetupPw(!showSetupPw)} color={theme.textSecondary} />
+                        {screenState === 'focus' && <CursorBlink color={theme.primary} />}
+                      </div>
+                      {screenState === 'empty-error' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกรหัสผ่าน</p>
+                      )}
+                      {screenState === 'weak-password' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</p>
+                      )}
+                    </div>
+
+                    {/* Confirm Password */}
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: theme.textPrimary,
+                        marginBottom: '8px',
+                      }}>ยืนยันรหัสผ่าน</label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type={screenState === 'password-visible' || showSetupConfirm ? 'text' : 'password'}
+                          placeholder="กรอกรหัสผ่านอีกครั้ง"
+                          value={screenState === 'empty-error' ? '' : screenState === 'password-visible' ? 'MyP@ss123!' : screenState === 'mismatch' ? '••••••' : screenState === 'success' ? '••••••••' : (screenState !== 'default' && screenState !== 'focus') ? '' : undefined}
+                          readOnly={screenState !== 'default'}
+                          style={{
+                            width: '100%',
+                            height: '56px',
+                            padding: '0 48px 0 16px',
+                            fontSize: '16px',
+                            color: theme.textPrimary,
+                            background: theme.background,
+                            border: `1px solid ${(screenState === 'empty-error' || screenState === 'mismatch') ? theme.error : theme.border}`,
+                            borderRadius: '8px',
+                            boxSizing: 'border-box',
+                            outline: 'none',
+                          }}
+                        />
+                        <EyeIcon show={screenState === 'password-visible' || showSetupConfirm} onClick={() => setShowSetupConfirm(!showSetupConfirm)} color={theme.textSecondary} />
+                      </div>
+                      {screenState === 'empty-error' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณายืนยันรหัสผ่าน</p>
+                      )}
+                      {screenState === 'mismatch' && (
+                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านไม่ตรงกัน</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    disabled={screenState === 'success'}
+                    style={{
+                    width: '100%',
+                    height: '56px',
+                    background: screenState === 'success' ? theme.disabled : theme.primary,
+                    color: screenState === 'success' ? theme.textTertiary : 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    cursor: screenState === 'success' ? 'not-allowed' : 'pointer',
+                    marginTop: '32px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    opacity: screenState === 'success' ? 0.6 : 1,
+                  }}>
+                    {screenState === 'loading' ? (
+                      <>
+                        <div style={{
+                          width: '20px',
+                          height: '20px',
+                          border: '2px solid rgba(255,255,255,0.3)',
+                          borderTopColor: 'white',
+                          borderRadius: '50%',
+                          animation: 'spin 0.8s linear infinite',
+                        }}/>
+                        กำลังตั้งรหัสผ่าน...
+                      </>
+                    ) : (
+                      'ตั้งรหัสผ่าน'
+                    )}
+                  </button>
+
+                  {/* Announcement Banner */}
+                  <div style={{
+                    width: '100%',
+                    overflow: 'hidden',
+                    borderRadius: '6px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    marginTop: '16px',
+                  }}>
+                    <div style={{
+                      width: '6px',
+                      alignSelf: 'stretch',
+                      paddingTop: '12px',
+                      background: theme.infoFg,
+                      flexShrink: 0,
+                    }}/>
+                    <div style={{
+                      flex: '1 1 0',
+                      padding: '12px 8px',
+                      background: theme.infoBg,
+                      overflow: 'hidden',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}>
+                      <div style={{ paddingTop: '2px', paddingBottom: '2px', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', flexShrink: 0 }}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <path d="M8 1.33C4.32 1.33 1.33 4.32 1.33 8s2.99 6.67 6.67 6.67S14.67 11.68 14.67 8 11.68 1.33 8 1.33zm.67 10H7.33V7.33h1.34v4zm0-5.33H7.33V4.67h1.34V6z" fill={theme.infoFg}/>
+                        </svg>
+                      </div>
+                      <p style={{
+                        flex: '1 1 0',
+                        fontSize: '16px',
+                        fontWeight: '400',
+                        color: theme.infoText,
+                        margin: 0,
+                        wordWrap: 'break-word',
+                      }}>
+                        หลังจากตั้งรหัสผ่านแล้ว คุณสามารถเข้าสู่ระบบด้วยอีเมลและรหัสผ่านได้
+                      </p>
+                    </div>
+                  </div>
+                </>
+              ) : currentScreen === 'forgot-password' ? (
+                /* Forgot Password Screen */
+                <>
+                  <button style={{
+                    width: '40px', height: '40px', borderRadius: '8px',
+                    background: theme.background, border: `1px solid ${theme.border}`,
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: 0, marginBottom: '20px',
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={theme.textPrimary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                  </button>
+
+                  {screenState === 'success' ? (
+                    /* Success State */
+                    <div style={{ textAlign: 'center', paddingTop: '40px' }}>
+                      <div style={{
+                        width: '80px', height: '80px', borderRadius: '50%',
+                        background: theme.overlaySuccess,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        margin: '0 auto 24px',
+                      }}>
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={theme.success} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                          <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                      </div>
+                      <h1 style={{
+                        fontSize: '24px',
+                        fontWeight: '700',
+                        color: theme.textPrimary,
+                        margin: '0 0 12px 0',
+                      }}>ส่งลิงก์เรียบร้อย!</h1>
+                      <p style={{
+                        fontSize: '16px',
+                        color: theme.textSecondary,
+                        margin: '0 0 8px 0',
+                        lineHeight: '1.6',
+                      }}>
+                        เราได้ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่
+                      </p>
+                      <p style={{
+                        fontSize: '16px',
+                        color: theme.primary,
+                        fontWeight: '700',
+                        margin: '0 0 24px 0',
+                      }}>
+                        user@example.com
+                      </p>
+                      <p style={{
+                        fontSize: '12px',
+                        color: theme.textTertiary,
+                        margin: '0 0 32px 0',
+                        lineHeight: '1.5',
+                      }}>
+                        กรุณาตรวจสอบกล่องจดหมายของคุณ
+                        <br/>หากไม่พบ ลองตรวจสอบในโฟลเดอร์สแปม
+                      </p>
+                      <button style={{
+                        width: '100%',
+                        height: '56px',
+                        background: theme.primary,
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                      }}>
+                        กลับไปเข้าสู่ระบบ
+                      </button>
+                      <button style={{
+                        width: '100%',
+                        height: '48px',
+                        background: 'transparent',
+                        color: theme.primary,
+                        border: 'none',
+                        fontSize: '14px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                        marginTop: '12px',
+                      }}>
+                        ส่งลิงก์อีกครั้ง
+                      </button>
+                    </div>
+                  ) : screenState === 'social-only' ? (
+                    /* Social Only Account State */
+                    <div style={{ textAlign: 'center', paddingTop: '40px' }}>
+                      <div style={{
+                        width: '80px', height: '80px', borderRadius: '50%',
+                        background: theme.overlayWarning,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        margin: '0 auto 24px',
+                      }}>
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={theme.warning} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"/>
+                          <line x1="12" y1="8" x2="12" y2="12"/>
+                          <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                      </div>
+                      <h1 style={{
+                        fontSize: '22px',
+                        fontWeight: '700',
+                        color: theme.textPrimary,
+                        margin: '0 0 12px 0',
+                      }}>ไม่สามารถรีเซ็ตรหัสผ่านได้</h1>
+                      <p style={{
+                        fontSize: '16px',
+                        color: theme.textSecondary,
+                        margin: '0 0 32px 0',
+                        lineHeight: '1.6',
+                      }}>
+                        บัญชีนี้ยังไม่เคยตั้งรหัสผ่าน<br/>กรุณาเข้าสู่ระบบด้วย Social Login ก่อน
+                      </p>
+                      <button style={{
+                        width: '100%',
+                        height: '56px',
+                        background: theme.primary,
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                      }}>
+                        กลับไปเข้าสู่ระบบ
+                      </button>
+                    </div>
+                  ) : (
+                    /* Normal Form State */
+                    <>
+                      <h1 style={{
+                        fontSize: '32px',
+                        fontWeight: '700',
+                        color: theme.textPrimary,
+                        margin: '0 0 8px 0',
+                      }}>ลืมรหัสผ่าน</h1>
+                      <p style={{
+                        fontSize: '16px',
+                        color: theme.textSecondary,
+                        margin: '0 0 32px 0',
+                        lineHeight: '1.5',
+                      }}>กรอกอีเมลที่ใช้สมัครสมาชิก เราจะส่งลิงก์ตั้งรหัสผ่านใหม่ให้คุณ</p>
+
+                      {/* Email */}
+                      <div>
+                        <label style={{
+                          display: 'block',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          color: theme.textPrimary,
+                          marginBottom: '8px',
+                        }}>อีเมล</label>
+                        <div style={{ position: 'relative' }}>
+                          <input
+                            type="email"
+                            placeholder="your@email.com"
+                            value={screenState === 'empty-error' ? '' : screenState === 'invalid-email' ? 'userexample' : screenState === 'not-found' ? 'unknown@email.com' : (screenState !== 'default' && screenState !== 'focus') ? 'user@example.com' : undefined}
+                            readOnly={screenState !== 'default'}
+                            style={{
+                              width: '100%',
+                              height: '56px',
+                              padding: '0 16px',
+                              fontSize: '16px',
+                              color: theme.textPrimary,
+                              background: theme.background,
+                              border: `1px solid ${screenState === 'focus' ? theme.primary : (screenState === 'empty-error' || screenState === 'invalid-email' || screenState === 'not-found') ? theme.error : theme.border}`,
+                              boxShadow: screenState === 'focus' ? `0 0 0 4px ${theme.focusRingPrimary}` : 'none',
+                              borderRadius: '8px',
+                              boxSizing: 'border-box',
+                              outline: 'none',
+                            }}
+                          />
+                          {screenState === 'focus' && <CursorBlink color={theme.primary} />}
+                        </div>
+                        {screenState === 'empty-error' && (
+                          <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกอีเมล</p>
+                        )}
+                        {screenState === 'invalid-email' && (
+                          <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รูปแบบอีเมลไม่ถูกต้อง</p>
+                        )}
+                        {screenState === 'not-found' && (
+                          <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>ไม่พบอีเมลนี้ในระบบ</p>
+                        )}
+                      </div>
+
+                      {/* Submit Button */}
+                      <button disabled={screenState === 'not-found'} style={{
+                        width: '100%',
+                        height: '56px',
+                        background: screenState === 'not-found' ? theme.disabled : theme.primary,
+                        color: screenState === 'not-found' ? theme.disabledFg : 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        fontWeight: '700',
+                        cursor: screenState === 'not-found' ? 'not-allowed' : 'pointer',
+                        marginTop: '32px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        opacity: screenState === 'not-found' ? 0.6 : 1,
+                      }}>
+                        {screenState === 'loading' ? (
+                          <>
+                            <div style={{
+                              width: '20px',
+                              height: '20px',
+                              border: '2px solid rgba(255,255,255,0.3)',
+                              borderTopColor: 'white',
+                              borderRadius: '50%',
+                              animation: 'spin 0.8s linear infinite',
+                            }}/>
+                            กำลังส่งลิงก์...
+                          </>
+                        ) : (
+                          'ส่งลิงก์ตั้งรหัสผ่านใหม่'
+                        )}
+                      </button>
+
+                      {/* Back to login */}
+                      <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                        <a href="#" style={{
+                          fontSize: '14px',
+                          color: theme.primary,
+                          fontWeight: '700',
+                          textDecoration: 'none',
+                        }}>กลับไปเข้าสู่ระบบ</a>
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                /* Reset Password Screen (Flow B) */
+                <>
+                  <button style={{
+                    width: '40px', height: '40px', borderRadius: '8px',
+                    background: theme.background, border: `1px solid ${theme.border}`,
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: 0, marginBottom: '20px',
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={theme.textPrimary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                  </button>
+
+                  {screenState === 'token-expired' ? (
+                    /* Token Expired State */
+                    <div style={{ textAlign: 'center', paddingTop: '40px' }}>
+                      <div style={{
+                        width: '80px', height: '80px', borderRadius: '50%',
+                        background: theme.overlayError,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        margin: '0 auto 24px',
+                      }}>
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={theme.error} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"/>
+                          <line x1="15" y1="9" x2="9" y2="15"/>
+                          <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                      </div>
+                      <h1 style={{
+                        fontSize: '22px',
+                        fontWeight: '700',
+                        color: theme.textPrimary,
+                        margin: '0 0 12px 0',
+                      }}>ลิงก์หมดอายุหรือไม่ถูกต้อง</h1>
+                      <p style={{
+                        fontSize: '16px',
+                        color: theme.textSecondary,
+                        margin: '0 0 32px 0',
+                        lineHeight: '1.6',
+                      }}>
+                        ลิงก์รีเซ็ตรหัสผ่านนี้หมดอายุแล้ว<br/>กรุณาขอลิงก์ใหม่อีกครั้ง
+                      </p>
+                      <button style={{
+                        width: '100%',
+                        height: '56px',
+                        background: theme.primary,
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                      }}>
+                        ขอลิงก์ใหม่
+                      </button>
+                    </div>
+                  ) : screenState === 'success' ? (
+                    /* Success State */
+                    <div style={{ textAlign: 'center', paddingTop: '40px' }}>
+                      <div style={{
+                        width: '80px', height: '80px', borderRadius: '50%',
+                        background: theme.overlaySuccess,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        margin: '0 auto 24px',
+                      }}>
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={theme.success} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="9 12 11.5 14.5 16 9"/>
+                        </svg>
+                      </div>
+                      <h1 style={{
+                        fontSize: '24px',
+                        fontWeight: '700',
+                        color: theme.textPrimary,
+                        margin: '0 0 12px 0',
+                      }}>ตั้งรหัสผ่านใหม่สำเร็จ!</h1>
+                      <p style={{
+                        fontSize: '16px',
+                        color: theme.textSecondary,
+                        margin: '0 0 32px 0',
+                        lineHeight: '1.6',
+                      }}>
+                        คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่ได้แล้ว
+                      </p>
+                      <button style={{
+                        width: '100%',
+                        height: '56px',
+                        background: theme.primary,
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                      }}>
+                        ไปเข้าสู่ระบบ
+                      </button>
+                    </div>
+                  ) : (
+                    /* Normal Form State */
+                    <>
+                      <h1 style={{
+                        fontSize: '32px',
+                        fontWeight: '700',
+                        color: theme.textPrimary,
+                        margin: '0 0 8px 0',
+                      }}>ตั้งรหัสผ่านใหม่</h1>
+                      <p style={{
+                        fontSize: '16px',
+                        color: theme.textSecondary,
+                        margin: '0 0 32px 0',
+                        lineHeight: '1.5',
+                      }}>กรอกรหัสผ่านใหม่ของคุณ</p>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        {/* New Password */}
+                        <div>
+                          <label style={{
+                            display: 'block',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            color: theme.textPrimary,
+                            marginBottom: '8px',
+                          }}>รหัสผ่านใหม่</label>
+                          <div style={{ position: 'relative' }}>
+                            <input
+                              type={screenState === 'password-visible' || showResetPw ? 'text' : 'password'}
+                              placeholder="ขั้นต่ำ 8 ตัวอักษร"
+                              value={screenState === 'empty-error' ? '' : screenState === 'weak-password' ? '123' : screenState === 'password-visible' ? 'MyP@ss123!' : screenState === 'mismatch' ? '••••••••' : (screenState !== 'default' && screenState !== 'focus') ? '••••••••' : undefined}
+                              readOnly={screenState !== 'default'}
+                              style={{
+                                width: '100%',
+                                height: '56px',
+                                padding: '0 48px 0 16px',
+                                fontSize: '16px',
+                                color: theme.textPrimary,
+                                background: theme.background,
+                                border: `1px solid ${screenState === 'focus' ? theme.primary : (screenState === 'empty-error' || screenState === 'weak-password') ? theme.error : theme.border}`,
+                                boxShadow: screenState === 'focus' ? `0 0 0 4px ${theme.focusRingPrimary}` : 'none',
+                                borderRadius: '8px',
+                                boxSizing: 'border-box',
+                                outline: 'none',
+                              }}
+                            />
+                            <EyeIcon show={screenState === 'password-visible' || showResetPw} onClick={() => setShowResetPw(!showResetPw)} color={theme.textSecondary} />
+                            {screenState === 'focus' && <CursorBlink color={theme.primary} />}
+                          </div>
+                          {screenState === 'empty-error' && (
+                            <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกรหัสผ่าน</p>
+                          )}
+                          {screenState === 'weak-password' && (
+                            <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</p>
+                          )}
+                        </div>
+
+                        {/* Confirm Password */}
+                        <div>
+                          <label style={{
+                            display: 'block',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            color: theme.textPrimary,
+                            marginBottom: '8px',
+                          }}>ยืนยันรหัสผ่านใหม่</label>
+                          <div style={{ position: 'relative' }}>
+                            <input
+                              type={screenState === 'password-visible' || showResetConfirm ? 'text' : 'password'}
+                              placeholder="กรอกรหัสผ่านอีกครั้ง"
+                              value={screenState === 'empty-error' ? '' : screenState === 'password-visible' ? 'MyP@ss123!' : screenState === 'mismatch' ? '••••••' : (screenState !== 'default' && screenState !== 'focus') ? '' : undefined}
+                              readOnly={screenState !== 'default'}
+                              style={{
+                                width: '100%',
+                                height: '56px',
+                                padding: '0 48px 0 16px',
+                                fontSize: '16px',
+                                color: theme.textPrimary,
+                                background: theme.background,
+                                border: `1px solid ${(screenState === 'empty-error' || screenState === 'mismatch') ? theme.error : theme.border}`,
+                                borderRadius: '8px',
+                                boxSizing: 'border-box',
+                                outline: 'none',
+                              }}
+                            />
+                            <EyeIcon show={screenState === 'password-visible' || showResetConfirm} onClick={() => setShowResetConfirm(!showResetConfirm)} color={theme.textSecondary} />
+                          </div>
+                          {screenState === 'empty-error' && (
+                            <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณายืนยันรหัสผ่าน</p>
+                          )}
+                          {screenState === 'mismatch' && (
+                            <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านไม่ตรงกัน</p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Submit Button */}
+                      <button style={{
+                        width: '100%',
+                        height: '56px',
+                        background: theme.primary,
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                        marginTop: '32px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                      }}>
+                        {screenState === 'loading' ? (
+                          <>
+                            <div style={{
+                              width: '20px',
+                              height: '20px',
+                              border: '2px solid rgba(255,255,255,0.3)',
+                              borderTopColor: 'white',
+                              borderRadius: '50%',
+                              animation: 'spin 0.8s linear infinite',
+                            }}/>
+                            กำลังตั้งรหัสผ่าน...
+                          </>
+                        ) : (
+                          'ยืนยัน'
+                        )}
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Floating Toast */}
+            {(() => {
+              let toast = null;
+              if (screenState === 'social-error' && dismissedToast !== 'social-error' && (currentScreen === 'login' || currentScreen === 'register')) {
+                toast = { bg: theme.error, text: 'ระบบขัดข้อง ลองใหม่อีกครั้ง', type: 'error', key: 'social-error' };
+              } else if (screenState === 'success' && dismissedToast !== 'success' && currentScreen === 'password-setup') {
+                toast = { bg: theme.success, text: 'ตั้งรหัสผ่านสำเร็จ!', type: 'success', key: 'success' };
+              }
+              if (!toast) return null;
+              return (
+                <div style={{
+                  position: 'absolute',
+                  top: '60px',
+                  left: '16px',
+                  right: '16px',
+                  background: toast.bg,
+                  padding: '12px 16px',
+                  zIndex: 15,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                }}>
+                  {toast.type === 'error' ? (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
+                      <circle cx="10" cy="10" r="9" fill="white"/>
+                      <path d="M7 7l6 6M13 7l-6 6" stroke={theme.error} strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
+                      <circle cx="10" cy="10" r="9" fill="white"/>
+                      <polyline points="6 10 9 13 14 7" fill="none" stroke={theme.success} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                  <span style={{
+                    flex: 1,
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    lineHeight: '1.4',
+                  }}>{toast.text}</span>
+                  <div
+                    onClick={() => setDismissedToast(toast.key)}
+                    style={{ cursor: 'pointer', padding: '4px', display: 'flex', flexShrink: 0 }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                      <line x1="18" y1="6" x2="6" y2="18"/>
+                      <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* iOS Keyboard - Focus state */}
+            {screenState === 'focus' && <IOSKeyboard isDark={isDark} theme={theme} accent={currentScreen === 'login' ? theme.secondary : undefined} />}
+
+            {/* Home Indicator */}
+            <div style={{
+              position: 'absolute',
+              bottom: '8px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '134px',
+              height: '6px',
+              background: theme.textPrimary,
+              borderRadius: '100px',
+              opacity: 0.15,
+              zIndex: 30,
+            }}/>
+          </div>
+
+          {/* Spec Info — Design Tokens */}
+          <div style={{
+            width: '100%',
+            maxWidth: '900px',
+            background: 'rgba(255, 255, 255, 0.95)',
+            borderRadius: '16px',
+            padding: '24px',
+            boxShadow: '0 10px 15px rgba(0,0,0,0.1)',
+          }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1B1D22', margin: '0 0 16px 0' }}>
+              📐 Design Tokens &amp; Specifications
+            </h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gap: '16px',
+              fontSize: '12px',
+              color: '#3F414E',
+              lineHeight: '1.6',
+            }}>
+              <div>
+                <strong>Screens:</strong><br/>
+                1. Login (10 states)<br/>
+                2. Register (10 states)<br/>
+                3. Password Setup (9 states)<br/>
+                4. Forgot Password (9 states)<br/>
+                5. Reset Password (10 states)
+              </div>
+              <div>
+                <strong>Color Tokens (CSS Var → Figma Variable):</strong><br/>
+                --primary-bg-mid → semantic/primary/bg/mid<br/>
+                --secondary-fg-high → semantic/secondary/fg/high<br/>
+                --error-fg-high → semantic/error/fg/high<br/>
+                --success-bg-high → semantic/success/bg/high<br/>
+                --gray-neutral-fg-high → semantic/gray-neutral/fg/high<br/>
+                --gray-neutral-fg-mid → semantic/gray-neutral/fg/mid
+              </div>
+              <div>
+                <strong>Typography:</strong><br/>
+                Font: LINE Seed Sans TH<br/>
+                heading.3: 32px/700<br/>
+                label.3: 16px/700 (button)<br/>
+                caption.3: 16px/400<br/>
+                caption.4: 14px/400<br/>
+                Weight: 400, 700
+              </div>
+              <div>
+                <strong>Components:</strong><br/>
+                Input height: 56px<br/>
+                Button height: 56px<br/>
+                radius-md: 8px (btn/input)<br/>
+                radius-lg: 12px (card/toast)
+              </div>
+              <div>
+                <strong>Spacing (4px base):</strong><br/>
+                spacing-1: 4px<br/>
+                spacing-2: 8px<br/>
+                spacing-4: 16px<br/>
+                spacing-5: 20px<br/>
+                spacing-6: 24px<br/>
+                spacing-8: 32px
+              </div>
+              <div>
+                <strong>Disabled Tokens:</strong><br/>
+                fg: #9A9DAD<br/>
+                bg: #EBECEF<br/>
+                border: #9A9DAD<br/>
+                <br/>
+                <strong>Social:</strong><br/>
+                Google: #4285F4<br/>
+                Apple: #000000<br/>
+                Facebook: #1877F2
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<SocialRegisterPreview />);
+  </script>
+</body>
+</html>
