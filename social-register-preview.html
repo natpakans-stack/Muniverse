@@ -7,162 +7,8 @@
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=LINE+Seed+Sans+TH:wght@100;300;400;700;800&display=swap" rel="stylesheet">
+  <!-- Font: LINE Seed Sans TH (install locally or via Google Fonts) -->
   <style>
-    /*
-     * ============================================================
-     * CSS Variables → Figma Variable Token Mapping
-     * ============================================================
-     * Naming convention: --{category}-{property}-{variant}
-     * Maps 1:1 to Figma Variables: semantic/{category}/{property}/{variant}
-     *
-     * After html.to.design import, use this mapping to rebind
-     * auto-named Figma colors to the correct Variables:
-     *
-     *   Figma auto-name    →  CSS Variable                →  Figma Variable path
-     *   ─────────────────────────────────────────────────────────────────────────
-     *   Moody Blue (#7279FB) →  --primary-bg-mid           →  semantic/primary/bg/mid
-     *   Dark Violet (#5A60D6) → --support-pink-bg-high     →  semantic/support/violet/bg/high
-     *   Lavender (#F1F2FF)  →  --primary-bg-lowest          →  semantic/primary/bg/lowest
-     *   Moody Blue         →  --secondary-fg-high          →  semantic/secondary/fg/high
-     *   Crimson (#EA244F)  →  --error-fg-high              →  semantic/error/fg/high
-     *   Fruit Salad        →  --success-bg-high            →  semantic/success/bg/high
-     *   Saffron            →  --warning-bg-high            →  semantic/warning/bg/high
-     *   Shark (#1B1D22)    →  --gray-neutral-fg-high       →  semantic/gray-neutral/fg/high
-     *   Pale Sky (#6A6E83) →  --gray-neutral-fg-mid        →  semantic/gray-neutral/fg/mid-on-white
-     *   Manatee (#9A9DAD)  →  --gray-neutral-fg-low        →  semantic/gray-neutral/fg/low-on-white
-     *   White (#FFFFFF)    →  --gray-neutral-bg-white       →  semantic/gray-neutral/bg/white
-     *   Athens Gray        →  --gray-neutral-bg-lightgray   →  semantic/gray-neutral/bg/lightgray
-     *   Mischka (#EBECEF)  →  --gray-neutral-border-mid    →  semantic/gray-neutral/border/midgray
-     *   Ghost (#CFD1D9)    →  --gray-neutral-border-dark   →  semantic/gray-neutral/border/darkgray
-     * ============================================================
-     */
-
-    /* Light Theme (default) */
-    :root {
-      /* Primary */
-      --primary-bg-mid: #7279FB;
-      --support-pink-bg-high: #5A60D6;
-      --primary-bg-lowest: #F1F2FF;
-
-      /* Secondary */
-      --secondary-fg-high: #7279FB;
-
-      /* Social Brand (constant) */
-      --brand-google: #4285F4;
-      --brand-apple: #000000;
-      --brand-facebook: #1877F2;
-
-      /* Error */
-      --error-fg-high: #EA244F;
-      --error-bg-lowest: #FDE9ED;
-
-      /* Success */
-      --success-bg-high: #559652;
-      --success-bg-lowest: #F0F8F0;
-
-      /* Warning */
-      --warning-bg-high: #F8C135;
-
-      /* Gray Neutral — Foreground */
-      --gray-neutral-fg-high: #1B1D22;
-      --gray-neutral-fg-mid: #6A6E83;
-      --gray-neutral-fg-low: #9A9DAD;
-
-      /* Gray Neutral — Background */
-      --gray-neutral-bg-white: #FFFFFF;
-      --gray-neutral-bg-lightgray: #F8F8F9;
-      --gray-neutral-bg-black: #1B1D22;
-
-      /* Gray Neutral — Border */
-      --gray-neutral-border-mid: #EBECEF;
-      --gray-neutral-border-dark: #CFD1D9;
-
-      /* Disabled */
-      --disabled-bg-low: #EBECEF;
-      --disabled-fg-on-white: #9A9DAD;
-      --disabled-border-low: #9A9DAD;
-
-      /* Info */
-      --info-fg: #0386B3;
-      --info-bg: #E0F4FB;
-      --info-text: #000000;
-
-      /* Focus Ring */
-      --focus-ring-secondary: rgba(114, 121, 251, 0.12);
-      --focus-ring-primary: rgba(114, 121, 251, 0.12);
-
-      /* State Overlays */
-      --overlay-success: rgba(16, 185, 129, 0.1);
-      --overlay-warning: rgba(245, 158, 11, 0.1);
-      --overlay-error: rgba(239, 68, 68, 0.1);
-
-      /* Shimmer */
-      --shimmer-highlight: #F8F8F9;
-    }
-
-    /* Dark Theme */
-    [data-theme="dark"] {
-      /* Primary */
-      --primary-bg-mid: #AAAFFD;
-      --support-pink-bg-high: #7279FB;
-      --primary-bg-lowest: #2A2B4A;
-
-      /* Secondary */
-      --secondary-fg-high: #AAAFFD;
-
-      /* Social Brand */
-      --brand-apple: #FFFFFF;
-
-      /* Error */
-      --error-fg-high: #F27C95;
-      --error-bg-lowest: #3D1520;
-
-      /* Success */
-      --success-bg-high: #6ABC66;
-      --success-bg-lowest: #1A2E1A;
-
-      /* Warning */
-      --warning-bg-high: #FBDA86;
-
-      /* Gray Neutral — Foreground */
-      --gray-neutral-fg-high: #FFFFFF;
-      --gray-neutral-fg-mid: #CFD1D9;
-      --gray-neutral-fg-low: #9A9DAD;
-
-      /* Gray Neutral — Background */
-      --gray-neutral-bg-white: #1B1D22;
-      --gray-neutral-bg-lightgray: #2A2C33;
-
-      /* Gray Neutral — Border */
-      --gray-neutral-border-mid: #3F414E;
-      --gray-neutral-border-dark: #6A6E83;
-
-      /* Disabled */
-      --disabled-bg-low: #3F414E;
-      --disabled-fg-on-white: #6A6E83;
-      --disabled-border-low: #6A6E83;
-
-      /* Info */
-      --info-fg: #9BDCF3;
-      --info-bg: #0C4A6E;
-      --info-text: #E0F2FE;
-
-      /* Focus Ring */
-      --focus-ring-secondary: rgba(170, 175, 253, 0.16);
-      --focus-ring-primary: rgba(170, 175, 253, 0.16);
-
-      /* State Overlays */
-      --overlay-success: rgba(52, 211, 153, 0.15);
-      --overlay-warning: rgba(251, 191, 36, 0.15);
-      --overlay-error: rgba(248, 113, 113, 0.15);
-
-      /* Shimmer */
-      --shimmer-highlight: #4A4C55;
-    }
-
     body { margin: 0; padding: 0; overflow-x: hidden; }
     input, button, textarea, select {
       font-family: "LINE Seed Sans TH", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
@@ -515,48 +361,74 @@
         { key: 'password-visible', label: 'Show Password' },
       ];
 
-      /*
-       * Design Tokens — CSS Variables → Figma Variables
-       * Theme switching handled via [data-theme] on <html>
-       * CSS var names map 1:1 to: semantic/{category}/{property}/{variant}
-       */
-      React.useEffect(() => {
-        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-      }, [isDark]);
-
-      const theme = {
-        primary:        'var(--primary-bg-mid)',            /* semantic/primary/bg/mid */
-        primaryHover:   'var(--support-pink-bg-high)',      /* semantic/support/pink/bg/high */
-        primaryLowest:  'var(--primary-bg-lowest)',         /* semantic/primary/bg/lowest */
-        secondary:      'var(--secondary-fg-high)',         /* semantic/secondary/fg/high */
-        google:         'var(--brand-google)',
-        apple:          'var(--brand-apple)',
-        facebook:       'var(--brand-facebook)',
-        error:          'var(--error-fg-high)',             /* semantic/error/fg/high */
-        errorBg:        'var(--error-bg-lowest)',           /* semantic/error/bg/lowest */
-        success:        'var(--success-bg-high)',           /* semantic/success/bg/high */
-        successBg:      'var(--success-bg-lowest)',         /* semantic/success/bg/lowest */
-        warning:        'var(--warning-bg-high)',           /* semantic/warning/bg/high */
-        textPrimary:    'var(--gray-neutral-fg-high)',      /* semantic/gray-neutral/fg/high */
-        textSecondary:  'var(--gray-neutral-fg-mid)',       /* semantic/gray-neutral/fg/mid-on-white */
-        textTertiary:   'var(--gray-neutral-fg-low)',       /* semantic/gray-neutral/fg/low-on-white */
-        placeholder:    'var(--gray-neutral-fg-low)',       /* semantic/gray-neutral/fg/low-on-white */
-        background:     'var(--gray-neutral-bg-white)',     /* semantic/gray-neutral/bg/white */
-        surface:        'var(--gray-neutral-bg-lightgray)', /* semantic/gray-neutral/bg/lightgray */
-        border:         'var(--gray-neutral-border-mid)',   /* semantic/gray-neutral/border/midgray */
-        borderDark:     'var(--gray-neutral-border-dark)',  /* semantic/gray-neutral/border/darkgray */
-        disabled:       'var(--disabled-bg-low)',           /* semantic/disabled/bg/low */
-        disabledFg:     'var(--disabled-fg-on-white)',      /* semantic/disabled/fg/on-white */
-        disabledBorder: 'var(--disabled-border-low)',       /* semantic/disabled/border/low */
-        infoFg:         'var(--info-fg)',
-        infoBg:         'var(--info-bg)',
-        infoText:       'var(--info-text)',
-        focusRingSecondary: 'var(--focus-ring-secondary)',
-        focusRingPrimary:   'var(--focus-ring-primary)',
-        overlaySuccess: 'var(--overlay-success)',
-        overlayWarning: 'var(--overlay-warning)',
-        overlayError:   'var(--overlay-error)',
-        shimmerHighlight: 'var(--shimmer-highlight)',
+      const theme = isDark ? {
+        /* Dark Theme — hex codes for Figma import */
+        primary:        '#AAAFFD',
+        primaryHover:   '#7279FB',
+        primaryLowest:  '#2A2B4A',
+        secondary:      '#AAAFFD',
+        google:         '#4285F4',
+        apple:          '#FFFFFF',
+        facebook:       '#1877F2',
+        error:          '#F27C95',
+        errorBg:        '#3D1520',
+        success:        '#6ABC66',
+        successBg:      '#1A2E1A',
+        warning:        '#FBDA86',
+        textPrimary:    '#FFFFFF',
+        textSecondary:  '#CFD1D9',
+        textTertiary:   '#9A9DAD',
+        placeholder:    '#9A9DAD',
+        background:     '#1B1D22',
+        surface:        '#2A2C33',
+        border:         '#3F414E',
+        borderDark:     '#6A6E83',
+        disabled:       '#3F414E',
+        disabledFg:     '#6A6E83',
+        disabledBorder: '#6A6E83',
+        infoFg:         '#9BDCF3',
+        infoBg:         '#0C4A6E',
+        infoText:       '#E0F2FE',
+        focusRingSecondary: 'rgba(170, 175, 253, 0.16)',
+        focusRingPrimary:   'rgba(170, 175, 253, 0.16)',
+        overlaySuccess: 'rgba(52, 211, 153, 0.15)',
+        overlayWarning: 'rgba(251, 191, 36, 0.15)',
+        overlayError:   'rgba(248, 113, 113, 0.15)',
+        shimmerHighlight: '#4A4C55',
+      } : {
+        /* Light Theme — hex codes for Figma import */
+        primary:        '#7279FB',
+        primaryHover:   '#5A60D6',
+        primaryLowest:  '#F1F2FF',
+        secondary:      '#7279FB',
+        google:         '#4285F4',
+        apple:          '#000000',
+        facebook:       '#1877F2',
+        error:          '#EA244F',
+        errorBg:        '#FDE9ED',
+        success:        '#559652',
+        successBg:      '#F0F8F0',
+        warning:        '#F8C135',
+        textPrimary:    '#1B1D22',
+        textSecondary:  '#6A6E83',
+        textTertiary:   '#9A9DAD',
+        placeholder:    '#9A9DAD',
+        background:     '#FFFFFF',
+        surface:        '#F8F8F9',
+        border:         '#EBECEF',
+        borderDark:     '#CFD1D9',
+        disabled:       '#EBECEF',
+        disabledFg:     '#9A9DAD',
+        disabledBorder: '#9A9DAD',
+        infoFg:         '#0386B3',
+        infoBg:         '#E0F4FB',
+        infoText:       '#000000',
+        focusRingSecondary: 'rgba(114, 121, 251, 0.12)',
+        focusRingPrimary:   'rgba(114, 121, 251, 0.12)',
+        overlaySuccess: 'rgba(16, 185, 129, 0.1)',
+        overlayWarning: 'rgba(245, 158, 11, 0.1)',
+        overlayError:   'rgba(239, 68, 68, 0.1)',
+        shimmerHighlight: '#F8F8F9',
       };
 
       return (
@@ -759,7 +631,7 @@
                       <label style={{
                         display: 'block',
                         fontSize: '14px',
-                        fontWeight: '500',
+                        fontWeight: '700',
                         color: theme.textPrimary,
                         marginBottom: '8px',
                       }}>อีเมล</label>
@@ -801,7 +673,7 @@
                       <label style={{
                         display: 'block',
                         fontSize: '14px',
-                        fontWeight: '500',
+                        fontWeight: '700',
                         color: theme.textPrimary,
                         marginBottom: '8px',
                       }}>รหัสผ่าน</label>
@@ -837,7 +709,7 @@
                           fontSize: '12px',
                           color: theme.secondary,
                           textDecoration: 'none',
-                          fontWeight: '500',
+                          fontWeight: '700',
                           flexShrink: 0,
                         }}>ลืมรหัสผ่าน?</a>
                       </div>
@@ -925,7 +797,7 @@
                       <label style={{
                         display: 'block',
                         fontSize: '14px',
-                        fontWeight: '500',
+                        fontWeight: '700',
                         color: theme.textPrimary,
                         marginBottom: '8px',
                       }}>อีเมล</label>
@@ -966,7 +838,7 @@
                       <label style={{
                         display: 'block',
                         fontSize: '14px',
-                        fontWeight: '500',
+                        fontWeight: '700',
                         color: theme.textPrimary,
                         marginBottom: '8px',
                       }}>รหัสผ่าน</label>
@@ -1079,7 +951,7 @@
                       <label style={{
                         display: 'block',
                         fontSize: '14px',
-                        fontWeight: '500',
+                        fontWeight: '700',
                         color: theme.textPrimary,
                         marginBottom: '8px',
                       }}>อีเมล</label>
@@ -1108,7 +980,7 @@
                       <label style={{
                         display: 'block',
                         fontSize: '14px',
-                        fontWeight: '500',
+                        fontWeight: '700',
                         color: theme.textPrimary,
                         marginBottom: '8px',
                       }}>รหัสผ่าน</label>
@@ -1148,7 +1020,7 @@
                       <label style={{
                         display: 'block',
                         fontSize: '14px',
-                        fontWeight: '500',
+                        fontWeight: '700',
                         color: theme.textPrimary,
                         marginBottom: '8px',
                       }}>ยืนยันรหัสผ่าน</label>
@@ -1300,7 +1172,7 @@
                         fontSize: '16px',
                         color: theme.textSecondary,
                         margin: '0 0 8px 0',
-                        lineHeight: '1.6',
+                        lineHeight: '1.5',
                       }}>
                         เราได้ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่
                       </p>
@@ -1373,7 +1245,7 @@
                         fontSize: '16px',
                         color: theme.textSecondary,
                         margin: '0 0 32px 0',
-                        lineHeight: '1.6',
+                        lineHeight: '1.5',
                       }}>
                         บัญชีนี้ยังไม่เคยตั้งรหัสผ่าน<br/>กรุณาเข้าสู่ระบบด้วย Social Login ก่อน
                       </p>
@@ -1412,7 +1284,7 @@
                         <label style={{
                           display: 'block',
                           fontSize: '14px',
-                          fontWeight: '500',
+                          fontWeight: '700',
                           color: theme.textPrimary,
                           marginBottom: '8px',
                         }}>อีเมล</label>
@@ -1535,7 +1407,7 @@
                         fontSize: '16px',
                         color: theme.textSecondary,
                         margin: '0 0 32px 0',
-                        lineHeight: '1.6',
+                        lineHeight: '1.5',
                       }}>
                         ลิงก์รีเซ็ตรหัสผ่านนี้หมดอายุแล้ว<br/>กรุณาขอลิงก์ใหม่อีกครั้ง
                       </p>
@@ -1577,7 +1449,7 @@
                         fontSize: '16px',
                         color: theme.textSecondary,
                         margin: '0 0 32px 0',
-                        lineHeight: '1.6',
+                        lineHeight: '1.5',
                       }}>
                         คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่ได้แล้ว
                       </p>
@@ -1617,7 +1489,7 @@
                           <label style={{
                             display: 'block',
                             fontSize: '14px',
-                            fontWeight: '500',
+                            fontWeight: '700',
                             color: theme.textPrimary,
                             marginBottom: '8px',
                           }}>รหัสผ่านใหม่</label>
@@ -1657,7 +1529,7 @@
                           <label style={{
                             display: 'block',
                             fontSize: '14px',
-                            fontWeight: '500',
+                            fontWeight: '700',
                             color: theme.textPrimary,
                             marginBottom: '8px',
                           }}>ยืนยันรหัสผ่านใหม่</label>
@@ -1770,7 +1642,7 @@
                     color: 'white',
                     fontSize: '14px',
                     fontWeight: '700',
-                    lineHeight: '1.4',
+                    lineHeight: '1.5',
                   }}>{toast.text}</span>
                   <div
                     onClick={() => setDismissedToast(toast.key)}
@@ -1821,7 +1693,7 @@
               gap: '16px',
               fontSize: '12px',
               color: '#3F414E',
-              lineHeight: '1.6',
+              lineHeight: '1.5',
             }}>
               <div>
                 <strong>Screens:</strong><br/>
@@ -1832,21 +1704,26 @@
                 5. Reset Password (10 states)
               </div>
               <div>
-                <strong>Color Tokens (CSS Var → Figma Variable):</strong><br/>
-                --primary-bg-mid → semantic/primary/bg/mid<br/>
-                --secondary-fg-high → semantic/secondary/fg/high<br/>
-                --error-fg-high → semantic/error/fg/high<br/>
-                --success-bg-high → semantic/success/bg/high<br/>
-                --gray-neutral-fg-high → semantic/gray-neutral/fg/high<br/>
-                --gray-neutral-fg-mid → semantic/gray-neutral/fg/mid
+                <strong>Color Tokens (theme property → Figma Variable):</strong><br/>
+                theme.primary → semantic/primary/fg/high<br/>
+                theme.secondary → semantic/secondary/fg/high<br/>
+                theme.error → semantic/error/fg/high<br/>
+                theme.success → semantic/success/fg/high<br/>
+                theme.textPrimary → semantic/gray-neutral/fg/high<br/>
+                theme.textSecondary → semantic/gray-neutral/fg/mid
               </div>
               <div>
                 <strong>Typography:</strong><br/>
                 Font: LINE Seed Sans TH<br/>
-                heading.3: 32px/700<br/>
+                heading.2: 32px/700<br/>
+                heading.3: 24px/700<br/>
+                heading.4: 22px/700<br/>
                 label.3: 16px/700 (button)<br/>
+                label.4: 14px/700 (link/label)<br/>
                 caption.3: 16px/400<br/>
                 caption.4: 14px/400<br/>
+                caption.5: 12px/400 (error/helper)<br/>
+                lineHeight: 1.5<br/>
                 Weight: 400, 700
               </div>
               <div>
