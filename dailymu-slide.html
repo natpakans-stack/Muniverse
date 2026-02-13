@@ -594,6 +594,248 @@
 
     .nav-bar.dark-nav .nav-counter { color: rgba(255,255,255,0.6); }
 
+    .nav-home-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(32px, 3vw, 44px);
+      height: clamp(32px, 3vw, 44px);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--gray-bg-midgray);
+      background: var(--gray-bg-white);
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--easing-default);
+      color: var(--gray-fg-mid-on-white);
+      margin-right: var(--spacing-3);
+    }
+
+    .nav-home-btn:hover {
+      background: var(--gray-bg-lightgray);
+      color: var(--gray-fg-high);
+    }
+
+    .nav-home-btn:active { transform: scale(0.95); }
+
+    .nav-home-btn svg {
+      width: clamp(14px, 1.2vw, 18px);
+      height: clamp(14px, 1.2vw, 18px);
+    }
+
+    .nav-bar.dark-nav .nav-home-btn {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+    }
+
+    .nav-bar.dark-nav .nav-home-btn:hover {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+
+    /* ===== Page Dropdown (Top Right) ===== */
+    .page-dropdown-wrap {
+      position: relative;
+    }
+
+    .page-dropdown-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-1) var(--spacing-3);
+      border-radius: var(--radius-full);
+      border: 1px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'LINE Seed Sans TH', sans-serif;
+      font-size: clamp(10px, 0.9vw, 13px);
+      font-weight: 600;
+      color: var(--gray-fg-low-on-white);
+      opacity: 0.45;
+      transition: all var(--duration-fast) var(--easing-default);
+    }
+
+    .page-dropdown-btn:hover {
+      opacity: 1;
+      background: rgba(0,0,0,0.04);
+      border-color: var(--gray-bg-midgray);
+      color: var(--gray-fg-high);
+    }
+
+    .page-dropdown-wrap.open .page-dropdown-btn {
+      opacity: 1;
+      background: var(--gray-bg-white);
+      border-color: var(--gray-bg-midgray);
+      color: var(--gray-fg-high);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .page-dropdown-btn svg {
+      width: clamp(11px, 0.9vw, 14px);
+      height: clamp(11px, 0.9vw, 14px);
+      transition: transform var(--duration-fast) var(--easing-default);
+    }
+
+    .page-dropdown-btn .chevron-icon {
+      transition: transform var(--duration-fast) var(--easing-default);
+    }
+
+    .page-dropdown-wrap.open .page-dropdown-btn .chevron-icon {
+      transform: rotate(180deg);
+    }
+
+    .page-dropdown-menu {
+      position: absolute;
+      top: calc(100% + var(--spacing-1));
+      right: 0;
+      min-width: clamp(220px, 22vw, 320px);
+      max-height: 60vh;
+      overflow-y: auto;
+      background: var(--gray-bg-white);
+      border: 1px solid var(--gray-bg-midgray);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-4px);
+      transition: all var(--duration-fast) var(--easing-default);
+      padding: var(--spacing-1) 0;
+    }
+
+    .page-dropdown-wrap.open .page-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .page-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      width: 100%;
+      padding: var(--spacing-2) var(--spacing-3);
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: 'LINE Seed Sans TH', sans-serif;
+      font-size: clamp(10px, 0.9vw, 13px);
+      font-weight: 500;
+      color: var(--gray-fg-mid-on-white);
+      text-align: left;
+      transition: all var(--duration-fast) var(--easing-default);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .page-dropdown-item:hover {
+      background: var(--gray-bg-lightgray);
+      color: var(--gray-fg-high);
+    }
+
+    .page-dropdown-item.active-page {
+      color: var(--secondary-fg-high);
+      font-weight: 700;
+      background: var(--secondary-bg-lowest);
+    }
+
+    .page-dropdown-item .slide-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: clamp(18px, 1.6vw, 22px);
+      height: clamp(18px, 1.6vw, 22px);
+      border-radius: var(--radius-sm);
+      background: var(--gray-bg-lightgray);
+      font-size: clamp(9px, 0.75vw, 11px);
+      font-weight: 700;
+      color: var(--gray-fg-mid-on-white);
+      flex-shrink: 0;
+    }
+
+    .page-dropdown-item.active-page .slide-num {
+      background: var(--secondary-bg-lowest);
+      color: var(--secondary-fg-high);
+    }
+
+    /* Dark variant */
+    .dark-dropdown .page-dropdown-btn {
+      color: rgba(255,255,255,0.4);
+    }
+
+    .dark-dropdown .page-dropdown-btn:hover {
+      opacity: 1;
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.9);
+    }
+
+    .dark-dropdown.open .page-dropdown-btn {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+
+    /* ===== Present / Fullscreen Button ===== */
+    .present-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-2) var(--spacing-4);
+      border-radius: var(--radius-md);
+      border: none;
+      background: var(--secondary-fg-high);
+      cursor: pointer;
+      font-family: 'LINE Seed Sans TH', sans-serif;
+      font-size: clamp(11px, 1vw, 14px);
+      font-weight: 700;
+      color: #fff;
+      transition: all var(--duration-fast) var(--easing-default);
+      box-shadow: var(--shadow-md);
+    }
+
+    .present-btn:hover {
+      background: #5a60e8;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-1px);
+    }
+
+    .present-btn:active { transform: scale(0.97); }
+
+    .present-btn svg {
+      width: clamp(14px, 1.1vw, 18px);
+      height: clamp(14px, 1.1vw, 18px);
+    }
+
+    .present-hint {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: clamp(10px, 0.85vw, 13px);
+      color: var(--gray-fg-low-on-white);
+      opacity: 0.7;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+
+    .present-hint kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 6px;
+      font-family: 'LINE Seed Sans TH', sans-serif;
+      font-size: clamp(9px, 0.75vw, 12px);
+      font-weight: 700;
+      color: var(--gray-fg-mid-on-white);
+      background: var(--gray-bg-white);
+      border: 1px solid var(--gray-bg-midgray);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 1px 0 var(--gray-bg-midgray);
+    }
+
     /* ===== Cover Specific ===== */
     .cover-content {
       flex: 1;
@@ -938,6 +1180,10 @@
       </div>
 
       <img class="cover-character" src="Images/DailyMu_Character_Welcome.png" alt="Welcome">
+    </div>
+
+    <div class="present-hint" id="presentHint">
+      กดปุ่ม <kbd>F</kbd> เพื่อเข้าโหมด Present
     </div>
   </div>
 
@@ -1659,9 +1905,30 @@
   </div>
 
   <!-- ============================== -->
+  <!-- TOP BAR (Dropdown + Present)   -->
+  <!-- ============================== -->
+  <div style="position:absolute;top:1.5%;right:4%;z-index:200;display:flex;align-items:center;gap:var(--spacing-2);" id="topBar">
+    <button class="present-btn" id="presentBtn" onclick="enterPresent()" title="เข้าโหมด Present (F)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      <span>Present</span>
+    </button>
+    <div class="page-dropdown-wrap" id="pageDropdown" style="position:static;">
+      <button class="page-dropdown-btn" onclick="togglePageDropdown()" title="Go to page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span>Pages</span>
+        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="page-dropdown-menu" id="pageDropdownMenu"></div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
   <!-- NAVIGATION BAR                 -->
   <!-- ============================== -->
   <div class="nav-bar" id="navBar">
+    <button class="nav-home-btn" onclick="goToSlide(0)" title="Go to first slide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </button>
     <div class="nav-buttons">
       <button class="nav-btn" onclick="prevSlide()" title="Previous slide">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -1693,11 +1960,24 @@
     navBar.classList.toggle('dark-nav', isDark);
     kbdHint.classList.toggle('dark', isDark);
 
+    const pageDropdown = document.getElementById('pageDropdown');
+    pageDropdown.classList.toggle('dark-dropdown', isDark);
+
+    // First slide (not fullscreen): show Present, hide dropdown.
+    // Fullscreen or other slides: show dropdown, hide Present.
+    const isFS = !!document.fullscreenElement;
+    const showPresent = currentSlide === 0 && !isFS;
+    document.getElementById('presentBtn').style.display = showPresent ? '' : 'none';
+    pageDropdown.style.display = showPresent ? 'none' : '';
+
+    // Update dropdown active state
+    if (typeof buildDropdownMenu === 'function') buildDropdownMenu();
+
     // Minimal nav on calendar slide (slide 4, data-slide="3") — keep buttons, hide dots
     const isCalendar = currentSlide === 3;
     kbdHint.style.opacity = isCalendar ? '0' : '';
     navBar.style.background = isCalendar ? 'none' : '';
-    navBar.querySelectorAll('.nav-btn').forEach(btn => {
+    navBar.querySelectorAll('.nav-btn, .nav-home-btn').forEach(btn => {
       btn.style.background = isCalendar ? 'var(--gray-bg-lightgray)' : '';
       btn.style.borderColor = isCalendar ? 'var(--gray-bg-midgray)' : '';
     });
@@ -1768,6 +2048,11 @@
         e.preventDefault();
         goToSlide(totalSlides - 1);
         break;
+      case 'f':
+      case 'F':
+        e.preventDefault();
+        enterPresent();
+        break;
     }
   });
 
@@ -1808,7 +2093,68 @@
     if (e.key === 'Escape' && iframeIsFullscreen) toggleIframeFullscreen();
   });
 
+  // Present / Fullscreen mode
+  function enterPresent() {
+    const el = document.querySelector('.slide-viewport');
+    if (!document.fullscreenElement) {
+      (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen).call(el);
+    } else {
+      (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+    }
+  }
+
+  document.addEventListener('fullscreenchange', () => {
+    // Hide Present button in fullscreen (already presenting)
+    updateNavBar();
+  });
+
+  // Page dropdown — slide titles
+  const slideTitles = [
+    'Cover',
+    'Agenda',
+    'Planning กับทีม',
+    'Sprint Timeline',
+    'Outcome วีคนี้',
+    'Moodboard',
+    'Design System',
+    'ทำไมต้องทำ Design System?',
+    'Visual Design',
+    'Character & Assets',
+    'Design Flow with AI',
+    'ผลลัพธ์จาก AI',
+    'Figma — Onboarding',
+    'Figma — Auth Flow',
+    'Nextstep — Week 2',
+    'Thank you!',
+  ];
+
+  function buildDropdownMenu() {
+    const menu = document.getElementById('pageDropdownMenu');
+    menu.innerHTML = '';
+    slideTitles.forEach((title, i) => {
+      const item = document.createElement('button');
+      item.className = 'page-dropdown-item' + (i === currentSlide ? ' active-page' : '');
+      item.innerHTML = `<span class="slide-num">${i + 1}</span> ${title}`;
+      item.onclick = () => { goToSlide(i); document.getElementById('pageDropdown').classList.remove('open'); };
+      menu.appendChild(item);
+    });
+  }
+
+  function togglePageDropdown() {
+    const wrap = document.getElementById('pageDropdown');
+    const isOpen = wrap.classList.toggle('open');
+    if (isOpen) buildDropdownMenu();
+  }
+
+  document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('pageDropdown');
+    if (!dropdown.contains(e.target)) {
+      dropdown.classList.remove('open');
+    }
+  });
+
   // Initialize
+  buildDropdownMenu();
   updateNavBar();
 </script>
 </body>
