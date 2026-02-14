@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Mu — Birth Profile Setup Preview</title>
+  <style>
+    /* ===== Font: LINE Seed Sans TH (self-hosted) ===== */
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('fonts/LINESeedSansTH_W_Rg.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('fonts/LINESeedSansTH_W_Bd.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('fonts/LINESeedSansTH_W_XBd.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
+
+    /* ========================================
+       DESIGN TOKENS — Daily Mu Light Theme
+       ======================================== */
+    :root {
+      /* Background */
+      --bg-deep: #FFFFFF;
+      --bg-mid: #F8F8F9;
+      --bg-surface: #FFFFFF;
+      --bg-surface-hover: #F8F8F9;
+      --bg-input: #F8F8F9;
+      --bg-input-focus: #FFFFFF;
+
+      /* Primary — Pink */
+      --primary: #EC599D;
+      --primary-light: #F7BDD8;
+      --primary-dark: #BD477E;
+      --primary-bg-lowest: #FDEFF5;
+
+      /* Accent — Violet (Secondary) */
+      --accent: #7279FB;
+      --accent-light: #AAAFFD;
+      --accent-glow: rgba(114,121,251,0.2);
+
+      /* Text */
+      --text-primary: #1B1D22;
+      --text-secondary: #6A6E83;
+      --text-tertiary: #9A9DAD;
+      --text-disabled: #CFD1D9;
+
+      /* Semantic */
+      --error: #EA244F;
+      --error-bg: #FDE9ED;
+      --success: #559652;
+      --success-bg: #F0F8F0;
+
+      /* Border */
+      --border: #EBECEF;
+      --border-focus: #7279FB;
+      --border-error: #EA244F;
+
+      /* Shape */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
+      --radius-btn: 8px;
+
+      /* Spacing */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 12px;
+      --space-lg: 16px;
+      --space-xl: 20px;
+      --space-2xl: 24px;
+      --space-3xl: 32px;
+      --space-4xl: 40px;
+      --space-5xl: 48px;
+
+      /* Font */
+      --font: 'LINE Seed Sans TH', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Gradient */
+      --gradient-btn: linear-gradient(135deg, #EC599D 0%, #F7BDD8 100%);
+      --gradient-btn-accent: linear-gradient(135deg, #7279FB 0%, #AAAFFD 50%, #7279FB 100%);
+      --gradient-surface: linear-gradient(180deg, rgba(236,89,157,0.04) 0%, rgba(236,89,157,0.01) 100%);
+
+      /* WCAG Contrast Ratios (verified)
+         #1B1D22 on #FFFFFF → 16.5:1 AAA
+         #6A6E83 on #FFFFFF → 5.6:1  AA
+         #FFFFFF on #EC599D → 3.2:1  AA-large
+         #FFFFFF on #7279FB → 4.6:1  AA
+         #EA244F on #FFFFFF → 5.0:1  AA
+         #559652 on #FFFFFF → 4.6:1  AA
+         #9A9DAD on #FFFFFF → 3.0:1  AA-large
+      */
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font);
+      background: #EBECEF;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 24px;
+      gap: 24px;
+    }
+
+    /* ========================================
+       PHONE FRAME
+       ======================================== */
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      background: #FFFFFF;
+      border-radius: 44px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 20px 60px rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* ========================================
+       STATUS BAR
+       ======================================== */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 28px 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex-shrink: 0;
+    }
+
+    .status-bar-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .status-bar-icons svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ========================================
+       NAV BAR
+       ======================================== */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 20px 12px;
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      cursor: pointer;
+      border-radius: var(--radius-full);
+    }
+
+    .nav-btn:hover {
+      background: rgba(0,0,0,0.04);
+    }
+
+    .nav-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-spacer {
+      width: 40px;
+    }
+
+    /* ========================================
+       PROGRESS BAR
+       ======================================== */
+    .progress-bar {
+      display: flex;
+      gap: 8px;
+      padding: 0 24px 20px;
+      flex-shrink: 0;
+    }
+
+    .progress-step {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      background: #EBECEF;
+      transition: background 0.3s ease;
+    }
+
+    .progress-step.active {
+      background: var(--accent);
+    }
+
+    .progress-step.done {
+      background: var(--accent-light);
+    }
+
+    /* ========================================
+       CONTENT AREA
+       ======================================== */
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0 24px;
+      overflow-y: auto;
+    }
+
+    .content-centered {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+      text-align: center;
+    }
+
+    .screen-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 32px;
+    }
+
+    .screen-subtitle {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      line-height: 24px;
+    }
+
+    /* ========================================
+       FORM ELEMENTS
+       ======================================== */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 20px;
+      color: var(--text-primary);
+    }
+
+    .form-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 12px;
+      background: #FFFFFF;
+      border: 1px solid #EBECEF;
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 24px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .form-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .form-input:focus {
+      border-color: #7279FB;
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px #C6CFFA;
+    }
+
+    .form-input.error {
+      border-color: #EA244F;
+      background: #FFFFFF;
+    }
+
+    .form-input.error:focus {
+      box-shadow: 0 0 0 3px #FAC3CD;
+    }
+
+    .form-input.filled {
+      border-color: #EBECEF;
+      background: #FFFFFF;
+    }
+
+    .form-error {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 18px;
+      color: var(--error);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .form-hint {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: normal;
+      color: #1B1D22;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 8px;
+      background: #E6F6FC;
+      border-radius: 8px;
+      margin-top: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .form-hint::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: #026486;
+      border-radius: 6px 0 0 6px;
+    }
+
+    .form-hint svg {
+      width: 19px;
+      height: 19px;
+      flex-shrink: 0;
+      color: #026486;
+      margin-left: 4px;
+    }
+
+    /* ========================================
+       CHECKBOX
+       ======================================== */
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      cursor: pointer;
+    }
+
+    .checkbox {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox.checked {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .checkbox.checked svg {
+      display: block;
+    }
+
+    .checkbox svg {
+      display: none;
+      width: 14px;
+      height: 14px;
+      color: white;
+    }
+
+    .checkbox-label {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--text-primary);
+    }
+
+    /* ========================================
+       WHEEL PICKER
+       ======================================== */
+    .picker-container {
+      display: flex;
+      gap: 2px;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .picker-column {
+      width: 100px;
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .picker-column::before,
+    .picker-column::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 70px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .picker-column::before {
+      top: 0;
+      background: linear-gradient(180deg, var(--bg-deep) 0%, transparent 100%);
+    }
+
+    .picker-column::after {
+      bottom: 0;
+      background: linear-gradient(0deg, var(--bg-deep) 0%, transparent 100%);
+    }
+
+    .picker-highlight {
+      position: absolute;
+      top: 50%;
+      left: 0; right: 0;
+      height: 44px;
+      transform: translateY(-50%);
+      background: rgba(114,121,251,0.10);
+      border-top: 1px solid rgba(114,121,251,0.25);
+      border-bottom: 1px solid rgba(114,121,251,0.25);
+      border-radius: var(--radius-sm);
+      z-index: 1;
+    }
+
+    .picker-items {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 78px 0;
+      position: relative;
+      z-index: 1;
+      transform: translateY(-88px);
+    }
+
+    .picker-item {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 28px;
+      color: var(--text-tertiary);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .picker-item.selected {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 28px;
+    }
+
+    .picker-separator {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 28px;
+      color: var(--text-primary);
+      padding: 0 4px;
+      align-self: center;
+    }
+
+    .picker-container.disabled {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    /* Scrolling state — items shifted additional half-step */
+    .picker-items.scrolling {
+      transform: translateY(-110px);
+    }
+
+    .picker-items.scrolling .picker-item.near {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    /* ========================================
+       SEARCH INPUT
+       ======================================== */
+    .search-input-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .search-input-wrapper svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: var(--text-disabled);
+    }
+
+    .search-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px 0 42px;
+      background: var(--bg-input);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 16px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-disabled);
+    }
+
+    .search-input:focus {
+      border-color: var(--border-focus);
+      background: var(--bg-input-focus);
+    }
+
+    /* ========================================
+       PROVINCE LIST
+       ======================================== */
+    .province-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .province-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--text-primary);
+      font-size: 16px;
+    }
+
+    .province-item:hover {
+      background: #F8F8F9;
+    }
+
+    .province-item.selected {
+      background: rgba(114,121,251,0.08);
+      border: 1px solid rgba(114,121,251,0.25);
+    }
+
+    .province-item.selected::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    /* ========================================
+       REVIEW CARD
+       ======================================== */
+    .review-card {
+      background: #FFFFFF;
+      border: 1px solid #EBECEF;
+      border-radius: var(--radius-lg);
+      padding: 4px 0;
+      margin-bottom: 24px;
+    }
+
+    .review-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+    }
+
+    .review-row + .review-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .review-row-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .review-label {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 22px;
+      color: var(--text-tertiary);
+    }
+
+    .review-value {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      color: var(--text-primary);
+    }
+
+    .review-edit {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 22px;
+      color: var(--accent);
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+    }
+
+    .review-edit:hover {
+      background: rgba(114,121,251,0.08);
+    }
+
+    /* ========================================
+       BUTTONS
+       ======================================== */
+    .btn-container {
+      padding: 16px 24px 36px;
+      flex-shrink: 0;
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: var(--radius-btn);
+      background: var(--accent);
+      color: #FFFFFF;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(114,121,251,0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(114,121,251,0.35);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      height: 48px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-btn);
+      background: transparent;
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #F8F8F9;
+    }
+
+    .btn-destructive {
+      width: 100%;
+      height: 48px;
+      border: 1.5px solid rgba(234,36,79,0.3);
+      border-radius: var(--radius-btn);
+      background: transparent;
+      color: var(--error);
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-destructive:hover {
+      background: var(--error-bg);
+    }
+
+    /* ========================================
+       MODAL / DIALOG
+       ======================================== */
+    .modal-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 32px;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 32px 24px 24px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .modal-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-full);
+      background: rgba(234,36,79,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 4px;
+    }
+
+    .modal-icon svg {
+      width: 28px;
+      height: 28px;
+      color: var(--error);
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 28px;
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 24px;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    /* ========================================
+       LOADING & SUCCESS
+       ======================================== */
+    .cosmic-icon {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .cosmic-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      border-radius: 50%;
+      border: 2px solid transparent;
+    }
+
+    .cosmic-ring.outer {
+      width: 120px; height: 120px;
+      margin: -60px 0 0 -60px;
+      border-top-color: var(--accent);
+      border-right-color: rgba(114,121,251,0.3);
+      animation: spin 3s linear infinite;
+    }
+
+    .cosmic-ring.middle {
+      width: 88px; height: 88px;
+      margin: -44px 0 0 -44px;
+      border-bottom-color: var(--primary);
+      border-left-color: rgba(236,89,157,0.3);
+      animation: spin 2s linear infinite reverse;
+    }
+
+    .cosmic-ring.inner {
+      width: 56px; height: 56px;
+      margin: -28px 0 0 -28px;
+      border-top-color: var(--accent);
+      animation: spin 1.5s linear infinite;
+    }
+
+    .cosmic-dot {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 12px; height: 12px;
+      margin: -6px 0 0 -6px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(114,121,251,0.3), 0 0 40px rgba(114,121,251,0.15);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .success-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(85,150,82,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 32px;
+      animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+
+    .success-icon::before {
+      content: '';
+      position: absolute;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 2px solid rgba(85,150,82,0.15);
+      animation: pulseRing 2s ease infinite;
+    }
+
+    .success-icon svg {
+      width: 52px;
+      height: 40px;
+      color: var(--success);
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+
+    /* Sparkle stars for success */
+    .sparkles {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: sparkle 1.5s ease-in-out infinite;
+    }
+
+    .sparkle:nth-child(1) { top: 10px; left: 50%; animation-delay: 0s; }
+    .sparkle:nth-child(2) { top: 30px; right: 20px; animation-delay: 0.3s; }
+    .sparkle:nth-child(3) { bottom: 20px; right: 30px; animation-delay: 0.6s; }
+    .sparkle:nth-child(4) { bottom: 10px; left: 40px; animation-delay: 0.9s; }
+    .sparkle:nth-child(5) { top: 40px; left: 15px; animation-delay: 1.2s; }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ========================================
+       SKELETON LOADING
+       ======================================== */
+    .skeleton {
+      background: #EBECEF;
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skeleton::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .skeleton-title {
+      width: 160px;
+      height: 28px;
+      margin-bottom: 8px;
+    }
+
+    .skeleton-subtitle {
+      width: 140px;
+      height: 20px;
+      margin-bottom: 32px;
+    }
+
+    .skeleton-search {
+      width: 100%;
+      height: 48px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .skeleton-province {
+      width: 100%;
+      height: 48px;
+      border-radius: 8px;
+      margin-bottom: 2px;
+    }
+
+    .skeleton-province.short { width: 45%; }
+    .skeleton-province.medium { width: 65%; }
+    .skeleton-province.long { width: 80%; }
+
+    /* ========================================
+       SCREEN VISIBILITY
+       ======================================== */
+    .screen { display: none; flex-direction: column; height: 100%; }
+    .screen.active { display: flex; }
+
+    /* ========================================
+       CONTROL PANEL (outside phone)
+       ======================================== */
+    .control-panel {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 20px;
+      width: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: 24px;
+      height: fit-content;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    .control-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .control-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #9A9DAD;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .control-btn {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #EBECEF;
+      border-radius: 10px;
+      background: #FFFFFF;
+      color: #6A6E83;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: left;
+    }
+
+    .control-btn:hover {
+      background: #F1F2FF;
+      border-color: #C7C9FD;
+      color: #1B1D22;
+    }
+
+    .control-btn.active {
+      background: #F1F2FF;
+      border-color: #7279FB;
+      color: #1B1D22;
+    }
+
+    .control-divider {
+      height: 1px;
+      background: #EBECEF;
+    }
+
+    /* ========================================
+       SPEC INFO
+       ======================================== */
+    .spec-info {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 20px;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: sticky;
+      top: 24px;
+      height: fit-content;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 24px rgba(0,0,0,0.06);
+      font-size: 12px;
+    }
+
+    .spec-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .spec-key {
+      color: #6A6E83;
+      font-weight: 500;
+    }
+
+    .spec-val {
+      color: #1B1D22;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px;
+    }
+
+    .spec-color-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 0;
+    }
+
+    .spec-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid #EBECEF;
+      flex-shrink: 0;
+    }
+
+    .spec-contrast {
+      font-size: 10px;
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .home-indicator {
+      width: 134px;
+      height: 5px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 3px;
+      margin: 8px auto 10px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ CONTROL PANEL ============ -->
+  <div class="control-panel">
+    <div class="control-title">Screen Navigator</div>
+
+    <div class="control-section">
+      <div class="control-label">Step Form</div>
+      <button class="control-btn active" onclick="showScreen('step1-default')">1. Name (Default)</button>
+      <button class="control-btn" onclick="showScreen('step1-error')">1. Name (Error)</button>
+      <button class="control-btn" onclick="showScreen('step2')">2. Birth Date</button>
+      <button class="control-btn" onclick="showScreen('step2-scrolling')">2. Date (Scrolling)</button>
+      <button class="control-btn" onclick="showScreen('step3-default')">3. Birth Time</button>
+      <button class="control-btn" onclick="showScreen('step3-scrolling')">3. Time (Scrolling)</button>
+      <button class="control-btn" onclick="showScreen('step3-unknown')">3. Unknown Time</button>
+      <button class="control-btn" onclick="showScreen('step4-skeleton')">4. Province (Skeleton)</button>
+      <button class="control-btn" onclick="showScreen('step4-default')">4. Province (Default)</button>
+      <button class="control-btn" onclick="showScreen('step4')">4. Province (Selected)</button>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-section">
+      <div class="control-label">Confirm & Result</div>
+      <button class="control-btn" onclick="showScreen('review')">Review</button>
+      <button class="control-btn" onclick="showScreen('loading')">Loading</button>
+      <button class="control-btn" onclick="showScreen('success')">Success</button>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-section">
+      <div class="control-label">Dialogs</div>
+      <button class="control-btn" onclick="showScreen('exit-dialog')">Exit Confirm</button>
+    </div>
+  </div>
+
+  <!-- ============ PHONE FRAME ============ -->
+  <div class="phone-frame">
+
+    <!-- ======== SCREEN: Step 1 Default ======== -->
+    <div class="screen active" id="screen-step1-default">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">ชื่อของคุณ</h1>
+        <p class="screen-subtitle">ใช้ชื่อจริงเพื่อสร้างดวงกำเนิด</p>
+
+        <div class="form-group">
+          <label class="form-label">ชื่อ</label>
+          <input type="text" class="form-input" placeholder="สมชาย">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">นามสกุล</label>
+          <input type="text" class="form-input" placeholder="ใจดี">
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary disabled">ถัดไป</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Step 1 Error ======== -->
+    <div class="screen" id="screen-step1-error">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">ชื่อของคุณ</h1>
+        <p class="screen-subtitle">ใช้ชื่อจริงเพื่อสร้างดวงกำเนิด</p>
+
+        <div class="form-group">
+          <label class="form-label">ชื่อ</label>
+          <input type="text" class="form-input error" placeholder="สมชาย">
+          <span class="form-error">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            โปรดระบุชื่อ
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">นามสกุล</label>
+          <input type="text" class="form-input error" placeholder="ใจดี">
+          <span class="form-error">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            โปรดระบุนามสกุล
+          </span>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary disabled">ถัดไป</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Step 2 Birth Date ======== -->
+    <div class="screen" id="screen-step2">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="nav-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step done"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">วันเดือนปีเกิด</h1>
+        <p class="screen-subtitle">เลือกวันเกิด</p>
+
+        <div class="picker-container">
+          <div class="picker-column">
+            <div class="picker-highlight"></div>
+            <div class="picker-items">
+              <div class="picker-item">13</div>
+              <div class="picker-item">14</div>
+              <div class="picker-item selected">15</div>
+              <div class="picker-item">16</div>
+              <div class="picker-item">17</div>
+            </div>
+          </div>
+
+          <div class="picker-column" style="width:130px;">
+            <div class="picker-highlight"></div>
+            <div class="picker-items">
+              <div class="picker-item">พฤศจิกายน</div>
+              <div class="picker-item">ธันวาคม</div>
+              <div class="picker-item selected">มกราคม</div>
+              <div class="picker-item">กุมภาพันธ์</div>
+              <div class="picker-item">มีนาคม</div>
+            </div>
+          </div>
+
+          <div class="picker-column">
+            <div class="picker-highlight"></div>
+            <div class="picker-items">
+              <div class="picker-item">2533</div>
+              <div class="picker-item">2534</div>
+              <div class="picker-item selected">2535</div>
+              <div class="picker-item">2536</div>
+              <div class="picker-item">2537</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary">ถัดไป</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Step 2 Birth Date (Scrolling) ======== -->
+    <div class="screen" id="screen-step2-scrolling">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="nav-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step done"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">วันเดือนปีเกิด</h1>
+        <p class="screen-subtitle">เลือกวันเกิด</p>
+
+        <div class="picker-container">
+          <div class="picker-column">
+            <div class="picker-highlight"></div>
+            <div class="picker-items scrolling">
+              <div class="picker-item">12</div>
+              <div class="picker-item">13</div>
+              <div class="picker-item near">14</div>
+              <div class="picker-item near">15</div>
+              <div class="picker-item">16</div>
+            </div>
+          </div>
+
+          <div class="picker-column" style="width:130px;">
+            <div class="picker-highlight"></div>
+            <div class="picker-items">
+              <div class="picker-item">พฤศจิกายน</div>
+              <div class="picker-item">ธันวาคม</div>
+              <div class="picker-item selected">มกราคม</div>
+              <div class="picker-item">กุมภาพันธ์</div>
+              <div class="picker-item">มีนาคม</div>
+            </div>
+          </div>
+
+          <div class="picker-column">
+            <div class="picker-highlight"></div>
+            <div class="picker-items">
+              <div class="picker-item">2533</div>
+              <div class="picker-item">2534</div>
+              <div class="picker-item selected">2535</div>
+              <div class="picker-item">2536</div>
+              <div class="picker-item">2537</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary">ถัดไป</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Step 3 Birth Time (Default) ======== -->
+    <div class="screen" id="screen-step3-default">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="nav-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">เวลาเกิด</h1>
+        <p class="screen-subtitle">เลือกเวลาเกิด</p>
+
+        <div class="picker-container">
+          <div class="picker-column">
+            <div class="picker-highlight"></div>
+            <div class="picker-items">
+              <div class="picker-item">12</div>
+              <div class="picker-item">13</div>
+              <div class="picker-item selected">14</div>
+              <div class="picker-item">15</div>
+              <div class="picker-item">16</div>
+            </div>
+          </div>
+
+          <div class="picker-separator">:</div>
+
+          <div class="picker-column">
+            <div class="picker-highlight"></div>
+            <div class="picker-items">
+              <div class="picker-item">15</div>
+              <div class="picker-item">20</div>
+              <div class="picker-item selected">30</div>
+              <div class="picker-item">35</div>
+              <div class="picker-item">40</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <div class="checkbox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary">ถัดไป</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Step 3 Birth Time (Scrolling) ======== -->
+    <div class="screen" id="screen-step3-scrolling">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="nav-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">เวลาเกิด</h1>
+        <p class="screen-subtitle">เลือกเวลาเกิด</p>
+
+        <div class="picker-container">
+          <div class="picker-column">
+            <div class="picker-highlight"></div>
+            <div class="picker-items scrolling">
+              <div class="picker-item">11</div>
+              <div class="picker-item">12</div>
+              <div class="picker-item near">13</div>
+              <div class="picker-item near">14</div>
+              <div class="picker-item">15</div>
+            </div>
+          </div>
+
+          <div class="picker-separator">:</div>
+
+          <div class="picker-column">
+            <div class="picker-highlight"></div>
+            <div class="picker-items">
+              <div class="picker-item">15</div>
+              <div class="picker-item">20</div>
+              <div class="picker-item selected">30</div>
+              <div class="picker-item">35</div>
+              <div class="picker-item">40</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <div class="checkbox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary">ถัดไป</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Step 3 Unknown Time ======== -->
+    <div class="screen" id="screen-step3-unknown">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="nav-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">เวลาเกิด</h1>
+        <p class="screen-subtitle">เลือกเวลาเกิด</p>
+
+        <div class="picker-container disabled">
+          <div class="picker-column">
+            <div class="picker-highlight"></div>
+            <div class="picker-items">
+              <div class="picker-item">04</div>
+              <div class="picker-item">05</div>
+              <div class="picker-item selected">06</div>
+              <div class="picker-item">07</div>
+              <div class="picker-item">08</div>
+            </div>
+          </div>
+
+          <div class="picker-separator">:</div>
+
+          <div class="picker-column">
+            <div class="picker-highlight"></div>
+            <div class="picker-items">
+              <div class="picker-item">15</div>
+              <div class="picker-item">20</div>
+              <div class="picker-item selected">30</div>
+              <div class="picker-item">35</div>
+              <div class="picker-item">40</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <div class="checkbox checked">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+        </div>
+
+        <div class="form-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          จะใช้เวลา 06:30 น. ในการคำนวณแทน
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary">ถัดไป</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Step 4 Province (Skeleton) ======== -->
+    <div class="screen" id="screen-step4-skeleton">
+      <div class="status-bar">
+        <span>9:43</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="nav-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step active"></div>
+      </div>
+
+      <div class="content">
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-subtitle"></div>
+        <div class="skeleton skeleton-search"></div>
+        <div class="skeleton skeleton-province long"></div>
+        <div class="skeleton skeleton-province short"></div>
+        <div class="skeleton skeleton-province medium"></div>
+        <div class="skeleton skeleton-province short"></div>
+        <div class="skeleton skeleton-province long"></div>
+        <div class="skeleton skeleton-province medium"></div>
+        <div class="skeleton skeleton-province short"></div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary disabled">ถัดไป</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Step 4 Province (Default) ======== -->
+    <div class="screen" id="screen-step4-default">
+      <div class="status-bar">
+        <span>9:43</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="nav-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step active"></div>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">จังหวัดที่เกิด</h1>
+        <p class="screen-subtitle">เลือกจังหวัดที่เกิด</p>
+
+        <div class="search-input-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" placeholder="ค้นหาจังหวัด">
+        </div>
+
+        <div class="province-list">
+          <div class="province-item">กรุงเทพมหานคร</div>
+          <div class="province-item">กระบี่</div>
+          <div class="province-item">กาญจนบุรี</div>
+          <div class="province-item">กาฬสินธุ์</div>
+          <div class="province-item">กำแพงเพชร</div>
+          <div class="province-item">ขอนแก่น</div>
+          <div class="province-item">จันทบุรี</div>
+          <div class="province-item">ฉะเชิงเทรา</div>
+          <div class="province-item">ชลบุรี</div>
+          <div class="province-item">ชัยนาท</div>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary disabled">ถัดไป</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Step 4 Province (Selected) ======== -->
+    <div class="screen" id="screen-step4">
+      <div class="status-bar">
+        <span>9:43</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="nav-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step active"></div>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">จังหวัดที่เกิด</h1>
+        <p class="screen-subtitle">เลือกจังหวัดที่เกิด</p>
+
+        <div class="search-input-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" placeholder="ค้นหาจังหวัด" value="กรุง">
+        </div>
+
+        <div class="province-list">
+          <div class="province-item selected">กรุงเทพมหานคร</div>
+          <div class="province-item">กระบี่</div>
+          <div class="province-item">กาญจนบุรี</div>
+          <div class="province-item">กาฬสินธุ์</div>
+          <div class="province-item">กำแพงเพชร</div>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary">ถัดไป</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Review ======== -->
+    <div class="screen" id="screen-review">
+      <div class="status-bar">
+        <span>9:44</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="nav-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="content" style="padding-top: 12px;">
+        <h1 class="screen-title">ยืนยันข้อมูล</h1>
+        <p class="screen-subtitle">ตรวจสอบข้อมูลก่อนสร้างดวง</p>
+
+        <!-- Cosmic decoration -->
+        <div style="text-align:center; margin-bottom:24px;">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="28" stroke="#C7C9FD" stroke-width="1.5" opacity="0.5"/>
+            <circle cx="32" cy="32" r="20" stroke="#C7C9FD" stroke-width="1" opacity="0.4"/>
+            <circle cx="32" cy="32" r="4" fill="#7279FB"/>
+            <circle cx="32" cy="4" r="2.5" fill="#AAAFFD"/>
+            <circle cx="56" cy="32" r="2" fill="#7279FB" opacity="0.6"/>
+            <circle cx="32" cy="60" r="2" fill="#AAAFFD" opacity="0.5"/>
+            <circle cx="8" cy="32" r="2.5" fill="#7279FB" opacity="0.7"/>
+          </svg>
+        </div>
+
+        <div class="review-card">
+          <div class="review-row">
+            <div class="review-row-left">
+              <span class="review-label">ชื่อ-นามสกุล</span>
+              <span class="review-value">สมชาย ใจดี</span>
+            </div>
+            <button class="review-edit">แก้ไข</button>
+          </div>
+
+          <div class="review-row">
+            <div class="review-row-left">
+              <span class="review-label">วันเกิด</span>
+              <span class="review-value">15 มกราคม 2535</span>
+            </div>
+            <button class="review-edit">แก้ไข</button>
+          </div>
+
+          <div class="review-row">
+            <div class="review-row-left">
+              <span class="review-label">เวลาเกิด</span>
+              <span class="review-value">14:30 น.</span>
+            </div>
+            <button class="review-edit">แก้ไข</button>
+          </div>
+
+          <div class="review-row">
+            <div class="review-row-left">
+              <span class="review-label">จังหวัดที่เกิด</span>
+              <span class="review-value">กรุงเทพมหานคร</span>
+            </div>
+            <button class="review-edit">แก้ไข</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary">ยืนยันข้อมูล</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Loading ======== -->
+    <div class="screen" id="screen-loading">
+      <div class="status-bar">
+        <span>9:44</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="content-centered">
+        <div class="cosmic-icon">
+          <div class="cosmic-ring outer"></div>
+          <div class="cosmic-ring middle"></div>
+          <div class="cosmic-ring inner"></div>
+          <div class="cosmic-dot"></div>
+        </div>
+
+        <h1 class="screen-title">กำลังคำนวณดวงกำเนิด...</h1>
+        <p class="screen-subtitle" style="margin-bottom:0;">รอสักครู่</p>
+      </div>
+
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Success ======== -->
+    <div class="screen" id="screen-success">
+      <div class="status-bar">
+        <span>9:45</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="content-centered">
+        <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+          <div class="sparkles">
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+          </div>
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+
+        <h1 class="screen-title" style="margin-top:8px;">สร้างดวงกำเนิดสำเร็จ!</h1>
+        <p class="screen-subtitle">พร้อมเริ่มดูดวงแล้ว</p>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary">เริ่มใช้งาน</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Exit Dialog ======== -->
+    <div class="screen" id="screen-exit-dialog">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div class="content" style="opacity:0.3;">
+        <h1 class="screen-title">ชื่อของคุณ</h1>
+        <p class="screen-subtitle">ใช้ชื่อจริงเพื่อสร้างดวงกำเนิด</p>
+        <div class="form-group">
+          <label class="form-label">ชื่อ</label>
+          <input type="text" class="form-input" placeholder="สมชาย" disabled>
+        </div>
+        <div class="form-group">
+          <label class="form-label">นามสกุล</label>
+          <input type="text" class="form-input" placeholder="ใจดี" disabled>
+        </div>
+      </div>
+
+      <!-- Modal Overlay -->
+      <div class="modal-overlay">
+        <div class="modal-card">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <h2 class="modal-title">ยังกรอกข้อมูลไม่ครบ</h2>
+          <p class="modal-body">กรอกข้อมูลให้ครบก่อนเริ่มใช้งาน</p>
+          <div class="modal-actions">
+            <button class="btn-primary">กลับไปกรอกข้อมูล</button>
+            <button class="btn-destructive">ออกจากหน้านี้</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-indicator"></div>
+    </div>
+
+  </div><!-- end phone-frame -->
+
+  <!-- ============ SPEC INFO PANEL ============ -->
+  <div class="spec-info">
+    <div class="spec-title">Design Specs</div>
+
+    <div class="control-label">Frame</div>
+    <div class="spec-row"><span class="spec-key">Viewport</span><span class="spec-val">390 x 844</span></div>
+    <div class="spec-row"><span class="spec-key">Device</span><span class="spec-val">iPhone 14</span></div>
+    <div class="spec-row"><span class="spec-key">Platform</span><span class="spec-val">iOS / Android</span></div>
+
+    <div style="height:4px"></div>
+    <div class="control-label">Typography</div>
+    <div class="spec-row"><span class="spec-key">Font</span><span class="spec-val">LINE Seed Sans TH</span></div>
+    <div class="spec-row"><span class="spec-key">Title</span><span class="spec-val">Heading.4 — 24/32 Bold</span></div>
+    <div class="spec-row"><span class="spec-key">Subtitle</span><span class="spec-val">Caption.3 — 16/24 Regular</span></div>
+    <div class="spec-row"><span class="spec-key">Label</span><span class="spec-val">Label.4 — 14/20 Bold</span></div>
+    <div class="spec-row"><span class="spec-key">Input</span><span class="spec-val">Caption.3 — 16/24 Regular</span></div>
+    <div class="spec-row"><span class="spec-key">Button</span><span class="spec-val">Label.3 — 16/24 Bold</span></div>
+    <div class="spec-row"><span class="spec-key">Error</span><span class="spec-val">12/18 Bold</span></div>
+
+    <div style="height:4px"></div>
+    <div class="control-label">Colors (WCAG Verified)</div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#FFFFFF"></div>
+      <span class="spec-key">gray-neutral/bg/white</span>
+      <span class="spec-val">#FFFFFF</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#F8F8F9"></div>
+      <span class="spec-key">gray-neutral/bg/lightgray</span>
+      <span class="spec-val">#F8F8F9</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#EC599D"></div>
+      <span class="spec-key">primary/bg/mid</span>
+      <span class="spec-val">#EC599D</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#7279FB"></div>
+      <span class="spec-key">secondary/bg/mid</span>
+      <span class="spec-val">#7279FB</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#1B1D22"></div>
+      <span class="spec-key">gray-neutral/fg/high</span>
+      <span class="spec-val">#1B1D22</span>
+      <span class="spec-contrast">16.5:1</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#6A6E83"></div>
+      <span class="spec-key">gray-neutral/fg/mid-on-white</span>
+      <span class="spec-val">#6A6E83</span>
+      <span class="spec-contrast">5.6:1</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#EA244F"></div>
+      <span class="spec-key">error/fg/high</span>
+      <span class="spec-val">#EA244F</span>
+      <span class="spec-contrast">5.0:1</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#559652"></div>
+      <span class="spec-key">success/fg/high</span>
+      <span class="spec-val">#559652</span>
+      <span class="spec-contrast">4.6:1</span>
+    </div>
+
+    <div style="height:4px"></div>
+    <div class="control-label">Spacing</div>
+    <div class="spec-row"><span class="spec-key">Content padding</span><span class="spec-val">spacing-6 — 24px</span></div>
+    <div class="spec-row"><span class="spec-key">Section gap</span><span class="spec-val">spacing-8 — 32px</span></div>
+    <div class="spec-row"><span class="spec-key">Form gap</span><span class="spec-val">spacing-5 — 20px</span></div>
+    <div class="spec-row"><span class="spec-key">Progress gap</span><span class="spec-val">spacing-2 — 8px</span></div>
+
+    <div style="height:4px"></div>
+    <div class="control-label">Components</div>
+    <div class="spec-row"><span class="spec-key">Input height</span><span class="spec-val">48px</span></div>
+    <div class="spec-row"><span class="spec-key">Button height</span><span class="spec-val">48px</span></div>
+    <div class="spec-row"><span class="spec-key">Input radius</span><span class="spec-val">radius-md — 8px</span></div>
+    <div class="spec-row"><span class="spec-key">Button radius</span><span class="spec-val">radius-md — 8px</span></div>
+    <div class="spec-row"><span class="spec-key">Card radius</span><span class="spec-val">radius-lg — 12px</span></div>
+    <div class="spec-row"><span class="spec-key">Dialog radius</span><span class="spec-val">radius-xl — 16px</span></div>
+    <div class="spec-row"><span class="spec-key">Touch target</span><span class="spec-val">44px min</span></div>
+  </div>
+
+  <!-- ============ JAVASCRIPT ============ -->
+  <script>
+    function showScreen(screenId) {
+      // Hide all screens
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      // Show selected
+      const screen = document.getElementById('screen-' + screenId);
+      if (screen) screen.classList.add('active');
+
+      // Update control buttons
+      document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

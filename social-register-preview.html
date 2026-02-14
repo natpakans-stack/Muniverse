@@ -256,22 +256,22 @@
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div>
                 <Bone width="40px" height="14px" borderRadius="4px" style={{ marginBottom: '8px' }} />
-                <Bone width="100%" height="56px" borderRadius="12px" />
+                <Bone width="100%" height="48px" borderRadius="12px" />
               </div>
               {type !== 'forgot-password' && (
                 <div>
                   <Bone width="60px" height="14px" borderRadius="4px" style={{ marginBottom: '8px' }} />
-                  <Bone width="100%" height="56px" borderRadius="12px" />
+                  <Bone width="100%" height="48px" borderRadius="12px" />
                 </div>
               )}
               {type === 'password-setup' && (
                 <div>
                   <Bone width="100px" height="14px" borderRadius="4px" style={{ marginBottom: '8px' }} />
-                  <Bone width="100%" height="56px" borderRadius="12px" />
+                  <Bone width="100%" height="48px" borderRadius="12px" />
                 </div>
               )}
             </div>
-            <Bone width="100%" height="56px" borderRadius="12px" style={{ marginTop: '32px' }} />
+            <Bone width="100%" height="48px" borderRadius="12px" style={{ marginTop: '32px' }} />
             {(type === 'login' || type === 'register' || type === 'forgot-password') && (
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
                 <Bone width="160px" height="14px" borderRadius="4px" />
@@ -285,9 +285,9 @@
                   <div style={{ flex: 1, height: '1px', background: theme.border }}/>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginTop: '20px' }}>
-                  <Bone width="56px" height="56px" borderRadius="50%" />
-                  <Bone width="56px" height="56px" borderRadius="50%" />
-                  <Bone width="56px" height="56px" borderRadius="50%" />
+                  <Bone width="56px" height="48px" borderRadius="50%" />
+                  <Bone width="56px" height="48px" borderRadius="50%" />
+                  <Bone width="56px" height="48px" borderRadius="50%" />
                 </div>
               </>
             )}
@@ -434,98 +434,126 @@
       return (
         <div style={{
           fontFamily: '"LINE Seed Sans TH", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-          background: 'linear-gradient(135deg, #5A60D6 0%, #AAAFFD 100%)',
+          background: '#F0F1F3',
           minHeight: '100vh',
           padding: '40px 20px',
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
           gap: '24px',
         }}>
-          {/* Controls */}
+          {/* Left: Screen Navigator */}
           <div style={{
-            display: 'flex',
-            gap: '8px',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
+            width: '280px',
+            background: '#FFFFFF',
+            borderRadius: '16px',
+            padding: '24px',
+            flexShrink: 0,
           }}>
+            <h3 style={{ color: '#7279FB', fontWeight: '800', fontSize: '14px', letterSpacing: '1px', margin: '0 0 20px 0', textTransform: 'uppercase' }}>Screen Navigator</h3>
+
             <button
               onClick={() => setIsDark(!isDark)}
               style={{
-                padding: '8px 16px',
-                background: 'rgba(255, 255, 255, 0.2)',
-                backdropFilter: 'blur(10px)',
-                border: 'none',
-                borderRadius: '20px',
-                color: 'white',
+                width: '100%',
+                padding: '10px',
+                marginBottom: '20px',
+                background: isDark ? '#1B1D22' : '#F8F8F9',
+                color: isDark ? '#FFFFFF' : '#1B1D22',
+                border: `1px solid ${isDark ? '#3F414E' : '#EBECEF'}`,
+                borderRadius: '8px',
+                fontSize: '13px',
                 fontWeight: '700',
-                fontSize: '12px',
                 cursor: 'pointer',
+                fontFamily: 'inherit',
               }}
             >
-              {isDark ? '☀️ Light' : '🌙 Dark'}
+              {isDark ? '☀️ Light Mode' : '🌙 Dark Mode'}
             </button>
 
-            {['login', 'register', 'password-setup', 'forgot-password', 'reset-password'].map(screen => (
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#9A9DAD', letterSpacing: '1px', margin: '0 0 8px 0' }}>AUTH</div>
+            {['login', 'register'].map(screen => (
               <button
                 key={screen}
                 onClick={() => { setCurrentScreen(screen); setScreenState('default'); setDismissedToast(null); }}
                 style={{
-                  padding: '8px 16px',
-                  background: currentScreen === screen ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.15)',
-                  border: currentScreen === screen ? '2px solid rgba(255,255,255,0.5)' : '2px solid transparent',
-                  borderRadius: '20px',
-                  color: 'white',
-                  fontWeight: currentScreen === screen ? '700' : '500',
-                  fontSize: '12px',
+                  width: '100%',
+                  padding: '10px 12px',
+                  marginBottom: '6px',
+                  background: currentScreen === screen ? '#7279FB' : '#FFFFFF',
+                  color: currentScreen === screen ? '#FFFFFF' : '#1B1D22',
+                  border: currentScreen === screen ? '2px solid #7279FB' : '1px solid #EBECEF',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: currentScreen === screen ? '700' : '400',
                   cursor: 'pointer',
+                  textAlign: 'left',
+                  fontFamily: 'inherit',
                 }}
               >
-                {screen === 'login' ? '🔑 Login' : screen === 'register' ? '📝 Register' : screen === 'password-setup' ? '🔐 Password Setup' : screen === 'forgot-password' ? '🔓 Forgot PW' : '🔄 Reset PW'}
+                {screen === 'login' ? 'Login' : 'Register'}
               </button>
             ))}
-          </div>
 
-          {/* Edge Case Sub-controls */}
-          {(() => {
-            const statesMap = {
-              login: loginStates,
-              register: registerStates,
-              'password-setup': passwordSetupStates,
-              'forgot-password': forgotPasswordStates,
-              'reset-password': resetPasswordStates,
-            };
-            const states = statesMap[currentScreen];
-            if (!states) return null;
-            return (
-              <div style={{
-                display: 'flex',
-                gap: '6px',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-                maxWidth: '600px',
-              }}>
-                {states.map(s => (
-                  <button
-                    key={s.key}
-                    onClick={() => { setScreenState(s.key); setDismissedToast(null); }}
-                    style={{
-                      padding: '6px 12px',
-                      background: screenState === s.key ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.1)',
-                      border: screenState === s.key ? '2px solid rgba(255,255,255,0.6)' : '2px solid transparent',
-                      borderRadius: '16px',
-                      color: 'white',
-                      fontWeight: screenState === s.key ? '700' : '400',
-                      fontSize: '12px',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {s.label}
-                  </button>
-                ))}
-              </div>
-            );
-          })()}
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#9A9DAD', letterSpacing: '1px', margin: '16px 0 8px 0' }}>PASSWORD</div>
+            {['password-setup', 'forgot-password', 'reset-password'].map(screen => (
+              <button
+                key={screen}
+                onClick={() => { setCurrentScreen(screen); setScreenState('default'); setDismissedToast(null); }}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  marginBottom: '6px',
+                  background: currentScreen === screen ? '#7279FB' : '#FFFFFF',
+                  color: currentScreen === screen ? '#FFFFFF' : '#1B1D22',
+                  border: currentScreen === screen ? '2px solid #7279FB' : '1px solid #EBECEF',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: currentScreen === screen ? '700' : '400',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  fontFamily: 'inherit',
+                }}
+              >
+                {screen === 'password-setup' ? 'Password Setup' : screen === 'forgot-password' ? 'Forgot Password' : 'Reset Password'}
+              </button>
+            ))}
+
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#9A9DAD', letterSpacing: '1px', margin: '16px 0 8px 0' }}>STATES</div>
+            {(() => {
+              const statesMap = {
+                login: loginStates,
+                register: registerStates,
+                'password-setup': passwordSetupStates,
+                'forgot-password': forgotPasswordStates,
+                'reset-password': resetPasswordStates,
+              };
+              const states = statesMap[currentScreen];
+              if (!states) return null;
+              return states.map(s => (
+                <button
+                  key={s.key}
+                  onClick={() => { setScreenState(s.key); setDismissedToast(null); }}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    marginBottom: '6px',
+                    background: screenState === s.key ? '#7279FB' : '#FFFFFF',
+                    color: screenState === s.key ? '#FFFFFF' : '#1B1D22',
+                    border: screenState === s.key ? '2px solid #7279FB' : '1px solid #EBECEF',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: screenState === s.key ? '700' : '400',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  {s.label}
+                </button>
+              ));
+            })()}
+          </div>
 
           {/* iPhone Frame */}
           <div style={{
@@ -533,7 +561,7 @@
             height: '844px',
             background: theme.background,
             borderRadius: '48px',
-            boxShadow: '0 20px 25px rgba(0,0,0,0.1)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
             overflow: 'hidden',
             position: 'relative',
           }}>
@@ -622,7 +650,7 @@
                     color: theme.textSecondary,
                     margin: '0 0 32px 0',
                     lineHeight: '1.5',
-                  }}>ยินดีต้อนรับกลับ! เข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+                  }}>ยินดีต้อนรับกลับ! เข้าสู่ระบบเพื่อใช้งานต่อ</p>
 
                   {/* Email/Password Form */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -643,13 +671,13 @@
                           readOnly={screenState !== 'default'}
                           style={{
                             width: '100%',
-                            height: '56px',
-                            padding: '0 16px',
+                            height: '48px',
+                            padding: '0 12px',
                             fontSize: '16px',
                             color: theme.textPrimary,
                             background: theme.background,
                             border: `1px solid ${screenState === 'focus' ? theme.secondary : (screenState === 'empty-error' || screenState === 'invalid-email' || screenState === 'not-found') ? theme.error : theme.border}`,
-                            boxShadow: screenState === 'focus' ? `0 0 0 4px ${theme.focusRingSecondary}` : 'none',
+                            boxShadow: screenState === 'focus' ? `0 0 0 3px ${theme.focusRingSecondary}` : 'none',
                             borderRadius: '8px',
                             boxSizing: 'border-box',
                             outline: 'none',
@@ -658,13 +686,13 @@
                         {screenState === 'focus' && <CursorBlink color={theme.secondary} />}
                       </div>
                       {screenState === 'empty-error' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกอีเมล</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>โปรดระบุอีเมล</p>
                       )}
                       {screenState === 'invalid-email' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รูปแบบอีเมลไม่ถูกต้อง</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>รูปแบบอีเมลไม่ถูกต้อง</p>
                       )}
                       {screenState === 'not-found' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>ไม่พบอีเมลนี้ในระบบ</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>ไม่พบอีเมลนี้ในระบบ</p>
                       )}
                     </div>
 
@@ -680,13 +708,13 @@
                       <div style={{ position: 'relative' }}>
                         <input
                           type={screenState === 'password-visible' || showLoginPw ? 'text' : 'password'}
-                          placeholder="กรอกรหัสผ่าน"
+                          placeholder="รหัสผ่าน"
                           value={screenState === 'empty-error' ? '' : screenState === 'wrong-password' ? '••••••' : screenState === 'password-visible' ? 'MyP@ss123!' : (screenState !== 'default' && screenState !== 'focus') ? '••••••••' : undefined}
                           readOnly={screenState !== 'default'}
                           style={{
                             width: '100%',
-                            height: '56px',
-                            padding: '0 48px 0 16px',
+                            height: '48px',
+                            padding: '0 48px 0 12px',
                             fontSize: '16px',
                             color: theme.textPrimary,
                             background: theme.background,
@@ -699,7 +727,7 @@
                         <EyeIcon show={screenState === 'password-visible' || showLoginPw} onClick={() => setShowLoginPw(!showLoginPw)} color={theme.textSecondary} />
                       </div>
                       {screenState === 'empty-error' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกรหัสผ่าน</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>โปรดระบุรหัสผ่าน</p>
                       )}
                       <div style={{ display: 'flex', justifyContent: screenState === 'wrong-password' ? 'space-between' : 'flex-end', alignItems: 'center', marginTop: '4px' }}>
                         {screenState === 'wrong-password' && (
@@ -719,7 +747,7 @@
                   {/* Login Button */}
                   <button style={{
                     width: '100%',
-                    height: '56px',
+                    height: '48px',
                     background: theme.secondary,
                     color: 'white',
                     border: 'none',
@@ -809,13 +837,13 @@
                           readOnly={screenState !== 'default'}
                           style={{
                             width: '100%',
-                            height: '56px',
-                            padding: '0 16px',
+                            height: '48px',
+                            padding: '0 12px',
                             fontSize: '16px',
                             color: theme.textPrimary,
                             background: theme.background,
                             border: `1px solid ${screenState === 'focus' ? theme.primary : (screenState === 'empty-error' || screenState === 'invalid-email' || screenState === 'email-exists') ? theme.error : theme.border}`,
-                            boxShadow: screenState === 'focus' ? `0 0 0 4px ${theme.focusRingPrimary}` : 'none',
+                            boxShadow: screenState === 'focus' ? `0 0 0 3px ${theme.focusRingPrimary}` : 'none',
                             borderRadius: '8px',
                             boxSizing: 'border-box',
                             outline: 'none',
@@ -824,13 +852,13 @@
                         {screenState === 'focus' && <CursorBlink color={theme.primary} />}
                       </div>
                       {screenState === 'empty-error' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกอีเมล</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>โปรดระบุอีเมล</p>
                       )}
                       {screenState === 'invalid-email' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รูปแบบอีเมลไม่ถูกต้อง</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>รูปแบบอีเมลไม่ถูกต้อง</p>
                       )}
                       {screenState === 'email-exists' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>อีเมลนี้ถูกใช้งานแล้ว</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>อีเมลนี้ถูกใช้งานแล้ว</p>
                       )}
                     </div>
 
@@ -850,8 +878,8 @@
                           readOnly={screenState !== 'default'}
                           style={{
                             width: '100%',
-                            height: '56px',
-                            padding: '0 48px 0 16px',
+                            height: '48px',
+                            padding: '0 48px 0 12px',
                             fontSize: '16px',
                             color: theme.textPrimary,
                             background: theme.background,
@@ -864,17 +892,17 @@
                         <EyeIcon show={screenState === 'password-visible' || showRegPw} onClick={() => setShowRegPw(!showRegPw)} color={theme.textSecondary} />
                       </div>
                       {screenState === 'empty-error' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกรหัสผ่าน</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>โปรดระบุรหัสผ่าน</p>
                       )}
                       {screenState === 'weak-password' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</p>
                       )}
                     </div>
                   </div>
 
                   <button style={{
                     width: '100%',
-                    height: '56px',
+                    height: '48px',
                     background: theme.primary,
                     color: 'white',
                     border: 'none',
@@ -943,7 +971,7 @@
                     color: theme.textSecondary,
                     margin: '0 0 32px 0',
                     lineHeight: '1.5',
-                  }}>ตั้งรหัสผ่านเพื่อให้คุณสามารถเข้าสู่ระบบด้วยอีเมลได้ในอนาคต</p>
+                  }}>ตั้งรหัสผ่านเพื่อเข้าสู่ระบบด้วยอีเมลในอนาคต</p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     {/* Email (Disabled) */}
@@ -961,8 +989,8 @@
                         disabled
                         style={{
                           width: '100%',
-                          height: '56px',
-                          padding: '0 16px',
+                          height: '48px',
+                          padding: '0 12px',
                           fontSize: '16px',
                           color: theme.textSecondary,
                           background: theme.disabled,
@@ -992,13 +1020,13 @@
                           readOnly={screenState !== 'default'}
                           style={{
                             width: '100%',
-                            height: '56px',
-                            padding: '0 48px 0 16px',
+                            height: '48px',
+                            padding: '0 48px 0 12px',
                             fontSize: '16px',
                             color: theme.textPrimary,
                             background: theme.background,
                             border: `1px solid ${screenState === 'focus' ? theme.primary : (screenState === 'empty-error' || screenState === 'weak-password') ? theme.error : theme.border}`,
-                            boxShadow: screenState === 'focus' ? `0 0 0 4px ${theme.focusRingPrimary}` : 'none',
+                            boxShadow: screenState === 'focus' ? `0 0 0 3px ${theme.focusRingPrimary}` : 'none',
                             borderRadius: '8px',
                             boxSizing: 'border-box',
                             outline: 'none',
@@ -1008,10 +1036,10 @@
                         {screenState === 'focus' && <CursorBlink color={theme.primary} />}
                       </div>
                       {screenState === 'empty-error' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกรหัสผ่าน</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>โปรดระบุรหัสผ่าน</p>
                       )}
                       {screenState === 'weak-password' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</p>
                       )}
                     </div>
 
@@ -1032,8 +1060,8 @@
                           readOnly={screenState !== 'default'}
                           style={{
                             width: '100%',
-                            height: '56px',
-                            padding: '0 48px 0 16px',
+                            height: '48px',
+                            padding: '0 48px 0 12px',
                             fontSize: '16px',
                             color: theme.textPrimary,
                             background: theme.background,
@@ -1046,10 +1074,10 @@
                         <EyeIcon show={screenState === 'password-visible' || showSetupConfirm} onClick={() => setShowSetupConfirm(!showSetupConfirm)} color={theme.textSecondary} />
                       </div>
                       {screenState === 'empty-error' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณายืนยันรหัสผ่าน</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>โปรดยืนยันรหัสผ่าน</p>
                       )}
                       {screenState === 'mismatch' && (
-                        <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านไม่ตรงกัน</p>
+                        <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านไม่ตรงกัน</p>
                       )}
                     </div>
                   </div>
@@ -1059,7 +1087,7 @@
                     disabled={screenState === 'success'}
                     style={{
                     width: '100%',
-                    height: '56px',
+                    height: '48px',
                     background: screenState === 'success' ? theme.disabled : theme.primary,
                     color: screenState === 'success' ? theme.textTertiary : 'white',
                     border: 'none',
@@ -1129,7 +1157,7 @@
                         margin: 0,
                         wordWrap: 'break-word',
                       }}>
-                        หลังจากตั้งรหัสผ่านแล้ว คุณสามารถเข้าสู่ระบบด้วยอีเมลและรหัสผ่านได้
+                        หลังตั้งรหัสผ่าน จะสามารถเข้าสู่ระบบด้วยอีเมลและรหัสผ่านได้
                       </p>
                     </div>
                   </div>
@@ -1190,12 +1218,12 @@
                         margin: '0 0 32px 0',
                         lineHeight: '1.5',
                       }}>
-                        กรุณาตรวจสอบกล่องจดหมายของคุณ
-                        <br/>หากไม่พบ ลองตรวจสอบในโฟลเดอร์สแปม
+                        ตรวจสอบกล่องจดหมาย
+                        <br/>หากไม่พบ ลองดูในโฟลเดอร์สแปม
                       </p>
                       <button style={{
                         width: '100%',
-                        height: '56px',
+                        height: '48px',
                         background: theme.primary,
                         color: 'white',
                         border: 'none',
@@ -1247,11 +1275,11 @@
                         margin: '0 0 32px 0',
                         lineHeight: '1.5',
                       }}>
-                        บัญชีนี้ยังไม่เคยตั้งรหัสผ่าน<br/>กรุณาเข้าสู่ระบบด้วย Social Login ก่อน
+                        บัญชีนี้ยังไม่เคยตั้งรหัสผ่าน<br/>เข้าสู่ระบบด้วย Social Login แล้วค่อยตั้งรหัสผ่าน
                       </p>
                       <button style={{
                         width: '100%',
-                        height: '56px',
+                        height: '48px',
                         background: theme.primary,
                         color: 'white',
                         border: 'none',
@@ -1277,7 +1305,7 @@
                         color: theme.textSecondary,
                         margin: '0 0 32px 0',
                         lineHeight: '1.5',
-                      }}>กรอกอีเมลที่ใช้สมัครสมาชิก เราจะส่งลิงก์ตั้งรหัสผ่านใหม่ให้คุณ</p>
+                      }}>กรอกอีเมลที่ใช้สมัคร เราจะส่งลิงก์ตั้งรหัสผ่านใหม่ให้</p>
 
                       {/* Email */}
                       <div>
@@ -1296,13 +1324,13 @@
                             readOnly={screenState !== 'default'}
                             style={{
                               width: '100%',
-                              height: '56px',
-                              padding: '0 16px',
+                              height: '48px',
+                              padding: '0 12px',
                               fontSize: '16px',
                               color: theme.textPrimary,
                               background: theme.background,
                               border: `1px solid ${screenState === 'focus' ? theme.primary : (screenState === 'empty-error' || screenState === 'invalid-email' || screenState === 'not-found') ? theme.error : theme.border}`,
-                              boxShadow: screenState === 'focus' ? `0 0 0 4px ${theme.focusRingPrimary}` : 'none',
+                              boxShadow: screenState === 'focus' ? `0 0 0 3px ${theme.focusRingPrimary}` : 'none',
                               borderRadius: '8px',
                               boxSizing: 'border-box',
                               outline: 'none',
@@ -1311,20 +1339,20 @@
                           {screenState === 'focus' && <CursorBlink color={theme.primary} />}
                         </div>
                         {screenState === 'empty-error' && (
-                          <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกอีเมล</p>
+                          <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>โปรดระบุอีเมล</p>
                         )}
                         {screenState === 'invalid-email' && (
-                          <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รูปแบบอีเมลไม่ถูกต้อง</p>
+                          <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>รูปแบบอีเมลไม่ถูกต้อง</p>
                         )}
                         {screenState === 'not-found' && (
-                          <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>ไม่พบอีเมลนี้ในระบบ</p>
+                          <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>ไม่พบอีเมลนี้ในระบบ</p>
                         )}
                       </div>
 
                       {/* Submit Button */}
                       <button disabled={screenState === 'not-found'} style={{
                         width: '100%',
-                        height: '56px',
+                        height: '48px',
                         background: screenState === 'not-found' ? theme.disabled : theme.primary,
                         color: screenState === 'not-found' ? theme.disabledFg : 'white',
                         border: 'none',
@@ -1409,11 +1437,11 @@
                         margin: '0 0 32px 0',
                         lineHeight: '1.5',
                       }}>
-                        ลิงก์รีเซ็ตรหัสผ่านนี้หมดอายุแล้ว<br/>กรุณาขอลิงก์ใหม่อีกครั้ง
+                        ลิงก์รีเซ็ตรหัสผ่านนี้หมดอายุแล้ว<br/>ขอลิงก์ใหม่อีกครั้ง
                       </p>
                       <button style={{
                         width: '100%',
-                        height: '56px',
+                        height: '48px',
                         background: theme.primary,
                         color: 'white',
                         border: 'none',
@@ -1451,11 +1479,11 @@
                         margin: '0 0 32px 0',
                         lineHeight: '1.5',
                       }}>
-                        คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่ได้แล้ว
+                        เข้าสู่ระบบด้วยรหัสผ่านใหม่ได้แล้ว
                       </p>
                       <button style={{
                         width: '100%',
-                        height: '56px',
+                        height: '48px',
                         background: theme.primary,
                         color: 'white',
                         border: 'none',
@@ -1481,7 +1509,7 @@
                         color: theme.textSecondary,
                         margin: '0 0 32px 0',
                         lineHeight: '1.5',
-                      }}>กรอกรหัสผ่านใหม่ของคุณ</p>
+                      }}>กรอกรหัสผ่านใหม่</p>
 
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         {/* New Password */}
@@ -1501,13 +1529,13 @@
                               readOnly={screenState !== 'default'}
                               style={{
                                 width: '100%',
-                                height: '56px',
-                                padding: '0 48px 0 16px',
+                                height: '48px',
+                                padding: '0 48px 0 12px',
                                 fontSize: '16px',
                                 color: theme.textPrimary,
                                 background: theme.background,
                                 border: `1px solid ${screenState === 'focus' ? theme.primary : (screenState === 'empty-error' || screenState === 'weak-password') ? theme.error : theme.border}`,
-                                boxShadow: screenState === 'focus' ? `0 0 0 4px ${theme.focusRingPrimary}` : 'none',
+                                boxShadow: screenState === 'focus' ? `0 0 0 3px ${theme.focusRingPrimary}` : 'none',
                                 borderRadius: '8px',
                                 boxSizing: 'border-box',
                                 outline: 'none',
@@ -1517,10 +1545,10 @@
                             {screenState === 'focus' && <CursorBlink color={theme.primary} />}
                           </div>
                           {screenState === 'empty-error' && (
-                            <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณากรอกรหัสผ่าน</p>
+                            <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>โปรดระบุรหัสผ่าน</p>
                           )}
                           {screenState === 'weak-password' && (
-                            <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</p>
+                            <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</p>
                           )}
                         </div>
 
@@ -1541,8 +1569,8 @@
                               readOnly={screenState !== 'default'}
                               style={{
                                 width: '100%',
-                                height: '56px',
-                                padding: '0 48px 0 16px',
+                                height: '48px',
+                                padding: '0 48px 0 12px',
                                 fontSize: '16px',
                                 color: theme.textPrimary,
                                 background: theme.background,
@@ -1555,10 +1583,10 @@
                             <EyeIcon show={screenState === 'password-visible' || showResetConfirm} onClick={() => setShowResetConfirm(!showResetConfirm)} color={theme.textSecondary} />
                           </div>
                           {screenState === 'empty-error' && (
-                            <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>กรุณายืนยันรหัสผ่าน</p>
+                            <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>โปรดยืนยันรหัสผ่าน</p>
                           )}
                           {screenState === 'mismatch' && (
-                            <p style={{ fontSize: '12px', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านไม่ตรงกัน</p>
+                            <p style={{ fontSize: '12px', fontWeight: '700', color: theme.error, margin: '4px 0 0 0' }}>รหัสผ่านไม่ตรงกัน</p>
                           )}
                         </div>
                       </div>
@@ -1566,7 +1594,7 @@
                       {/* Submit Button */}
                       <button style={{
                         width: '100%',
-                        height: '56px',
+                        height: '48px',
                         background: theme.primary,
                         color: 'white',
                         border: 'none',
@@ -1675,85 +1703,82 @@
             }}/>
           </div>
 
-          {/* Spec Info — Design Tokens */}
+          {/* Right: Design Specs */}
           <div style={{
-            width: '100%',
-            maxWidth: '900px',
-            background: 'rgba(255, 255, 255, 0.95)',
+            width: '320px',
+            background: '#FFFFFF',
             borderRadius: '16px',
             padding: '24px',
-            boxShadow: '0 10px 15px rgba(0,0,0,0.1)',
+            flexShrink: 0,
+            fontSize: '13px',
+            color: '#1B1D22',
+            lineHeight: '1.6',
           }}>
-            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1B1D22', margin: '0 0 16px 0' }}>
-              📐 Design Tokens &amp; Specifications
-            </h3>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-              gap: '16px',
-              fontSize: '12px',
-              color: '#3F414E',
-              lineHeight: '1.5',
-            }}>
-              <div>
-                <strong>Screens:</strong><br/>
-                1. Login (10 states)<br/>
-                2. Register (10 states)<br/>
-                3. Password Setup (9 states)<br/>
-                4. Forgot Password (9 states)<br/>
-                5. Reset Password (10 states)
+            <h3 style={{ color: '#7279FB', fontWeight: '800', fontSize: '14px', letterSpacing: '1px', margin: '0 0 20px 0', textTransform: 'uppercase' }}>Design Specs</h3>
+
+            {/* FRAME */}
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#9A9DAD', letterSpacing: '1px', margin: '0 0 12px 0' }}>FRAME</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Viewport</span><span style={{ fontFamily: 'monospace', fontWeight: '700' }}>390 x 844</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Device</span><span style={{ fontFamily: 'monospace', fontWeight: '700' }}>iPhone 14</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}><span style={{ color: '#6A6E83' }}>Platform</span><span style={{ fontFamily: 'monospace', fontWeight: '700' }}>iOS / Android</span></div>
+
+            {/* TYPOGRAPHY */}
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#9A9DAD', letterSpacing: '1px', margin: '0 0 12px 0' }}>TYPOGRAPHY</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Font</span><span style={{ fontFamily: 'monospace', fontWeight: '700' }}>LINE Seed Sans TH</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Title</span><span style={{ fontFamily: 'monospace' }}>Heading.2 — 32/40 Bold</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Subtitle</span><span style={{ fontFamily: 'monospace' }}>Caption.3 — 16/24 Regular</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Label</span><span style={{ fontFamily: 'monospace' }}>Label.4 — 14/22 Bold</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Input</span><span style={{ fontFamily: 'monospace' }}>Caption.3 — 16/24 Regular</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Button</span><span style={{ fontFamily: 'monospace' }}>Label.3 — 16/24 Bold</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}><span style={{ color: '#6A6E83' }}>Error</span><span style={{ fontFamily: 'monospace' }}>12/18 Bold</span></div>
+
+            {/* COLORS */}
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#9A9DAD', letterSpacing: '1px', margin: '0 0 12px 0' }}>COLORS (WCAG VERIFIED)</div>
+            {[
+              { color: '#FFFFFF', name: 'gray-neutral/bg/white', hex: '#FFFFFF', border: true },
+              { color: '#F8F8F9', name: 'gray-neutral/bg/lightgray', hex: '#F8F8F9' },
+              { color: '#7279FB', name: 'secondary/bg/mid', hex: '#7279FB' },
+              { color: '#1B1D22', name: 'gray-neutral/fg/high', hex: '#1B1D22', ratio: '16.5:1' },
+              { color: '#6A6E83', name: 'gray-neutral/fg/mid-on-white', hex: '#6A6E83', ratio: '5.6:1' },
+              { color: '#EA244F', name: 'error/fg/high', hex: '#EA244F', ratio: '5.0:1' },
+              { color: '#559652', name: 'success/fg/high', hex: '#559652', ratio: '4.6:1' },
+            ].map((c, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <div style={{ width: '20px', height: '20px', borderRadius: '4px', background: c.color, border: c.border ? '1px solid #EBECEF' : 'none', flexShrink: 0 }}/>
+                <span style={{ color: '#6A6E83', fontSize: '12px', flex: 1 }}>{c.name}</span>
+                <span style={{ fontFamily: 'monospace', fontWeight: '700', fontSize: '12px' }}>{c.hex}</span>
+                {c.ratio && <span style={{ color: '#559652', fontSize: '11px', fontWeight: '700' }}>{c.ratio}</span>}
               </div>
-              <div>
-                <strong>Color Tokens (theme property → Figma Variable):</strong><br/>
-                theme.primary → semantic/primary/fg/high<br/>
-                theme.secondary → semantic/secondary/fg/high<br/>
-                theme.error → semantic/error/fg/high<br/>
-                theme.success → semantic/success/fg/high<br/>
-                theme.textPrimary → semantic/gray-neutral/fg/high<br/>
-                theme.textSecondary → semantic/gray-neutral/fg/mid
-              </div>
-              <div>
-                <strong>Typography:</strong><br/>
-                Font: LINE Seed Sans TH<br/>
-                heading.2: 32px/700<br/>
-                heading.3: 24px/700<br/>
-                heading.4: 22px/700<br/>
-                label.3: 16px/700 (button)<br/>
-                label.4: 14px/700 (link/label)<br/>
-                caption.3: 16px/400<br/>
-                caption.4: 14px/400<br/>
-                caption.5: 12px/400 (error/helper)<br/>
-                lineHeight: 1.5<br/>
-                Weight: 400, 700
-              </div>
-              <div>
-                <strong>Components:</strong><br/>
-                Input height: 56px<br/>
-                Button height: 56px<br/>
-                radius-md: 8px (btn/input)<br/>
-                radius-lg: 12px (card/toast)
-              </div>
-              <div>
-                <strong>Spacing (4px base):</strong><br/>
-                spacing-1: 4px<br/>
-                spacing-2: 8px<br/>
-                spacing-4: 16px<br/>
-                spacing-5: 20px<br/>
-                spacing-6: 24px<br/>
-                spacing-8: 32px
-              </div>
-              <div>
-                <strong>Disabled Tokens:</strong><br/>
-                fg: #9A9DAD<br/>
-                bg: #EBECEF<br/>
-                border: #9A9DAD<br/>
-                <br/>
-                <strong>Social:</strong><br/>
-                Google: #4285F4<br/>
-                Apple: #000000<br/>
-                Facebook: #1877F2
-              </div>
-            </div>
+            ))}
+
+            {/* SPACING */}
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#9A9DAD', letterSpacing: '1px', margin: '16px 0 12px 0' }}>SPACING</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Content padding</span><span style={{ fontFamily: 'monospace' }}>spacing-6 — 24px</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Section gap</span><span style={{ fontFamily: 'monospace' }}>spacing-8 — 32px</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Form gap</span><span style={{ fontFamily: 'monospace' }}>spacing-5 — 20px</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}><span style={{ color: '#6A6E83' }}>Label-input</span><span style={{ fontFamily: 'monospace' }}>spacing-2 — 8px</span></div>
+
+            {/* COMPONENTS */}
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#9A9DAD', letterSpacing: '1px', margin: '0 0 12px 0' }}>COMPONENTS</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Input height</span><span style={{ fontFamily: 'monospace' }}>48px</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Button height</span><span style={{ fontFamily: 'monospace' }}>48px</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Input padding</span><span style={{ fontFamily: 'monospace' }}>0 12px</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Input/Btn radius</span><span style={{ fontFamily: 'monospace' }}>radius-md — 8px</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Card/Toast radius</span><span style={{ fontFamily: 'monospace' }}>radius-lg — 12px</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Focus ring</span><span style={{ fontFamily: 'monospace' }}>3px</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Social button</span><span style={{ fontFamily: 'monospace' }}>56 x 56 circle</span></div>
+
+            {/* DISABLED */}
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#9A9DAD', letterSpacing: '1px', margin: '16px 0 12px 0' }}>DISABLED TOKENS</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>fg</span><span style={{ fontFamily: 'monospace' }}>#9A9DAD</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>bg</span><span style={{ fontFamily: 'monospace' }}>#EBECEF</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}><span style={{ color: '#6A6E83' }}>border</span><span style={{ fontFamily: 'monospace' }}>#9A9DAD</span></div>
+
+            {/* SOCIAL */}
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#9A9DAD', letterSpacing: '1px', margin: '0 0 12px 0' }}>SOCIAL</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Google</span><span style={{ fontFamily: 'monospace' }}>#4285F4</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Apple</span><span style={{ fontFamily: 'monospace' }}>#000000</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span style={{ color: '#6A6E83' }}>Facebook</span><span style={{ fontFamily: 'monospace' }}>#1877F2</span></div>
           </div>
         </div>
       );
