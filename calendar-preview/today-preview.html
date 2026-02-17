@@ -1189,15 +1189,12 @@
       );
 
       const SharePage = () => {
-        const [tpl, setTpl] = useState(0);
-
         const tpls = [
           { id:'cosmic',  name:'Cosmic Night',  bg:'linear-gradient(180deg, #0F0C29 0%, #302B63 50%, #24243E 100%)', accent:'#A78BFA', txt:'#fff',       sub:'rgba(255,255,255,0.55)', card:'rgba(255,255,255,0.08)', bdr:'rgba(255,255,255,0.1)' },
           { id:'pastel',  name:'Soft Pastel',    bg:'linear-gradient(180deg, #E8F4FD 0%, #FCE4EC 50%, #F3E5F5 100%)', accent:T.primary,  txt:T.fgHigh,    sub:T.fgMid,                   card:'rgba(255,255,255,0.75)', bdr:'rgba(0,0,0,0.06)' },
           { id:'gold',    name:'Gold Classic',   bg:'linear-gradient(180deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%)', accent:'#F5C842',  txt:'#fff',       sub:'rgba(255,255,255,0.55)', card:'rgba(255,255,255,0.06)', bdr:'rgba(245,200,66,0.15)' },
           { id:'bloom',   name:'Fresh Bloom',    bg:`linear-gradient(180deg, #fff 0%, ${T.primaryLight} 50%, ${T.secondaryLight} 100%)`, accent:T.secondary, txt:T.fgHigh, sub:T.fgMid,   card:'rgba(255,255,255,0.8)',  bdr:T.border },
         ];
-        const t = tpls[tpl];
 
         const infoRows = [
           { fa:'fa-solid fa-palette',              label:'สีมงคล',   value:mock.luckyColors[0].name, vColor:mock.luckyColors[0].c1 },
@@ -1206,102 +1203,91 @@
           { fa:'fa-solid fa-triangle-exclamation', label:'หลีกเลี่ยง', value:(mock.times.find(x=>x.level==='caution')||{}).time||'12:00-14:00' },
         ];
 
-        /* 9:16 card — 270 × 480 */
-        const CW = 270, CH = 480;
+        const CW = 310, CH = 550;
+
+        const ShareCard = ({ t, idx }) => (
+          <div style={{ marginBottom:'24px', animation:`slideUp 0.4s ease-out ${idx * 0.1}s both` }}>
+            {/* Card */}
+            <div style={{
+              width:`${CW}px`, height:`${CH}px`, background:t.bg, margin:'0 auto',
+              borderRadius:'22px', overflow:'hidden', position:'relative',
+              display:'flex', flexDirection:'column',
+              boxShadow:'0 12px 40px rgba(0,0,0,0.18)',
+            }}>
+              {/* Brand + date */}
+              <div style={{ padding:'16px 20px 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                <div>
+                  <div style={{ fontFamily:T.font, fontSize:'10px', fontWeight:700, color:t.sub, letterSpacing:'1.5px', textTransform:'uppercase' }}>DailyMu</div>
+                  <div style={{ fontFamily:T.font, fontSize:'11px', color:t.sub, marginTop:'2px' }}>{mock.dayName}ที่ {mock.date}</div>
+                </div>
+                <div style={{ width:'28px', height:'28px', borderRadius:T.rFull, background:t.accent+'20', border:`1.5px solid ${t.accent}50`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <FaIcon fa="fa-solid fa-moon" size={12} color={t.accent} />
+                </div>
+              </div>
+
+              {/* Main fortune content */}
+              <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'20px 24px', textAlign:'center' }}>
+                <div style={{ width:'56px', height:'56px', borderRadius:T.rFull, background:t.card, border:`2px solid ${t.accent}35`, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'14px' }}>
+                  <FaIcon fa={mock.status==='good'?'fa-solid fa-star':mock.status==='neutral'?'fa-solid fa-cloud-sun':'fa-solid fa-triangle-exclamation'} size={24} color={t.accent} />
+                </div>
+                <div style={{ fontFamily:T.font, fontSize:'20px', fontWeight:800, color:t.accent, marginBottom:'8px', lineHeight:'26px' }}>{mock.statusLabel}</div>
+                <div style={{ fontFamily:T.font, fontSize:'15px', lineHeight:'24px', color:t.txt }}>{mock.aiSummary}</div>
+                <div style={{ fontFamily:T.font, fontSize:'10px', color:t.sub, marginTop:'12px' }}>อ้างอิง จากตำราฮวงจุ้ย</div>
+              </div>
+
+              {/* Bottom info card */}
+              <div style={{ margin:'0 16px 14px', padding:'10px 14px', background:t.card, borderRadius:'14px', border:`1px solid ${t.bdr}` }}>
+                {infoRows.map((row,ri) => (
+                  <div key={ri} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'6px 0', borderBottom:ri<infoRows.length-1?`1px solid ${t.bdr}`:'none' }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:'7px' }}>
+                      <FaIcon fa={row.fa} size={11} color={t.accent} />
+                      <span style={{ fontFamily:T.font, fontSize:'12px', color:t.sub }}>{row.label}</span>
+                    </div>
+                    <span style={{ fontFamily:T.font, fontSize:'12px', fontWeight:600, color:row.vColor||t.txt }}>{row.value}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer */}
+              <div style={{ padding:'0 0 12px', textAlign:'center' }}>
+                <div style={{ fontFamily:T.font, fontSize:'9px', color:t.sub, letterSpacing:'1.5px', textTransform:'uppercase' }}>dailymu.app</div>
+              </div>
+            </div>
+
+            {/* Actions under each card */}
+            <div style={{ display:'flex', gap:'8px', padding:'12px 20px 0', justifyContent:'center' }}>
+              <div style={{ height:'36px', padding:'0 20px', borderRadius:T.rFull, background:T.primary, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', fontFamily:T.font, fontSize:'13px', fontWeight:700, cursor:'pointer', boxShadow:`0 3px 12px ${T.primary}30` }}>
+                <FaIcon fa="fa-solid fa-share-nodes" size={12} color="#fff" /> แชร์
+              </div>
+              <div style={{ height:'36px', padding:'0 16px', borderRadius:T.rFull, border:`1.5px solid ${T.border}`, background:T.bgWhite, display:'flex', alignItems:'center', justifyContent:'center', gap:'5px', fontFamily:T.font, fontSize:'12px', color:T.fgMid, cursor:'pointer' }}>
+                <FaIcon fa="fa-solid fa-download" size={11} color={T.fgMid} /> บันทึก
+              </div>
+              <div style={{ height:'36px', padding:'0 16px', borderRadius:T.rFull, border:`1.5px solid ${T.border}`, background:T.bgWhite, display:'flex', alignItems:'center', justifyContent:'center', gap:'5px', fontFamily:T.font, fontSize:'12px', color:T.fgMid, cursor:'pointer' }}>
+                <FaIcon fa="fa-solid fa-copy" size={11} color={T.fgMid} /> คัดลอก
+              </div>
+            </div>
+            {/* Theme name label */}
+            <div style={{ textAlign:'center', marginTop:'6px' }}>
+              <span style={{ fontFamily:T.font, fontSize:'11px', color:T.fgLow }}>{t.name}</span>
+            </div>
+          </div>
+        );
 
         return (
           <div style={{ overflowY:'auto', height:'100%', paddingBottom:'100px', animation:'fadeIn 0.3s ease-out' }}>
             <BackHeader title="แชร์ดวงวันนี้" />
 
-            {/* ── Theme selector ── */}
-            <div style={{ padding:'10px 20px 6px' }}>
-              <div style={{ fontFamily:T.font, fontSize:'10px', fontWeight:700, color:T.fgLow, textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>เลือกธีม</div>
-              <div style={{ display:'flex', gap:'8px' }}>
-                {tpls.map((tp,i) => (
-                  <div key={i} onClick={() => setTpl(i)} style={{
-                    width:'56px', height:'56px', borderRadius:T.rLg, background:tp.bg, cursor:'pointer', flexShrink:0,
-                    border:tpl===i?`2.5px solid ${T.primary}`:`2px solid ${T.border}`,
-                    boxShadow:tpl===i?`0 0 0 2px ${T.primary}25`:'none',
-                    display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.2s',
-                  }}>
-                    <FaIcon fa="fa-solid fa-star" size={14} color={tp.accent} />
-                  </div>
-                ))}
-              </div>
-              <div style={{ fontFamily:T.font, fontSize:'11px', color:T.fgMid, marginTop:'4px' }}>{tpls[tpl].name}</div>
+            {/* Hint */}
+            <div style={{ padding:'10px 20px 16px', textAlign:'center' }}>
+              <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid }}>เลื่อนดูธีมที่ชอบ แล้วกดแชร์ได้เลย</div>
+              <div style={{ fontFamily:T.font, fontSize:'10px', color:T.fgLow, marginTop:'2px' }}>Share Card จะ generate เป็นรูป 9:16 (1080×1920)</div>
             </div>
 
-            {/* ── 9:16 Card ── */}
-            <div style={{ padding:'8px 0 12px', display:'flex', justifyContent:'center' }}>
-              <div style={{
-                width:`${CW}px`, height:`${CH}px`, background:t.bg,
-                borderRadius:'22px', overflow:'hidden', position:'relative',
-                display:'flex', flexDirection:'column',
-                boxShadow:'0 12px 40px rgba(0,0,0,0.18)',
-              }}>
-                {/* Story progress dots */}
-                <div style={{ display:'flex', gap:'3px', padding:'10px 14px 0' }}>
-                  {tpls.map((_,i) => (
-                    <div key={i} style={{ flex:1, height:'2.5px', borderRadius:'2px', background:i<=tpl?t.accent:'rgba(128,128,128,0.25)', transition:'background 0.3s' }} />
-                  ))}
-                </div>
+            {/* Full-screen scrollable cards */}
+            {tpls.map((t, i) => <ShareCard key={t.id} t={t} idx={i} />)}
 
-                {/* Brand + date */}
-                <div style={{ padding:'12px 18px 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                  <div>
-                    <div style={{ fontFamily:T.font, fontSize:'9px', fontWeight:700, color:t.sub, letterSpacing:'1.5px', textTransform:'uppercase' }}>DailyMu</div>
-                    <div style={{ fontFamily:T.font, fontSize:'10px', color:t.sub, marginTop:'1px' }}>{mock.dayName}ที่ {mock.date}</div>
-                  </div>
-                  <div style={{ width:'26px', height:'26px', borderRadius:T.rFull, background:t.accent+'20', border:`1.5px solid ${t.accent}50`, display:'flex', alignItems:'center', justifyContent:'center' }}>
-                    <FaIcon fa="fa-solid fa-moon" size={11} color={t.accent} />
-                  </div>
-                </div>
-
-                {/* Main fortune content (centered) */}
-                <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'16px 22px', textAlign:'center' }}>
-                  <div style={{ width:'52px', height:'52px', borderRadius:T.rFull, background:t.card, border:`2px solid ${t.accent}35`, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'12px' }}>
-                    <FaIcon fa={mock.status==='good'?'fa-solid fa-star':mock.status==='neutral'?'fa-solid fa-cloud-sun':'fa-solid fa-triangle-exclamation'} size={22} color={t.accent} />
-                  </div>
-                  <div style={{ fontFamily:T.font, fontSize:'17px', fontWeight:800, color:t.accent, marginBottom:'6px', lineHeight:'22px' }}>{mock.statusLabel}</div>
-                  <div style={{ fontFamily:T.font, fontSize:'14px', lineHeight:'22px', color:t.txt }}>{mock.aiSummary}</div>
-                  <div style={{ fontFamily:T.font, fontSize:'9px', color:t.sub, marginTop:'10px' }}>อ้างอิง จากตำราฮวงจุ้ย</div>
-                </div>
-
-                {/* Bottom info card */}
-                <div style={{ margin:'0 14px 12px', padding:'10px 12px', background:t.card, borderRadius:'14px', border:`1px solid ${t.bdr}` }}>
-                  {infoRows.map((row,i) => (
-                    <div key={i} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'5px 0', borderBottom:i<infoRows.length-1?`1px solid ${t.bdr}`:'none' }}>
-                      <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-                        <FaIcon fa={row.fa} size={10} color={t.accent} />
-                        <span style={{ fontFamily:T.font, fontSize:'11px', color:t.sub }}>{row.label}</span>
-                      </div>
-                      <span style={{ fontFamily:T.font, fontSize:'11px', fontWeight:600, color:row.vColor||t.txt }}>{row.value}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Footer */}
-                <div style={{ padding:'0 0 10px', textAlign:'center' }}>
-                  <div style={{ fontFamily:T.font, fontSize:'8px', color:t.sub, letterSpacing:'1.5px', textTransform:'uppercase' }}>dailymu.app</div>
-                </div>
-              </div>
-            </div>
-
-            {/* ── Actions ── */}
-            <div style={{ padding:'0 20px' }}>
-              <div style={{ height:'46px', borderRadius:T.rFull, background:T.primary, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', fontFamily:T.font, fontSize:'15px', fontWeight:700, cursor:'pointer', boxShadow:`0 4px 16px ${T.primary}30` }}>
-                <FaIcon fa="fa-solid fa-share-nodes" size={15} color="#fff" /> แชร์คำทำนาย
-              </div>
-              <div style={{ display:'flex', gap:'8px', marginTop:'8px' }}>
-                <div style={{ flex:1, height:'38px', borderRadius:T.rMd, border:`1.5px solid ${T.border}`, display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', fontFamily:T.font, fontSize:'12px', color:T.fgMid, cursor:'pointer' }}>
-                  <FaIcon fa="fa-solid fa-download" size={11} color={T.fgMid} /> บันทึกรูป
-                </div>
-                <div style={{ flex:1, height:'38px', borderRadius:T.rMd, border:`1.5px solid ${T.border}`, display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', fontFamily:T.font, fontSize:'12px', color:T.fgMid, cursor:'pointer' }}>
-                  <FaIcon fa="fa-solid fa-copy" size={11} color={T.fgMid} /> คัดลอกข้อความ
-                </div>
-              </div>
-              <div style={{ fontFamily:T.font, fontSize:'10px', color:T.fgLow, textAlign:'center', marginTop:'10px' }}>Share Card จะ generate เป็นรูป 9:16 (1080×1920)</div>
-            </div>
+            {/* Bottom spacer */}
+            <div style={{ height:'20px' }} />
           </div>
         );
       };
@@ -1406,10 +1392,10 @@
         loading: { t:'Loading State', s:[{ l:'PATTERN', i:['Skeleton shimmer animation','Match layout ของ filled state','NF-2 (DAIL-54): ใช้ skeleton/shimmer'] }] },
         empty: { t:'Empty State', s:[{ l:'PATTERN', i:['Illustration + ข้อความชี้แจง','CTA "ผูกดวงของคุณ" → หน้าตั้งค่า','AC-1.7: Required สำหรับ users ไม่มีข้อมูล'] }] },
         error: { t:'Error State', s:[{ l:'PATTERN', i:['"กำลังคำนวณดวงให้คุณ กรุณารอสักครู่"','ปุ่ม Retry (ลองใหม่)','H9: บอกปัญหาชัด + วิธีแก้'] }] },
-        share: { t:'Share Card (9:16 Story)', s:[
-          { l:'LAYOUT', i:['9:16 ratio (270×480 preview, 1080×1920 export)','Story progress dots (IG-style) ด้านบน','Brand + Date header','Fortune icon + status + AI text (center)','Info card ด้านล่าง (4 rows)','Footer branding'] },
+        share: { t:'Share Card (Full-scroll Feed)', s:[
+          { l:'LAYOUT', i:['Full-screen vertical scroll of 4 theme cards','Each card: 310×550 (9:16 ratio, export 1080×1920)','Brand + date header → fortune content → info card → footer','Actions (แชร์ / บันทึก / คัดลอก) under each card'] },
           { l:'4 THEMES', i:['Cosmic Night: dark purple gradient','Soft Pastel: light blue-pink','Gold Classic: dark navy + gold accent','Fresh Bloom: white + primary gradient'] },
-          { l:'ACTIONS', i:['แชร์คำทำนาย (primary CTA)','บันทึกรูป / คัดลอกข้อความ','AC-1.6: native share sheet'] },
+          { l:'UX PATTERN', i:['No theme selector — scroll to browse','Each card has its own share/save/copy buttons','Staggered slideUp animation per card','Hint text: "เลื่อนดูธีมที่ชอบ แล้วกดแชร์ได้เลย"'] },
         ]},
       };
 
