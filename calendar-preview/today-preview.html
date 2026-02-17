@@ -1311,16 +1311,16 @@
               <div style={{ height:'68px', flexShrink:0 }} />
             </div>
 
-            {/* ── BOTTOM: Reply bar (IG-style) ── */}
-            <div style={{ position:'absolute', bottom:0, left:0, right:0, zIndex:10, padding:'10px 14px 14px', display:'flex', alignItems:'center', gap:'12px' }}>
-              {/* Reply input */}
-              <div style={{ flex:1, height:'40px', borderRadius:T.rFull, border:`1.5px solid ${inputBdr}`, background:inputBg, display:'flex', alignItems:'center', padding:'0 16px', fontFamily:T.font, fontSize:'13px', color:chromeSub }}>
-                แชร์ดวงวันนี้...
+            {/* ── BOTTOM: CTA buttons ── */}
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, zIndex:10, padding:'10px 14px 14px', display:'flex', alignItems:'center', gap:'8px' }}>
+              <div style={{ flex:1, height:'44px', borderRadius:T.rFull, background:T.primary, display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', cursor:'pointer', boxShadow:`0 3px 14px ${T.primary}40` }}>
+                <FaIcon fa="fa-solid fa-download" size={14} color="#fff" />
+                <span style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:'#fff' }}>บันทึกรูป</span>
               </div>
-              {/* Heart */}
-              <FaIcon fa="fa-regular fa-heart" size={22} color={chromeColor} style={{ cursor:'pointer' }} />
-              {/* Share / Send */}
-              <FaIcon fa="fa-regular fa-paper-plane" size={20} color={chromeColor} style={{ cursor:'pointer' }} />
+              <div style={{ flex:1, height:'44px', borderRadius:T.rFull, background:inputBg, border:`1.5px solid ${inputBdr}`, display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', cursor:'pointer' }}>
+                <FaIcon fa="fa-solid fa-share-nodes" size={14} color={chromeColor} />
+                <span style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:chromeColor }}>แชร์</span>
+              </div>
             </div>
           </div>
         );
