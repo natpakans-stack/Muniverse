@@ -205,17 +205,20 @@
       const [cY, setCY] = useState(new Date().getFullYear());
       const [calData, setCalData] = useState({});
       const [calSub, setCalSub] = useState('month');
+      const [pageState, setPageState] = useState('normal');
       const now = new Date();
 
       useEffect(() => { setCalData(genCalData(cY, cM)); }, [cM, cY]);
 
       const go = (s, day) => {
         if (day) setSelDay(day);
+        setPageState('normal');
         if (s === 'daydetail') { setCalSub('day'); setScreen('calendar'); return; }
         if (s === 'yearview')  { setCalSub('year'); setScreen('calendar'); return; }
         if (s === 'fullcal')   { setCalSub('month'); setScreen('calendar'); return; }
         setScreen(s);
       };
+      const goState = (s, st) => { setScreen(s); setPageState(st); };
       const prevMonth = () => { if (cM === 0) { setCM(11); setCY(y => y - 1); } else setCM(m => m - 1); };
       const nextMonth = () => { if (cM === 11) { setCM(0); setCY(y => y + 1); } else setCM(m => m + 1); };
 
@@ -223,27 +226,35 @@
       const groups = [
         { label: 'TODAY', items: [
           { id: 'today', name: 'ดวงวันนี้' },
+          { id: 'today', name: 'Loading', state:'loading', indent:true },
+          { id: 'today', name: 'Empty', state:'empty', indent:true },
+          { id: 'today', name: 'Error', state:'error', indent:true },
         ]},
         { label: 'CALENDAR', items: [
           { id: 'calendar', name: 'ปฏิทิน (3 sub-tabs)' },
+          { id: 'calendar', name: 'Loading', state:'loading', indent:true },
+          { id: 'calendar', name: 'Error', state:'error', indent:true },
         ]},
         { label: 'NOTIFICATIONS', items: [
           { id: 'notify', name: 'แจ้งเตือน' },
+          { id: 'notify', name: 'Loading', state:'loading', indent:true },
+          { id: 'notify', name: 'Empty', state:'empty', indent:true },
         ]},
         { label: 'FORTUNE', items: [
           { id: 'fortune', name: 'ทำนาย (Hub)' },
+          { id: 'fortune', name: 'Loading', state:'loading', indent:true },
+          { id: 'fortune', name: 'Error', state:'error', indent:true },
           { id: 'siamsi', name: 'เซียมซี' },
           { id: 'tarot', name: 'เปิดไพ่' },
           { id: 'dream', name: 'ทำนายฝัน' },
         ]},
         { label: 'PROFILE', items: [
           { id: 'profile', name: 'โปรไฟล์' },
+          { id: 'profile', name: 'Loading', state:'loading', indent:true },
+          { id: 'profile', name: 'Guest', state:'guest', indent:true },
         ]},
-        { label: 'STATES', items: [
-          { id: 'loading', name: 'Loading (Skeleton)' },
-          { id: 'empty', name: 'Empty State' },
-          { id: 'error', name: 'Error State' },
-          { id: 'share', name: 'Share Card' },
+        { label: 'OTHER', items: [
+          { id: 'share', name: 'Share Card (IG Story)' },
         ]},
       ];
 
@@ -339,6 +350,30 @@
             <div style={{ fontFamily:T.font, fontSize:'16px', fontWeight:700, color:T.fgHigh }}>{title}</div>
           </div>
           {right && <div onClick={onRight} style={{ fontFamily:T.font, fontSize:'13px', color:T.secondary, fontWeight:600, cursor:'pointer' }}>{right}</div>}
+        </div>
+      );
+
+      /* ─── Shared State Views ─── */
+      const EmptyState = ({ icon, fa, title, desc, cta, onCta, color }) => (
+        <div style={{ padding:'48px 20px', textAlign:'center', animation:'fadeIn 0.4s ease-out' }}>
+          {fa ? <div style={{ width:'64px', height:'64px', borderRadius:T.rFull, background:(color||T.fgLow)+'12', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px' }}><FaIcon fa={fa} size={28} color={color||T.fgLow} /></div>
+           : <div style={{ fontSize:'64px', marginBottom:'16px', animation:'float 3s ease-in-out infinite' }}>{icon||'📭'}</div>}
+          <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh, marginBottom:'6px' }}>{title}</div>
+          <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, lineHeight:'21px', marginBottom:'20px' }}>{desc}</div>
+          {cta && <div onClick={onCta} style={{ height:'44px', borderRadius:T.rFull, margin:'0 48px', background:`linear-gradient(135deg, ${T.primary}, ${T.secondary})`, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:T.font, fontSize:'14px', fontWeight:700, cursor:'pointer', boxShadow:`0 4px 16px ${T.primary}40` }}>{cta}</div>}
+        </div>
+      );
+
+      const ErrorState = ({ title, desc, onRetry }) => (
+        <div style={{ padding:'48px 20px', textAlign:'center', animation:'fadeIn 0.4s ease-out' }}>
+          <div style={{ width:'64px', height:'64px', borderRadius:T.rFull, background:T.error+'12', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px' }}>
+            <FaIcon fa="fa-solid fa-triangle-exclamation" size={28} color={T.error} />
+          </div>
+          <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh, marginBottom:'6px' }}>{title||'เกิดข้อผิดพลาด'}</div>
+          <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, lineHeight:'21px', marginBottom:'20px' }}>{desc||'ไม่สามารถโหลดข้อมูลได้\nกรุณาลองใหม่อีกครั้ง'}</div>
+          <div onClick={onRetry} style={{ height:'44px', borderRadius:T.rFull, margin:'0 60px', border:`2px solid ${T.primary}`, color:T.primary, display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', fontFamily:T.font, fontSize:'14px', fontWeight:700, cursor:'pointer' }}>
+            <FaIcon fa="fa-solid fa-rotate-right" size={13} color={T.primary} /> ลองใหม่
+          </div>
         </div>
       );
 
@@ -451,7 +486,48 @@
       );
 
       /* ═══════ TODAY (FULL SCROLL — Mixed Layout) ═══════ */
-      const TodayPage = () => (
+      const TodayPage = () => {
+        const TodayLoading = () => (
+          <div style={{ padding:'16px 20px' }} role="status" aria-label="กำลังโหลดดวงวันนี้">
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px' }}>
+              <div><Skel w="140px" h="24px" /><Skel w="100px" h="14px" style={{ marginTop:'6px' }} /></div>
+              <Skel w="40px" h="40px" r="50%" />
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:'12px', marginBottom:'20px' }}>
+              <Skel w="48px" h="48px" r="50%" />
+              <div><Skel w="120px" h="18px" /><Skel w="100px" h="12px" style={{ marginTop:'4px' }} /></div>
+            </div>
+            <Skel w="100%" h="3px" r="2px" style={{ marginBottom:'16px' }} />
+            <Skel w="100%" h="60px" r="8px" style={{ marginBottom:'20px' }} />
+            <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'20px' }}>
+              {[1,2,3,4,5].map(i => <Skel key={i} w="52px" h="52px" r="50%" />)}
+            </div>
+            <div style={{ display:'flex', gap:'8px', marginBottom:'20px' }}>
+              <Skel w="50%" h="100px" r="12px" />
+              <Skel w="50%" h="100px" r="12px" />
+            </div>
+            <div style={{ display:'flex', gap:'8px', marginBottom:'20px' }}>
+              <Skel w="60%" h="40px" r="20px" />
+              <Skel w="40%" h="40px" r="20px" />
+            </div>
+            <Skel w="100%" h="200px" r="16px" style={{ marginBottom:'16px' }} />
+            <div style={{ display:'flex', gap:'10px' }}>
+              <Skel w="33%" h="110px" r="16px" />
+              <Skel w="33%" h="110px" r="16px" />
+              <Skel w="33%" h="110px" r="16px" />
+            </div>
+          </div>
+        );
+
+        if (pageState !== 'normal') return (
+          <div style={{ flex:1, overflowY:'auto' }}>
+            {pageState === 'loading' && <TodayLoading />}
+            {pageState === 'empty' && <EmptyState icon="🌙" title="ยังไม่ได้ผูกดวง" desc={'ผูกข้อมูลวัน เดือน ปีเกิด\nเพื่อดูดวงประจำวันของคุณ'} cta="ผูกดวงของคุณ" />}
+            {pageState === 'error' && <ErrorState title="ไม่สามารถโหลดดวงได้" desc={'ระบบกำลังอัปเดตข้อมูล\nกรุณารอสักครู่แล้วลองใหม่'} onRetry={() => setPageState('normal')} />}
+          </div>
+        );
+
+        return (
         <div style={{ overflowY:'auto', height:'100%', paddingBottom:'100px' }}>
 
           {/* ── 1. HERO BANNER (Full-width, no box) ── */}
@@ -531,7 +607,8 @@
             <Shortcuts />
           </div>
         </div>
-      );
+        );
+      };
 
       /* ═══════ DAY DETAIL ═══════ */
       const DayDetailPage = ({ embedded } = {}) => {
@@ -982,25 +1059,104 @@
       /* ═══════ CALENDAR PAGE (wrapper with sub-tabs) ═══════ */
       const CalendarPage = () => {
         const subTabs = [{id:'day',l:'รายวัน'},{id:'month',l:'รายเดือน'},{id:'year',l:'รายปี'}];
+
+        const CalLoading = () => (
+          <div role="status" aria-label="กำลังโหลดปฏิทิน">
+            {/* Month Nav */}
+            <div style={{ padding:'12px 20px 6px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <Skel w="34px" h="34px" r="50%" />
+              <Skel w="140px" h="20px" />
+              <Skel w="34px" h="34px" r="50%" />
+            </div>
+            {/* Filter chips */}
+            <div style={{ padding:'8px 20px 12px', display:'flex', gap:'8px' }}>
+              <Skel w="80px" h="28px" r="20px" />
+              <Skel w="64px" h="28px" r="20px" />
+              <Skel w="72px" h="28px" r="20px" />
+              <Skel w="56px" h="28px" r="20px" />
+            </div>
+            {/* Day headers */}
+            <div style={{ padding:'0 14px' }}>
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', gap:'2px', marginBottom:'4px' }}>
+                {Array(7).fill(0).map((_,i) => <div key={i} style={{ textAlign:'center', padding:'6px 0' }}><Skel w="20px" h="12px" style={{ margin:'0 auto' }} /></div>)}
+              </div>
+              {/* Calendar grid cells */}
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', gap:'3px' }}>
+                {Array(35).fill(0).map((_,i) => (
+                  <div key={i} style={{ minHeight:'60px', padding:'5px 2px 3px', borderRadius:T.rMd, border:`1px solid ${T.bgMid}`, display:'flex', flexDirection:'column', alignItems:'center', gap:'4px' }}>
+                    <Skel w="18px" h="14px" />
+                    <Skel w="6px" h="6px" r="50%" />
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Legend */}
+            <div style={{ padding:'10px 20px 0' }}>
+              <div style={{ display:'flex', justifyContent:'center', gap:'14px', paddingTop:'10px', borderTop:`1px solid ${T.border}` }}>
+                {[1,2,3].map(i => (
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:'4px' }}>
+                    <Skel w="8px" h="8px" r="50%" />
+                    <Skel w="32px" h="11px" />
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Monthly Summary card */}
+            <div style={{ margin:'16px 20px 12px', padding:'14px 16px', background:T.bgLight, borderRadius:T.rLg }}>
+              <Skel w="100px" h="14px" style={{ marginBottom:'10px' }} />
+              <div style={{ display:'flex', gap:'8px' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} style={{ flex:1, textAlign:'center', padding:'10px 0', background:T.bgWhite, borderRadius:T.rMd }}>
+                    <Skel w="28px" h="20px" style={{ margin:'0 auto 4px' }} />
+                    <Skel w="32px" h="11px" style={{ margin:'0 auto' }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Upcoming special days */}
+            <div style={{ padding:'0 20px 16px' }}>
+              <Skel w="120px" h="14px" style={{ marginBottom:'8px' }} />
+              {[1,2,3].map(i => (
+                <div key={i} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'8px 12px', marginBottom:'4px', background:T.bgLight, borderRadius:T.rMd }}>
+                  <Skel w="32px" h="32px" r={T.rMd} />
+                  <div style={{ flex:1 }}>
+                    <Skel w="80px" h="13px" style={{ marginBottom:'4px' }} />
+                    <Skel w="50px" h="11px" />
+                  </div>
+                  <Skel w="8px" h="8px" r="50%" />
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+        if (pageState !== 'normal') return (
+          <div style={{ flex:1, overflowY:'auto' }}>
+            {pageState === 'loading' && <CalLoading />}
+            {pageState === 'error' && <ErrorState title="โหลดปฏิทินไม่สำเร็จ" desc={'ไม่สามารถดึงข้อมูลปฏิทินได้\nกรุณาตรวจสอบการเชื่อมต่อ'} onRetry={() => setPageState('normal')} />}
+          </div>
+        );
+
         return (
           <div style={{ display:'flex', flexDirection:'column', height:'100%' }}>
             {/* Page header + sub-tabs */}
             <div style={{ padding:'14px 20px 0' }}>
               <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh, marginBottom:'12px' }}>ปฏิทินดูดวง</div>
-              <div style={{ display:'flex', background:T.bgLight, borderRadius:T.rFull, padding:'3px', marginBottom:'12px' }}>
+              <div style={{ display:'flex', background:T.bgLight, borderRadius:T.rFull, padding:'3px', marginBottom:'12px' }} role="tablist" aria-label="มุมมองปฏิทิน">
                 {subTabs.map(st => (
-                  <div key={st.id} onClick={() => setCalSub(st.id)} style={{
+                  <button key={st.id} onClick={() => setCalSub(st.id)} role="tab" aria-selected={calSub===st.id} style={{
                     flex:1, textAlign:'center', padding:'7px 0', borderRadius:T.rFull, cursor:'pointer',
+                    border:'none', fontFamily:T.font, fontSize:'13px',
                     background: calSub===st.id ? T.bgWhite : 'transparent',
                     boxShadow: calSub===st.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                    fontFamily:T.font, fontSize:'13px', fontWeight:calSub===st.id?700:400,
+                    fontWeight:calSub===st.id?700:400,
                     color:calSub===st.id?T.primary:T.fgMid, transition:'all 0.2s',
-                  }}>{st.l}</div>
+                  }}>{st.l}</button>
                 ))}
               </div>
             </div>
             {/* Sub-tab content */}
-            <div style={{ flex:1, overflow:'hidden' }}>
+            <div style={{ flex:1, overflow:'hidden' }} role="tabpanel">
               {calSub === 'month' && <FullCalPage embedded />}
               {calSub === 'year' && <YearPage embedded />}
               {calSub === 'day' && <DayDetailPage embedded />}
@@ -1019,35 +1175,61 @@
           { fa:'fa-solid fa-calendar-check', title:'สรุปดวงประจำสัปดาห์',          desc:'ดูสรุปดวง 7 วันที่ผ่านมาของคุณ',               time:'3 วันที่แล้ว',    read:true,  color:T.fgMid },
           { fa:'fa-solid fa-wand-magic-sparkles', title:'ฟีเจอร์ใหม่: ดูลายมือ',  desc:'ถ่ายรูปลายมือ ให้ AI วิเคราะห์ดวง',           time:'1 สัปดาห์ที่แล้ว', read:true,  color:'#9B59B6' },
         ];
+
+        const NotifLoading = () => (
+          <div role="status" aria-label="กำลังโหลดการแจ้งเตือน">
+            <div style={{ padding:'8px 20px 12px', borderBottom:`1px solid ${T.border}` }}><Skel w="80px" h="18px" /></div>
+            <div style={{ padding:'4px 20px' }}>
+              {[1,2,3,4,5].map(i => (
+                <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:'12px', padding:'14px 0', borderBottom:`1px solid ${T.bgLight}` }}>
+                  <Skel w="40px" h="40px" r="50%" />
+                  <div style={{ flex:1 }}>
+                    <Skel w="70%" h="14px" style={{ marginBottom:'6px' }} />
+                    <Skel w="90%" h="12px" style={{ marginBottom:'4px' }} />
+                    <Skel w="50px" h="10px" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+        if (pageState !== 'normal') return (
+          <div style={{ flex:1, overflowY:'auto' }}>
+            {pageState === 'loading' && <NotifLoading />}
+            {pageState === 'empty' && <EmptyState fa="fa-solid fa-bell-slash" title="ไม่มีการแจ้งเตือน" desc={'ยังไม่มีข้อความใหม่\nเราจะแจ้งเตือนเมื่อมีอัปเดต'} color={T.fgLow} />}
+          </div>
+        );
+
         return (
           <div style={{ overflowY:'auto', height:'100%', paddingBottom:'100px' }}>
             <div style={{ padding:'14px 20px 12px', borderBottom:`1px solid ${T.border}` }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh }}>แจ้งเตือน</div>
-                <div style={{ fontFamily:T.font, fontSize:'12px', color:T.secondary, fontWeight:600, cursor:'pointer' }}>อ่านทั้งหมด</div>
+                <h2 style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh, margin:0 }}>แจ้งเตือน</h2>
+                <button style={{ fontFamily:T.font, fontSize:'12px', color:T.secondary, fontWeight:600, cursor:'pointer', background:'none', border:'none', padding:0 }}>อ่านทั้งหมด</button>
               </div>
             </div>
-            <div style={{ padding:'4px 20px' }}>
+            <ul style={{ padding:'4px 20px', margin:0, listStyle:'none' }} aria-label="รายการแจ้งเตือน">
               {notifs.map((n,i) => (
-                <div key={i} style={{
+                <li key={i} style={{
                   display:'flex', alignItems:'flex-start', gap:'12px', padding:'14px 0',
                   borderBottom: i < notifs.length - 1 ? `1px solid ${T.bgLight}` : 'none',
                   opacity: n.read ? 0.55 : 1,
                 }}>
-                  <div style={{ width:'40px', height:'40px', borderRadius:T.rFull, flexShrink:0, background:n.color+'15', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <div style={{ width:'40px', height:'40px', borderRadius:T.rFull, flexShrink:0, background:n.color+'15', display:'flex', alignItems:'center', justifyContent:'center' }} aria-hidden="true">
                     <FaIcon fa={n.fa} size={16} color={n.color} />
                   </div>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:'flex', alignItems:'center', gap:'6px', marginBottom:'2px' }}>
                       <div style={{ fontFamily:T.font, fontSize:'14px', fontWeight:n.read?400:700, color:T.fgHigh, flex:1 }}>{n.title}</div>
-                      {!n.read && <div style={{ width:'8px', height:'8px', borderRadius:'50%', background:T.primary, flexShrink:0 }} />}
+                      {!n.read && <div style={{ width:'8px', height:'8px', borderRadius:'50%', background:T.primary, flexShrink:0 }} aria-label="ยังไม่ได้อ่าน" role="status" />}
                     </div>
                     <div style={{ fontFamily:T.font, fontSize:'12px', color:T.fgMid, lineHeight:'18px', marginBottom:'2px' }}>{n.desc}</div>
-                    <div style={{ fontFamily:T.font, fontSize:'11px', color:T.fgLow }}>{n.time}</div>
+                    <time style={{ fontFamily:T.font, fontSize:'11px', color:T.fgLow }}>{n.time}</time>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         );
       };
@@ -1062,31 +1244,57 @@
           { id:null,     fa:'fa-solid fa-hand',            name:'ดูลายมือ',      desc:'ถ่ายรูปลายมือ AI วิเคราะห์',           color:'#E53935',   badge:'เร็วๆ นี้' },
           { id:null,     fa:'fa-solid fa-heart',           name:'ดูดวงคู่',      desc:'เช็คความเข้ากันกับคนรัก',              color:'#F472B6',   badge:'เร็วๆ นี้' },
         ];
-        return (
-          <div style={{ overflowY:'auto', height:'100%', paddingBottom:'100px' }}>
-            <div style={{ padding:'14px 20px 12px', borderBottom:`1px solid ${T.border}` }}>
-              <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh }}>ทำนายดวง</div>
-              <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, marginTop:'2px' }}>เลือกบริการทำนายที่คุณต้องการ</div>
-            </div>
-            <div style={{ padding:'16px 20px', display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap:'12px' }}>
-              {services.map((s,i) => (
-                <div key={i} onClick={() => s.id && go(s.id)} style={{
-                  padding:'16px 14px', borderRadius:T.rXl, cursor:s.id?'pointer':'default',
-                  background:`linear-gradient(135deg, ${s.color}08 0%, ${T.bgWhite} 100%)`,
-                  border:`1px solid ${T.border}`, position:'relative',
-                  opacity:s.id?1:0.65, transition:'all 0.15s',
-                }}>
-                  {s.badge && (
-                    <div style={{ position:'absolute', top:'-6px', right:'-4px', background:s.badge==='ยอดนิยม'?T.primary:s.badge==='ใหม่'?T.secondary:T.fgLow, color:'#fff', fontFamily:T.font, fontSize:'9px', fontWeight:700, padding:'2px 8px', borderRadius:T.rFull }}>{s.badge}</div>
-                  )}
-                  <div style={{ width:'40px', height:'40px', borderRadius:T.rLg, background:s.color+'15', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'10px' }}>
-                    <FaIcon fa={s.fa} size={18} color={s.color} />
-                  </div>
-                  <div style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:T.fgHigh, marginBottom:'4px' }}>{s.name}</div>
-                  <div style={{ fontFamily:T.font, fontSize:'11px', color:T.fgMid, lineHeight:'16px' }}>{s.desc}</div>
+
+        const FortuneLoading = () => (
+          <div style={{ padding:'16px 20px' }}>
+            <Skel w="120px" h="18px" style={{ marginBottom:'6px' }} />
+            <Skel w="180px" h="13px" style={{ marginBottom:'16px' }} />
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap:'12px' }}>
+              {[1,2,3,4,5,6].map(i => (
+                <div key={i} style={{ padding:'16px 14px', borderRadius:T.rXl, border:`1px solid ${T.border}` }}>
+                  <Skel w="40px" h="40px" r="10px" style={{ marginBottom:'10px' }} />
+                  <Skel w="80%" h="14px" style={{ marginBottom:'6px' }} />
+                  <Skel w="100%" h="10px" /><Skel w="60%" h="10px" style={{ marginTop:'3px' }} />
                 </div>
               ))}
             </div>
+          </div>
+        );
+
+        if (pageState !== 'normal') return (
+          <div style={{ flex:1, overflowY:'auto' }}>
+            {pageState === 'loading' && <FortuneLoading />}
+            {pageState === 'error' && <ErrorState title="โหลดบริการไม่สำเร็จ" desc={'ไม่สามารถดึงรายการทำนายได้\nกรุณาลองใหม่อีกครั้ง'} onRetry={() => setPageState('normal')} />}
+          </div>
+        );
+
+        return (
+          <div style={{ display:'flex', flexDirection:'column', height:'100%' }}>
+              <div style={{ flex:1, overflowY:'auto', paddingBottom:'20px' }}>
+                <div style={{ padding:'8px 20px 12px', borderBottom:`1px solid ${T.border}` }}>
+                  <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh }}>ทำนายดวง</div>
+                  <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, marginTop:'2px' }}>เลือกบริการทำนายที่คุณต้องการ</div>
+                </div>
+                <div style={{ padding:'16px 20px', display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap:'12px' }}>
+                  {services.map((s,i) => (
+                    <div key={i} onClick={() => s.id && go(s.id)} style={{
+                      padding:'16px 14px', borderRadius:T.rXl, cursor:s.id?'pointer':'default',
+                      background:`linear-gradient(135deg, ${s.color}08 0%, ${T.bgWhite} 100%)`,
+                      border:`1px solid ${T.border}`, position:'relative',
+                      opacity:s.id?1:0.65, transition:'all 0.15s',
+                    }}>
+                      {s.badge && (
+                        <div style={{ position:'absolute', top:'-6px', right:'-4px', background:s.badge==='ยอดนิยม'?T.primary:s.badge==='ใหม่'?T.secondary:T.fgLow, color:'#fff', fontFamily:T.font, fontSize:'9px', fontWeight:700, padding:'2px 8px', borderRadius:T.rFull }}>{s.badge}</div>
+                      )}
+                      <div style={{ width:'40px', height:'40px', borderRadius:T.rLg, background:s.color+'15', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'10px' }}>
+                        <FaIcon fa={s.fa} size={18} color={s.color} />
+                      </div>
+                      <div style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:T.fgHigh, marginBottom:'4px' }}>{s.name}</div>
+                      <div style={{ fontFamily:T.font, fontSize:'11px', color:T.fgMid, lineHeight:'16px' }}>{s.desc}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
           </div>
         );
       };
@@ -1100,93 +1308,104 @@
           { fa:'fa-solid fa-circle-info',         label:'เกี่ยวกับ',     color:T.fgMid },
           { fa:'fa-solid fa-right-from-bracket',  label:'ออกจากระบบ',    color:T.error },
         ];
-        return (
-          <div style={{ overflowY:'auto', height:'100%', paddingBottom:'100px' }}>
-            {/* Profile header */}
-            <div style={{ padding:'24px 20px', textAlign:'center', background:`linear-gradient(180deg, ${T.primaryLight} 0%, ${T.bgWhite} 100%)` }}>
-              <div style={{
-                width:'72px', height:'72px', borderRadius:T.rFull, margin:'0 auto 12px',
-                background:`linear-gradient(135deg, ${T.primary}, ${T.secondary})`,
-                display:'flex', alignItems:'center', justifyContent:'center',
-                fontSize:'28px', fontWeight:800, color:'#fff', fontFamily:T.font,
-              }}>มู</div>
-              <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh }}>มูนิเวิร์ส</div>
-              <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, marginTop:'2px' }}>muniverse@email.com</div>
-              <div style={{
-                display:'inline-flex', alignItems:'center', gap:'4px', marginTop:'8px',
-                padding:'4px 12px', borderRadius:T.rFull,
-                background:`linear-gradient(135deg, ${T.primary}15, ${T.secondary}15)`,
-                border:`1px solid ${T.primaryMid}`,
-              }}>
-                <FaIcon fa="fa-solid fa-crown" size={11} color={T.primary} />
-                <span style={{ fontFamily:T.font, fontSize:'11px', fontWeight:700, color:T.primary }}>Premium</span>
-              </div>
+
+        const ProfileLoading = () => (
+          <div>
+            <div style={{ padding:'24px 20px', textAlign:'center' }}>
+              <Skel w="72px" h="72px" r="50%" style={{ margin:'0 auto 12px' }} />
+              <Skel w="120px" h="18px" style={{ margin:'0 auto 6px' }} />
+              <Skel w="160px" h="13px" style={{ margin:'0 auto 8px' }} />
+              <Skel w="80px" h="22px" r="20px" style={{ margin:'0 auto' }} />
             </div>
-            {/* Stats row */}
             <div style={{ display:'flex', padding:'0 20px', marginBottom:'16px' }}>
-              {[{n:'28',l:'วันที่ใช้งาน'},{n:'142',l:'ดวงที่ดู'},{n:'15',l:'แชร์'}].map((s,i) => (
-                <div key={i} style={{ flex:1, textAlign:'center', padding:'12px 0', borderRight:i<2?`1px solid ${T.border}`:'none' }}>
-                  <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh }}>{s.n}</div>
-                  <div style={{ fontFamily:T.font, fontSize:'11px', color:T.fgMid, marginTop:'2px' }}>{s.l}</div>
-                </div>
-              ))}
+              {[1,2,3].map(i => <div key={i} style={{ flex:1, textAlign:'center', padding:'12px 0' }}><Skel w="40px" h="18px" style={{ margin:'0 auto 4px' }} /><Skel w="60px" h="11px" style={{ margin:'0 auto' }} /></div>)}
             </div>
-            {/* Menu items */}
             <div style={{ padding:'0 20px' }}>
-              {menuItems.map((item,i) => (
-                <div key={i} style={{
-                  display:'flex', alignItems:'center', gap:'14px', padding:'14px 0',
-                  borderBottom:i<menuItems.length-1?`1px solid ${T.bgLight}`:'none', cursor:'pointer',
-                }}>
-                  <div style={{
-                    width:'36px', height:'36px', borderRadius:T.rLg, flexShrink:0,
-                    background:item.color+'12', display:'flex', alignItems:'center', justifyContent:'center',
-                  }}>
-                    <FaIcon fa={item.fa} size={15} color={item.color} />
-                  </div>
-                  <div style={{ flex:1, fontFamily:T.font, fontSize:'14px', fontWeight:500, color:item.color===T.error?T.error:T.fgHigh }}>{item.label}</div>
-                  <FaIcon fa="fa-solid fa-chevron-right" size={12} color={T.fgLow} />
+              {[1,2,3,4,5].map(i => (
+                <div key={i} style={{ display:'flex', alignItems:'center', gap:'14px', padding:'14px 0', borderBottom:`1px solid ${T.bgLight}` }}>
+                  <Skel w="36px" h="36px" r="10px" />
+                  <Skel w="60%" h="14px" />
                 </div>
               ))}
             </div>
           </div>
         );
+
+        const GuestState = () => (
+          <div style={{ padding:'48px 20px', textAlign:'center', animation:'fadeIn 0.4s ease-out' }}>
+            <div style={{ width:'80px', height:'80px', borderRadius:T.rFull, margin:'0 auto 16px', background:T.bgLight, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <FaIcon fa="fa-solid fa-user-plus" size={32} color={T.fgLow} />
+            </div>
+            <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh, marginBottom:'6px' }}>ยังไม่ได้เข้าสู่ระบบ</div>
+            <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, lineHeight:'21px', marginBottom:'24px' }}>{'เข้าสู่ระบบเพื่อบันทึกดวงของคุณ\nและซิงค์ข้อมูลข้ามอุปกรณ์'}</div>
+            <div style={{ height:'48px', borderRadius:T.rFull, margin:'0 40px 12px', background:`linear-gradient(135deg, ${T.primary}, ${T.secondary})`, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', fontFamily:T.font, fontSize:'15px', fontWeight:700, cursor:'pointer', boxShadow:`0 4px 16px ${T.primary}40` }}>
+              <FaIcon fa="fa-solid fa-right-to-bracket" size={15} color="#fff" /> เข้าสู่ระบบ
+            </div>
+            <div style={{ height:'44px', borderRadius:T.rFull, margin:'0 40px', border:`1.5px solid ${T.border}`, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:T.font, fontSize:'14px', fontWeight:600, color:T.fgMid, cursor:'pointer' }}>สมัครสมาชิก</div>
+          </div>
+        );
+
+        if (pageState !== 'normal') return (
+          <div style={{ flex:1, overflowY:'auto' }}>
+            {pageState === 'loading' && <ProfileLoading />}
+            {pageState === 'guest' && <GuestState />}
+          </div>
+        );
+
+        return (
+          <div style={{ display:'flex', flexDirection:'column', height:'100%' }}>
+              <div style={{ flex:1, overflowY:'auto', paddingBottom:'20px' }}>
+                {/* Profile header */}
+                <div style={{ padding:'24px 20px', textAlign:'center', background:`linear-gradient(180deg, ${T.primaryLight} 0%, ${T.bgWhite} 100%)` }}>
+                  <div style={{
+                    width:'72px', height:'72px', borderRadius:T.rFull, margin:'0 auto 12px',
+                    background:`linear-gradient(135deg, ${T.primary}, ${T.secondary})`,
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    fontSize:'28px', fontWeight:800, color:'#fff', fontFamily:T.font,
+                  }}>มู</div>
+                  <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh }}>มูนิเวิร์ส</div>
+                  <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, marginTop:'2px' }}>muniverse@email.com</div>
+                  <div style={{
+                    display:'inline-flex', alignItems:'center', gap:'4px', marginTop:'8px',
+                    padding:'4px 12px', borderRadius:T.rFull,
+                    background:`linear-gradient(135deg, ${T.primary}15, ${T.secondary}15)`,
+                    border:`1px solid ${T.primaryMid}`,
+                  }}>
+                    <FaIcon fa="fa-solid fa-crown" size={11} color={T.primary} />
+                    <span style={{ fontFamily:T.font, fontSize:'11px', fontWeight:700, color:T.primary }}>Premium</span>
+                  </div>
+                </div>
+                {/* Stats row */}
+                <div style={{ display:'flex', padding:'0 20px', marginBottom:'16px' }}>
+                  {[{n:'28',l:'วันที่ใช้งาน'},{n:'142',l:'ดวงที่ดู'},{n:'15',l:'แชร์'}].map((s,i) => (
+                    <div key={i} style={{ flex:1, textAlign:'center', padding:'12px 0', borderRight:i<2?`1px solid ${T.border}`:'none' }}>
+                      <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh }}>{s.n}</div>
+                      <div style={{ fontFamily:T.font, fontSize:'11px', color:T.fgMid, marginTop:'2px' }}>{s.l}</div>
+                    </div>
+                  ))}
+                </div>
+                {/* Menu items */}
+                <div style={{ padding:'0 20px' }}>
+                  {menuItems.map((item,i) => (
+                    <div key={i} style={{
+                      display:'flex', alignItems:'center', gap:'14px', padding:'14px 0',
+                      borderBottom:i<menuItems.length-1?`1px solid ${T.bgLight}`:'none', cursor:'pointer',
+                    }}>
+                      <div style={{
+                        width:'36px', height:'36px', borderRadius:T.rLg, flexShrink:0,
+                        background:item.color+'12', display:'flex', alignItems:'center', justifyContent:'center',
+                      }}>
+                        <FaIcon fa={item.fa} size={15} color={item.color} />
+                      </div>
+                      <div style={{ flex:1, fontFamily:T.font, fontSize:'14px', fontWeight:500, color:item.color===T.error?T.error:T.fgHigh }}>{item.label}</div>
+                      <FaIcon fa="fa-solid fa-chevron-right" size={12} color={T.fgLow} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+          </div>
+        );
       };
-
-      /* ═══════ STATE SCREENS ═══════ */
-      const LoadingPage = () => (
-        <div style={{ padding:'16px 20px' }}>
-          <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'20px' }}>
-            <div><Skel w="120px" h="24px" /><Skel w="180px" h="14px" style={{ marginTop:'6px' }} /></div>
-            <Skel w="40px" h="40px" r="50%" />
-          </div>
-          <Skel w="100%" h="280px" r="16px" style={{ marginBottom:'24px' }} />
-          <Skel w="100%" h="220px" r="16px" style={{ marginBottom:'24px' }} />
-          <div style={{ display:'flex', gap:'10px' }}>
-            <Skel w="33%" h="120px" r="16px" />
-            <Skel w="33%" h="120px" r="16px" />
-            <Skel w="33%" h="120px" r="16px" />
-          </div>
-        </div>
-      );
-
-      const EmptyPage = () => (
-        <div style={{ padding:'40px 20px', textAlign:'center', animation:'fadeIn 0.4s ease-out' }}>
-          <div style={{ fontSize:'80px', marginBottom:'16px', animation:'float 3s ease-in-out infinite' }}>🌙</div>
-          <div style={{ fontFamily:T.font, fontSize:'20px', fontWeight:800, color:T.fgHigh, marginBottom:'8px' }}>ยังไม่ได้ผูกดวง</div>
-          <div style={{ fontFamily:T.font, fontSize:'14px', color:T.fgMid, lineHeight:'22px', marginBottom:'24px' }}>ผูกข้อมูลวัน เดือน ปีเกิด<br/>เพื่อดูดวงประจำวันของคุณ</div>
-          <div style={{ height:'48px', borderRadius:T.rFull, margin:'0 40px', background:`linear-gradient(135deg, ${T.primary}, ${T.secondary})`, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:T.font, fontSize:'16px', fontWeight:700, cursor:'pointer', boxShadow:`0 4px 16px ${T.primary}40` }}>✨ ผูกดวงของคุณ</div>
-        </div>
-      );
-
-      const ErrorPage = () => (
-        <div style={{ padding:'40px 20px', textAlign:'center', animation:'fadeIn 0.4s ease-out' }}>
-          <div style={{ fontSize:'64px', marginBottom:'16px' }}>😵</div>
-          <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:700, color:T.fgHigh, marginBottom:'8px' }}>กำลังคำนวณดวงให้คุณ</div>
-          <div style={{ fontFamily:T.font, fontSize:'14px', color:T.fgMid, lineHeight:'22px', marginBottom:'24px' }}>ระบบกำลังอัปเดตข้อมูล<br/>กรุณารอสักครู่แล้วลองใหม่</div>
-          <div style={{ height:'44px', borderRadius:T.rFull, margin:'0 60px', border:`2px solid ${T.primary}`, color:T.primary, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:T.font, fontSize:'15px', fontWeight:700, cursor:'pointer' }}>🔄 ลองใหม่</div>
-        </div>
-      );
 
       const SharePage = () => {
         const [storyIdx, setStoryIdx] = useState(0);
@@ -1353,9 +1572,6 @@
           case 'siamsi': return <SiamsiPage />;
           case 'tarot': return <TarotPage />;
           case 'dream': return <DreamPage />;
-          case 'loading': return <LoadingPage />;
-          case 'empty': return <EmptyPage />;
-          case 'error': return <ErrorPage />;
           case 'share': return <SharePage />;
           default: return <TodayPage />;
         }
@@ -1366,27 +1582,30 @@
         today: { t:'Today Page (Full Scroll)', s:[
           { l:'STRUCTURE', i:['3 Sections scroll: Summary → Calendar → Shortcuts','Header: ทักทาย + Avatar','Padding: 20px | Section gap: 24px'] },
           { l:'TAB BAR', i:['Floating center button (56px, gradient pink)','Curved notch SVG path in bar bg','5 tabs: ปฏิทิน / แจ้งเตือน / ดวงวันนี้ / ทำนาย / โปรไฟล์','Active: primary color + bold label'] },
+          { l:'STATES', i:['ปกติ: แสดงข้อมูลดวงวันนี้ครบ','Loading: Skeleton shimmer ตาม layout จริง','Empty: ยังไม่ได้ผูกดวง + CTA ผูกดวง','Error: ไม่สามารถโหลดดวง + ปุ่มลองใหม่'] },
           { l:'BA NOTES', i:['AC-1.1: Load ภายใน 3 วินาที','NF-1: Cache ตาม วัน + user','Reset เที่ยงคืน timezone ผู้ใช้'] },
         ]},
         calendar: { t:'ปฏิทิน (3 Sub-tabs)', s:[
           { l:'SUB-TABS', i:['Pill segment control: รายวัน | รายเดือน | รายปี','Default: รายเดือน (Full Calendar)','รายวัน → Day Detail content (embedded)','รายปี → Year Overview content (embedded)'] },
           { l:'MONTH VIEW', i:['Month Nav (full-width, no box)','Filter Bar + chips (full-width)','Calendar Grid: taller cells 60px min-h','Monthly Summary + วันสำคัญ list'] },
-          { l:'FILTER SYSTEM', i:['Toggle dropdown: 6 ประเภทวันสำคัญ','FontAwesome icons แทน emoji ทั้งหมด','Active chips แสดงด้านบน กด ✕ ปิดได้'] },
+          { l:'STATES', i:['ปกติ: แสดงปฏิทินพร้อม sub-tabs','Loading: Skeleton grid 7×5 cells','Error: โหลดปฏิทินไม่สำเร็จ + ลองใหม่'] },
           { l:'NAVIGATION', i:['Tap day → switch to รายวัน sub-tab','ดูปีรวม → switch to รายปี sub-tab','BackHeader hidden in embedded mode'] },
         ]},
         notify: { t:'แจ้งเตือน', s:[
           { l:'LAYOUT', i:['Header: "แจ้งเตือน" + อ่านทั้งหมด CTA','Notification list (vertically scrollable)','Each item: Icon circle + title + desc + time','Unread: bold title + pink dot indicator'] },
+          { l:'STATES', i:['ปกติ: แสดงรายการแจ้งเตือน (6 items)','Loading: Skeleton rows 5 แถว','Empty: ไม่มีการแจ้งเตือน + bell-slash icon'] },
           { l:'MOCK DATA', i:['6 notification items mixed read/unread','Types: ดวง, วันพระ, ดวงจันทร์, โปรโมชั่น, สรุป, ฟีเจอร์ใหม่','Time format: relative (5 นาที, 2 ชม., เมื่อวาน)'] },
         ]},
         fortune: { t:'ทำนาย (Micro Service Hub)', s:[
           { l:'LAYOUT', i:['Header: "ทำนายดวง" + subtitle','2-column grid of service cards','Each card: icon + name + description + badge'] },
+          { l:'STATES', i:['ปกติ: แสดง grid 6 service cards','Loading: Skeleton grid 2×3 cards','Error: โหลดบริการไม่สำเร็จ + ลองใหม่'] },
           { l:'SERVICES', i:['เซียมซี (fa-scroll, ยอดนิยม) → SiamsiPage','เปิดไพ่ทาโร่ (fa-clone) → TarotPage','ทำนายฝัน (fa-cloud-moon, ใหม่) → DreamPage','ดูดวงเบอร์โทร (เร็วๆ นี้)','ดูลายมือ (เร็วๆ นี้)','ดูดวงคู่ (เร็วๆ นี้)'] },
           { l:'INTERACTION', i:['Active services → navigate to engine page','Coming soon → disabled (opacity 0.65)','Badge colors: ยอดนิยม=pink, ใหม่=violet, เร็วๆ นี้=gray'] },
         ]},
         profile: { t:'โปรไฟล์', s:[
           { l:'LAYOUT', i:['Gradient header: avatar + name + email','Premium badge (fa-crown, pill)','Stats row: วันที่ใช้งาน / ดวงที่ดู / แชร์','Menu list with FA icons + chevron'] },
+          { l:'STATES', i:['ปกติ: แสดงโปรไฟล์ผู้ใช้ + เมนู','Loading: Skeleton avatar + ข้อมูล + เมนู','Guest: ยังไม่เข้าสู่ระบบ + CTA เข้าสู่ระบบ/สมัคร'] },
           { l:'MENU ITEMS', i:['แก้ไขโปรไฟล์ (fa-pen-to-square)','การแจ้งเตือน (fa-bell)','ธีม (fa-palette)','เกี่ยวกับ (fa-circle-info)','ออกจากระบบ (fa-right-from-bracket, red)'] },
-          { l:'NOTES', i:['Static mock — no interactivity','Avatar: gradient circle with "มู" text','Stats are decorative mock numbers'] },
         ]},
         sec1: { t:'Sec 1: Daily Summary Card', s:[
           { l:'COMPONENTS', i:['Status Badge (icon + color + label)','AI Summary (max 3 lines, 150 chars)','Lucky Color Chips (3 aspects)','Do/Avoid Lists (min 1 each)','Share + Read More buttons'] },
@@ -1423,9 +1642,6 @@
         dream: { t:'ทำนายฝัน Engine', s:[
           { l:'FLOW', i:['Input: text + suggestion chips 6 คำ','Loading: ดวงดาวหมุน animation','Result: ความหมาย + AI interpretation','Actions: ทำนายใหม่ / แชร์'] },
         ]},
-        loading: { t:'Loading State', s:[{ l:'PATTERN', i:['Skeleton shimmer animation','Match layout ของ filled state','NF-2 (DAIL-54): ใช้ skeleton/shimmer'] }] },
-        empty: { t:'Empty State', s:[{ l:'PATTERN', i:['Illustration + ข้อความชี้แจง','CTA "ผูกดวงของคุณ" → หน้าตั้งค่า','AC-1.7: Required สำหรับ users ไม่มีข้อมูล'] }] },
-        error: { t:'Error State', s:[{ l:'PATTERN', i:['"กำลังคำนวณดวงให้คุณ กรุณารอสักครู่"','ปุ่ม Retry (ลองใหม่)','H9: บอกปัญหาชัด + วิธีแก้'] }] },
         share: { t:'Share Card (IG Story Viewer)', s:[
           { l:'IG STORY UI', i:['Full-screen 9:16 — fills entire phone frame','Story progress bars at top (4 segments)','User row: avatar + "DailyMu" + time + mute/pause/close','Bottom: reply input + heart + paper-plane (IG-style)'] },
           { l:'INTERACTION', i:['Tap right 70% → next theme','Tap left 30% → previous theme','Last card tap right → go back to Today','X button → close back to Today'] },
@@ -1444,11 +1660,28 @@
             <div style={{ fontSize:'20px', fontWeight:800, color:T.fgHigh, marginBottom:'2px' }}>DailyMu</div>
             <div style={{ fontSize:'11px', color:T.fgMid, marginBottom:'20px' }}>App Preview — Tab Navigation</div>
             {groups.map((g,gi) => (
-              <div key={gi} style={{ marginBottom:'16px' }}>
+              <div key={gi} style={{ marginBottom:'16px' }} role="navigation" aria-label={g.label}>
                 <div style={{ fontSize:'9px', fontWeight:700, color:T.fgLow, textTransform:'uppercase', letterSpacing:'1px', marginBottom:'6px' }}>{g.label}</div>
-                {g.items.map(s => (
-                  <div key={s.id} onClick={() => go(s.id)} style={{ padding:'7px 12px', borderRadius:T.rMd, marginBottom:'3px', background:screen===s.id?T.secondary:'transparent', color:screen===s.id?'#fff':T.fgHigh, fontWeight:screen===s.id?700:400, fontSize:'13px', cursor:'pointer', transition:'all 0.15s' }}>{s.name}</div>
-                ))}
+                {g.items.map((s,si) => {
+                  const isActive = s.state
+                    ? (screen===s.id && pageState===s.state)
+                    : (screen===s.id && pageState==='normal');
+                  return (
+                    <button key={`${s.id}-${s.state||'n'}-${si}`}
+                      onClick={() => s.state ? goState(s.id, s.state) : go(s.id)}
+                      aria-current={isActive ? 'page' : undefined}
+                      style={{
+                        display:'block', width:'100%', textAlign:'left', border:'none',
+                        padding: s.indent ? '5px 12px 5px 24px' : '7px 12px',
+                        borderRadius:T.rMd, marginBottom:'2px', cursor:'pointer',
+                        background:isActive?T.secondary:'transparent',
+                        color:isActive?'#fff': s.indent?T.fgMid:T.fgHigh,
+                        fontWeight:isActive?700: s.indent?400:400,
+                        fontSize:s.indent?'11px':'13px',
+                        fontFamily:T.font, transition:'all 0.15s',
+                      }}>{s.indent?'└ ':''}{s.name}</button>
+                  );
+                })}
               </div>
             ))}
             {/* Jira Reference */}
