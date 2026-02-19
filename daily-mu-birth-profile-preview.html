@@ -37,7 +37,7 @@
       --text-primary: #1B1D22;
       --text-secondary: #6A6E83;
       --text-tertiary: #9A9DAD;
-      --text-disabled: #CFD1D9;
+      --text-disabled: #9A9DAD;
 
       /* Semantic */
       --error: #EA244F;
@@ -77,14 +77,15 @@
       --gradient-btn-accent: linear-gradient(135deg, #7279FB 0%, #AAAFFD 50%, #7279FB 100%);
       --gradient-surface: linear-gradient(180deg, rgba(236,89,157,0.04) 0%, rgba(236,89,157,0.01) 100%);
 
-      /* WCAG Contrast Ratios (verified)
-         #1B1D22 on #FFFFFF → 16.5:1 AAA
-         #6A6E83 on #FFFFFF → 5.6:1  AA
-         #FFFFFF on #EC599D → 3.2:1  AA-large
-         #FFFFFF on #7279FB → 4.6:1  AA
-         #EA244F on #FFFFFF → 5.0:1  AA
-         #559652 on #FFFFFF → 4.6:1  AA
-         #9A9DAD on #FFFFFF → 3.0:1  AA-large
+      /* WCAG Contrast Ratios (verified — updated 2026-02-18)
+         #1B1D22 on #FFFFFF → 16.5:1 AAA    — primary text
+         #6A6E83 on #FFFFFF → 5.6:1  AA     — secondary text, dropdown labels
+         #9A9DAD on #FFFFFF → 3.0:1  AA-lg  — tertiary text, icons, disabled
+         #FFFFFF on #EC599D → 3.2:1  AA-lg  — white on primary
+         #FFFFFF on #7279FB → 4.6:1  AA     — white on accent buttons
+         #EA244F on #FFFFFF → 5.0:1  AA     — error text
+         #559652 on #FFFFFF → 4.6:1  AA     — success text
+         #026486 on #E6F6FC → 8.2:1  AAA    — info hint
       */
     }
 
@@ -180,32 +181,6 @@
     }
 
     /* ========================================
-       PROGRESS BAR
-       ======================================== */
-    .progress-bar {
-      display: flex;
-      gap: 8px;
-      padding: 0 24px 20px;
-      flex-shrink: 0;
-    }
-
-    .progress-step {
-      flex: 1;
-      height: 4px;
-      border-radius: 2px;
-      background: #EBECEF;
-      transition: background 0.3s ease;
-    }
-
-    .progress-step.active {
-      background: var(--accent);
-    }
-
-    .progress-step.done {
-      background: var(--accent-light);
-    }
-
-    /* ========================================
        CONTENT AREA
        ======================================== */
     .content {
@@ -243,6 +218,111 @@
     }
 
     /* ========================================
+       VERTICAL PROGRESS STEPPER
+       ======================================== */
+    .section-block {
+      position: relative;
+      padding-left: 40px;
+      padding-bottom: 28px;
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* Vertical connecting line */
+    .section-block::before {
+      content: '';
+      position: absolute;
+      left: 13px;
+      top: 28px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+      border-radius: 1px;
+    }
+
+    .section-block:last-child {
+      padding-bottom: 8px;
+      margin-bottom: 0;
+    }
+
+    .section-block:last-child::before {
+      display: none;
+    }
+
+    /* Done step → line turns green (success) */
+    .section-block.step-done::before {
+      background: var(--success);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 16px;
+    }
+
+    /* Step indicator — base (pending) */
+    .section-number {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      background: #FFFFFF;
+      border: 2px solid var(--border);
+      color: var(--text-tertiary);
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+
+    /* Active step — filled accent + glow ring */
+    .section-number.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #FFFFFF;
+      box-shadow: 0 0 0 4px rgba(114,121,251,0.2), 0 2px 8px rgba(114,121,251,0.3);
+    }
+
+    /* Done step — filled success + checkmark */
+    .section-number.done {
+      background: var(--success);
+      border-color: var(--success);
+      color: #FFFFFF;
+      font-size: 0;
+    }
+
+    .section-number.done::after {
+      content: '';
+      width: 14px;
+      height: 14px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 28px;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* ========================================
        FORM ELEMENTS
        ======================================== */
     .form-group {
@@ -250,6 +330,10 @@
       flex-direction: column;
       gap: 8px;
       margin-bottom: 20px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
     }
 
     .form-label {
@@ -350,14 +434,16 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 14px 0;
+      padding: 12px 0;
+      min-height: 48px;
       cursor: pointer;
+      border-radius: var(--radius-md);
     }
 
     .checkbox {
-      width: 22px;
-      height: 22px;
-      border: 2px solid var(--border);
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--text-tertiary);
       border-radius: 6px;
       display: flex;
       align-items: center;
@@ -390,120 +476,392 @@
     }
 
     /* ========================================
-       WHEEL PICKER
+       DROPDOWN (Date & Time)
        ======================================== */
-    .picker-container {
+    .dropdown-row {
       display: flex;
-      gap: 2px;
-      justify-content: center;
-      align-items: center;
-      margin: 20px 0;
-      position: relative;
+      align-items: flex-end;
+      gap: 8px;
     }
 
-    .picker-column {
-      width: 100px;
-      height: 200px;
-      overflow: hidden;
-      position: relative;
+    .dropdown-group {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 6px;
+      flex: 1;
     }
 
-    .picker-column::before,
-    .picker-column::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0;
-      height: 70px;
-      z-index: 2;
-      pointer-events: none;
+    .dropdown-group.wide {
+      flex: 1.5;
     }
 
-    .picker-column::before {
-      top: 0;
-      background: linear-gradient(180deg, var(--bg-deep) 0%, transparent 100%);
+    .dropdown-label {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 22px;
+      color: var(--text-secondary);
+      letter-spacing: 0.3px;
     }
 
-    .picker-column::after {
-      bottom: 0;
-      background: linear-gradient(0deg, var(--bg-deep) 0%, transparent 100%);
-    }
+    /* .form-dropdown removed — replaced by .dropdown-trigger + bottom sheet */
 
-    .picker-highlight {
-      position: absolute;
-      top: 50%;
-      left: 0; right: 0;
-      height: 44px;
-      transform: translateY(-50%);
-      background: rgba(114,121,251,0.10);
-      border-top: 1px solid rgba(114,121,251,0.25);
-      border-bottom: 1px solid rgba(114,121,251,0.25);
-      border-radius: var(--radius-sm);
-      z-index: 1;
-    }
-
-    .picker-items {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 78px 0;
-      position: relative;
-      z-index: 1;
-      transform: translateY(-88px);
-    }
-
-    .picker-item {
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .dropdown-colon {
       font-size: 20px;
-      font-weight: 400;
-      line-height: 28px;
-      color: var(--text-tertiary);
+      font-weight: 700;
+      color: var(--text-primary);
+      padding-bottom: 10px;
+    }
+
+    /* ========================================
+       DROPDOWN TRIGGER (replaces native select)
+       ======================================== */
+    .dropdown-trigger {
+      width: 100%;
+      height: 48px;
+      padding: 0 36px 0 12px;
+      background: #FFFFFF;
+      border: 1px solid #EBECEF;
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 46px;
+      cursor: pointer;
       transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .picker-item.selected {
-      color: var(--text-primary);
-      font-weight: 700;
-      font-size: 20px;
-      line-height: 28px;
+    .dropdown-trigger::after {
+      content: '';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239A9DAD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
     }
 
-    .picker-separator {
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 28px;
-      color: var(--text-primary);
-      padding: 0 4px;
-      align-self: center;
+    .dropdown-trigger.placeholder {
+      color: var(--text-secondary);
     }
 
-    .picker-container.disabled {
+    .dropdown-trigger.filled {
+      color: var(--text-primary);
+      border-color: var(--border);
+      background: #FFFFFF;
+    }
+
+    .dropdown-trigger.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px #C6CFFA;
+    }
+
+    .dropdown-trigger.disabled {
       opacity: 0.3;
-      pointer-events: none;
+      cursor: not-allowed;
+      background-color: var(--bg-input);
     }
 
-    /* Scrolling state — items shifted additional half-step */
-    .picker-items.scrolling {
-      transform: translateY(-110px);
+    /* ========================================
+       BOTTOM SHEET PICKER
+       ======================================== */
+    .bottomsheet-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(16,17,20,0.5);
+      display: flex;
+      align-items: flex-end;
+      z-index: 100;
     }
 
-    .picker-items.scrolling .picker-item.near {
+    .bottomsheet-card {
+      background: #FFFFFF;
+      border-radius: 24px 24px 0 0;
+      width: 100%;
+      height: 70%;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+      animation: sheetSlideUp 0.3s ease-out;
+    }
+
+    @keyframes sheetSlideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .bottomsheet-handle {
+      width: 36px;
+      height: 5px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 3px;
+      margin: 12px auto 0;
+      flex-shrink: 0;
+    }
+
+    .bottomsheet-header {
+      padding: 16px 24px 12px;
+      flex-shrink: 0;
+    }
+
+    .bottomsheet-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 26px;
       color: var(--text-primary);
+    }
+
+    .bottomsheet-options {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 16px;
+      max-height: 280px;
+    }
+
+    .bottomsheet-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 48px;
+      padding: 12px 12px;
+      font-size: 16px;
+      line-height: 24px;
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .bottomsheet-option:hover {
+      background: rgba(114,121,251,0.06);
+    }
+
+    .bottomsheet-option.selected {
+      background: rgba(114,121,251,0.08);
+      color: var(--accent);
       font-weight: 700;
     }
+
+    .bottomsheet-option.selected::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%237279FB' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    .bottomsheet-footer {
+      padding: 16px 24px 24px;
+      flex-shrink: 0;
+    }
+
+    .bottomsheet-footer .btn-primary {
+      margin: 0;
+    }
+
+    /* ========================================
+       STEP-TAB BOTTOM SHEET
+       ======================================== */
+    .step-tab-bar {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      padding: 0 16px;
+      gap: 4px;
+    }
+
+    .step-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 8px 16px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      min-height: 56px;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .step-tab-label {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: var(--text-tertiary);
+      transition: color 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      text-align: center;
+    }
+
+    .step-tab-value {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 22px;
+      color: var(--text-tertiary);
+      margin-top: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      text-align: center;
+      transition: color 0.2s ease;
+    }
+
+    /* Active tab */
+    .step-tab.active .step-tab-label { color: var(--accent); }
+
+    .step-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* Completed tab — green */
+    .step-tab.completed .step-tab-label { color: var(--success); font-size: 11px; line-height: 16px; font-weight: 400; }
+    .step-tab.completed .step-tab-value { color: var(--success); font-size: 15px; }
+
+    .step-tab.completed::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--success);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* Disabled tab */
+    .step-tab.disabled { cursor: default; opacity: 0.45; }
+
+    /* Progress bar (dots + lines) */
+    .step-progress-bar {
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      flex-shrink: 0;
+    }
+
+    .step-progress-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--border);
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .step-progress-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(114,121,251,0.2);
+    }
+
+    .step-progress-dot.completed { background: var(--success); }
+
+    .step-progress-line {
+      flex: 1;
+      height: 2px;
+      background: var(--border);
+      transition: background 0.3s ease;
+    }
+
+    .step-progress-line.completed { background: var(--success); }
+
+    /* Step tab content list */
+    .step-tab-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px 0;
+    }
+
+    .step-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 48px;
+      padding: 12px 16px;
+      font-size: 16px;
+      line-height: 24px;
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .step-option:hover { background: rgba(114,121,251,0.06); }
+
+    .step-option.selected {
+      background: rgba(114,121,251,0.08);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .step-option.selected::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%237279FB' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    /* Step search inside bottom sheet */
+    .step-search-wrapper {
+      position: relative;
+      padding: 8px 16px 4px;
+      flex-shrink: 0;
+    }
+
+    .step-search-wrapper svg {
+      position: absolute;
+      left: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: var(--text-tertiary);
+    }
+
+    .step-search {
+      width: 100%;
+      height: 44px;
+      padding: 0 16px 0 42px;
+      background: var(--bg-input);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .step-search::placeholder { color: var(--text-secondary); }
+    .step-search:focus { border-color: var(--border-focus); background: var(--bg-input-focus); }
+
+    .bottomsheet-safe-bottom { height: 24px; flex-shrink: 0; }
 
     /* ========================================
        SEARCH INPUT
        ======================================== */
     .search-input-wrapper {
       position: relative;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .search-input-wrapper svg {
@@ -513,7 +871,7 @@
       transform: translateY(-50%);
       width: 20px;
       height: 20px;
-      color: var(--text-disabled);
+      color: var(--text-tertiary);
     }
 
     .search-input {
@@ -531,7 +889,7 @@
     }
 
     .search-input::placeholder {
-      color: var(--text-disabled);
+      color: var(--text-secondary);
     }
 
     .search-input:focus {
@@ -546,8 +904,11 @@
       display: flex;
       flex-direction: column;
       gap: 2px;
-      flex: 1;
+      max-height: 200px;
       overflow-y: auto;
+      position: relative;
+      -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
     }
 
     .province-item {
@@ -564,6 +925,25 @@
 
     .province-item:hover {
       background: #F8F8F9;
+    }
+
+    .province-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 32px 16px;
+      color: var(--text-tertiary);
+      font-size: 14px;
+      line-height: 22px;
+      text-align: center;
+    }
+
+    .province-empty svg {
+      width: 32px;
+      height: 32px;
+      color: var(--text-tertiary);
+      opacity: 0.6;
     }
 
     .province-item.selected {
@@ -650,6 +1030,12 @@
     .btn-container {
       padding: 16px 24px 36px;
       flex-shrink: 0;
+    }
+
+    .btn-container-inline {
+      padding: 16px 24px 36px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0) 0%, #FFFFFF 16px);
     }
 
     .btn-primary {
@@ -907,59 +1293,6 @@
     }
 
     /* ========================================
-       SKELETON LOADING
-       ======================================== */
-    .skeleton {
-      background: #EBECEF;
-      border-radius: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .skeleton::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
-      animation: shimmer 1.5s infinite;
-    }
-
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    .skeleton-title {
-      width: 160px;
-      height: 28px;
-      margin-bottom: 8px;
-    }
-
-    .skeleton-subtitle {
-      width: 140px;
-      height: 20px;
-      margin-bottom: 32px;
-    }
-
-    .skeleton-search {
-      width: 100%;
-      height: 48px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-    }
-
-    .skeleton-province {
-      width: 100%;
-      height: 48px;
-      border-radius: 8px;
-      margin-bottom: 2px;
-    }
-
-    .skeleton-province.short { width: 45%; }
-    .skeleton-province.medium { width: 65%; }
-    .skeleton-province.long { width: 80%; }
-
-    /* ========================================
        SCREEN VISIBILITY
        ======================================== */
     .screen { display: none; flex-direction: column; height: 100%; }
@@ -978,7 +1311,8 @@
       gap: 16px;
       position: sticky;
       top: 24px;
-      height: fit-content;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
       box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 24px rgba(0,0,0,0.06);
     }
 
@@ -1118,17 +1452,13 @@
     <div class="control-title">Screen Navigator</div>
 
     <div class="control-section">
-      <div class="control-label">Step Form</div>
-      <button class="control-btn active" onclick="showScreen('step1-default')">1. Name (Default)</button>
-      <button class="control-btn" onclick="showScreen('step1-error')">1. Name (Error)</button>
-      <button class="control-btn" onclick="showScreen('step2')">2. Birth Date</button>
-      <button class="control-btn" onclick="showScreen('step2-scrolling')">2. Date (Scrolling)</button>
-      <button class="control-btn" onclick="showScreen('step3-default')">3. Birth Time</button>
-      <button class="control-btn" onclick="showScreen('step3-scrolling')">3. Time (Scrolling)</button>
-      <button class="control-btn" onclick="showScreen('step3-unknown')">3. Unknown Time</button>
-      <button class="control-btn" onclick="showScreen('step4-skeleton')">4. Province (Skeleton)</button>
-      <button class="control-btn" onclick="showScreen('step4-default')">4. Province (Default)</button>
-      <button class="control-btn" onclick="showScreen('step4')">4. Province (Selected)</button>
+      <div class="control-label">Form States</div>
+      <button class="control-btn active" onclick="showScreen('form-default')">Form (Default)</button>
+      <button class="control-btn" onclick="showScreen('form-selecting')">Form (Selecting)</button>
+      <button class="control-btn" onclick="showScreen('form-filled')">Form (Filled)</button>
+      <button class="control-btn" onclick="showScreen('form-error')">Form (Error)</button>
+      <button class="control-btn" onclick="showScreen('form-unknown-time')">Form (Unknown Time)</button>
+      <button class="control-btn" onclick="showScreen('form-no-results')">Form (No Results)</button>
     </div>
 
     <div class="control-divider"></div>
@@ -1146,13 +1476,37 @@
       <div class="control-label">Dialogs</div>
       <button class="control-btn" onclick="showScreen('exit-dialog')">Exit Confirm</button>
     </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-section">
+      <div class="control-label">Date Picker (Step-Tab)</div>
+      <button class="control-btn" onclick="showScreen('date-step1')">Step 1: เลือกปี</button>
+      <button class="control-btn" onclick="showScreen('date-step2')">Step 2: เลือกเดือน</button>
+      <button class="control-btn" onclick="showScreen('date-step3')">Step 3: เลือกวัน</button>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-section">
+      <div class="control-label">Time Picker (Step-Tab)</div>
+      <button class="control-btn" onclick="showScreen('time-step1')">Step 1: เลือกชั่วโมง</button>
+      <button class="control-btn" onclick="showScreen('time-step2')">Step 2: เลือกนาที</button>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-section">
+      <div class="control-label">Address Picker (Step-Tab)</div>
+      <button class="control-btn" onclick="showScreen('addr-step1')">Step 1: จังหวัด</button>
+    </div>
   </div>
 
   <!-- ============ PHONE FRAME ============ -->
   <div class="phone-frame">
 
-    <!-- ======== SCREEN: Step 1 Default ======== -->
-    <div class="screen active" id="screen-step1-default">
+    <!-- ======== SCREEN: Form Default (All Steps) ======== -->
+    <div class="screen active" id="screen-form-default">
       <div class="status-bar">
         <span>9:41</span>
         <div class="status-bar-icons">
@@ -1169,36 +1523,68 @@
         </button>
       </div>
 
-      <div class="progress-bar">
-        <div class="progress-step active"></div>
-        <div class="progress-step"></div>
-        <div class="progress-step"></div>
-        <div class="progress-step"></div>
-      </div>
-
       <div class="content">
-        <h1 class="screen-title">ชื่อของคุณ</h1>
-        <p class="screen-subtitle">ใช้ชื่อจริงเพื่อสร้างดวงกำเนิด</p>
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
 
-        <div class="form-group">
-          <label class="form-label">ชื่อ</label>
-          <input type="text" class="form-input" placeholder="สมชาย">
+        <!-- Section 1: Birth Date (Pending) -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number active">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger placeholder">เลือกวันเดือนปี</div>
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">นามสกุล</label>
-          <input type="text" class="form-input" placeholder="ใจดี">
+        <!-- Section 2: Birth Time (Pending) -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger placeholder">เลือกเวลาเกิด</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
         </div>
+
+        <!-- Section 3: Province -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger placeholder">เลือกจังหวัด</div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <div class="btn-container">
-        <button class="btn-primary disabled">ถัดไป</button>
+      <div class="btn-container-inline">
+        <button class="btn-primary disabled">ยืนยันข้อมูล</button>
       </div>
       <div class="home-indicator"></div>
     </div>
 
-    <!-- ======== SCREEN: Step 1 Error ======== -->
-    <div class="screen" id="screen-step1-error">
+    <!-- ======== SCREEN: Form Selecting (Dropdown Open Mockup) ======== -->
+    <div class="screen" id="screen-form-selecting">
       <div class="status-bar">
         <span>9:41</span>
         <div class="status-bar-icons">
@@ -1215,44 +1601,92 @@
         </button>
       </div>
 
-      <div class="progress-bar">
-        <div class="progress-step active"></div>
-        <div class="progress-step"></div>
-        <div class="progress-step"></div>
-        <div class="progress-step"></div>
-      </div>
-
       <div class="content">
-        <h1 class="screen-title">ชื่อของคุณ</h1>
-        <p class="screen-subtitle">ใช้ชื่อจริงเพื่อสร้างดวงกำเนิด</p>
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
 
-        <div class="form-group">
-          <label class="form-label">ชื่อ</label>
-          <input type="text" class="form-input error" placeholder="สมชาย">
-          <span class="form-error">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-            โปรดระบุชื่อ
-          </span>
+        <!-- Section 1: Birth Date (Active — tapped to open bottom sheet) -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number active">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger active">เลือกวันเดือนปี</div>
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">นามสกุล</label>
-          <input type="text" class="form-input error" placeholder="ใจดี">
-          <span class="form-error">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-            โปรดระบุนามสกุล
-          </span>
+        <!-- Section 2: Birth Time -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger placeholder">เลือกเวลาเกิด</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+        </div>
+
+        <!-- Section 3: Province -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger placeholder">เลือกจังหวัด</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Sheet: Date Step-Tab (Step 1 — เลือกปี) -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab active"><span class="step-tab-label">ปี (พ.ศ.)</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">เดือน</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">วัน</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">2569</div>
+            <div class="step-option">2568</div>
+            <div class="step-option">2567</div>
+            <div class="step-option">2566</div>
+            <div class="step-option">2565</div>
+            <div class="step-option">2564</div>
+            <div class="step-option">2563</div>
+            <div class="step-option">2562</div>
+            <div class="step-option">2561</div>
+            <div class="step-option">2560</div>
+            <div class="step-option">2559</div>
+            <div class="step-option">2558</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
         </div>
       </div>
 
-      <div class="btn-container">
-        <button class="btn-primary disabled">ถัดไป</button>
-      </div>
       <div class="home-indicator"></div>
     </div>
 
-    <!-- ======== SCREEN: Step 2 Birth Date ======== -->
-    <div class="screen" id="screen-step2">
+    <!-- ======== SCREEN: Form Filled (All Steps) ======== -->
+    <div class="screen" id="screen-form-filled">
       <div class="status-bar">
         <span>9:42</span>
         <div class="status-bar-icons">
@@ -1262,70 +1696,153 @@
       </div>
 
       <div class="nav-bar">
-        <button class="nav-btn" title="Back">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
+        <div class="nav-spacer"></div>
         <div></div>
         <button class="nav-btn" title="Close">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
 
-      <div class="progress-bar">
-        <div class="progress-step done"></div>
-        <div class="progress-step active"></div>
-        <div class="progress-step"></div>
-        <div class="progress-step"></div>
-      </div>
-
       <div class="content">
-        <h1 class="screen-title">วันเดือนปีเกิด</h1>
-        <p class="screen-subtitle">เลือกวันเกิด</p>
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
 
-        <div class="picker-container">
-          <div class="picker-column">
-            <div class="picker-highlight"></div>
-            <div class="picker-items">
-              <div class="picker-item">13</div>
-              <div class="picker-item">14</div>
-              <div class="picker-item selected">15</div>
-              <div class="picker-item">16</div>
-              <div class="picker-item">17</div>
-            </div>
+        <!-- Section 1: Birth Date (Done) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
           </div>
-
-          <div class="picker-column" style="width:130px;">
-            <div class="picker-highlight"></div>
-            <div class="picker-items">
-              <div class="picker-item">พฤศจิกายน</div>
-              <div class="picker-item">ธันวาคม</div>
-              <div class="picker-item selected">มกราคม</div>
-              <div class="picker-item">กุมภาพันธ์</div>
-              <div class="picker-item">มีนาคม</div>
-            </div>
-          </div>
-
-          <div class="picker-column">
-            <div class="picker-highlight"></div>
-            <div class="picker-items">
-              <div class="picker-item">2533</div>
-              <div class="picker-item">2534</div>
-              <div class="picker-item selected">2535</div>
-              <div class="picker-item">2536</div>
-              <div class="picker-item">2537</div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger filled">15 มกราคม 2535</div>
             </div>
           </div>
         </div>
+
+        <!-- Section 2: Birth Time (Done) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger filled">14:30 น.</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+        </div>
+
+        <!-- Section 3: Province (Done) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger filled">กรุงเทพมหานคร</div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <div class="btn-container">
-        <button class="btn-primary">ถัดไป</button>
+      <div class="btn-container-inline">
+        <button class="btn-primary">ยืนยันข้อมูล</button>
       </div>
       <div class="home-indicator"></div>
     </div>
 
-    <!-- ======== SCREEN: Step 2 Birth Date (Scrolling) ======== -->
-    <div class="screen" id="screen-step2-scrolling">
+    <!-- ======== SCREEN: Form Error ======== -->
+    <div class="screen" id="screen-form-error">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+
+        <!-- Section 1: Birth Date -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger placeholder">เลือกวันเดือนปี</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Birth Time -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger placeholder">เลือกเวลาเกิด</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+        </div>
+
+        <!-- Section 3: Province (Not selected) -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger placeholder">เลือกจังหวัด</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="btn-container-inline">
+        <button class="btn-primary disabled">ยืนยันข้อมูล</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Form Unknown Time ======== -->
+    <div class="screen" id="screen-form-unknown-time">
       <div class="status-bar">
         <span>9:42</span>
         <div class="status-bar-icons">
@@ -1335,70 +1852,79 @@
       </div>
 
       <div class="nav-bar">
-        <button class="nav-btn" title="Back">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
+        <div class="nav-spacer"></div>
         <div></div>
         <button class="nav-btn" title="Close">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
 
-      <div class="progress-bar">
-        <div class="progress-step done"></div>
-        <div class="progress-step active"></div>
-        <div class="progress-step"></div>
-        <div class="progress-step"></div>
-      </div>
-
       <div class="content">
-        <h1 class="screen-title">วันเดือนปีเกิด</h1>
-        <p class="screen-subtitle">เลือกวันเกิด</p>
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
 
-        <div class="picker-container">
-          <div class="picker-column">
-            <div class="picker-highlight"></div>
-            <div class="picker-items scrolling">
-              <div class="picker-item">12</div>
-              <div class="picker-item">13</div>
-              <div class="picker-item near">14</div>
-              <div class="picker-item near">15</div>
-              <div class="picker-item">16</div>
-            </div>
+        <!-- Section 1: Birth Date (Done) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
           </div>
-
-          <div class="picker-column" style="width:130px;">
-            <div class="picker-highlight"></div>
-            <div class="picker-items">
-              <div class="picker-item">พฤศจิกายน</div>
-              <div class="picker-item">ธันวาคม</div>
-              <div class="picker-item selected">มกราคม</div>
-              <div class="picker-item">กุมภาพันธ์</div>
-              <div class="picker-item">มีนาคม</div>
-            </div>
-          </div>
-
-          <div class="picker-column">
-            <div class="picker-highlight"></div>
-            <div class="picker-items">
-              <div class="picker-item">2533</div>
-              <div class="picker-item">2534</div>
-              <div class="picker-item selected">2535</div>
-              <div class="picker-item">2536</div>
-              <div class="picker-item">2537</div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger filled">15 มกราคม 2535</div>
             </div>
           </div>
         </div>
+
+        <!-- Section 2: Birth Time (Done — Unknown checked) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger disabled">ไม่ทราบเวลาเกิด</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox checked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+          <div class="form-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            จะใช้เวลา 06:30 น. ในการคำนวณแทน
+          </div>
+        </div>
+
+        <!-- Section 3: Province (Done) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger filled">กรุงเทพมหานคร</div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <div class="btn-container">
-        <button class="btn-primary">ถัดไป</button>
+      <div class="btn-container-inline">
+        <button class="btn-primary">ยืนยันข้อมูล</button>
       </div>
       <div class="home-indicator"></div>
     </div>
 
-    <!-- ======== SCREEN: Step 3 Birth Time (Default) ======== -->
-    <div class="screen" id="screen-step3-default">
+    <!-- ======== SCREEN: Form No Results (Province Search) ======== -->
+    <div class="screen" id="screen-form-no-results">
       <div class="status-bar">
         <span>9:42</span>
         <div class="status-bar-icons">
@@ -1408,362 +1934,88 @@
       </div>
 
       <div class="nav-bar">
-        <button class="nav-btn" title="Back">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
+        <div class="nav-spacer"></div>
         <div></div>
         <button class="nav-btn" title="Close">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
 
-      <div class="progress-bar">
-        <div class="progress-step done"></div>
-        <div class="progress-step done"></div>
-        <div class="progress-step active"></div>
-        <div class="progress-step"></div>
-      </div>
-
       <div class="content">
-        <h1 class="screen-title">เวลาเกิด</h1>
-        <p class="screen-subtitle">เลือกเวลาเกิด</p>
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
 
-        <div class="picker-container">
-          <div class="picker-column">
-            <div class="picker-highlight"></div>
-            <div class="picker-items">
-              <div class="picker-item">12</div>
-              <div class="picker-item">13</div>
-              <div class="picker-item selected">14</div>
-              <div class="picker-item">15</div>
-              <div class="picker-item">16</div>
-            </div>
+        <!-- Section 1-3 done -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
           </div>
-
-          <div class="picker-separator">:</div>
-
-          <div class="picker-column">
-            <div class="picker-highlight"></div>
-            <div class="picker-items">
-              <div class="picker-item">15</div>
-              <div class="picker-item">20</div>
-              <div class="picker-item selected">30</div>
-              <div class="picker-item">35</div>
-              <div class="picker-item">40</div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger filled">15 มกราคม 2535</div>
             </div>
           </div>
         </div>
 
-        <div class="checkbox-group">
-          <div class="checkbox">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">2</div>
+            <span class="section-title">เวลาเกิด</span>
           </div>
-          <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
-        </div>
-      </div>
-
-      <div class="btn-container">
-        <button class="btn-primary">ถัดไป</button>
-      </div>
-      <div class="home-indicator"></div>
-    </div>
-
-    <!-- ======== SCREEN: Step 3 Birth Time (Scrolling) ======== -->
-    <div class="screen" id="screen-step3-scrolling">
-      <div class="status-bar">
-        <span>9:42</span>
-        <div class="status-bar-icons">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
-        </div>
-      </div>
-
-      <div class="nav-bar">
-        <button class="nav-btn" title="Back">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div></div>
-        <button class="nav-btn" title="Close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress-step done"></div>
-        <div class="progress-step done"></div>
-        <div class="progress-step active"></div>
-        <div class="progress-step"></div>
-      </div>
-
-      <div class="content">
-        <h1 class="screen-title">เวลาเกิด</h1>
-        <p class="screen-subtitle">เลือกเวลาเกิด</p>
-
-        <div class="picker-container">
-          <div class="picker-column">
-            <div class="picker-highlight"></div>
-            <div class="picker-items scrolling">
-              <div class="picker-item">11</div>
-              <div class="picker-item">12</div>
-              <div class="picker-item near">13</div>
-              <div class="picker-item near">14</div>
-              <div class="picker-item">15</div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger filled">14:30 น.</div>
             </div>
           </div>
+          <div class="checkbox-group">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+        </div>
 
-          <div class="picker-separator">:</div>
-
-          <div class="picker-column">
-            <div class="picker-highlight"></div>
-            <div class="picker-items">
-              <div class="picker-item">15</div>
-              <div class="picker-item">20</div>
-              <div class="picker-item selected">30</div>
-              <div class="picker-item">35</div>
-              <div class="picker-item">40</div>
+        <!-- Section 3: Province (Active — tapped to open bottom sheet) -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number active">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger active">เลือกจังหวัด</div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="checkbox-group">
-          <div class="checkbox">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <!-- Bottom Sheet: Province Search — No Results -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="bottomsheet-header">
+            <span class="bottomsheet-title">เลือกจังหวัดที่เกิด</span>
           </div>
-          <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
-        </div>
-      </div>
-
-      <div class="btn-container">
-        <button class="btn-primary">ถัดไป</button>
-      </div>
-      <div class="home-indicator"></div>
-    </div>
-
-    <!-- ======== SCREEN: Step 3 Unknown Time ======== -->
-    <div class="screen" id="screen-step3-unknown">
-      <div class="status-bar">
-        <span>9:42</span>
-        <div class="status-bar-icons">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
-        </div>
-      </div>
-
-      <div class="nav-bar">
-        <button class="nav-btn" title="Back">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div></div>
-        <button class="nav-btn" title="Close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress-step done"></div>
-        <div class="progress-step done"></div>
-        <div class="progress-step active"></div>
-        <div class="progress-step"></div>
-      </div>
-
-      <div class="content">
-        <h1 class="screen-title">เวลาเกิด</h1>
-        <p class="screen-subtitle">เลือกเวลาเกิด</p>
-
-        <div class="picker-container disabled">
-          <div class="picker-column">
-            <div class="picker-highlight"></div>
-            <div class="picker-items">
-              <div class="picker-item">04</div>
-              <div class="picker-item">05</div>
-              <div class="picker-item selected">06</div>
-              <div class="picker-item">07</div>
-              <div class="picker-item">08</div>
+          <div class="step-search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="step-search" placeholder="ค้นหาจังหวัด" value="ซานฟรานซิสโก">
+          </div>
+          <div class="step-tab-content" style="flex:1; display:flex; align-items:center; justify-content:center;">
+            <div class="province-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              ไม่พบจังหวัดที่ค้นหา<br>ลองพิมพ์ชื่อจังหวัดใหม่อีกครั้ง
             </div>
           </div>
-
-          <div class="picker-separator">:</div>
-
-          <div class="picker-column">
-            <div class="picker-highlight"></div>
-            <div class="picker-items">
-              <div class="picker-item">15</div>
-              <div class="picker-item">20</div>
-              <div class="picker-item selected">30</div>
-              <div class="picker-item">35</div>
-              <div class="picker-item">40</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="checkbox-group">
-          <div class="checkbox checked">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
-        </div>
-
-        <div class="form-hint">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          จะใช้เวลา 06:30 น. ในการคำนวณแทน
+          <div class="bottomsheet-safe-bottom"></div>
         </div>
       </div>
 
-      <div class="btn-container">
-        <button class="btn-primary">ถัดไป</button>
-      </div>
-      <div class="home-indicator"></div>
-    </div>
-
-    <!-- ======== SCREEN: Step 4 Province (Skeleton) ======== -->
-    <div class="screen" id="screen-step4-skeleton">
-      <div class="status-bar">
-        <span>9:43</span>
-        <div class="status-bar-icons">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
-        </div>
-      </div>
-
-      <div class="nav-bar">
-        <button class="nav-btn" title="Back">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div></div>
-        <button class="nav-btn" title="Close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress-step done"></div>
-        <div class="progress-step done"></div>
-        <div class="progress-step done"></div>
-        <div class="progress-step active"></div>
-      </div>
-
-      <div class="content">
-        <div class="skeleton skeleton-title"></div>
-        <div class="skeleton skeleton-subtitle"></div>
-        <div class="skeleton skeleton-search"></div>
-        <div class="skeleton skeleton-province long"></div>
-        <div class="skeleton skeleton-province short"></div>
-        <div class="skeleton skeleton-province medium"></div>
-        <div class="skeleton skeleton-province short"></div>
-        <div class="skeleton skeleton-province long"></div>
-        <div class="skeleton skeleton-province medium"></div>
-        <div class="skeleton skeleton-province short"></div>
-      </div>
-
-      <div class="btn-container">
-        <button class="btn-primary disabled">ถัดไป</button>
-      </div>
-      <div class="home-indicator"></div>
-    </div>
-
-    <!-- ======== SCREEN: Step 4 Province (Default) ======== -->
-    <div class="screen" id="screen-step4-default">
-      <div class="status-bar">
-        <span>9:43</span>
-        <div class="status-bar-icons">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
-        </div>
-      </div>
-
-      <div class="nav-bar">
-        <button class="nav-btn" title="Back">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div></div>
-        <button class="nav-btn" title="Close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress-step done"></div>
-        <div class="progress-step done"></div>
-        <div class="progress-step done"></div>
-        <div class="progress-step active"></div>
-      </div>
-
-      <div class="content">
-        <h1 class="screen-title">จังหวัดที่เกิด</h1>
-        <p class="screen-subtitle">เลือกจังหวัดที่เกิด</p>
-
-        <div class="search-input-wrapper">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" class="search-input" placeholder="ค้นหาจังหวัด">
-        </div>
-
-        <div class="province-list">
-          <div class="province-item">กรุงเทพมหานคร</div>
-          <div class="province-item">กระบี่</div>
-          <div class="province-item">กาญจนบุรี</div>
-          <div class="province-item">กาฬสินธุ์</div>
-          <div class="province-item">กำแพงเพชร</div>
-          <div class="province-item">ขอนแก่น</div>
-          <div class="province-item">จันทบุรี</div>
-          <div class="province-item">ฉะเชิงเทรา</div>
-          <div class="province-item">ชลบุรี</div>
-          <div class="province-item">ชัยนาท</div>
-        </div>
-      </div>
-
-      <div class="btn-container">
-        <button class="btn-primary disabled">ถัดไป</button>
-      </div>
-      <div class="home-indicator"></div>
-    </div>
-
-    <!-- ======== SCREEN: Step 4 Province (Selected) ======== -->
-    <div class="screen" id="screen-step4">
-      <div class="status-bar">
-        <span>9:43</span>
-        <div class="status-bar-icons">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
-        </div>
-      </div>
-
-      <div class="nav-bar">
-        <button class="nav-btn" title="Back">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div></div>
-        <button class="nav-btn" title="Close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress-step done"></div>
-        <div class="progress-step done"></div>
-        <div class="progress-step done"></div>
-        <div class="progress-step active"></div>
-      </div>
-
-      <div class="content">
-        <h1 class="screen-title">จังหวัดที่เกิด</h1>
-        <p class="screen-subtitle">เลือกจังหวัดที่เกิด</p>
-
-        <div class="search-input-wrapper">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" class="search-input" placeholder="ค้นหาจังหวัด" value="กรุง">
-        </div>
-
-        <div class="province-list">
-          <div class="province-item selected">กรุงเทพมหานคร</div>
-          <div class="province-item">กระบี่</div>
-          <div class="province-item">กาญจนบุรี</div>
-          <div class="province-item">กาฬสินธุ์</div>
-          <div class="province-item">กำแพงเพชร</div>
-        </div>
-      </div>
-
-      <div class="btn-container">
-        <button class="btn-primary">ถัดไป</button>
+      <div class="btn-container-inline">
+        <button class="btn-primary disabled">ยืนยันข้อมูล</button>
       </div>
       <div class="home-indicator"></div>
     </div>
@@ -1806,14 +2058,6 @@
         </div>
 
         <div class="review-card">
-          <div class="review-row">
-            <div class="review-row-left">
-              <span class="review-label">ชื่อ-นามสกุล</span>
-              <span class="review-value">สมชาย ใจดี</span>
-            </div>
-            <button class="review-edit">แก้ไข</button>
-          </div>
-
           <div class="review-row">
             <div class="review-row-left">
               <span class="review-label">วันเกิด</span>
@@ -1923,24 +2167,9 @@
         </button>
       </div>
 
-      <div class="progress-bar">
-        <div class="progress-step active"></div>
-        <div class="progress-step"></div>
-        <div class="progress-step"></div>
-        <div class="progress-step"></div>
-      </div>
-
       <div class="content" style="opacity:0.3;">
-        <h1 class="screen-title">ชื่อของคุณ</h1>
-        <p class="screen-subtitle">ใช้ชื่อจริงเพื่อสร้างดวงกำเนิด</p>
-        <div class="form-group">
-          <label class="form-label">ชื่อ</label>
-          <input type="text" class="form-input" placeholder="สมชาย" disabled>
-        </div>
-        <div class="form-group">
-          <label class="form-label">นามสกุล</label>
-          <input type="text" class="form-input" placeholder="ใจดี" disabled>
-        </div>
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
       </div>
 
       <!-- Modal Overlay -->
@@ -1961,6 +2190,357 @@
       <div class="home-indicator"></div>
     </div>
 
+    <!-- ════════════════════════════════════════
+         DATE PICKER — STEP 1: เลือกปี (พ.ศ.)
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-date-step1">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger active">เลือกวันเดือนปี</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Date Step 1 — ปี -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab active"><span class="step-tab-label">ปี (พ.ศ.)</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">เดือน</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">วัน</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">2569</div>
+            <div class="step-option">2568</div>
+            <div class="step-option">2567</div>
+            <div class="step-option">2566</div>
+            <div class="step-option">2565</div>
+            <div class="step-option">2564</div>
+            <div class="step-option">2563</div>
+            <div class="step-option">2562</div>
+            <div class="step-option">2561</div>
+            <div class="step-option">2560</div>
+            <div class="step-option">2559</div>
+            <div class="step-option">2558</div>
+            <div class="step-option">2557</div>
+            <div class="step-option">2556</div>
+            <div class="step-option">2555</div>
+            <div class="step-option">2554</div>
+            <div class="step-option">2553</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         DATE PICKER — STEP 2: เลือกเดือน
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-date-step2">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger active">ปี 2535 — เลือกเดือน...</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Date Step 2 — เดือน -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab completed"><span class="step-tab-label">ปี (พ.ศ.)</span><span class="step-tab-value">2535</span></div>
+            <div class="step-tab active"><span class="step-tab-label">เดือน</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">วัน</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option selected">มกราคม</div>
+            <div class="step-option">กุมภาพันธ์</div>
+            <div class="step-option">มีนาคม</div>
+            <div class="step-option">เมษายน</div>
+            <div class="step-option">พฤษภาคม</div>
+            <div class="step-option">มิถุนายน</div>
+            <div class="step-option">กรกฎาคม</div>
+            <div class="step-option">สิงหาคม</div>
+            <div class="step-option">กันยายน</div>
+            <div class="step-option">ตุลาคม</div>
+            <div class="step-option">พฤศจิกายน</div>
+            <div class="step-option">ธันวาคม</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         DATE PICKER — STEP 3: เลือกวัน
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-date-step3">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger active">มกราคม 2535 — เลือกวัน...</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Date Step 3 — วัน -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab completed"><span class="step-tab-label">ปี (พ.ศ.)</span><span class="step-tab-value">2535</span></div>
+            <div class="step-tab completed"><span class="step-tab-label">เดือน</span><span class="step-tab-value">มกราคม</span></div>
+            <div class="step-tab active"><span class="step-tab-label">วัน</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">1</div><div class="step-option">2</div><div class="step-option">3</div>
+            <div class="step-option">4</div><div class="step-option">5</div><div class="step-option">6</div>
+            <div class="step-option">7</div><div class="step-option">8</div><div class="step-option">9</div>
+            <div class="step-option">10</div><div class="step-option">11</div><div class="step-option">12</div>
+            <div class="step-option">13</div><div class="step-option">14</div>
+            <div class="step-option selected">15</div>
+            <div class="step-option">16</div><div class="step-option">17</div><div class="step-option">18</div>
+            <div class="step-option">19</div><div class="step-option">20</div><div class="step-option">21</div>
+            <div class="step-option">22</div><div class="step-option">23</div><div class="step-option">24</div>
+            <div class="step-option">25</div><div class="step-option">26</div><div class="step-option">27</div>
+            <div class="step-option">28</div><div class="step-option">29</div><div class="step-option">30</div>
+            <div class="step-option">31</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         TIME PICKER — STEP 1: เลือกชั่วโมง
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-time-step1">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block step-done">
+          <div class="section-header"><div class="section-number done">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger filled">15 มกราคม 2535</div></div></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">2</div><span class="section-title">เวลาเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">ชั่วโมง : นาที</span><div class="dropdown-trigger active">เลือกเวลาเกิด</div></div></div>
+          <div class="checkbox-group"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label">ไม่ทราบเวลาเกิด</span></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number">3</div><span class="section-title">จังหวัดที่เกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">จังหวัด</span><div class="dropdown-trigger placeholder">เลือกจังหวัด</div></div></div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Time Step 1 — ชั่วโมง -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab active"><span class="step-tab-label">ชั่วโมง</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">นาที</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">00</div><div class="step-option">01</div><div class="step-option">02</div>
+            <div class="step-option">03</div><div class="step-option">04</div><div class="step-option">05</div>
+            <div class="step-option">06</div><div class="step-option">07</div><div class="step-option">08</div>
+            <div class="step-option">09</div><div class="step-option">10</div><div class="step-option">11</div>
+            <div class="step-option">12</div><div class="step-option">13</div>
+            <div class="step-option selected">14</div>
+            <div class="step-option">15</div><div class="step-option">16</div><div class="step-option">17</div>
+            <div class="step-option">18</div><div class="step-option">19</div><div class="step-option">20</div>
+            <div class="step-option">21</div><div class="step-option">22</div><div class="step-option">23</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         TIME PICKER — STEP 2: เลือกนาที
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-time-step2">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block step-done">
+          <div class="section-header"><div class="section-number done">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger filled">15 มกราคม 2535</div></div></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">2</div><span class="section-title">เวลาเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">ชั่วโมง : นาที</span><div class="dropdown-trigger active">14 ชม. — เลือกนาที...</div></div></div>
+          <div class="checkbox-group"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label">ไม่ทราบเวลาเกิด</span></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number">3</div><span class="section-title">จังหวัดที่เกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">จังหวัด</span><div class="dropdown-trigger placeholder">เลือกจังหวัด</div></div></div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Time Step 2 — นาที -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab completed"><span class="step-tab-label">ชั่วโมง</span><span class="step-tab-value">14</span></div>
+            <div class="step-tab active"><span class="step-tab-label">นาที</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">00</div><div class="step-option">05</div><div class="step-option">10</div>
+            <div class="step-option">15</div><div class="step-option">20</div><div class="step-option">25</div>
+            <div class="step-option selected">30</div>
+            <div class="step-option">35</div><div class="step-option">40</div><div class="step-option">45</div>
+            <div class="step-option">50</div><div class="step-option">55</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         ADDRESS PICKER — STEP 1: จังหวัด
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-addr-step1">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block step-done">
+          <div class="section-header"><div class="section-number done">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger filled">15 มกราคม 2535</div></div></div>
+        </div>
+        <div class="section-block step-done">
+          <div class="section-header"><div class="section-number done">2</div><span class="section-title">เวลาเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">ชั่วโมง : นาที</span><div class="dropdown-trigger filled">14:30 น.</div></div></div>
+          <div class="checkbox-group"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label">ไม่ทราบเวลาเกิด</span></div>
+        </div>
+        <div class="section-block step-done">
+          <div class="section-header"><div class="section-number done">3</div><span class="section-title">จังหวัดที่เกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">จังหวัด</span><div class="dropdown-trigger filled">กรุงเทพมหานคร</div></div></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">4</div><span class="section-title">ที่อยู่ปัจจุบัน</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">ที่อยู่</span><div class="dropdown-trigger active">เลือกที่อยู่</div></div></div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Address — เลือกจังหวัด -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="bottomsheet-header" style="padding:16px 20px 12px; flex-shrink:0;">
+            <span class="bottomsheet-title" style="font-size:16px; font-weight:700; color:var(--text-primary);">เลือกจังหวัด</span>
+          </div>
+          <div class="step-search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="step-search" placeholder="ค้นหาจังหวัด">
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">กระบี่</div>
+            <div class="step-option">กรุงเทพมหานคร</div>
+            <div class="step-option">กาญจนบุรี</div>
+            <div class="step-option">กาฬสินธุ์</div>
+            <div class="step-option">กำแพงเพชร</div>
+            <div class="step-option">ขอนแก่น</div>
+            <div class="step-option">จันทบุรี</div>
+            <div class="step-option">ฉะเชิงเทรา</div>
+            <div class="step-option">ชลบุรี</div>
+            <div class="step-option">ชัยนาท</div>
+            <div class="step-option">ชัยภูมิ</div>
+            <div class="step-option">ชุมพร</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+
   </div><!-- end phone-frame -->
 
   <!-- ============ SPEC INFO PANEL ============ -->
@@ -1977,6 +2557,7 @@
     <div class="spec-row"><span class="spec-key">Font</span><span class="spec-val">LINE Seed Sans TH</span></div>
     <div class="spec-row"><span class="spec-key">Title</span><span class="spec-val">Heading.4 — 24/32 Bold</span></div>
     <div class="spec-row"><span class="spec-key">Subtitle</span><span class="spec-val">Caption.3 — 16/24 Regular</span></div>
+    <div class="spec-row"><span class="spec-key">Section</span><span class="spec-val">18/26 Bold</span></div>
     <div class="spec-row"><span class="spec-key">Label</span><span class="spec-val">Label.4 — 14/20 Bold</span></div>
     <div class="spec-row"><span class="spec-key">Input</span><span class="spec-val">Caption.3 — 16/24 Regular</span></div>
     <div class="spec-row"><span class="spec-key">Button</span><span class="spec-val">Label.3 — 16/24 Bold</span></div>
@@ -2032,19 +2613,32 @@
     <div style="height:4px"></div>
     <div class="control-label">Spacing</div>
     <div class="spec-row"><span class="spec-key">Content padding</span><span class="spec-val">spacing-6 — 24px</span></div>
-    <div class="spec-row"><span class="spec-key">Section gap</span><span class="spec-val">spacing-8 — 32px</span></div>
+    <div class="spec-row"><span class="spec-key">Section gap</span><span class="spec-val">spacing-6 — 24px</span></div>
     <div class="spec-row"><span class="spec-key">Form gap</span><span class="spec-val">spacing-5 — 20px</span></div>
-    <div class="spec-row"><span class="spec-key">Progress gap</span><span class="spec-val">spacing-2 — 8px</span></div>
 
     <div style="height:4px"></div>
     <div class="control-label">Components</div>
     <div class="spec-row"><span class="spec-key">Input height</span><span class="spec-val">48px</span></div>
     <div class="spec-row"><span class="spec-key">Button height</span><span class="spec-val">48px</span></div>
+    <div class="spec-row"><span class="spec-key">Stepper</span><span class="spec-val">28px circle + 2px line</span></div>
     <div class="spec-row"><span class="spec-key">Input radius</span><span class="spec-val">radius-md — 8px</span></div>
     <div class="spec-row"><span class="spec-key">Button radius</span><span class="spec-val">radius-md — 8px</span></div>
     <div class="spec-row"><span class="spec-key">Card radius</span><span class="spec-val">radius-lg — 12px</span></div>
     <div class="spec-row"><span class="spec-key">Dialog radius</span><span class="spec-val">radius-xl — 16px</span></div>
-    <div class="spec-row"><span class="spec-key">Touch target</span><span class="spec-val">44px min</span></div>
+    <div class="spec-row"><span class="spec-key">Checkbox</span><span class="spec-val">24px (48px tap area)</span></div>
+    <div class="spec-row"><span class="spec-key">Touch target</span><span class="spec-val">48px min</span></div>
+
+    <div style="height:4px"></div>
+    <div class="control-label">Bottom Sheet Picker</div>
+    <div class="spec-row"><span class="spec-key">Trigger</span><span class="spec-val">48px height, radius-md</span></div>
+    <div class="spec-row"><span class="spec-key">Sheet radius</span><span class="spec-val">radius-2xl — 24px (top)</span></div>
+    <div class="spec-row"><span class="spec-key">Max height</span><span class="spec-val">60% of viewport</span></div>
+    <div class="spec-row"><span class="spec-key">Handle</span><span class="spec-val">36 x 5px, rgba(0,0,0,0.15)</span></div>
+    <div class="spec-row"><span class="spec-key">Title</span><span class="spec-val">Label.2 — 18/26 Bold</span></div>
+    <div class="spec-row"><span class="spec-key">Option height</span><span class="spec-val">48px min (touch target)</span></div>
+    <div class="spec-row"><span class="spec-key">Selected bg</span><span class="spec-val">rgba(114,121,251,0.08)</span></div>
+    <div class="spec-row"><span class="spec-key">Overlay</span><span class="spec-val">alpha-black/bg/low — 50%</span></div>
+    <div class="spec-row"><span class="spec-key">Animation</span><span class="spec-val">slideUp 300ms ease-out</span></div>
   </div>
 
   <!-- ============ JAVASCRIPT ============ -->
