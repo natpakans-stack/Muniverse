@@ -2111,9 +2111,6 @@
       <div style="width:50%;overflow:hidden;border-radius:var(--radius-xl);clip-path:inset(5px 0);">
         <video id="w2IntroVideo" src="Images/Week02/Asset/Logo_Mock.mp4" playsinline muted style="width:100%;height:auto;display:block;"></video>
       </div>
-      <button id="w2VideoSkip" onclick="skipW2IntroVideo()" style="padding:10px 28px;border-radius:var(--radius-full);background:rgba(27,29,34,0.08);border:1px solid var(--gray-border-midgray);color:var(--gray-fg-mid-on-white);font-size:clamp(12px,1vw,15px);font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s ease;letter-spacing:0.03em;" onmouseover="this.style.background='rgba(27,29,34,0.15)'" onmouseout="this.style.background='rgba(27,29,34,0.08)'">
-        Skip &rarr;
-      </button>
     </div>
 
     <div class="deco-circle" style="width:400px;height:400px;background:var(--primary-border-mid);top:-100px;right:-80px;"></div>
@@ -3737,16 +3734,7 @@
     video.play().catch(() => {});
 
     video.onended = () => {
-      loopCount++;
-      if (loopCount < 1) {
-        video.currentTime = 0;
-        video.play().catch(() => {});
-      } else {
-        // After 1 loop, wait 1s then fade out and show Cover
-        w2VideoTimer = setTimeout(() => {
-          dismissW2Video(false);
-        }, 1000);
-      }
+      dismissW2Video(false);
     };
   }
 
