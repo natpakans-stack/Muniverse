@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0e0e12">
   <title>DailyMu Calendar - Weekly Update Presentations</title>
   <style>
     /* ===== Font: LINE Seed Sans TH (self-hosted) ===== */
@@ -587,7 +588,10 @@
       border: 1px solid var(--gray-bg-midgray);
       background: var(--gray-bg-white);
       cursor: pointer;
-      transition: all var(--duration-fast) var(--easing-default);
+      transition: background var(--duration-fast) var(--easing-default),
+                  border-color var(--duration-fast) var(--easing-default),
+                  color var(--duration-fast) var(--easing-default),
+                  transform var(--duration-fast) var(--easing-default);
       color: var(--gray-fg-mid-on-white);
     }
 
@@ -636,7 +640,8 @@
       border: 1px solid var(--gray-bg-midgray);
       background: var(--gray-bg-white);
       cursor: pointer;
-      transition: all var(--duration-fast) var(--easing-default);
+      transition: background var(--duration-fast) var(--easing-default),
+                  color var(--duration-fast) var(--easing-default);
       color: var(--gray-fg-mid-on-white);
       margin-right: var(--spacing-3);
     }
@@ -683,7 +688,10 @@
       font-weight: 600;
       color: var(--gray-fg-low-on-white);
       opacity: 0.45;
-      transition: all var(--duration-fast) var(--easing-default);
+      transition: opacity var(--duration-fast) var(--easing-default),
+                  background var(--duration-fast) var(--easing-default),
+                  border-color var(--duration-fast) var(--easing-default),
+                  color var(--duration-fast) var(--easing-default);
     }
 
     .page-dropdown-btn:hover {
@@ -729,7 +737,9 @@
       opacity: 0;
       visibility: hidden;
       transform: translateY(-4px);
-      transition: all var(--duration-fast) var(--easing-default);
+      transition: opacity var(--duration-fast) var(--easing-default),
+                  visibility var(--duration-fast) var(--easing-default),
+                  transform var(--duration-fast) var(--easing-default);
       padding: var(--spacing-1) 0;
     }
 
@@ -753,7 +763,8 @@
       font-weight: 500;
       color: var(--gray-fg-mid-on-white);
       text-align: left;
-      transition: all var(--duration-fast) var(--easing-default);
+      transition: background var(--duration-fast) var(--easing-default),
+                  color var(--duration-fast) var(--easing-default);
       text-decoration: none;
       white-space: nowrap;
     }
@@ -820,7 +831,9 @@
       font-size: clamp(11px, 1vw, 14px);
       font-weight: 700;
       color: #fff;
-      transition: all var(--duration-fast) var(--easing-default);
+      transition: background var(--duration-fast) var(--easing-default),
+                  box-shadow var(--duration-fast) var(--easing-default),
+                  transform var(--duration-fast) var(--easing-default);
       box-shadow: var(--shadow-md);
     }
 
@@ -1269,6 +1282,17 @@
       text-shadow: none;
       line-height: 1.1;
     }
+
+    /* ===== Reduced Motion ===== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .slide { transition: none; }
+      .slide.active { transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -1296,7 +1320,7 @@
 
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-5);width:100%;max-width:680px;margin-top:var(--spacing-4);">
         <!-- Week 1 -->
-        <button onclick="goToSlide(1)" style="cursor:pointer;border:2px solid var(--primary-border-mid);background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:var(--spacing-6) var(--spacing-4);display:flex;flex-direction:column;align-items:center;gap:var(--spacing-3);transition:all 0.2s ease;box-shadow:var(--shadow-md);" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='var(--shadow-lg)';this.style.borderColor='var(--primary-fg-high)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-md)';this.style.borderColor='var(--primary-border-mid)'">
+        <button onclick="goToSlide(1)" style="cursor:pointer;border:2px solid var(--primary-border-mid);background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:var(--spacing-6) var(--spacing-4);display:flex;flex-direction:column;align-items:center;gap:var(--spacing-3);transition:transform 0.2s ease,box-shadow 0.2s ease,border-color 0.2s ease;box-shadow:var(--shadow-md);" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='var(--shadow-lg)';this.style.borderColor='var(--primary-fg-high)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-md)';this.style.borderColor='var(--primary-border-mid)'">
           <span style="font-size:clamp(28px,3vw,42px);font-weight:800;color:var(--primary-fg-high);">W1</span>
           <span style="font-size:clamp(13px,1.2vw,18px);font-weight:700;color:var(--gray-fg-high);">Week 1</span>
           <span style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-mid-on-white);">13 Feb 2026</span>
@@ -1304,7 +1328,7 @@
         </button>
 
         <!-- Week 2 -->
-        <button onclick="goToSlide(17)" style="cursor:pointer;border:2px solid var(--secondary-border-mid);background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:var(--spacing-6) var(--spacing-4);display:flex;flex-direction:column;align-items:center;gap:var(--spacing-3);transition:all 0.2s ease;box-shadow:var(--shadow-md);" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='var(--shadow-lg)';this.style.borderColor='var(--secondary-fg-high)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-md)';this.style.borderColor='var(--secondary-border-mid)'">
+        <button onclick="goToSlide(17)" style="cursor:pointer;border:2px solid var(--secondary-border-mid);background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:var(--spacing-6) var(--spacing-4);display:flex;flex-direction:column;align-items:center;gap:var(--spacing-3);transition:transform 0.2s ease,box-shadow 0.2s ease,border-color 0.2s ease;box-shadow:var(--shadow-md);" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='var(--shadow-lg)';this.style.borderColor='var(--secondary-fg-high)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-md)';this.style.borderColor='var(--secondary-border-mid)'">
           <span style="font-size:clamp(28px,3vw,42px);font-weight:800;color:var(--secondary-fg-high);">W2</span>
           <span style="font-size:clamp(13px,1.2vw,18px);font-weight:700;color:var(--gray-fg-high);">Week 2</span>
           <span style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-mid-on-white);">20 Feb 2026</span>
@@ -1921,7 +1945,7 @@
       </div>
 
       <div style="flex:1;display:flex;align-items:flex-start;justify-content:center;min-height:0;padding-top:var(--spacing-2);position:relative;" id="iframeContainer">
-        <button onclick="toggleIframeFullscreen()" id="iframeFullscreenBtn" style="position:absolute;top:12px;right:12px;z-index:10;width:36px;height:36px;border-radius:var(--radius-md);background:rgba(255,255,255,0.9);border:1px solid var(--gray-bg-midgray);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:all 0.2s ease;" title="Fullscreen">
+        <button onclick="toggleIframeFullscreen()" id="iframeFullscreenBtn" style="position:absolute;top:12px;right:12px;z-index:10;width:36px;height:36px;border-radius:var(--radius-md);background:rgba(255,255,255,0.9);border:1px solid var(--gray-bg-midgray);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background 0.2s ease,box-shadow 0.2s ease;" title="Fullscreen" aria-label="Fullscreen">
           <svg id="fsIconExpand" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f414e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
           <svg id="fsIconShrink" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f414e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
         </button>
@@ -2087,7 +2111,7 @@
       <div style="width:50%;overflow:hidden;border-radius:var(--radius-xl);clip-path:inset(5px 0);">
         <video id="w2IntroVideo" src="Images/Week02/Asset/Logo_Mock.mp4" playsinline muted style="width:100%;height:auto;display:block;"></video>
       </div>
-      <button id="w2VideoSkip" onclick="skipW2IntroVideo()" style="padding:10px 28px;border-radius:var(--radius-full);background:rgba(27,29,34,0.08);border:1px solid var(--gray-border-midgray);color:var(--gray-fg-mid-on-white);font-size:clamp(12px,1vw,15px);font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s ease;letter-spacing:0.03em;" onmouseover="this.style.background='rgba(27,29,34,0.15)'" onmouseout="this.style.background='rgba(27,29,34,0.08)'">
+      <button id="w2VideoSkip" onclick="skipW2IntroVideo()" style="padding:10px 28px;border-radius:var(--radius-full);background:rgba(27,29,34,0.08);border:1px solid var(--gray-border-midgray);color:var(--gray-fg-mid-on-white);font-size:clamp(12px,1vw,15px);font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s ease;letter-spacing:0.03em;" onmouseover="this.style.background='rgba(27,29,34,0.15)'" onmouseout="this.style.background='rgba(27,29,34,0.08)'">
         Skip &rarr;
       </button>
     </div>
@@ -2290,7 +2314,7 @@
             <div class="cal-bar bar-tan" style="grid-column:1/3;grid-row:2;">Home</div>
             <div class="cal-bar bar-tan" style="grid-column:3/5;grid-row:2;">Calendar</div>
             <div class="cal-bar bar-pim" style="grid-column:1/3;grid-row:3;">Calendar</div>
-            <div class="cal-bar bar-tan" style="grid-column:4/6;grid-row:3;">Select Profile + Add Profile</div>
+            <div class="cal-bar bar-jed" style="grid-column:4/6;grid-row:3;">Select Profile + Add Profile</div>
             <div class="cal-bar bar-jed" style="grid-column:1/2;grid-row:4;">Notification</div>
             <div class="cal-bar bar-jed" style="grid-column:2/5;grid-row:4;">Calendar</div>
             <div class="cal-bar bar-event" style="grid-column:5/6;grid-row:4;">Present</div>
@@ -2362,7 +2386,7 @@
           </div>
           <div class="card-desc">Design เสร็จ ยัง Hand-off ต่อ</div>
           <div class="card-details">
-            <span>Monthly / Weekly / Daily</span>
+            <span>Daily / Monthly / Yearly</span>
             <span>Event Display</span>
             <span>Today Highlight</span>
           </div>
@@ -2518,7 +2542,7 @@
         <p class="body-md">หน้า Calendar เสร็จแล้ว &mdash; ยังทำ Hand-off ต่อ</p>
 
         <ul class="bullet-list secondary">
-          <li><strong>Calendar View</strong> &mdash; Monthly, Weekly, Daily views</li>
+          <li><strong>Calendar View</strong> &mdash; Daily, Monthly, Yearly views</li>
           <li><strong>Event Display</strong> &mdash; แสดงกิจกรรมรายวัน</li>
           <li><strong>Today Highlight</strong> &mdash; เน้นวันปัจจุบัน</li>
           <li><strong>Status</strong> &mdash; Design เสร็จ, อยู่ระหว่าง Hand-off</li>
@@ -2553,31 +2577,37 @@
         </div>
         <h2 class="title-lg" style="font-size:clamp(20px,2.5vw,36px);">Calendar — UI Screenshots</h2>
       </div>
-      <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:100%;padding:0 var(--spacing-6);">
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--spacing-6);width:100%;max-width:92%;height:100%;">
-          <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
-            <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
-              <img src="Images/Week02/Screenshots/Calendar — UI Screenshots1.png" alt="Calendar Screenshot 1" style="width:100%;height:100%;object-fit:contain;">
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:100%;padding:0 var(--spacing-8);">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-8);width:100%;max-width:80%;height:100%;">
+          <!-- 1: สีเขียว — วันพลังงานเปล่งประกาย -->
+          <div style="display:flex;flex-direction:column;gap:var(--spacing-3);align-items:center;min-height:0;">
+            <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;position:relative;">
+              <img src="Images/Week02/Screenshots/Calendar — UI Screenshots4.png" alt="Daily View Green" style="width:100%;height:100%;object-fit:contain;">
+              <div style="position:absolute;top:var(--spacing-2);left:var(--spacing-2);right:var(--spacing-2);display:flex;justify-content:center;">
+                <span style="background:rgba(85,150,82,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,0.15);">วันพลังงานเปล่งประกาย</span>
+              </div>
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Monthly View</span>
+            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--success-fg-high);flex-shrink:0;">Daily View</span>
           </div>
-          <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
-            <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
-              <img src="Images/Week02/Screenshots/Calendar — UI Screenshots2.png" alt="Calendar Screenshot 2" style="width:100%;height:100%;object-fit:contain;">
+          <!-- 2: สีเหลือง — วันพลังงานอยู่ในจุดสมดุล -->
+          <div style="display:flex;flex-direction:column;gap:var(--spacing-3);align-items:center;min-height:0;">
+            <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;position:relative;">
+              <img src="Images/Week02/Screenshots/Calendar — UI Screenshots1.png" alt="Daily View Yellow" style="width:100%;height:100%;object-fit:contain;">
+              <div style="position:absolute;top:var(--spacing-2);left:var(--spacing-2);right:var(--spacing-2);display:flex;justify-content:center;">
+                <span style="background:rgba(198,154,42,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,0.15);">วันพลังงานอยู่ในจุดสมดุล</span>
+              </div>
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Weekly View</span>
+            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--warning-fg-high);flex-shrink:0;">Daily View</span>
           </div>
-          <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
-            <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
-              <img src="Images/Week02/Screenshots/Calendar — UI Screenshots3.png" alt="Calendar Screenshot 3" style="width:100%;height:100%;object-fit:contain;">
+          <!-- 3: สีแดง — วันพลังงานชวนคุณดูแลตัวเอง -->
+          <div style="display:flex;flex-direction:column;gap:var(--spacing-3);align-items:center;min-height:0;">
+            <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;position:relative;">
+              <img src="Images/Week02/Screenshots/Calendar — UI Screenshots3.png" alt="Daily View Red" style="width:100%;height:100%;object-fit:contain;">
+              <div style="position:absolute;top:var(--spacing-2);left:var(--spacing-2);right:var(--spacing-2);display:flex;justify-content:center;">
+                <span style="background:rgba(234,36,79,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,0.15);">วันพลังงานชวนคุณดูแลตัวเอง</span>
+              </div>
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Daily View</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
-            <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
-              <img src="Images/Week02/Screenshots/Calendar — UI Screenshots4.png" alt="Calendar Screenshot 4" style="width:100%;height:100%;object-fit:contain;">
-            </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Today View</span>
+            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--error-fg-high);flex-shrink:0;">Daily View</span>
           </div>
         </div>
       </div>
@@ -2657,13 +2687,13 @@
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Profile & Notification — UI Screenshots1.png" alt="Profile Screenshot 1" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Select Profile</span>
+            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">My Profile</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Profile & Notification — UI Screenshots2.png" alt="Profile Screenshot 2" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Edit Profile</span>
+            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">เลือก Avatar (Default ระบบ)</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
@@ -2702,12 +2732,12 @@
           <span style="color:rgba(255,255,255,0.6);font-size:clamp(11px,1vw,15px);">ออกแบบ UI สำหรับฟีเจอร์ดูดวงไพ่ทาโร่ 22 ใบ</span>
         </div>
         <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius-xl);padding:clamp(20px,2.5vw,40px);display:flex;flex-direction:column;gap:var(--spacing-4);align-items:center;justify-content:center;">
-          <img src="Images/Week02/Asset/DailyMu_Character_04.png" alt="Fortune Character" style="width:clamp(160px,16vw,260px);height:clamp(200px,20vw,320px);object-fit:contain;">
+          <img src="Images/Week02/Asset/e-fortune-2.png" alt="Fortune Character" style="width:clamp(160px,16vw,260px);height:clamp(200px,20vw,320px);object-fit:contain;">
           <span style="color:rgba(255,255,255,0.95);font-size:clamp(20px,2.2vw,32px);font-weight:700;">เซียมซี</span>
           <span style="color:rgba(255,255,255,0.6);font-size:clamp(11px,1vw,15px);">ออกแบบ UI + Mechanic สำหรับเขย่าเซียมซี</span>
         </div>
         <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius-xl);padding:clamp(20px,2.5vw,40px);display:flex;flex-direction:column;gap:var(--spacing-4);align-items:center;justify-content:center;">
-          <img src="Images/Week02/Asset/DailyMu_Process_Fortune.png" alt="Dream Book" style="width:clamp(160px,16vw,260px);height:clamp(200px,20vw,320px);object-fit:contain;">
+          <img src="Images/Week02/Asset/DailyMu_Character_Dream 2.png" alt="Dream Character" style="width:clamp(160px,16vw,260px);height:clamp(200px,20vw,320px);object-fit:contain;">
           <span style="color:rgba(255,255,255,0.95);font-size:clamp(20px,2.2vw,32px);font-weight:700;">ทำนายฝัน</span>
           <span style="color:rgba(255,255,255,0.6);font-size:clamp(11px,1vw,15px);">ออกแบบ UI สำหรับฟีเจอร์ทำนายฝัน + การ์ด</span>
         </div>
@@ -2942,6 +2972,33 @@
   </div>
 
   <!-- ============================== -->
+  <!-- W2 SLIDE 11c: LOGO MOCK VIDEO      -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-cool" data-slide="ss-f">
+    <div class="slide-header">
+      <svg class="logo-icon" viewBox="0 0 188.81 161.84" xmlns="http://www.w3.org/2000/svg"><path fill="#01a9e0" d="M185.97,121.86c-.33-3.44-3.21-9.32-10.64-9.32-6.27,0-8.82,5.22-9.7,9.19-.58,2.63-2.91,8.93-8.23,13.44-6.42,5.45-9.81,5.14-14.46,6.62-4.64,1.48-7.06,3.92-7.87,7.87-.13.66-.2,1.34-.2,2.04,0,2.44.87,4.68,2.31,6.43,1.44,1.75,3.46,3.01,5.77,3.48.66.13,1.34.2,2.04.2h33.72c5.53,0,10.01-4.44,10.11-9.95l-.04-1.23-2.8-28.77Z"/><path fill="#65489d" d="M121.39,26.98c0,37.65-.01,39.92-.01,39.92,0,14.54-11.88,27.2-26.42,27.5-15.15.3-27.53-11.89-27.53-26.97h0V10.13c0-5.6-4.54-10.13-10.14-10.13H23.62c-5.6,0-10.14,4.53-10.14,10.13v57.29h0c0,45.41,37.39,82.08,83.06,80.9,43.99-1.13,78.78-37.77,78.78-81.77L175.29.02h-26.93c-12.6,0-26.97,9.45-26.97,26.96"/><path fill="#ef4f98" d="M67.43,10.07C67.39,4.51,62.88.02,57.32.02H23.6C18.03.02,13.52,4.51,13.49,10.07v.05S.17,149.88.17,149.88c-.11.6-.17,1.21-.17,1.84,0,5.59,4.53,10.12,10.11,10.12h33.72c5.59,0,10.12-4.53,10.12-10.12,0,0,.49-5.14,1.29-13.47,3.37-35.25,12.2-127.57,12.2-128.12v-.07Z"/><path fill="#282160" d="M55.23,138.26c3.88,2.15,7.96,3.99,12.2,5.49V10.13c0,.55-8.83,92.88-12.2,128.13"/></svg>
+      <span class="section-label">Outcome E &middot; Logo Mock</span>
+      <span class="slide-number">17 / 22</span>
+    </div>
+    <div class="slide-content" style="flex-direction:column;justify-content:flex-start;gap:28px;position:relative;padding-top:0;">
+      <div style="text-align:center;flex-shrink:0;">
+        <div class="section-tag" style="justify-content:center;margin-bottom:0;">
+          <div class="dot" style="background:var(--support-orange-fg-low);"></div>
+          <span style="color:var(--support-orange-fg-low);">Outcome E</span>
+        </div>
+        <h2 class="title-lg" style="font-size:clamp(20px,2.5vw,36px);">Logo Animation — Mock</h2>
+      </div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:100%;padding:0 var(--spacing-10);">
+        <div style="width:100%;max-width:60%;height:100%;display:flex;align-items:center;justify-content:center;">
+          <video controls playsinline style="max-width:100%;max-height:100%;border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);background:#000;">
+            <source src="Images/Week02/Asset/Logo_Mock.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
   <!-- W2 SLIDE 12: PROTOTYPE SHOW        -->
   <!-- ============================== -->
   <div class="slide bg-gradient-cool" data-slide="27">
@@ -2973,7 +3030,7 @@
       </div>
 
       <div style="flex:1;display:flex;align-items:flex-start;justify-content:center;min-height:0;padding-top:var(--spacing-2);position:relative;" id="iframeContainerW2">
-        <button onclick="toggleIframeFullscreen()" id="iframeFullscreenBtnW2" style="position:absolute;top:12px;right:12px;z-index:10;width:36px;height:36px;border-radius:var(--radius-md);background:rgba(255,255,255,0.9);border:1px solid var(--gray-bg-midgray);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:all 0.2s ease;" title="Fullscreen">
+        <button onclick="toggleIframeFullscreen()" id="iframeFullscreenBtnW2" style="position:absolute;top:12px;right:12px;z-index:10;width:36px;height:36px;border-radius:var(--radius-md);background:rgba(255,255,255,0.9);border:1px solid var(--gray-bg-midgray);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background 0.2s ease,box-shadow 0.2s ease;" title="Fullscreen" aria-label="Fullscreen">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f414e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
         </button>
         <iframe src="daily-mu-birth-profile-preview.html" style="width:100%;height:70vh;border:none;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);pointer-events:auto;"></iframe>
@@ -3051,10 +3108,6 @@
             <div style="font-size:clamp(22px,2.2vw,36px);font-weight:800;color:#7279FB;line-height:1.1;">2</div>
             <div style="font-size:clamp(9px,0.8vw,12px);font-weight:600;color:var(--gray-fg-mid-on-white);">WIP</div>
           </div>
-          <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(8px,0.8vw,14px) clamp(14px,1.4vw,24px);text-align:center;box-shadow:0 2px 12px rgba(1,169,224,0.1);border:1px solid rgba(1,169,224,0.15);">
-            <div style="font-size:clamp(22px,2.2vw,36px);font-weight:800;color:#01a9e0;line-height:1.1;">1</div>
-            <div style="font-size:clamp(9px,0.8vw,12px);font-weight:600;color:var(--gray-fg-mid-on-white);">Next</div>
-          </div>
         </div>
       </div>
 
@@ -3068,12 +3121,10 @@
             <svg viewBox="0 0 120 120" style="width:100%;height:100%;transform:rotate(-90deg);">
               <!-- BG ring -->
               <circle cx="60" cy="60" r="50" fill="none" stroke="#EBECEF" stroke-width="10"/>
-              <!-- Done: 4/7 = 57% = ~360deg * 0.57 = 205deg -->
-              <circle cx="60" cy="60" r="50" fill="none" stroke="url(#progressGrad1)" stroke-width="10" stroke-linecap="round" stroke-dasharray="205 360" stroke-dashoffset="0" style="filter:drop-shadow(0 2px 4px rgba(236,89,157,0.3));"/>
-              <!-- WIP: 2/7 = 28.5% = ~103deg -->
-              <circle cx="60" cy="60" r="50" fill="none" stroke="#7279FB" stroke-width="10" stroke-linecap="round" stroke-dasharray="103 360" stroke-dashoffset="-205" style="filter:drop-shadow(0 2px 4px rgba(114,121,251,0.3));"/>
-              <!-- Next: 1/7 = 14.3% = ~51deg -->
-              <circle cx="60" cy="60" r="50" fill="none" stroke="#01a9e0" stroke-width="10" stroke-linecap="round" stroke-dasharray="51 360" stroke-dashoffset="-308" style="filter:drop-shadow(0 2px 4px rgba(1,169,224,0.3));"/>
+              <!-- Done: 4/6 = 66.7% = 240deg -->
+              <circle cx="60" cy="60" r="50" fill="none" stroke="url(#progressGrad1)" stroke-width="10" stroke-linecap="round" stroke-dasharray="240 360" stroke-dashoffset="0" style="filter:drop-shadow(0 2px 4px rgba(236,89,157,0.3));"/>
+              <!-- WIP: 2/6 = 33.3% = 120deg -->
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#7279FB" stroke-width="10" stroke-linecap="round" stroke-dasharray="120 360" stroke-dashoffset="-240" style="filter:drop-shadow(0 2px 4px rgba(114,121,251,0.3));"/>
               <defs>
                 <linearGradient id="progressGrad1" x1="0" y1="0" x2="1" y2="1">
                   <stop offset="0%" stop-color="#EC599D"/>
@@ -3083,7 +3134,7 @@
             </svg>
             <!-- Center text -->
             <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-              <span style="font-size:clamp(36px,3.5vw,56px);font-weight:800;background:linear-gradient(135deg,#EC599D,#7279FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;">86%</span>
+              <span style="font-size:clamp(36px,3.5vw,56px);font-weight:800;background:linear-gradient(135deg,#EC599D,#7279FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;">83%</span>
               <span style="font-size:clamp(10px,0.9vw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">Overall</span>
             </div>
           </div>
@@ -3091,7 +3142,6 @@
           <div style="display:flex;gap:var(--spacing-4);font-size:clamp(10px,0.85vw,13px);font-weight:600;">
             <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:50%;background:#EC599D;"></div><span>Done</span></div>
             <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:50%;background:#7279FB;"></div><span>WIP</span></div>
-            <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:50%;background:#01a9e0;"></div><span>Next</span></div>
           </div>
         </div>
 
@@ -3170,18 +3220,6 @@
             <span style="font-weight:800;font-size:clamp(14px,1.3vw,20px);color:#7279FB;flex-shrink:0;">50%</span>
           </div>
 
-          <!-- Micro Services — Week 3 -->
-          <div style="display:flex;align-items:center;gap:clamp(10px,1vw,16px);background:rgba(255,255,255,0.5);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9vw,16px) clamp(14px,1.2vw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.02);border-left:4px solid #01a9e0;border:1px dashed rgba(1,169,224,0.3);border-left:4px solid #01a9e0;">
-            <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#01a9e0,#0090c0);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </div>
-            <div style="flex:1;min-width:0;">
-              <div style="font-weight:700;font-size:clamp(12px,1.1vw,16px);color:var(--gray-fg-mid-on-white);">Micro Services <span style="font-weight:400;font-size:0.85em;color:var(--gray-fg-low-on-white);">&mdash; ไพ่ / เซียมซี / ทำนายฝัน</span></div>
-              <div style="height:4px;background:var(--gray-bg-midgray);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="width:0%;height:100%;background:#01a9e0;border-radius:2px;"></div></div>
-            </div>
-            <span style="background:rgba(1,169,224,0.1);color:#01a9e0;padding:3px 10px;border-radius:var(--radius-full);font-size:clamp(9px,0.8vw,12px);font-weight:700;flex-shrink:0;">Week 3</span>
-          </div>
-
         </div>
       </div>
     </div>
@@ -3200,39 +3238,193 @@
       <span class="slide-number">20 / 21</span>
     </div>
 
-    <div class="slide-content" style="flex-direction:column;gap:var(--spacing-6);">
-      <div>
-        <div class="section-tag">
+    <div class="slide-content" style="flex-direction:column;gap:var(--spacing-3);padding-top:var(--spacing-2);">
+      <!-- Title row — compact -->
+      <div style="display:flex;align-items:center;gap:var(--spacing-4);flex-shrink:0;">
+        <div class="section-tag" style="margin-bottom:0;">
           <div class="dot" style="background:var(--support-sky-fg-low);"></div>
           <span style="color:var(--info-fg-high);">Agenda 3</span>
         </div>
-        <h2 class="title-lg">Nextstep <span class="text-gray" style="font-weight:400;font-size:0.55em;">&mdash; Week 3 (Micro Service)</span></h2>
+        <h2 class="title-lg" style="font-size:clamp(20px,2.5vw,36px);margin:0;">Nextstep <span class="text-gray" style="font-weight:400;font-size:0.55em;">&mdash; Week 3 (Micro Service)</span></h2>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-4);flex:1;align-content:center;">
+      <!-- 3 compact task cards — horizontal -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-3);flex-shrink:0;">
         <!-- ไพ่ทาโร่ — TAN -->
-        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.5vw,24px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid var(--primary-fg-high);text-align:center;align-items:center;">
-          <img src="Images/Week02/Asset/Card-Hand.png" alt="Tarot Cards Hand" style="width:clamp(100px,10vw,160px);height:clamp(120px,12vw,180px);object-fit:cover;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);">
-          <span style="font-size:clamp(18px,2vw,28px);font-weight:700;">ไพ่ทาโร่</span>
-          <span class="body-sm" style="color:var(--gray-fg-mid-on-white);">ออกแบบ UI สำหรับฟีเจอร์ดูดวงไพ่ทาโร่ 22 ใบ</span>
-          <span style="background:var(--primary-bg-lowest);color:var(--primary-fg-high);padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">TAN</span>
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-md);padding:var(--spacing-3) var(--spacing-4);display:flex;align-items:center;gap:var(--spacing-3);border-left:4px solid var(--primary-fg-high);">
+          <img src="Images/Week02/Asset/Card-Hand.png" alt="Tarot" style="width:40px;height:48px;object-fit:cover;border-radius:var(--radius-sm);flex-shrink:0;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:clamp(14px,1.4vw,20px);font-weight:700;">ไพ่ทาโร่</div>
+            <div style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-mid-on-white);">UI ดูดวงไพ่ 22 ใบ</div>
+          </div>
+          <span style="background:var(--primary-bg-lowest);color:var(--primary-fg-high);padding:2px 10px;border-radius:var(--radius-full);font-size:clamp(10px,0.85vw,13px);font-weight:700;flex-shrink:0;">TAN</span>
         </div>
 
         <!-- เซียมซี — PIM -->
-        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.5vw,24px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid var(--secondary-fg-high);text-align:center;align-items:center;">
-          <img src="Images/Week02/Asset/DailyMu_Character_04.png" alt="Fortune Character" style="width:clamp(100px,10vw,160px);height:clamp(120px,12vw,180px);object-fit:contain;">
-          <span style="font-size:clamp(18px,2vw,28px);font-weight:700;">เซียมซี</span>
-          <span class="body-sm" style="color:var(--gray-fg-mid-on-white);">ออกแบบ UI + Mechanic สำหรับเขย่าเซียมซี</span>
-          <span style="background:var(--secondary-bg-lowest);color:var(--secondary-fg-high);padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">PIM</span>
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-md);padding:var(--spacing-3) var(--spacing-4);display:flex;align-items:center;gap:var(--spacing-3);border-left:4px solid var(--secondary-fg-high);">
+          <img src="Images/Week02/Asset/e-fortune-2.png" alt="Fortune" style="width:40px;height:48px;object-fit:contain;border-radius:var(--radius-sm);flex-shrink:0;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:clamp(14px,1.4vw,20px);font-weight:700;">เซียมซี</div>
+            <div style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-mid-on-white);">UI + Mechanic เขย่าเซียมซี</div>
+          </div>
+          <span style="background:var(--secondary-bg-lowest);color:var(--secondary-fg-high);padding:2px 10px;border-radius:var(--radius-full);font-size:clamp(10px,0.85vw,13px);font-weight:700;flex-shrink:0;">PIM</span>
         </div>
 
         <!-- ทำนายฝัน — JED -->
-        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.5vw,24px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid var(--support-sky-fg-low);text-align:center;align-items:center;">
-          <img src="Images/Week02/Asset/DailyMu_Process_Fortune.png" alt="Dream Fortune Book" style="width:clamp(100px,10vw,160px);height:clamp(120px,12vw,180px);object-fit:contain;">
-          <span style="font-size:clamp(18px,2vw,28px);font-weight:700;">ทำนายฝัน</span>
-          <span class="body-sm" style="color:var(--gray-fg-mid-on-white);">ออกแบบ UI สำหรับฟีเจอร์ทำนายฝัน + การ์ด</span>
-          <span style="background:var(--support-sky-bg-lowest);color:var(--info-fg-high);padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">JED</span>
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-md);padding:var(--spacing-3) var(--spacing-4);display:flex;align-items:center;gap:var(--spacing-3);border-left:4px solid var(--support-sky-fg-low);">
+          <img src="Images/Week02/Asset/DailyMu_Process_Fortune.png" alt="Dream" style="width:40px;height:48px;object-fit:contain;border-radius:var(--radius-sm);flex-shrink:0;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:clamp(14px,1.4vw,20px);font-weight:700;">ทำนายฝัน</div>
+            <div style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-mid-on-white);">UI ทำนายฝัน + การ์ด</div>
+          </div>
+          <span style="background:var(--support-sky-bg-lowest);color:var(--info-fg-high);padding:2px 10px;border-radius:var(--radius-full);font-size:clamp(10px,0.85vw,13px);font-weight:700;flex-shrink:0;">JED</span>
         </div>
+      </div>
+
+      <!-- Screenshot area -->
+      <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-3);min-height:0;align-items:center;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);height:100%;min-height:0;">
+          <div style="flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;width:100%;"><img src="Images/Week02/Asset/Tarotcard.png" alt="Tarot Card" style="width:100%;height:100%;object-fit:contain;"></div>
+          <span style="font-size:clamp(10px,0.9vw,13px);font-weight:700;color:var(--primary-fg-high);flex-shrink:0;">ไพ่ทาโร่</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);height:100%;min-height:0;">
+          <div style="flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;width:100%;"><img src="Images/Week02/Asset/foturnstick.png" alt="Fortune Stick" style="width:100%;height:100%;object-fit:contain;"></div>
+          <span style="font-size:clamp(10px,0.9vw,13px);font-weight:700;color:var(--secondary-fg-high);flex-shrink:0;">เซียมซี</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);height:100%;min-height:0;">
+          <div style="flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;width:100%;"><img src="Images/Week02/Asset/DecodeDream.png" alt="Decode Dream" style="width:100%;height:100%;object-fit:contain;"></div>
+          <span style="font-size:clamp(10px,0.9vw,13px);font-weight:700;color:var(--info-fg-high);flex-shrink:0;">ทำนายฝัน</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- W2 SLIDE 15b: OVERALL 3-WEEK DESIGN -->
+  <!-- ============================== -->
+  <div class="slide" style="background:linear-gradient(135deg,#FDEFF5 0%,#F1F2FF 50%,#E6F6FC 100%);" data-slide="30b">
+    <div class="slide-header">
+      <svg class="logo-icon" viewBox="0 0 188.81 161.84" xmlns="http://www.w3.org/2000/svg"><path fill="#01a9e0" d="M185.97,121.86c-.33-3.44-3.21-9.32-10.64-9.32-6.27,0-8.82,5.22-9.7,9.19-.58,2.63-2.91,8.93-8.23,13.44-6.42,5.45-9.81,5.14-14.46,6.62-4.64,1.48-7.06,3.92-7.87,7.87-.13.66-.2,1.34-.2,2.04,0,2.44.87,4.68,2.31,6.43,1.44,1.75,3.46,3.01,5.77,3.48.66.13,1.34.2,2.04.2h33.72c5.53,0,10.01-4.44,10.11-9.95l-.04-1.23-2.8-28.77Z"/><path fill="#65489d" d="M121.39,26.98c0,37.65-.01,39.92-.01,39.92,0,14.54-11.88,27.2-26.42,27.5-15.15.3-27.53-11.89-27.53-26.97h0V10.13c0-5.6-4.54-10.13-10.14-10.13H23.62c-5.6,0-10.14,4.53-10.14,10.13v57.29h0c0,45.41,37.39,82.08,83.06,80.9,43.99-1.13,78.78-37.77,78.78-81.77L175.29.02h-26.93c-12.6,0-26.97,9.45-26.97,26.96"/><path fill="#ef4f98" d="M67.43,10.07C67.39,4.51,62.88.02,57.32.02H23.6C18.03.02,13.52,4.51,13.49,10.07v.05S.17,149.88.17,149.88c-.11.6-.17,1.21-.17,1.84,0,5.59,4.53,10.12,10.11,10.12h33.72c5.59,0,10.12-4.53,10.12-10.12,0,0,.49-5.14,1.29-13.47,3.37-35.25,12.2-127.57,12.2-128.12v-.07Z"/><path fill="#282160" d="M55.23,138.26c3.88,2.15,7.96,3.99,12.2,5.49V10.13c0,.55-8.83,92.88-12.2,128.13"/></svg>
+      <span class="section-label">Overall &middot; 3-Week Design Roadmap</span>
+      <span class="slide-number">22 / 23</span>
+    </div>
+
+    <div class="slide-content" style="flex-direction:column;gap:var(--spacing-4);position:relative;">
+      <!-- Decorative -->
+      <div style="position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(236,89,157,0.05);top:-50px;right:-30px;pointer-events:none;"></div>
+
+      <!-- Title -->
+      <div style="flex-shrink:0;">
+        <div class="section-tag">
+          <div class="dot" style="background:var(--info-fg-high);"></div>
+          <span style="color:var(--info-fg-high);">Big Picture</span>
+        </div>
+        <h2 class="title-lg" style="font-size:clamp(24px,3vw,42px);background:linear-gradient(135deg,#EC599D,#7279FB,#01a9e0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ภาพรวม Design &mdash; 3 Weeks</h2>
+      </div>
+
+      <!-- 3-Week Grid -->
+      <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-4);align-content:center;min-height:0;">
+
+        <!-- Week 1 -->
+        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-xl);padding:clamp(16px,1.5vw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid #EC599D;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:clamp(18px,2vw,28px);font-weight:800;color:var(--gray-fg-high);">Week 1</span>
+            <span style="background:rgba(236,89,157,0.1);color:#EC599D;padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;">Done</span>
+          </div>
+          <span style="font-size:clamp(10px,0.9vw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">9&ndash;13 Feb &middot; Foundation</span>
+          <div style="display:flex;flex-direction:column;gap:var(--spacing-2);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
+              <span>Login / Register Flow</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
+              <span>Onboarding &amp; Splash</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
+              <span>Design System &amp; Tokens</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
+              <span>Visual Assets &amp; Characters</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
+              <span>AI Workflow Setup</span>
+            </div>
+          </div>
+          <!-- Progress bar -->
+          <div style="margin-top:auto;">
+            <div style="height:6px;background:var(--gray-bg-midgray);border-radius:3px;overflow:hidden;"><div style="width:100%;height:100%;background:linear-gradient(90deg,#EC599D,#d44a8a);border-radius:3px;"></div></div>
+            <div style="text-align:right;font-size:clamp(11px,1vw,14px);font-weight:800;color:#EC599D;margin-top:4px;">100%</div>
+          </div>
+        </div>
+
+        <!-- Week 2 -->
+        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-xl);padding:clamp(16px,1.5vw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid #7279FB;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:clamp(18px,2vw,28px);font-weight:800;color:var(--gray-fg-high);">Week 2</span>
+            <span style="background:rgba(114,121,251,0.1);color:#7279FB;padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;">83%</span>
+          </div>
+          <span style="font-size:clamp(10px,0.9vw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">16&ndash;20 Feb &middot; Core Screens</span>
+          <div style="display:flex;flex-direction:column;gap:var(--spacing-2);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
+              <span>Auth Flow &mdash; 100%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#7279FB;flex-shrink:0;"></div>
+              <span>Calendar &mdash; 90%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
+              <span>Profile &amp; Notification &mdash; 100%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
+              <span>Entry Points &mdash; 100%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#7279FB;flex-shrink:0;"></div>
+              <span>Graphic &amp; Dev Coord &mdash; WIP</span>
+            </div>
+          </div>
+          <!-- Progress bar -->
+          <div style="margin-top:auto;">
+            <div style="height:6px;background:var(--gray-bg-midgray);border-radius:3px;overflow:hidden;"><div style="width:83%;height:100%;background:linear-gradient(90deg,#7279FB,#5a60e0);border-radius:3px;"></div></div>
+            <div style="text-align:right;font-size:clamp(11px,1vw,14px);font-weight:800;color:#7279FB;margin-top:4px;">83%</div>
+          </div>
+        </div>
+
+        <!-- Week 3 -->
+        <div style="background:rgba(255,255,255,0.6);backdrop-filter:blur(8px);border-radius:var(--radius-xl);padding:clamp(16px,1.5vw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid #01a9e0;border:1px dashed rgba(1,169,224,0.3);border-top:4px solid #01a9e0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:clamp(18px,2vw,28px);font-weight:800;color:var(--gray-fg-high);">Week 3</span>
+            <span style="background:rgba(1,169,224,0.1);color:#01a9e0;padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;">Upcoming</span>
+          </div>
+          <span style="font-size:clamp(10px,0.9vw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">23&ndash;27 Feb &middot; Micro Services</span>
+          <div style="display:flex;flex-direction:column;gap:var(--spacing-2);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#01a9e0;flex-shrink:0;"></div>
+              <span style="color:var(--gray-fg-mid-on-white);">ไพ่ทาโร่ &mdash; TAN</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#01a9e0;flex-shrink:0;"></div>
+              <span style="color:var(--gray-fg-mid-on-white);">เซียมซี &mdash; PIM</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#01a9e0;flex-shrink:0;"></div>
+              <span style="color:var(--gray-fg-mid-on-white);">ทำนายฝัน &mdash; JED</span>
+            </div>
+          </div>
+          <!-- Progress bar -->
+          <div style="margin-top:auto;">
+            <div style="height:6px;background:var(--gray-bg-midgray);border-radius:3px;overflow:hidden;"><div style="width:0%;height:100%;background:#01a9e0;border-radius:3px;"></div></div>
+            <div style="text-align:right;font-size:clamp(11px,1vw,14px);font-weight:800;color:#01a9e0;margin-top:4px;">0%</div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -3324,15 +3516,15 @@
     </button>
     <!-- Nav controls integrated into top bar -->
     <div class="nav-bar" id="navBar">
-      <button class="nav-home-btn" onclick="goToSlide(0)" title="Go to first slide">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <button class="nav-home-btn" onclick="goToSlide(0)" title="Go to first slide" aria-label="Go to first slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </button>
-      <button class="nav-btn" onclick="prevSlide()" title="Previous slide">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <button class="nav-btn" onclick="prevSlide()" title="Previous slide" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <span class="nav-counter" id="navCounter">1/16</span>
-      <button class="nav-btn" onclick="nextSlide()" title="Next slide">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      <button class="nav-btn" onclick="nextSlide()" title="Next slide" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
     <div class="page-dropdown-wrap" id="pageDropdown" style="position:static;">
@@ -3550,9 +3742,9 @@
         video.currentTime = 0;
         video.play().catch(() => {});
       } else {
-        // After 2 loops, wait 1s then fade out and advance
+        // After 1 loop, wait 1s then fade out and show Cover
         w2VideoTimer = setTimeout(() => {
-          dismissW2Video(true);
+          dismissW2Video(false);
         }, 1000);
       }
     };
