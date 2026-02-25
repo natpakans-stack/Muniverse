@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyMu — Settings Responsive Preview</title>
+  <link href="https://fonts.cdnfonts.com/css/line-seed-sans-th" rel="stylesheet">
+  <style>
+    /* ===== 1. DESIGN TOKENS ===== */
+    :root{--primary:#EC599D;--primary-light:#FDEFF5;--primary-border:#F7BDD8;--secondary:#7279FB;--secondary-light:#F1F2FF;--text-primary:#1B1D22;--text-secondary:#6A6E83;--text-tertiary:#9A9DAD;--bg-white:#FFFFFF;--bg-light:#F8F8F9;--bg-mid:#EBECEF;--bg-page:#F8F8F9;--border:#EBECEF;--success:#559652;--font:'LINE Seed Sans TH',sans-serif;--font-sys:'Inter',-apple-system,sans-serif;--sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;--sp-10:40px;--sp-12:48px;--r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:24px;--r-full:9999px;--sh-xs:0 1px 2px rgba(0,0,0,.08);--sh-sm:0 1px 3px rgba(0,0,0,.1);--sh-md:0 4px 6px rgba(0,0,0,.1)}
+
+    /* ===== 2. RESET ===== */
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font);background:#F0F1F3;-webkit-font-smoothing:antialiased}
+    button{cursor:pointer;outline:none;border:none}img{display:block;max-width:100%}a{text-decoration:none}
+
+    /* ===== 3. PREVIEW SHELL ===== */
+    .shell{padding:var(--sp-8)}
+    .page-title{font-size:13px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:var(--sp-8)}
+    .section{margin-bottom:var(--sp-12)}.section:last-child{margin-bottom:0}
+    .section-label{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:var(--sp-4)}
+    .row{display:flex;align-items:flex-start;gap:var(--sp-6);flex-wrap:wrap}
+    .col{display:flex;flex-direction:column}
+    .col-label{font-size:12px;font-weight:700;color:var(--text-tertiary);margin-bottom:var(--sp-2)}
+
+    /* ===== 4. FRAME & SHARED ===== */
+    .frame{overflow:hidden;position:relative;background:var(--bg-page)}
+    .status-time{font-family:var(--font-sys);font-weight:600;color:#000;font-size:17px;line-height:22px}
+    .status-icons{display:flex;align-items:center;gap:5px}.status-icons svg{display:block}
+    .home-bar{border-radius:100px;background:#ADB7C6}
+
+    /* ============================================
+       ★ SETTING — SHARED LAYOUT
+    ============================================ */
+    .set{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg-page);overflow:hidden}
+    .set-status{display:flex;align-items:center;justify-content:space-between;background:#FEF4F5;flex-shrink:0;height:48px}
+    .set-hdr{display:flex;align-items:center;flex-shrink:0;background:linear-gradient(to bottom,var(--primary-light),var(--bg-white))}
+    .set-back{background:var(--bg-white);border:1px solid var(--border);border-radius:var(--r-full);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .set-back svg{display:block}
+    .set-title{font-weight:700;color:var(--text-primary);flex:1}
+    .set-content{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+
+    /* ============================================
+       ★ SETTING MAIN — MENU LIST
+    ============================================ */
+    .set-menu-section{background:var(--bg-white);flex-shrink:0}
+    .set-menu-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);cursor:pointer}
+    .set-menu-body{display:flex;flex-direction:column;flex:1;min-width:0}
+    .set-menu-title{font-weight:700;color:var(--text-primary)}
+    .set-menu-desc{font-weight:400;color:var(--text-secondary)}
+    .set-menu-arrow{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    .set-menu-arrow svg{display:block}
+    .set-version-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+    .set-version-val{font-weight:400;color:var(--text-tertiary)}
+
+    /* ============================================
+       ★ SETTING NOTIFICATION — TOGGLE LIST
+    ============================================ */
+    .set-toggle-section{background:var(--bg-white);flex-shrink:0}
+    .set-toggle-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+    .set-toggle-body{flex:1;display:flex;flex-direction:column;min-width:0}
+    .set-toggle-label{font-weight:400;color:var(--text-primary)}
+    .set-toggle-label.bold{font-weight:700}
+    .set-toggle-sub{font-weight:400;color:var(--text-secondary)}
+    .set-time-row{display:flex;align-items:center;border-bottom:1px solid var(--border)}
+    .set-time-body{flex:1;display:flex;flex-direction:column}
+    .set-time-label{font-weight:700;color:var(--text-primary)}
+    .set-time-vals{display:flex;align-items:center;flex-wrap:wrap}
+    .set-time-val{font-weight:700;color:var(--primary)}
+    .set-time-sep{color:var(--text-tertiary)}
+    .set-time-link{font-weight:400;color:var(--primary)}
+
+    /* Toggle Switch */
+    .sw-track{border-radius:var(--r-full);position:relative;display:flex;align-items:center;flex-shrink:0;width:48px;height:28px}
+    .sw-track.on{background:var(--success)}
+    .sw-track.off{background:var(--bg-mid)}
+    .sw-thumb{position:absolute;border-radius:50%;background:var(--bg-white);box-shadow:0 1px 3px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;width:22px;height:22px}
+    .sw-track.on .sw-thumb{left:23px}
+    .sw-track.off .sw-thumb{left:3px}
+    .sw-thumb img{width:12px;height:12px;object-fit:contain;display:block}
+
+    /* ============================================
+       ★ PRIVACY POLICY
+    ============================================ */
+    .priv-wrap{width:100%}
+    .priv-card{background:var(--bg-white);border-radius:var(--r-lg);box-shadow:var(--sh-sm);display:flex;flex-direction:column}
+    .priv-section{display:flex;flex-direction:column}
+    .priv-section-title{font-weight:700;color:var(--text-primary)}
+    .priv-body{font-weight:400;color:var(--text-primary);line-height:1.7}
+
+    /* ============================================
+       ★ DELETE DIALOG
+    ============================================ */
+    .del-ov{position:absolute;inset:0;background:rgba(16,17,20,.7);display:flex;align-items:center;justify-content:center;z-index:20}
+    .del-card{background:var(--bg-white);border-radius:20px;display:flex;flex-direction:column;align-items:center}
+    .del-char-wrap{overflow:hidden;border-radius:0 0 50% 50%;background:#FDEFF5;flex-shrink:0;position:relative}
+    .del-char-wrap img{position:absolute;object-fit:contain;max-width:none}
+    .del-content{display:flex;flex-direction:column;text-align:center;width:100%}
+    .del-title{font-weight:700;color:#181C2F}
+    .del-desc{font-weight:400;color:var(--text-tertiary)}
+    .del-btns{display:flex;width:100%}
+    .del-btn{flex:1;border-radius:var(--r-md);font-family:var(--font);font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
+    .del-btn.cancel{background:var(--bg-white);border:2px solid var(--secondary);color:var(--secondary)}
+    .del-btn.confirm{background:var(--secondary);color:#fff}
+
+    /* ============================================
+       ★ BOTTOM TAB BAR
+    ============================================ */
+    .tab-bar{position:absolute;bottom:0;left:0;right:0;z-index:10}
+    .tab-bar-bg{position:absolute;bottom:0;left:0;right:0}
+    .tab-bar-bg svg{display:block;width:100%}
+    .tab-center{position:absolute;left:50%;transform:translateX(-50%);z-index:12;border-radius:50%;background:linear-gradient(135deg,#EC599D,#F7BDD8);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(236,89,157,.35);overflow:hidden}
+    .tab-center img{display:block;object-fit:contain}
+    .tab-items{position:relative;z-index:11;display:flex;align-items:flex-end;justify-content:space-around}
+    .tab-item{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+    .tab-item svg{display:block}
+    .tab-item-label{font-family:var(--font);text-align:center}
+    .tab-item-label.active{font-weight:700;color:var(--primary)}
+    .tab-item-label.inactive{font-weight:400;color:var(--text-tertiary)}
+    .tab-center-label{position:absolute;left:50%;transform:translateX(-50%);z-index:11;font-family:var(--font);text-align:center;white-space:nowrap}
+    .tab-home{position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:12}
+    .tab-home .home-bar{background:#1F2937;opacity:.15}
+
+    /* ============================================
+       ★ BREAKPOINT — MOBILE (390 × 844)
+    ============================================ */
+    .f-mobile .set-status{padding:0 24px}
+    .f-mobile .set-hdr{padding:12px 16px;gap:10px}
+    .f-mobile .set-back{width:36px;height:36px}
+    .f-mobile .set-back svg{width:10px;height:16px}
+    .f-mobile .set-title{font-size:20px;line-height:28px}
+    /* Menu rows */
+    .f-mobile .set-menu-row{padding:16px;gap:12px}
+    .f-mobile .set-menu-title{font-size:16px;line-height:24px}
+    .f-mobile .set-menu-desc{font-size:14px;line-height:22px;margin-top:2px}
+    .f-mobile .set-menu-arrow svg{width:20px;height:20px}
+    .f-mobile .set-version-row{padding:16px;gap:12px}
+    .f-mobile .set-version-val{font-size:14px;line-height:22px}
+    /* Toggle rows */
+    .f-mobile .set-toggle-row{padding:16px;gap:12px}
+    .f-mobile .set-toggle-label{font-size:16px;line-height:24px}
+    .f-mobile .set-toggle-sub{font-size:14px;line-height:22px;margin-top:2px}
+    .f-mobile .set-time-row{padding:16px;gap:12px}
+    .f-mobile .set-time-label{font-size:16px;line-height:24px;margin-bottom:4px}
+    .f-mobile .set-time-vals{gap:6px;margin-top:4px}
+    .f-mobile .set-time-val{font-size:14px;line-height:22px}
+    .f-mobile .set-time-link{font-size:14px;line-height:22px}
+    /* Privacy */
+    .f-mobile .priv-wrap{padding:12px}
+    .f-mobile .priv-card{padding:16px;gap:16px}
+    .f-mobile .priv-section{gap:6px}
+    .f-mobile .priv-section-title{font-size:16px;line-height:24px}
+    .f-mobile .priv-body{font-size:14px;line-height:22px}
+    /* Tab Bar */
+    .f-mobile .tab-bar{height:125px}
+    .f-mobile .tab-center{width:60px;height:60px;top:0}
+    .f-mobile .tab-center img{width:32px;height:32px}
+    .f-mobile .tab-items{padding:52px 16px 28px;gap:0}
+    .f-mobile .tab-item{gap:4px;width:52px}
+    .f-mobile .tab-item svg{width:22px;height:22px}
+    .f-mobile .tab-item-label{font-size:14px;line-height:22px}
+    .f-mobile .tab-center-label{bottom:28px;font-size:14px;line-height:22px}
+    .f-mobile .tab-home .home-bar{width:134px;height:5px}
+    .f-mobile .tab-home{bottom:8px}
+    /* Delete dialog */
+    .f-mobile .del-card{width:359px;padding:20px 16px;gap:var(--sp-4)}
+    .f-mobile .del-char-wrap{width:129px;height:130px}
+    .f-mobile .del-char-wrap img{width:150%;left:-25%;top:-12%}
+    .f-mobile .del-content{gap:8px}
+    .f-mobile .del-title{font-size:18px;line-height:26px}
+    .f-mobile .del-desc{font-size:16px;line-height:24px}
+    .f-mobile .del-btns{gap:10px;margin-top:16px}
+    .f-mobile .del-btn{height:48px;font-size:16px;line-height:24px}
+
+    /* ============================================
+       ★ BREAKPOINT — TABLET (768 × 1024)
+       Content 500px centered
+    ============================================ */
+    .f-tablet .set-status{padding:0 32px}
+    .f-tablet .set-hdr{padding:16px 32px;gap:12px}
+    .f-tablet .set-back{width:44px;height:44px}
+    .f-tablet .set-back svg{width:12px;height:18px}
+    .f-tablet .set-title{font-size:24px;line-height:32px}
+    /* Content centering */
+    .f-tablet .set-content{align-items:center}
+    .f-tablet .set-menu-section,.f-tablet .set-toggle-section,.f-tablet .priv-wrap{max-width:500px;width:100%}
+    /* Menu rows */
+    .f-tablet .set-menu-row{padding:18px 20px;gap:16px}
+    .f-tablet .set-menu-title{font-size:18px;line-height:26px}
+    .f-tablet .set-menu-desc{font-size:16px;line-height:24px;margin-top:4px}
+    .f-tablet .set-menu-arrow svg{width:22px;height:22px}
+    .f-tablet .set-version-row{padding:18px 20px;gap:16px}
+    .f-tablet .set-version-val{font-size:16px;line-height:24px}
+    /* Toggle rows */
+    .f-tablet .set-toggle-row{padding:18px 20px;gap:16px}
+    .f-tablet .set-toggle-label{font-size:18px;line-height:26px}
+    .f-tablet .set-toggle-sub{font-size:16px;line-height:24px;margin-top:4px}
+    .f-tablet .set-time-row{padding:18px 20px;gap:16px}
+    .f-tablet .set-time-label{font-size:18px;line-height:26px;margin-bottom:4px}
+    .f-tablet .set-time-vals{gap:8px;margin-top:4px}
+    .f-tablet .set-time-val{font-size:16px;line-height:24px}
+    .f-tablet .set-time-link{font-size:16px;line-height:24px}
+    /* Privacy */
+    .f-tablet .priv-wrap{padding:16px}
+    .f-tablet .priv-card{padding:20px;gap:20px}
+    .f-tablet .priv-section{gap:8px}
+    .f-tablet .priv-section-title{font-size:18px;line-height:26px}
+    .f-tablet .priv-body{font-size:16px;line-height:26px}
+    /* Tab Bar — 500px centered */
+    .f-tablet .tab-bar{height:125px;width:500px;left:50%;transform:translateX(-50%);right:auto}
+    .f-tablet .tab-center{width:65px;height:65px;top:0}
+    .f-tablet .tab-center img{width:36px;height:36px}
+    .f-tablet .tab-items{padding:52px 16px 28px;gap:0}
+    .f-tablet .tab-item{gap:4px;width:64px}
+    .f-tablet .tab-item svg{width:24px;height:24px}
+    .f-tablet .tab-item-label{font-size:14px;line-height:22px}
+    .f-tablet .tab-center-label{bottom:28px;font-size:14px;line-height:22px}
+    .f-tablet .tab-home .home-bar{width:134px;height:5px}
+    .f-tablet .tab-home{bottom:4px}
+    /* Delete dialog */
+    .f-tablet .del-card{width:440px;padding:28px 24px;gap:20px}
+    .f-tablet .del-char-wrap{width:160px;height:162px}
+    .f-tablet .del-char-wrap img{width:150%;left:-25%;top:-12%}
+    .f-tablet .del-content{gap:10px}
+    .f-tablet .del-title{font-size:22px;line-height:30px}
+    .f-tablet .del-desc{font-size:18px;line-height:26px}
+    .f-tablet .del-btns{gap:12px;margin-top:20px}
+    .f-tablet .del-btn{height:52px;font-size:18px;line-height:26px;border-radius:var(--r-lg)}
+
+    /* ============================================
+       ★ BREAKPOINT — LANDSCAPE (1024 × 768)
+       Content 440px centered
+    ============================================ */
+    .f-land .set-status{padding:0 40px}
+    .f-land .set-hdr{padding:12px 40px;gap:10px}
+    .f-land .set-back{width:44px;height:44px}
+    .f-land .set-back svg{width:10px;height:16px}
+    .f-land .set-title{font-size:22px;line-height:30px}
+    /* Content centering */
+    .f-land .set-content{align-items:center}
+    .f-land .set-menu-section,.f-land .set-toggle-section,.f-land .priv-wrap{max-width:440px;width:100%}
+    /* Menu rows */
+    .f-land .set-menu-row{padding:14px 20px;gap:12px}
+    .f-land .set-menu-title{font-size:16px;line-height:24px}
+    .f-land .set-menu-desc{font-size:14px;line-height:22px;margin-top:2px}
+    .f-land .set-menu-arrow svg{width:20px;height:20px}
+    .f-land .set-version-row{padding:14px 20px;gap:12px}
+    .f-land .set-version-val{font-size:14px;line-height:22px}
+    /* Toggle rows */
+    .f-land .set-toggle-row{padding:14px 16px;gap:12px}
+    .f-land .set-toggle-label{font-size:16px;line-height:24px}
+    .f-land .set-toggle-sub{font-size:14px;line-height:22px;margin-top:2px}
+    .f-land .set-time-row{padding:14px 16px;gap:12px}
+    .f-land .set-time-label{font-size:16px;line-height:24px;margin-bottom:4px}
+    .f-land .set-time-vals{gap:6px;margin-top:4px}
+    .f-land .set-time-val{font-size:14px;line-height:22px}
+    .f-land .set-time-link{font-size:14px;line-height:22px}
+    /* Privacy */
+    .f-land .priv-wrap{padding:12px}
+    .f-land .priv-card{padding:16px;gap:14px}
+    .f-land .priv-section{gap:6px}
+    .f-land .priv-section-title{font-size:15px;line-height:22px}
+    .f-land .priv-body{font-size:14px;line-height:22px}
+    /* Tab Bar — 440px centered */
+    .f-land .tab-bar{height:125px;width:440px;left:50%;transform:translateX(-50%);right:auto}
+    .f-land .tab-center{width:65px;height:65px;top:0}
+    .f-land .tab-center img{width:34px;height:34px}
+    .f-land .tab-items{padding:52px 16px 28px;gap:0}
+    .f-land .tab-item{gap:4px;width:52px}
+    .f-land .tab-item svg{width:24px;height:24px}
+    .f-land .tab-item-label{font-size:14px;line-height:22px}
+    .f-land .tab-center-label{bottom:28px;font-size:14px;line-height:22px}
+    .f-land .tab-home .home-bar{width:134px;height:5px}
+    .f-land .tab-home{bottom:4px}
+    /* Delete dialog */
+    .f-land .del-card{width:420px;padding:24px 20px;gap:16px}
+    .f-land .del-char-wrap{width:140px;height:142px}
+    .f-land .del-char-wrap img{width:150%;left:-25%;top:-12%}
+    .f-land .del-content{gap:8px}
+    .f-land .del-title{font-size:20px;line-height:28px}
+    .f-land .del-desc{font-size:16px;line-height:24px}
+    .f-land .del-btns{gap:10px;margin-top:16px}
+    .f-land .del-btn{height:48px;font-size:16px;line-height:24px;border-radius:var(--r-lg)}
+
+    /* ===== FRAME SIZES ===== */
+    .f-mobile{width:390px;height:844px}
+    .f-tablet{width:768px;height:1024px}
+    .f-land{width:1024px;height:768px}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="page-title">Settings — Responsive</div>
+  <div id="root"></div>
+</div>
+<script>
+/* ===== ASSETS ===== */
+const A={
+  tabCrystal:  'https://www.figma.com/api/mcp/asset/fa07e72c-d53e-414e-a9c1-dc5e92565dd6',
+  switchCheck: 'https://www.figma.com/api/mcp/asset/8fb95859-e172-4df7-9bfc-e0e0929edb1c',
+  deleteChar:  'https://www.figma.com/api/mcp/asset/055d6e50-fbe8-48b0-8639-475f7b5f7243',
+};
+
+/* ===== SVGs ===== */
+const SVG_STATUS=`<svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#000"/><rect x="5" y="2" width="3" height="10" rx="1" fill="#000"/><rect x="10" y="0" width="3" height="12" rx="1" fill="#000"/><rect x="15" y="1" width="3" height="11" rx="1" fill="#000" opacity=".3"/></svg><svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.2 3.6 12.1 4.5 13.5 6L15 4.5C13.1 2.6 10.7 1.5 8 1.5S2.9 2.6 1 4.5L2.5 6C3.9 4.5 5.8 3.6 8 3.6Z" fill="#000"/><path d="M8 7.2C9.3 7.2 10.4 7.7 11.2 8.5L12.7 7C11.4 5.7 9.8 5 8 5S4.6 5.7 3.3 7L4.8 8.5C5.6 7.7 6.7 7.2 8 7.2Z" fill="#000"/><circle cx="8" cy="10.5" r="1.5" fill="#000"/></svg><svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0" y="1" width="22" height="11" rx="2" stroke="#000"/><rect x="1.5" y="2.5" width="19" height="8" rx="1" fill="#000"/><path d="M23.5 5v3a2 2 0 000-3Z" fill="#000" opacity=".4"/></svg>`;
+const SVG_BACK=`<svg viewBox="0 0 10 16" fill="none"><path d="M8.5 1L1.5 8l7 7" stroke="#1B1D22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_CHEVRON_R=`<svg viewBox="0 0 20 20" fill="none"><path d="M7.5 4l6 6-6 6" stroke="#9A9DAD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+/* Tab bar icons */
+const SVG_TAB_CAL=c=>`<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="${c}" stroke-width="1.8"/><line x1="3" y1="10" x2="21" y2="10" stroke="${c}" stroke-width="1.8"/><line x1="8" y1="3" x2="8" y2="7" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_TAB_BELL=c=>`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 016 6v3.5l1.3 2.2c.4.7-.1 1.3-.8 1.3H5.5c-.7 0-1.2-.6-.8-1.3L6 12.5V9a6 6 0 016-6z" stroke="${c}" stroke-width="1.8"/><path d="M9 16a3 3 0 006 0" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_TAB_MOON=c=>`<svg viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 1021 12.79z" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_TAB_USER=c=>`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="${c}" stroke-width="1.8"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+
+/* Tab bar notch path */
+function tabPath(w){const cx=w/2,ns=cx-43,ne=cx+43;return`M0 16 H${ns} C${ns+8} 16 ${ns+13} 16 ${ns+17} 20 Q${ns+25} 32 ${ns+34} 36 Q${cx-4} 38 ${cx} 38 Q${cx+4} 38 ${cx+9} 36 Q${cx+18} 32 ${cx+26} 20 C${ne-8} 16 ${ne-5} 16 ${ne} 16 H${w} V95 H0 Z`}
+
+/* ===== DATA ===== */
+const MENU_ROWS=[
+  {title:'การแจ้งเตือน',    desc:'จัดการการแจ้งเตือนของแอป',      hasArrow:true},
+  {title:'ความเป็นส่วนตัว', desc:'ดูนโยบายความเป็นส่วนตัว',       hasArrow:true},
+  {title:'ลบบัญชี',         desc:'ลบบัญชีของคุณออกจากระบบ',       hasArrow:true},
+  {title:'เวอร์ชันแอป',     desc:'v 1.0.0',                        hasArrow:false},
+];
+
+const TOGGLE_ROWS=[
+  {type:'main',    label:'เปิด/ปิด การแจ้งเตือนทั้งหมด',                      on:true},
+  {type:'section', label:'ตั้งค่าการแจ้งเตือนแบบกำหนดเอง', sub:'เลือกประเภทการแจ้งเตือนที่ต้องการรับ'},
+  {type:'toggle',  label:'แจ้งเตือนดวงรายวัน (เช้า)',                           on:true},
+  {type:'toggle',  label:'แจ้งเตือนก่อนนอน',                                   on:true},
+  {type:'toggle',  label:'แจ้งเตือนฤกษ์ดี/ควรระวัง',                          on:true},
+  {type:'toggle',  label:'แจ้งเตือนสรุปประจำสัปดาห์',                          on:true},
+  {type:'toggle',  label:'แจ้งเตือนโปรโมชัน (อนาคต)',                          on:true},
+  {type:'time',    label:'เวลาแจ้งเตือน', times:['07:00','23:00'],              on:true},
+  {type:'toggle',  label:'อัปเดตข้อมูลจากแอป',                                 on:true},
+];
+
+const PRIVACY_SECTIONS=[
+  {
+    title:'นโยบายความเป็นส่วนตัว',
+    body:'DailyMu ให้ความสำคัญกับความเป็นส่วนตัวของผู้ใช้งาน เราจึงได้จัดทำนโยบายนี้เพื่อชี้แจงรายละเอียดเกี่ยวกับการเก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลของท่าน การใช้งานแอปพลิเคชันถือว่าท่านยอมรับข้อกำหนดในนโยบายฉบับนี้',
+  },
+  {
+    title:'ข้อมูลที่เราเก็บรวบรวม',
+    body:'เราเก็บรวบรวมข้อมูลต่อไปนี้: (1) ข้อมูลที่ท่านให้ไว้โดยตรง ได้แก่ ชื่อ วันเดือนปีเกิด เวลาเกิด จังหวัดที่เกิด และอีเมล (2) ข้อมูลการใช้งานแอปพลิเคชัน เช่น ฟีเจอร์ที่ใช้และความถี่ในการเปิดใช้งาน (3) ข้อมูลอุปกรณ์ เช่น รุ่น ระบบปฏิบัติการ และรหัสอุปกรณ์',
+  },
+  {
+    title:'วิธีการใช้ข้อมูล',
+    body:'เราใช้ข้อมูลที่เก็บรวบรวมเพื่อ: ให้บริการดูดวงรายวันและฤกษ์ดีที่ปรับแต่งให้เหมาะกับท่าน ส่งการแจ้งเตือนที่เกี่ยวข้อง วิเคราะห์และปรับปรุงบริการของเรา และปฏิบัติตามข้อกำหนดทางกฎหมายที่เกี่ยวข้อง',
+  },
+  {
+    title:'การแชร์ข้อมูลกับบุคคลที่สาม',
+    body:'เราจะไม่ขาย แลกเปลี่ยน หรือโอนข้อมูลส่วนบุคคลของท่านให้แก่บุคคลที่สาม ยกเว้นในกรณีที่จำเป็นต้องปฏิบัติตามกฎหมาย หรือเพื่อปกป้องสิทธิ์ ทรัพย์สิน และความปลอดภัยของผู้ใช้งานและบุคคลอื่น',
+  },
+];
+
+const SCREENS=[
+  {type:'setting-main',         label:'ตั้งค่า — Main'},
+  {type:'setting-notification', label:'ตั้งค่า — การแจ้งเตือน'},
+  {type:'setting-delete',       label:'ตั้งค่า — ลบบัญชี (Dialog)'},
+  {type:'setting-privacy',      label:'ตั้งค่า — นโยบายความเป็นส่วนตัว'},
+];
+
+const BPS=[
+  {id:'mobile',  label:'Mobile — 390 × 844',    cls:'f-mobile', w:390,  navW:390},
+  {id:'tablet',  label:'Tablet — 768 × 1024',   cls:'f-tablet', w:768,  navW:500},
+  {id:'land',    label:'Landscape — 1024 × 768', cls:'f-land',   w:1024, navW:440},
+];
+
+/* ===== RENDER HELPERS ===== */
+function statusBar(){
+  return`<div class="set-status"><span class="status-time">09:41</span><div class="status-icons">${SVG_STATUS}</div></div>`;
+}
+
+function settingHeader(title){
+  return`<div class="set-hdr"><div class="set-back">${SVG_BACK}</div><div class="set-title">${title}</div></div>`;
+}
+
+function toggleSwitch(on){
+  return`<div class="sw-track ${on?'on':'off'}"><div class="sw-thumb">${on?`<img src="${A.switchCheck}" alt="✓">`:''}
+  </div></div>`;
+}
+
+function menuSection(){
+  const rows=MENU_ROWS.map(r=>{
+    if(!r.hasArrow){
+      return`<div class="set-version-row"><div class="set-menu-body"><div class="set-menu-title">${r.title}</div></div><div class="set-version-val">${r.desc}</div></div>`;
+    }
+    return`<div class="set-menu-row"><div class="set-menu-body"><div class="set-menu-title">${r.title}</div><div class="set-menu-desc">${r.desc}</div></div><div class="set-menu-arrow">${SVG_CHEVRON_R}</div></div>`;
+  }).join('');
+  return`<div class="set-menu-section">${rows}</div>`;
+}
+
+function toggleSection(){
+  const rows=TOGGLE_ROWS.map(r=>{
+    if(r.type==='main'){
+      return`<div class="set-toggle-row"><div class="set-toggle-label bold">${r.label}</div>${toggleSwitch(r.on)}</div>`;
+    }
+    if(r.type==='section'){
+      return`<div class="set-toggle-row"><div class="set-toggle-body"><div class="set-toggle-label bold">${r.label}</div><div class="set-toggle-sub">${r.sub}</div></div></div>`;
+    }
+    if(r.type==='time'){
+      return`<div class="set-time-row"><div class="set-time-body"><div class="set-time-label">${r.label}</div><div class="set-time-vals">${r.times.map((t,i)=>(i>0?`<span class="set-time-sep"> / </span>`:'')+`<span class="set-time-val">${t}</span>`).join('')}<span class="set-time-sep">&nbsp;&nbsp;</span><a class="set-time-link" href="#">เปลี่ยนเวลา</a></div></div>${toggleSwitch(r.on)}</div>`;
+    }
+    return`<div class="set-toggle-row"><div class="set-toggle-label">${r.label}</div>${toggleSwitch(r.on)}</div>`;
+  }).join('');
+  return`<div class="set-toggle-section">${rows}</div>`;
+}
+
+function tabBar(navW){
+  const pc='#EC599D',ic='#9A9DAD';
+  return`<div class="tab-bar"><div class="tab-bar-bg"><svg viewBox="0 0 ${navW} 95" preserveAspectRatio="none"><defs><filter id="ts${navW}" x="-5%" y="-20%" width="110%" height="140%"><feDropShadow dx="0" dy="-2" stdDeviation="4" floodColor="#000" floodOpacity=".06"/></filter></defs><path d="${tabPath(navW)}" fill="white" filter="url(#ts${navW})"/></svg></div><div class="tab-center"><img src="${A.tabCrystal}" alt="ดวง"></div><div class="tab-items"><div class="tab-item">${SVG_TAB_CAL(ic)}<div class="tab-item-label inactive">ปฏิทิน</div></div><div class="tab-item">${SVG_TAB_BELL(ic)}<div class="tab-item-label inactive">แจ้งเตือน</div></div><div style="flex:1"></div><div class="tab-item">${SVG_TAB_MOON(ic)}<div class="tab-item-label inactive">ทำนาย</div></div><div class="tab-item">${SVG_TAB_USER(pc)}<div class="tab-item-label active">โปรไฟล์</div></div></div><div class="tab-center-label inactive" style="color:var(--text-tertiary)">ดวงวันนี้</div><div class="tab-home"><div class="home-bar"></div></div></div>`;
+}
+
+/* ===== RENDER — SETTING MAIN ===== */
+function renderSettingMain(s,bp){
+  return`<div class="set">${statusBar()}${settingHeader('ตั้งค่าการใช้งานแอป')}<div class="set-content">${menuSection()}</div>${tabBar(bp.navW)}</div>`;
+}
+
+/* ===== RENDER — SETTING NOTIFICATION ===== */
+function renderSettingNotification(s,bp){
+  return`<div class="set">${statusBar()}${settingHeader('การแจ้งเตือน')}<div class="set-content">${toggleSection()}</div>${tabBar(bp.navW)}</div>`;
+}
+
+/* ===== RENDER — SETTING DELETE (Dialog overlay) ===== */
+function renderSettingDelete(s,bp){
+  const dialog=`<div class="del-ov"><div class="del-card"><div class="del-char-wrap"><img src="${A.deleteChar}" alt="Character"></div><div class="del-content"><div class="del-title">คุณแน่ใจหรือไม่?</div><div class="del-desc">การลบบัญชีจะลบข้อมูลทั้งหมดของคุณออกจากระบบอย่างถาวร และไม่สามารถกู้คืนได้</div></div><div class="del-btns"><button class="del-btn cancel">ยกเลิก</button><button class="del-btn confirm">ลบบัญชีถาวร</button></div></div></div>`;
+  return`<div class="set">${statusBar()}${settingHeader('ตั้งค่าการใช้งานแอป')}<div class="set-content">${menuSection()}</div>${dialog}${tabBar(bp.navW)}</div>`;
+}
+
+/* ===== RENDER — SETTING PRIVACY ===== */
+function renderSettingPrivacy(s,bp){
+  const sections=PRIVACY_SECTIONS.map(sec=>`<div class="priv-section"><div class="priv-section-title">${sec.title}</div><div class="priv-body">${sec.body}</div></div>`).join('');
+  return`<div class="set">${statusBar()}${settingHeader('นโยบายความเป็นส่วนตัว')}<div class="set-content"><div class="priv-wrap"><div class="priv-card">${sections}</div></div></div>${tabBar(bp.navW)}</div>`;
+}
+
+/* ===== BUILD ===== */
+const REN={
+  'setting-main':         renderSettingMain,
+  'setting-notification': renderSettingNotification,
+  'setting-delete':       renderSettingDelete,
+  'setting-privacy':      renderSettingPrivacy,
+};
+
+const root=document.getElementById('root');
+root.innerHTML=SCREENS.map(s=>{
+  const frames=BPS.map(bp=>{
+    const content=REN[s.type](s,bp);
+    return`<div class="col"><div class="col-label">${bp.label}</div><div class="frame ${bp.cls}">${content}</div></div>`;
+  }).join('');
+  return`<div class="section"><div class="section-label">${s.label}</div><div class="row">${frames}</div></div>`;
+}).join('');
+</script>
+</body>
+</html>

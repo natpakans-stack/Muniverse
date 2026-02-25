@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyMu — Profile Responsive Preview</title>
+  <link href="https://fonts.cdnfonts.com/css/line-seed-sans-th" rel="stylesheet">
+  <style>
+    /* ===== 1. DESIGN TOKENS ===== */
+    :root{--primary:#EC599D;--primary-light:#FDEFF5;--primary-border:#F7BDD8;--secondary:#7279FB;--secondary-light:#F1F2FF;--text-primary:#1B1D22;--text-secondary:#6A6E83;--text-tertiary:#9A9DAD;--bg-white:#FFFFFF;--bg-light:#F8F8F9;--bg-mid:#EBECEF;--bg-page:#F8F8F9;--border:#EBECEF;--border-item:#E7E9EE;--error:#EA244F;--disabled-text:#9A9DAD;--disabled-bg:#EBECEF;--font:'LINE Seed Sans TH',sans-serif;--font-sys:'Inter',-apple-system,sans-serif;--sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;--sp-10:40px;--sp-12:48px;--r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:24px;--r-full:9999px;--sh-xs:0 1px 2px rgba(0,0,0,0.08);--sh-sm:0 1px 3px rgba(0,0,0,.1);--sh-md:0 4px 6px rgba(0,0,0,.1)}
+
+    /* ===== 2. RESET ===== */
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font);background:#F0F1F3;-webkit-font-smoothing:antialiased}
+    button{cursor:pointer;outline:none;border:none}img{display:block;max-width:100%}
+    input{outline:none;border:none;font-family:var(--font)}
+
+    /* ===== 3. PREVIEW SHELL ===== */
+    .shell{padding:var(--sp-8)}
+    .page-title{font-size:13px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:var(--sp-8)}
+    .section{margin-bottom:var(--sp-12)}.section:last-child{margin-bottom:0}
+    .section-label{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:var(--sp-4)}
+    .row{display:flex;align-items:flex-start;gap:var(--sp-6);flex-wrap:wrap}
+    .col{display:flex;flex-direction:column}
+    .col-label{font-size:12px;font-weight:700;color:var(--text-tertiary);margin-bottom:var(--sp-2)}
+
+    /* ===== 4. FRAME & SHARED ===== */
+    .frame{overflow:hidden;position:relative;background:var(--bg-page)}
+    .status-time{font-family:var(--font-sys);font-weight:600;color:#000;font-size:17px;line-height:22px}
+    .status-icons{display:flex;align-items:center;gap:5px}.status-icons svg{display:block}
+    .home-bar{border-radius:100px;background:#ADB7C6}
+
+    /* ============================================
+       ★ PROFILE — MAIN SCREEN
+       ============================================ */
+    .prof{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg-page);overflow:hidden}
+    .prof-status{display:flex;align-items:center;justify-content:space-between;background:#FEF4F5;flex-shrink:0}
+    /* Hero area */
+    .prof-hero{flex-shrink:0;position:relative;overflow:hidden}
+    .prof-hero-bg{position:absolute;inset:0;background:linear-gradient(to bottom,var(--primary-light),#94728f);opacity:.3}
+    .prof-hero-img{position:absolute;inset:0;object-fit:cover;width:100%;height:100%;opacity:.5}
+    .prof-hero-cloud{position:absolute;width:100%;bottom:0;left:0}
+    .prof-hero-cloud svg{display:block;width:100%}
+    .prof-back{position:absolute;background:var(--bg-white);border:1px solid var(--border);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:2}
+    .prof-back svg{display:block}
+    .prof-avatar-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+    .prof-avatar{border-radius:50%;background:linear-gradient(to bottom,#f3f2f7,#fbdcd2);overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .prof-avatar img{width:100%;height:100%;object-fit:cover}
+    .prof-edit-badge{background:rgba(16,17,20,0.5);border:0.5px solid rgba(16,17,20,0.1);border-radius:12px;color:#fff;font-family:var(--font);font-weight:700;display:flex;align-items:center;gap:2px;position:absolute}
+    .prof-edit-badge svg{display:block}
+    .prof-name{font-weight:700;color:var(--text-primary);text-align:center}
+    .prof-zodiac{font-weight:400;color:var(--text-tertiary);text-align:center}
+
+    /* Profile list section */
+    .prof-profiles{flex-shrink:0;background:var(--bg-white);box-shadow:var(--sh-xs)}
+    .prof-profiles-title{font-weight:700;color:var(--text-primary)}
+    .prof-list{display:flex;align-items:flex-start}
+    .prof-item{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+    .prof-item-avatar{border-radius:50%;background:linear-gradient(to bottom,#f3f2f7,#fbdcd2);overflow:hidden;position:relative}
+    .prof-item-avatar img{width:100%;height:100%;object-fit:cover}
+    .prof-item-check{position:absolute;border-radius:50%}
+    .prof-item-check svg{display:block;width:100%;height:100%}
+    .prof-item-name{font-weight:400;color:var(--text-secondary);text-align:center}
+    .prof-item-add{border-radius:50%;border:1px solid var(--secondary);background:var(--bg-white);display:flex;align-items:center;justify-content:center}
+    .prof-item-add svg{display:block}
+    .prof-item-add-label{font-weight:400;color:var(--secondary);text-align:center}
+
+    /* Help center section */
+    .prof-help{flex:1;overflow-y:auto;border-radius:var(--r-2xl) var(--r-2xl) 0 0;background:var(--bg-page)}
+    .prof-help-title{font-weight:700;color:var(--text-primary)}
+    .prof-menu{background:var(--bg-white);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-xs);display:flex;align-items:center}
+    .prof-menu-icon{border-radius:var(--r-lg);background:var(--primary-light);border:0.5px solid var(--primary-border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .prof-menu-icon img{object-fit:contain}
+    .prof-menu-body{flex:1;display:flex;flex-direction:column;min-width:0}
+    .prof-menu-title{font-weight:700;color:var(--text-primary)}
+    .prof-menu-desc{font-weight:400;color:#6B7280}
+    .prof-menu-arrow{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    .prof-menu-arrow svg{display:block}
+
+    /* ============================================
+       ★ PROFILE — EDIT SCREEN
+       ============================================ */
+    .edit{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg-white);overflow:hidden}
+    .edit-status{display:flex;align-items:center;justify-content:space-between;background:#FEF4F5;flex-shrink:0}
+    .edit-hero{flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(to bottom,var(--primary-light),#c4a0b8)}
+    .edit-hero-img{position:absolute;inset:0;object-fit:cover;width:100%;height:100%;opacity:.4}
+    .edit-hdr{position:absolute;display:flex;align-items:center;gap:10px;z-index:2}
+    .edit-back{background:var(--bg-white);border:1px solid var(--border);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .edit-back svg{display:block}
+    .edit-title{font-weight:700;color:var(--text-primary)}
+    .edit-avatar-wrap{position:absolute;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center}
+    .edit-avatar{border-radius:50%;background:linear-gradient(to bottom,#f3f2f7,#fbdcd2);overflow:hidden}
+    .edit-avatar img{width:100%;height:100%;object-fit:cover}
+    .edit-change-btn{background:var(--bg-white);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;gap:4px;font-family:var(--font);font-weight:700;color:var(--text-primary)}
+    .edit-change-btn svg{display:block}
+    .edit-form{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+    .edit-form-inner{display:flex;flex-direction:column}
+    .form-group{display:flex;flex-direction:column}
+    .form-label{font-weight:700;color:var(--text-primary)}
+    .form-input{background:var(--bg-white);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text-primary);font-family:var(--font)}
+    .form-input.disabled{background:var(--disabled-bg);color:var(--disabled-text)}
+    .form-select{background:var(--bg-white);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text-primary);font-family:var(--font);display:flex;align-items:center;justify-content:space-between}
+    .form-select svg{display:block;flex-shrink:0}
+    .form-checkbox{display:flex;align-items:center}
+    .form-checkbox-box{border:1.5px solid #D8D6DE;border-radius:3px;flex-shrink:0}
+    .form-checkbox-label{font-weight:400;color:var(--text-primary)}
+    .edit-save-btn{background:var(--secondary);border-radius:var(--r-md);color:#fff;font-family:var(--font);font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+    /* ============================================
+       ★ BOTTOM SHEET — SHARED
+       ============================================ */
+    .bs-overlay{position:absolute;inset:0;background:rgba(16,17,20,0.7);display:flex;flex-direction:column;justify-content:flex-end}
+    .bs-card{background:var(--bg-white);border-radius:var(--r-xl) var(--r-xl) 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.12);display:flex;flex-direction:column;overflow:hidden}
+    .bs-handle{display:flex;justify-content:center;padding-top:12px}
+    .bs-handle-bar{width:36px;height:5px;border-radius:3px;background:var(--bg-mid)}
+    .bs-tabs{display:flex;border-bottom:1px solid var(--border)}
+    .bs-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+    .bs-tab-label{font-family:var(--font);font-weight:700;text-align:center}
+    .bs-tab.active .bs-tab-label{color:var(--secondary)}
+    .bs-tab.inactive{opacity:.45}
+    .bs-tab.inactive .bs-tab-label{color:var(--text-secondary)}
+    .bs-tab-line{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;background:var(--secondary)}
+    .bs-list{flex:1;overflow-y:auto}
+    .bs-option{display:flex;align-items:center;border-radius:var(--r-md);font-family:var(--font);font-weight:400;color:var(--text-primary)}
+    .bs-option.selected{background:rgba(114,121,251,0.08);font-weight:700;color:var(--secondary)}
+    .bs-option-check{margin-left:auto}
+    .bs-option-check svg{display:block}
+    .bs-header{display:flex;flex-direction:column}
+    .bs-header-title{font-weight:700;color:var(--text-primary);font-family:var(--font)}
+    .bs-search{background:var(--bg-white);border:1px solid var(--secondary);border-radius:var(--r-md);font-family:var(--font);color:var(--text-primary);box-shadow:0 0 0 3px #C6CFFA}
+    .bs-safe-bottom{flex-shrink:0}
+
+    /* ============================================
+       ★ BOTTOM TAB BAR
+       ============================================ */
+    .tab-bar{position:absolute;bottom:0;left:0;right:0;z-index:10}
+    .tab-bar-bg{position:absolute;bottom:0;left:0;right:0}
+    .tab-bar-bg svg{display:block;width:100%}
+    .tab-center{position:absolute;left:50%;transform:translateX(-50%);z-index:12;border-radius:50%;background:linear-gradient(135deg,#EC599D,#F7BDD8);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(236,89,157,.35)}
+    .tab-center svg{display:block}
+    .tab-items{position:relative;z-index:11;display:flex;align-items:flex-end;justify-content:space-around}
+    .tab-item{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+    .tab-item svg{display:block}
+    .tab-item-label{font-family:var(--font);text-align:center}
+    .tab-item-label.active{font-weight:700;color:var(--primary)}
+    .tab-item-label.inactive{font-weight:400;color:var(--text-tertiary)}
+    .tab-center-label{position:absolute;left:50%;transform:translateX(-50%);z-index:11;font-family:var(--font);text-align:center}
+    .tab-home{position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:12}
+    .tab-home .home-bar{background:#1F2937;opacity:.15}
+
+    /* ============================================
+       ★ BREAKPOINT — MOBILE (390 × 844)
+       ============================================ */
+    .f-mobile .prof-status,.f-mobile .edit-status{padding:14px 24px 12px}
+    /* Hero */
+    .f-mobile .prof-hero{height:260px}
+    .f-mobile .prof-back{width:36px;height:36px;left:16px;top:13px}
+    .f-mobile .prof-back svg{width:8px;height:13px}
+    .f-mobile .prof-avatar-wrap{position:absolute;left:50%;transform:translateX(-50%);top:90px}
+    .f-mobile .prof-avatar{width:100px;height:100px}
+    .f-mobile .prof-edit-badge{padding:2px 8px 2px 4px;font-size:12px;line-height:20px;bottom:-10px;left:50%;transform:translateX(-50%)}
+    .f-mobile .prof-edit-badge svg{width:24px;height:24px}
+    .f-mobile .prof-name{font-size:24px;line-height:32px;margin-top:16px}
+    .f-mobile .prof-zodiac{font-size:14px;line-height:22px}
+    /* Profile list */
+    .f-mobile .prof-profiles{padding:16px 20px}
+    .f-mobile .prof-profiles-title{font-size:16px;line-height:24px;margin-bottom:16px}
+    .f-mobile .prof-list{gap:16px}
+    .f-mobile .prof-item{gap:8px}
+    .f-mobile .prof-item-avatar{width:56px;height:56px}
+    .f-mobile .prof-item-check{width:20px;height:20px;right:-2px;bottom:-1px}
+    .f-mobile .prof-item-name{font-size:12px;line-height:20px}
+    .f-mobile .prof-item-add{width:56px;height:56px}
+    .f-mobile .prof-item-add svg{width:16px;height:16px}
+    .f-mobile .prof-item-add-label{font-size:12px;line-height:20px}
+    /* Help center */
+    .f-mobile .prof-help{padding:24px 16px 16px}
+    .f-mobile .prof-help-title{font-size:16px;line-height:24px;margin-bottom:12px}
+    .f-mobile .prof-help .prof-menu{padding:12px 16px;margin-bottom:12px;gap:12px}
+    .f-mobile .prof-menu-icon{width:50px;height:50px;padding:8px}
+    .f-mobile .prof-menu-icon img{width:24px;height:24px}
+    .f-mobile .prof-menu-title{font-size:14px;line-height:22px}
+    .f-mobile .prof-menu-desc{font-size:12px;line-height:20px}
+    .f-mobile .prof-menu-arrow svg{width:16px;height:16px}
+    /* Tab Bar */
+    .f-mobile .tab-bar{height:125px}
+    .f-mobile .tab-center{width:60px;height:60px;top:0}
+    .f-mobile .tab-center svg{width:26px;height:26px}
+    .f-mobile .tab-items{padding:52px 16px 28px;gap:0}
+    .f-mobile .tab-item{gap:4px;width:52px}
+    .f-mobile .tab-item svg{width:22px;height:22px}
+    .f-mobile .tab-item-label{font-size:14px;line-height:22px}
+    .f-mobile .tab-center-label{bottom:28px;font-size:14px;line-height:22px}
+    .f-mobile .tab-home .home-bar{width:134px;height:5px}
+    .f-mobile .tab-home{bottom:8px}
+    /* Edit screen */
+    .f-mobile .edit-hero{height:231px}
+    .f-mobile .edit-hdr{left:16px;top:16px;right:16px}
+    .f-mobile .edit-back{width:36px;height:36px}
+    .f-mobile .edit-back svg{width:8px;height:13px}
+    .f-mobile .edit-title{font-size:20px;line-height:28px}
+    .f-mobile .edit-avatar-wrap{top:90px}
+    .f-mobile .edit-avatar{width:100px;height:100px}
+    .f-mobile .edit-change-btn{padding:7px 12px;font-size:12px;line-height:18px;margin-top:10px}
+    .f-mobile .edit-change-btn svg{width:24px;height:24px}
+    .f-mobile .edit-form-inner{padding:16px 16px 20px;gap:20px}
+    .f-mobile .form-group{gap:8px}
+    .f-mobile .form-label{font-size:14px;line-height:20px}
+    .f-mobile .form-input{height:40px;padding:0 12px;font-size:14px;line-height:22px}
+    .f-mobile .form-select{height:48px;padding:12px;font-size:16px;line-height:24px}
+    .f-mobile .form-select svg{width:16px;height:16px}
+    .f-mobile .form-checkbox{gap:12px}
+    .f-mobile .form-checkbox-box{width:18px;height:18px}
+    .f-mobile .form-checkbox-label{font-size:14px;line-height:22px}
+    .f-mobile .edit-save-btn{height:40px;font-size:16px;line-height:24px;margin:0 16px 20px}
+    /* Bottom sheet */
+    .f-mobile .bs-card{height:590px}
+    .f-mobile .bs-tabs{height:68px}
+    .f-mobile .bs-tab-label{font-size:14px;line-height:22px}
+    .f-mobile .bs-list{padding:12px 16px}
+    .f-mobile .bs-option{min-height:48px;padding:12px 16px;font-size:16px;line-height:24px}
+    .f-mobile .bs-header{padding:16px 20px 12px}
+    .f-mobile .bs-header-title{font-size:16px;line-height:24px}
+    .f-mobile .bs-search{height:40px;padding:0 12px;font-size:16px;line-height:24px;margin:0 16px 8px;width:calc(100% - 32px)}
+    .f-mobile .bs-safe-bottom{height:24px}
+
+    /* ============================================
+       ★ BREAKPOINT — TABLET (768 × 1024)
+       ============================================ */
+    .f-tablet .prof-status,.f-tablet .edit-status{padding:16px 32px 14px}
+    /* Hero */
+    .f-tablet .prof-hero{height:300px}
+    .f-tablet .prof-back{width:44px;height:44px;left:24px;top:16px}
+    .f-tablet .prof-back svg{width:10px;height:16px}
+    .f-tablet .prof-avatar-wrap{position:absolute;left:50%;transform:translateX(-50%);top:100px}
+    .f-tablet .prof-avatar{width:120px;height:120px}
+    .f-tablet .prof-edit-badge{padding:3px 10px 3px 4px;font-size:14px;line-height:22px;bottom:-12px;left:50%;transform:translateX(-50%)}
+    .f-tablet .prof-edit-badge svg{width:26px;height:26px}
+    .f-tablet .prof-name{font-size:28px;line-height:36px;margin-top:20px}
+    .f-tablet .prof-zodiac{font-size:16px;line-height:24px}
+    /* Profile list */
+    .f-tablet .prof-profiles{padding:20px 48px}
+    .f-tablet .prof-profiles-title{font-size:18px;line-height:26px;margin-bottom:20px}
+    .f-tablet .prof-list{gap:24px;justify-content:center}
+    .f-tablet .prof-item{gap:10px}
+    .f-tablet .prof-item-avatar{width:68px;height:68px}
+    .f-tablet .prof-item-check{width:24px;height:24px;right:-2px;bottom:-1px}
+    .f-tablet .prof-item-name{font-size:14px;line-height:22px}
+    .f-tablet .prof-item-add{width:68px;height:68px}
+    .f-tablet .prof-item-add svg{width:20px;height:20px}
+    .f-tablet .prof-item-add-label{font-size:14px;line-height:22px}
+    /* Help center */
+    .f-tablet .prof-help{padding:28px 48px 20px}
+    .f-tablet .prof-help-title{font-size:18px;line-height:26px;margin-bottom:16px}
+    .f-tablet .prof-help .prof-menu{padding:16px 20px;margin-bottom:14px;gap:16px;max-width:500px;margin-left:auto;margin-right:auto}
+    .f-tablet .prof-menu-icon{width:56px;height:56px;padding:10px}
+    .f-tablet .prof-menu-icon img{width:28px;height:28px}
+    .f-tablet .prof-menu-title{font-size:16px;line-height:24px}
+    .f-tablet .prof-menu-desc{font-size:14px;line-height:22px}
+    .f-tablet .prof-menu-arrow svg{width:18px;height:18px}
+    /* Tab Bar */
+    .f-tablet .tab-bar{height:140px}
+    .f-tablet .tab-center{width:70px;height:70px;top:0}
+    .f-tablet .tab-center svg{width:30px;height:30px}
+    .f-tablet .tab-items{padding:60px 32px 32px;gap:0}
+    .f-tablet .tab-item{gap:4px;width:64px}
+    .f-tablet .tab-item svg{width:24px;height:24px}
+    .f-tablet .tab-item-label{font-size:14px;line-height:22px}
+    .f-tablet .tab-center-label{bottom:32px;font-size:14px;line-height:22px}
+    .f-tablet .tab-home .home-bar{width:160px;height:5px}
+    .f-tablet .tab-home{bottom:10px}
+    /* Edit screen */
+    .f-tablet .edit-hero{height:270px}
+    .f-tablet .edit-hdr{left:24px;top:20px;right:24px}
+    .f-tablet .edit-back{width:44px;height:44px}
+    .f-tablet .edit-back svg{width:10px;height:16px}
+    .f-tablet .edit-title{font-size:24px;line-height:32px}
+    .f-tablet .edit-avatar-wrap{top:95px}
+    .f-tablet .edit-avatar{width:120px;height:120px}
+    .f-tablet .edit-change-btn{padding:8px 14px;font-size:14px;line-height:20px;margin-top:12px}
+    .f-tablet .edit-change-btn svg{width:24px;height:24px}
+    .f-tablet .edit-form-inner{padding:20px 48px 28px;gap:24px;max-width:520px;margin:0 auto;width:100%}
+    .f-tablet .form-group{gap:10px}
+    .f-tablet .form-label{font-size:16px;line-height:22px}
+    .f-tablet .form-input{height:48px;padding:0 14px;font-size:16px;line-height:24px}
+    .f-tablet .form-select{height:52px;padding:14px;font-size:18px;line-height:26px}
+    .f-tablet .form-select svg{width:18px;height:18px}
+    .f-tablet .form-checkbox{gap:14px}
+    .f-tablet .form-checkbox-box{width:20px;height:20px}
+    .f-tablet .form-checkbox-label{font-size:16px;line-height:24px}
+    .f-tablet .edit-save-btn{height:48px;font-size:18px;line-height:26px;margin:0 48px 28px;max-width:520px;align-self:center;width:calc(100% - 96px)}
+    /* Bottom sheet */
+    .f-tablet .bs-card{height:680px}
+    .f-tablet .bs-tabs{height:72px}
+    .f-tablet .bs-tab-label{font-size:16px;line-height:24px}
+    .f-tablet .bs-list{padding:14px 24px}
+    .f-tablet .bs-option{min-height:52px;padding:14px 20px;font-size:18px;line-height:26px}
+    .f-tablet .bs-header{padding:18px 24px 14px}
+    .f-tablet .bs-header-title{font-size:18px;line-height:26px}
+    .f-tablet .bs-search{height:48px;padding:0 14px;font-size:18px;line-height:26px;margin:0 24px 10px;width:calc(100% - 48px)}
+    .f-tablet .bs-safe-bottom{height:28px}
+
+    /* ============================================
+       ★ BREAKPOINT — LANDSCAPE (1024 × 768)
+       ============================================ */
+    .f-land .prof-status,.f-land .edit-status{padding:14px 40px 10px}
+    /* Hero */
+    .f-land .prof-hero{height:240px}
+    .f-land .prof-back{width:44px;height:44px;left:40px;top:12px}
+    .f-land .prof-back svg{width:10px;height:16px}
+    .f-land .prof-avatar-wrap{position:absolute;left:50%;transform:translateX(-50%);top:80px}
+    .f-land .prof-avatar{width:100px;height:100px}
+    .f-land .prof-edit-badge{padding:2px 8px 2px 4px;font-size:12px;line-height:20px;bottom:-10px;left:50%;transform:translateX(-50%)}
+    .f-land .prof-edit-badge svg{width:24px;height:24px}
+    .f-land .prof-name{font-size:22px;line-height:30px;margin-top:14px}
+    .f-land .prof-zodiac{font-size:14px;line-height:22px}
+    /* Profile list */
+    .f-land .prof-profiles{padding:16px 40px}
+    .f-land .prof-profiles-title{font-size:16px;line-height:24px;margin-bottom:14px}
+    .f-land .prof-list{gap:20px;justify-content:center}
+    .f-land .prof-item{gap:8px}
+    .f-land .prof-item-avatar{width:56px;height:56px}
+    .f-land .prof-item-check{width:20px;height:20px;right:-2px;bottom:-1px}
+    .f-land .prof-item-name{font-size:12px;line-height:20px}
+    .f-land .prof-item-add{width:56px;height:56px}
+    .f-land .prof-item-add svg{width:16px;height:16px}
+    .f-land .prof-item-add-label{font-size:12px;line-height:20px}
+    /* Help center */
+    .f-land .prof-help{padding:20px 40px 16px}
+    .f-land .prof-help-title{font-size:16px;line-height:24px;margin-bottom:12px}
+    .f-land .prof-help .prof-menu{padding:12px 16px;margin-bottom:10px;gap:12px;max-width:440px;margin-left:auto;margin-right:auto}
+    .f-land .prof-menu-icon{width:48px;height:48px;padding:8px}
+    .f-land .prof-menu-icon img{width:24px;height:24px}
+    .f-land .prof-menu-title{font-size:14px;line-height:22px}
+    .f-land .prof-menu-desc{font-size:12px;line-height:20px}
+    .f-land .prof-menu-arrow svg{width:16px;height:16px}
+    /* Tab Bar */
+    .f-land .tab-bar{height:120px}
+    .f-land .tab-center{width:64px;height:64px;top:0}
+    .f-land .tab-center svg{width:28px;height:28px}
+    .f-land .tab-items{padding:54px 40px 26px;gap:0}
+    .f-land .tab-item{gap:4px;width:56px}
+    .f-land .tab-item svg{width:22px;height:22px}
+    .f-land .tab-item-label{font-size:13px;line-height:20px}
+    .f-land .tab-center-label{bottom:26px;font-size:13px;line-height:20px}
+    .f-land .tab-home .home-bar{width:180px;height:5px}
+    .f-land .tab-home{bottom:8px}
+    /* Edit screen */
+    .f-land .edit-hero{height:210px}
+    .f-land .edit-hdr{left:40px;top:14px;right:40px}
+    .f-land .edit-back{width:40px;height:40px}
+    .f-land .edit-back svg{width:10px;height:16px}
+    .f-land .edit-title{font-size:20px;line-height:28px}
+    .f-land .edit-avatar-wrap{top:70px}
+    .f-land .edit-avatar{width:90px;height:90px}
+    .f-land .edit-change-btn{padding:6px 12px;font-size:12px;line-height:18px;margin-top:8px}
+    .f-land .edit-change-btn svg{width:20px;height:20px}
+    .f-land .edit-form-inner{padding:14px 40px 20px;gap:16px;max-width:440px;margin:0 auto;width:100%}
+    .f-land .form-group{gap:6px}
+    .f-land .form-label{font-size:14px;line-height:20px}
+    .f-land .form-input{height:38px;padding:0 12px;font-size:14px;line-height:22px}
+    .f-land .form-select{height:44px;padding:10px 12px;font-size:15px;line-height:22px}
+    .f-land .form-select svg{width:16px;height:16px}
+    .f-land .form-checkbox{gap:10px}
+    .f-land .form-checkbox-box{width:18px;height:18px}
+    .f-land .form-checkbox-label{font-size:14px;line-height:22px}
+    .f-land .edit-save-btn{height:40px;font-size:16px;line-height:24px;margin:0 40px 16px;max-width:440px;align-self:center;width:calc(100% - 80px)}
+    /* Bottom sheet */
+    .f-land .bs-card{height:500px}
+    .f-land .bs-tabs{height:60px}
+    .f-land .bs-tab-label{font-size:14px;line-height:22px}
+    .f-land .bs-list{padding:10px 20px}
+    .f-land .bs-option{min-height:44px;padding:10px 16px;font-size:15px;line-height:22px}
+    .f-land .bs-header{padding:14px 20px 10px}
+    .f-land .bs-header-title{font-size:16px;line-height:24px}
+    .f-land .bs-search{height:38px;padding:0 12px;font-size:15px;line-height:22px;margin:0 20px 8px;width:calc(100% - 40px)}
+    .f-land .bs-safe-bottom{height:20px}
+
+    /* ===== FRAME SIZES ===== */
+    .f-mobile{width:390px;height:844px}
+    .f-tablet{width:768px;height:1024px}
+    .f-land{width:1024px;height:768px}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="page-title">Profile — Responsive</div>
+  <div id="root"></div>
+</div>
+<script>
+/* ===== FIGMA ASSETS ===== */
+const A={
+  heroImg:'https://www.figma.com/api/mcp/asset/1a577e42-0e8b-4610-8b14-8f169c57114f',
+  editHeroImg:'https://www.figma.com/api/mcp/asset/5d8d63da-7dc9-4792-bb10-0661c474d43e',
+  avatarMain:'https://www.figma.com/api/mcp/asset/176f5f8d-7683-4b19-9667-69296702117d',
+  avatarTommy:'https://www.figma.com/api/mcp/asset/6e9e2521-b7fb-4379-b917-fb3def76a8d8',
+  avatarNack:'https://www.figma.com/api/mcp/asset/987ded40-6825-4e75-8e7d-3e1f5ec67b7b',
+  avatarJennie:'https://www.figma.com/api/mcp/asset/4ae0f444-abdb-4d09-86f1-32b878e5bdad',
+  avatarMark:'https://www.figma.com/api/mcp/asset/dceaf768-ae29-4c3f-9e16-2ae4e99d59ea',
+  checkIcon:'https://www.figma.com/api/mcp/asset/2a3f7d53-b340-4701-a294-e79183f980d5',
+  menuSetting:'https://www.figma.com/api/mcp/asset/ec22057a-2771-4ef6-85e2-0e466dbbebb0',
+  menuAbout:'https://www.figma.com/api/mcp/asset/ede4e0b4-5d49-4506-9d9c-abce0221110e',
+  menuContact:'https://www.figma.com/api/mcp/asset/ec87bee3-7d78-4dad-893e-437c70fb7537',
+  menuLogout:'https://www.figma.com/api/mcp/asset/c310db96-674e-4d0c-9c0d-4d725e497278',
+  bsCheck:'https://www.figma.com/api/mcp/asset/1cd7c9c5-7d70-48f2-b1cb-64d17beda40f',
+};
+
+/* ===== SVGs ===== */
+const SVG_STATUS=`<svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#000"/><rect x="5" y="2" width="3" height="10" rx="1" fill="#000"/><rect x="10" y="0" width="3" height="12" rx="1" fill="#000"/><rect x="15" y="1" width="3" height="11" rx="1" fill="#000" opacity=".3"/></svg><svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.2 3.6 12.1 4.5 13.5 6L15 4.5C13.1 2.6 10.7 1.5 8 1.5S2.9 2.6 1 4.5L2.5 6C3.9 4.5 5.8 3.6 8 3.6Z" fill="#000"/><path d="M8 7.2C9.3 7.2 10.4 7.7 11.2 8.5L12.7 7C11.4 5.7 9.8 5 8 5S4.6 5.7 3.3 7L4.8 8.5C5.6 7.7 6.7 7.2 8 7.2Z" fill="#000"/><circle cx="8" cy="10.5" r="1.5" fill="#000"/></svg><svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0" y="1" width="22" height="11" rx="2" stroke="#000"/><rect x="1.5" y="2.5" width="19" height="8" rx="1" fill="#000"/><path d="M23.5 5v3a2 2 0 000-3Z" fill="#000" opacity=".4"/></svg>`;
+const SVG_BACK=`<svg viewBox="0 0 10 16" fill="none"><path d="M8.5 1L1.5 8l7 7" stroke="#1B1D22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_PENCIL=`<svg viewBox="0 0 24 24" fill="none"><path d="M16.5 3.5l4 4L7 21H3v-4L16.5 3.5z" fill="white" opacity=".9"/></svg>`;
+const SVG_CAMERA=`<svg viewBox="0 0 24 24" fill="none"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" stroke="#1B1D22" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="13" r="4" stroke="#1B1D22" stroke-width="1.5"/></svg>`;
+const SVG_PLUS=`<svg viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="#7279FB" stroke-width="2" stroke-linecap="round"/></svg>`;
+const SVG_ARROW_R=`<svg viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="#9A9DAD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_CHEVRON_DOWN=`<svg viewBox="0 0 16 16" fill="none"><path d="M3 5.5l5 5 5-5" stroke="#6A6E83" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_CHECK_ACCENT=`<svg viewBox="0 0 20 20" fill="none"><path d="M7 10l2.5 2.5L13 8" stroke="#7279FB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/* Tab bar icons */
+const SVG_TAB_CAL=c=>`<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="${c}" stroke-width="1.8"/><line x1="3" y1="10" x2="21" y2="10" stroke="${c}" stroke-width="1.8"/><line x1="8" y1="3" x2="8" y2="7" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_TAB_BELL=c=>`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 016 6v3.5l1.3 2.2c.4.7-.1 1.3-.8 1.3H5.5c-.7 0-1.2-.6-.8-1.3L6 12.5V9a6 6 0 016-6z" stroke="${c}" stroke-width="1.8"/><path d="M9 16a3 3 0 006 0" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_TAB_MOON=c=>`<svg viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 1021 12.79z" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_TAB_USER=c=>`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="${c}" stroke-width="1.8"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_TAB_SUN=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></g></svg>`;
+
+/* Tab bar SVG path */
+function tabPath(w){const cx=w/2,ns=cx-43,ne=cx+43;return`M0 16 H${ns} C${ns+8} 16 ${ns+13} 16 ${ns+17} 20 Q${ns+25} 32 ${ns+34} 36 Q${cx-4} 38 ${cx} 38 Q${cx+4} 38 ${cx+9} 36 Q${cx+18} 32 ${cx+26} 20 C${ne-8} 16 ${ne-5} 16 ${ne} 16 H${w} V95 H0 Z`}
+
+/* ===== SCREEN DATA ===== */
+const PROFILES=[
+  {name:'Tommy',avatar:A.avatarTommy,selected:true},
+  {name:'Nack',avatar:A.avatarNack,selected:false},
+  {name:'Jennie',avatar:A.avatarJennie,selected:false},
+  {name:'Mark',avatar:A.avatarMark,selected:false},
+];
+
+const MENUS=[
+  {icon:A.menuSetting,title:'การตั้งค่า',desc:'ปรับแต่งการใช้งานแอปให้เหมาะกับคุณ'},
+  {icon:A.menuAbout,title:'เกี่ยวกับเรา',desc:'เรียนรู้เพิ่มเติมเกี่ยวกับแอปและทีมผู้พัฒนา'},
+  {icon:A.menuContact,title:'ติดต่อเรา',desc:'แจ้ง ติดตาม สอบถามเพิ่มเติมได้ทุกเรื่อง'},
+  {icon:A.menuLogout,title:'ออกจากระบบ',desc:'ออกจากระบบเพื่อเปลี่ยนบัญชีผู้ใช้'},
+];
+
+const HOURS=Array.from({length:14},(_, i)=>i+10);
+const PROVINCES=['กระบี่','กรุงเทพมหานคร','กาญจนบุรี','กาฬสินธุ์','กำแพงเพชร','ขอนแก่น','จันทบุรี','ฉะเชิงเทรา','ชลบุรี','ชัยนาท','ชัยภูมิ','ชุมพร'];
+
+const SCREENS=[
+  {type:'profile-main',label:'Profile — Main'},
+  {type:'profile-edit',label:'Profile — Edit'},
+  {type:'profile-time',label:'Profile — Select Time (Bottom Sheet)'},
+  {type:'profile-location',label:'Profile — Select Location (Bottom Sheet)'},
+];
+
+const BPS=[
+  {cls:'f-mobile',label:'Mobile — 390 × 844',w:390},
+  {cls:'f-tablet',label:'Tablet — 768 × 1024',w:768},
+  {cls:'f-land',label:'Landscape — 1024 × 768',w:1024},
+];
+
+/* ===== RENDER HELPERS ===== */
+function statusBar(bg){return`<div class="${bg?'edit':'prof'}-status"><span class="status-time">09:41</span><div class="status-icons">${SVG_STATUS}</div></div>`}
+
+function tabBar(w){
+  const pc='#EC599D',ic='#9A9DAD';
+  return`<div class="tab-bar"><div class="tab-bar-bg"><svg viewBox="0 0 ${w} 95" preserveAspectRatio="none"><defs><filter id="ts${w}p" x="-5%" y="-20%" width="110%" height="140%"><feDropShadow dx="0" dy="-2" stdDeviation="4" floodColor="#000" floodOpacity=".06"/></filter></defs><path d="${tabPath(w)}" fill="white" filter="url(#ts${w}p)"/></svg></div><div class="tab-center">${SVG_TAB_SUN}</div><div class="tab-items"><div class="tab-item">${SVG_TAB_CAL(ic)}<div class="tab-item-label inactive">ปฏิทิน</div></div><div class="tab-item">${SVG_TAB_BELL(ic)}<div class="tab-item-label inactive">แจ้งเตือน</div></div><div style="flex:1"></div><div class="tab-item">${SVG_TAB_MOON(ic)}<div class="tab-item-label inactive">ทำนาย</div></div><div class="tab-item">${SVG_TAB_USER(pc)}<div class="tab-item-label active">โปรไฟล์</div></div></div><div class="tab-center-label inactive" style="color:var(--text-tertiary)">ดวงวันนี้</div><div class="tab-home"><div class="home-bar"></div></div></div>`
+}
+
+function profileItems(){
+  return PROFILES.map(p=>`<div class="prof-item"><div class="prof-item-avatar"><img src="${p.avatar}" alt="${p.name}">${p.selected?`<div class="prof-item-check"><img src="${A.checkIcon}" alt="selected"></div>`:''}</div><div class="prof-item-name">${p.name}</div></div>`).join('')+`<div class="prof-item"><div class="prof-item-add">${SVG_PLUS}</div><div class="prof-item-add-label">เพิ่ม</div></div>`
+}
+
+function menuItems(){
+  return MENUS.map(m=>`<div class="prof-menu"><div class="prof-menu-icon"><img src="${m.icon}" alt="${m.title}"></div><div class="prof-menu-body"><div class="prof-menu-title">${m.title}</div><div class="prof-menu-desc">${m.desc}</div></div><div class="prof-menu-arrow">${SVG_ARROW_R}</div></div>`).join('')
+}
+
+/* ===== RENDER — PROFILE MAIN ===== */
+function renderProfileMain(s,bp){
+  return`<div class="prof">${statusBar(false)}<div class="prof-hero"><div class="prof-hero-bg"></div><img class="prof-hero-img" src="${A.heroImg}" alt=""><div class="prof-back">${SVG_BACK}</div><div class="prof-avatar-wrap"><div class="prof-avatar"><img src="${A.avatarMain}" alt="Avatar"></div><div class="prof-edit-badge">${SVG_PENCIL}<span>แก้ไข</span></div><div class="prof-name">Tommy</div><div class="prof-zodiac">ราศีสิงห์</div></div></div><div class="prof-profiles"><div class="prof-profiles-title">โปรไฟล์ดูดวง</div><div class="prof-list">${profileItems()}</div></div><div class="prof-help"><div class="prof-help-title">ศูนย์ช่วยเหลือ</div>${menuItems()}</div>${tabBar(bp.w)}</div>`
+}
+
+/* ===== RENDER — PROFILE EDIT ===== */
+function renderProfileEdit(s,bp){
+  return`<div class="edit">${statusBar(true)}<div class="edit-hero"><img class="edit-hero-img" src="${A.editHeroImg}" alt=""><div class="edit-hdr"><div class="edit-back">${SVG_BACK}</div><div class="edit-title">แก้ไขข้อมูลส่วนตัว</div></div><div class="edit-avatar-wrap"><div class="edit-avatar"><img src="${A.avatarMain}" alt="Avatar"></div><div class="edit-change-btn">${SVG_CAMERA}<span>เปลี่ยนรูป</span></div></div></div><div class="edit-form"><div class="edit-form-inner"><div class="form-group"><div class="form-label">ชื่อ</div><div class="form-input" style="display:flex;align-items:center">Karina</div></div><div class="form-group"><div class="form-label">อีเมล</div><div class="form-input disabled" style="display:flex;align-items:center">Karina@Info.com</div></div><div class="form-group"><div class="form-label">วันเดือนปีเกิด</div><div class="form-select"><span>30 ก.ค. 2538</span>${SVG_CHEVRON_DOWN}</div></div><div class="form-group"><div class="form-label">เวลาเกิด</div><div class="form-select"><span>14:30 น.</span>${SVG_CHEVRON_DOWN}</div><div class="form-checkbox"><div class="form-checkbox-box"></div><div class="form-checkbox-label">ไม่ทราบเวลาเกิด</div></div></div><div class="form-group"><div class="form-label">จังหวัดที่เกิด</div><div class="form-select"><span>กำแพงเพชร</span>${SVG_CHEVRON_DOWN}</div></div></div></div><div class="edit-save-btn">บันทึก</div>${tabBar(bp.w)}</div>`
+}
+
+/* ===== RENDER — SELECT TIME (Bottom Sheet) ===== */
+function renderSelectTime(){
+  const items=HOURS.map(h=>{
+    const sel=h===14;
+    return`<div class="bs-option${sel?' selected':''}">${h}${sel?`<div class="bs-option-check"><img src="${A.bsCheck}" width="20" height="20" alt=""></div>`:''}</div>`
+  }).join('');
+  return`<div class="bs-overlay"><div class="bs-card"><div class="bs-handle"><div class="bs-handle-bar"></div></div><div class="bs-tabs"><div class="bs-tab active"><div class="bs-tab-label">ชั่วโมง</div><div class="bs-tab-line"></div></div><div class="bs-tab inactive"><div class="bs-tab-label">นาที</div></div></div><div class="bs-list">${items}</div><div class="bs-safe-bottom"></div></div></div>`
+}
+
+/* ===== RENDER — SELECT LOCATION (Bottom Sheet) ===== */
+function renderSelectLocation(){
+  const items=PROVINCES.map(p=>`<div class="bs-option">${p}</div>`).join('');
+  return`<div class="bs-overlay"><div class="bs-card"><div class="bs-handle"><div class="bs-handle-bar"></div></div><div class="bs-header"><div class="bs-header-title">เลือกจังหวัด</div></div><input class="bs-search" type="text" placeholder="ค้นหาจังหวัด..." value=""><div class="bs-list">${items}</div><div class="bs-safe-bottom"></div></div></div>`
+}
+
+/* ===== BUILD ===== */
+const REN={
+  'profile-main':renderProfileMain,
+  'profile-edit':renderProfileEdit,
+  'profile-time':renderSelectTime,
+  'profile-location':renderSelectLocation,
+};
+const root=document.getElementById('root');
+root.innerHTML=SCREENS.map(s=>{
+  const frames=BPS.map(bp=>{
+    const r=REN[s.type];
+    const needBP=s.type==='profile-main'||s.type==='profile-edit';
+    const content=needBP?r(s,bp):r(s);
+    return`<div class="col"><div class="col-label">${bp.label}</div><div class="frame ${bp.cls}">${content}</div></div>`
+  }).join('');
+  return`<div class="section"><div class="section-label">${s.label}</div><div class="row">${frames}</div></div>`
+}).join('');
+</script>
+</body>
+</html>

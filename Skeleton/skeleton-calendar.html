@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DailyMu — Skeleton Loading</title>
+<link href="https://fonts.cdnfonts.com/css/line-seed-sans-th" rel="stylesheet">
+<style>
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Design Tokens */
+    --primary: #EC599D;
+    --primary-light: #FDEFF5;
+    --secondary: #7279FB;
+    --secondary-light: #F1F2FF;
+    --text-primary: #1B1D22;
+    --text-secondary: #6A6E83;
+    --text-tertiary: #9A9DAD;
+    --bg-white: #FFFFFF;
+    --bg-light: #F8F8F9;
+    --bg-mid: #EBECEF;
+    --border: #EBECEF;
+    --disabled-text: #9A9DAD;
+    --disabled-bg: #EBECEF;
+    --success: #559652;
+    --warning: #C69A2A;
+    --error: #EA244F;
+
+    /* Skeleton Colors */
+    --skeleton-base: #EBECEF;
+    --skeleton-shine: #F8F8F9;
+
+    /* Spacing */
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-5: 20px;
+    --sp-6: 24px;
+    --sp-8: 32px;
+    --sp-10: 40px;
+
+    /* Radius */
+    --r-sm: 4px;
+    --r-md: 8px;
+    --r-lg: 12px;
+    --r-xl: 16px;
+    --r-full: 9999px;
+
+    /* Frame */
+    --frame-width: 393px;
+    --frame-height: 852px;
+  }
+
+  body {
+    font-family: 'LINE Seed Sans TH', sans-serif;
+    background: #F0F0F5;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: var(--text-primary);
+  }
+
+  /* ========== LAYOUT ========== */
+  .workspace {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+  }
+
+  /* ========== NAVIGATOR PANEL ========== */
+  .navigator {
+    width: 220px;
+    background: var(--bg-white);
+    border-radius: var(--r-xl);
+    padding: var(--sp-6);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 40px;
+  }
+
+  .navigator h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--sp-4);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: var(--sp-1);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+
+  .nav-item:hover { background: var(--bg-light); }
+  .nav-item.active {
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+
+  .nav-item .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bg-mid);
+  }
+
+  .nav-item.active .dot { background: var(--primary); }
+
+  .nav-divider {
+    height: 1px;
+    background: var(--border);
+    margin: var(--sp-4) 0;
+  }
+
+  .nav-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    padding: 0 var(--sp-4);
+    margin-bottom: var(--sp-2);
+    font-weight: 700;
+  }
+
+  /* Toggle Controls */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sp-2) var(--sp-4);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .toggle {
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    background: var(--bg-mid);
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .toggle.on { background: var(--primary); }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s;
+  }
+
+  .toggle.on::after { transform: translateX(16px); }
+
+  /* ========== PHONE FRAME ========== */
+  .phone-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-4);
+  }
+
+  .phone-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+
+  .phone-frame {
+    width: var(--frame-width);
+    height: var(--frame-height);
+    background: var(--bg-white);
+    border-radius: 48px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+    position: relative;
+  }
+
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    scrollbar-width: none;
+  }
+
+  .phone-screen::-webkit-scrollbar { display: none; }
+
+  /* Status Bar */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 28px 8px;
+    font-size: 15px;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg-white);
+  }
+
+  .status-bar-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  /* ========== SHIMMER ANIMATION ========== */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--skeleton-base) 25%,
+      var(--skeleton-shine) 37%,
+      var(--skeleton-base) 63%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+    border-radius: var(--r-md);
+  }
+
+  .skeleton-circle {
+    background: linear-gradient(
+      90deg,
+      var(--skeleton-base) 25%,
+      var(--skeleton-shine) 37%,
+      var(--skeleton-base) 63%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+    border-radius: 50%;
+  }
+
+  .skeleton-pill {
+    background: linear-gradient(
+      90deg,
+      var(--skeleton-base) 25%,
+      var(--skeleton-shine) 37%,
+      var(--skeleton-base) 63%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+    border-radius: var(--r-full);
+  }
+
+  /* Stagger animation delays */
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+
+  /* ========== SHARED COMPONENTS ========== */
+
+  /* Tab Bar */
+  .tab-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4);
+    margin: 0 var(--sp-4);
+  }
+
+  .tab-bar .tab {
+    padding: var(--sp-2) var(--sp-5);
+    border-radius: var(--r-full);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab-bar .tab.active {
+    background: var(--primary);
+    color: white;
+  }
+
+  /* Month Navigation */
+  .month-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-4);
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .month-nav .arrow {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 18px;
+  }
+
+  .month-nav .month-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  /* Bottom Tab Bar */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 84px;
+    background: var(--bg-white);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    z-index: 10;
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .bottom-nav-item .icon-placeholder {
+    width: 24px;
+    height: 24px;
+  }
+
+  .bottom-nav-item span {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .bottom-nav-item.active span { color: var(--primary); }
+
+  .bottom-nav-center {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary);
+    margin-top: -20px;
+    box-shadow: 0 4px 12px rgba(236, 89, 157, 0.3);
+  }
+
+  /* Gradient BG top */
+  .gradient-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(180deg, #F5E6F0 0%, #EDE4F7 30%, var(--bg-white) 100%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Content wrapper */
+  .screen-content {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 100px;
+  }
+
+  /* Hide all views by default */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ========== DAILY VIEW (Figma-exact) ========== */
+
+  /* Tab Pill Container — white pill with shadow, 6px padding */
+  .d-tab-container {
+    margin: 0 16px;
+    background: white;
+    border: 1px solid #f8f8f9;
+    border-radius: 9999px;
+    padding: 6px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    display: flex;
+  }
+
+  .d-tab-container .d-tab {
+    flex: 1;
+    text-align: center;
+    padding: 7px 0;
+    border-radius: 9999px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .d-tab-container .d-tab.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  /* Month Selector — arrow buttons 32px circle + text */
+  .d-month-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px 0 0;
+  }
+
+  .d-month-arrow {
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Week Selector — 7 day capsules, space-between */
+  .d-week-selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: white;
+  }
+
+  .d-day-capsule {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 12px;
+    border-radius: 70px;
+    border: 1px solid var(--border);
+    background: white;
+  }
+
+  .d-day-capsule.active-day {
+    border-color: var(--skeleton-base);
+    background: var(--bg-light);
+  }
+
+  .d-day-label {
+    width: 22px;
+    height: 14px;
+    border-radius: 4px;
+  }
+
+  .d-day-number {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+  }
+
+  /* Character Area — 284×183 centered */
+  .d-character-area {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 0;
+  }
+
+  .d-character-blob {
+    width: 284px;
+    height: 183px;
+    border-radius: 24px;
+  }
+
+  /* Main White Card — 15px radius, shadow */
+  .d-main-card {
+    margin: 0 16px;
+    padding: 16px;
+    background: white;
+    border: 0.5px solid #f8f8f9;
+    border-radius: 15px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Fortune Badge — pill with secondary border */
+  .d-fortune-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 13px;
+    border: 1px solid var(--skeleton-base);
+    border-radius: 9999px;
+    background: white;
+    align-self: flex-start;
+  }
+
+  .d-fortune-badge-icon {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  .d-fortune-badge-text {
+    width: 90px;
+    height: 12px;
+    border-radius: 4px;
+  }
+
+  /* Fortune Summary Row — date box + text */
+  .d-fortune-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .d-date-box {
+    width: 76px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .d-date-number {
+    width: 28px;
+    height: 24px;
+    border-radius: 6px;
+  }
+
+  .d-date-month {
+    width: 30px;
+    height: 16px;
+    border-radius: 4px;
+    margin-top: 2px;
+  }
+
+  .d-fortune-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .d-fortune-title-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .d-info-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Card Divider — 326px */
+  .d-card-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* สีมงคล Section */
+  .d-color-section-title {
+    width: 90px;
+    height: 16px;
+    border-radius: 4px;
+  }
+
+  .d-color-dots-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+  }
+
+  .d-color-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .d-color-oval {
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+  }
+
+  .d-color-label {
+    width: 24px;
+    height: 14px;
+    border-radius: 4px;
+    margin-top: 2px;
+  }
+
+  .d-color-divider-v {
+    width: 1px;
+    height: 36px;
+    background: var(--border);
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  /* Advice Cards — 2 side-by-side, 153px height */
+  .d-advice-row {
+    display: flex;
+    gap: 8px;
+    margin: 0 16px;
+  }
+
+  .d-advice-card {
+    flex: 1;
+    height: 153px;
+    padding: 16px;
+    background: white;
+    border: 0.5px solid #f8f8f9;
+    border-radius: 15px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .d-advice-title {
+    width: 64px;
+    height: 16px;
+    border-radius: 4px;
+  }
+
+  .d-advice-desc {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 2px;
+  }
+
+  /* Decorative circle in advice card bottom-right */
+  .d-advice-circle {
+    position: absolute;
+    right: -6px;
+    bottom: -16px;
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    opacity: 0.4;
+  }
+
+  /* Planet Card — full width */
+  .d-planet-card {
+    margin: 0 16px;
+    padding: 16px;
+    background: white;
+    border: 0.5px solid #f8f8f9;
+    border-radius: 15px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .d-planet-title {
+    width: 120px;
+    height: 16px;
+    border-radius: 4px;
+  }
+
+  .d-planet-row {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .d-planet-label {
+    width: 50px;
+    height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .d-planet-value {
+    height: 14px;
+    border-radius: 4px;
+    flex: 1;
+  }
+
+  /* Footer — right-aligned */
+  .d-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 16px 16px;
+  }
+
+  .d-footer-text {
+    width: 160px;
+    height: 14px;
+    border-radius: 4px;
+  }
+
+  /* Section divider */
+  .section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: var(--sp-4) var(--sp-4);
+  }
+
+  /* Section title skeleton */
+  .section-title-skel {
+    margin: var(--sp-4) var(--sp-4) var(--sp-3);
+    width: 100px;
+    height: 20px;
+  }
+
+  /* Generic footer link */
+  .footer-link {
+    display: flex;
+    justify-content: center;
+    padding: var(--sp-4);
+  }
+
+  /* ========== WEEKLY VIEW (Figma-exact) ========== */
+
+  /* Week Nav — arrows 32px + week label */
+  .w-week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px 0 12px;
+  }
+
+  .w-arrow-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .w-week-label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Notification Banner — info blue bg, 358px, radius 12 */
+  .w-banner {
+    width: 358px;
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .w-banner-close {
+    position: absolute;
+    top: 15px;
+    right: 19px;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+  }
+
+  .w-banner-cta {
+    width: 80px;
+    height: 34px;
+    border-radius: 9999px;
+  }
+
+  .w-banner-illust {
+    position: absolute;
+    right: 0;
+    top: 39px;
+    width: 163px;
+    height: 100px;
+    border-radius: 12px;
+    opacity: 0.3;
+  }
+
+  /* AI Summary Card — gradient bg, radius 20 */
+  .w-ai-card {
+    width: 358px;
+    border: 1px solid #ebecef;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--bg-light);
+  }
+
+  .w-ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 13px;
+    border: 1px solid var(--skeleton-base);
+    border-radius: 9999px;
+    background: white;
+    margin: 16px 20px 0;
+  }
+
+  .w-ai-content {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Do/Don't cards inside AI */
+  .w-do-dont-row {
+    display: flex;
+    gap: 10px;
+    padding: 0 16px 16px;
+  }
+
+  .w-do-card, .w-dont-card {
+    flex: 1;
+    border-radius: 14px;
+    padding: 14px 14px 14px 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  .w-do-card {
+    background: var(--bg-light);
+    border-left: 3px solid var(--skeleton-base);
+  }
+
+  .w-dont-card {
+    background: var(--bg-light);
+    border-left: 3px solid var(--skeleton-base);
+  }
+
+  .w-bullet-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .w-bullet-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  /* Timeline Card — white, radius 16, shadow */
+  .w-timeline-card {
+    width: 358px;
+    background: white;
+    border: 1px solid #f8f8f9;
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  .w-timeline-header {
+    background: var(--bg-light);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+  }
+
+  .w-timeline-emoji {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid #ebecef;
+    flex-shrink: 0;
+  }
+
+  .w-timeline-body {
+    background: #f8f8f9;
+    border-radius: 0 0 16px 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* Timeline Day Row */
+  .w-day-row {
+    display: flex;
+    gap: 11px;
+    align-items: flex-start;
+    padding-bottom: 12px;
+  }
+
+  .w-day-pill {
+    width: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .w-day-capsule-w {
+    width: 48px;
+    background: white;
+    border: 1px solid #ebecef;
+    border-radius: 70px;
+    padding: 11px 1px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .w-day-date-circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+  }
+
+  .w-timeline-bar {
+    width: 3px;
+    height: 30px;
+    border-radius: 2px;
+    margin-top: -2px;
+  }
+
+  /* Tooltip card — right side */
+  .w-tooltip {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .w-tooltip-arrow {
+    width: 9px;
+    height: 18px;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  .w-tooltip-card {
+    flex: 1;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .w-tooltip-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .w-tooltip-chevron {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    flex-shrink: 0;
+  }
+
+  .w-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 24px;
+    width: 60px;
+    border-radius: 0 0 0 9px;
+  }
+
+  /* ========== MONTHLY VIEW (Figma-exact) ========== */
+
+  /* Filter Row — flex wrap, justify-between */
+  .m-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px 0;
+    width: 100%;
+  }
+
+  .m-filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 13px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+  }
+
+  .m-year-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0 6px 12px;
+  }
+
+  /* Calendar Card — 359px, radius 16, shadow */
+  .m-calendar-card {
+    width: 359px;
+    background: white;
+    border: 1px solid #f8f8f9;
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Inner grid wrapper */
+  .m-grid-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 16px;
+    align-items: flex-end;
+  }
+
+  .m-weekday-header {
+    width: 100%;
+    display: flex;
+    gap: 6px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .m-weekday-cell {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .m-week-row {
+    width: 100%;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .m-date-cell {
+    flex: 1;
+    height: 70px;
+    border-radius: 26px;
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .m-date-cell.selected {
+    border: 1px solid var(--skeleton-base);
+    background: var(--bg-light);
+    border-radius: 30px;
+    padding: 9px 1px;
+  }
+
+  .m-date-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 20px;
+  }
+
+  .m-date-icons {
+    display: flex;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  .m-date-icon {
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+  }
+
+  .m-date-empty {
+    flex: 1;
+    min-height: 52px;
+    border-radius: 8px;
+  }
+
+  /* Legend Row — gap 14, dot 8×8 */
+  .m-legend-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    padding-top: 16px;
+  }
+
+  .m-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 18px;
+  }
+
+  .m-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--skeleton-base);
+  }
+
+  .m-legend-text {
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+
+  /* ========== YEARLY VIEW (Figma-exact) ========== */
+
+  /* Header — back button 36×36 + title */
+  .y-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .y-back-btn {
+    width: 36px;
+    height: 36px;
+    background: white;
+    border: 1px solid #ebecef;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .y-title {
+    width: 100px;
+    height: 20px;
+    border-radius: 6px;
+  }
+
+  /* Mini Calendar Grid — 2 columns, gap 8 */
+  .y-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 16px;
+  }
+
+  .y-grid-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* Mini Calendar Card — 175px, radius 16 */
+  .y-mini-cal {
+    width: 175px;
+    background: white;
+    border: 1px solid #f8f8f9;
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .y-month-title {
+    width: 50px;
+    height: 10px;
+    border-radius: 3px;
+    margin: 0 auto 4px;
+  }
+
+  .y-weekday-hdr {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .y-weekday-hdr span {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+  }
+
+  .y-week-row {
+    display: flex;
+    gap: 6px;
+    height: 29px;
+    margin-bottom: 4px;
+  }
+
+  .y-date-cell {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .y-date-dot {
+    width: 17px;
+    height: 17px;
+    border-radius: 20px;
+  }
+
+  .y-fortune-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+  }
+
+  /* Legend */
+  .y-legend-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    padding: 10px 0 16px;
+  }
+
+  .y-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 18px;
+  }
+
+  .y-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+  }
+
+  .y-legend-dot.good { background: var(--skeleton-base); }
+  .y-legend-dot.normal { background: var(--skeleton-base); }
+  .y-legend-dot.caution { background: var(--skeleton-base); }
+
+  .y-legend-text {
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+
+  /* ========== SIDE-BY-SIDE MODE ========== */
+  .side-by-side {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .side-label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    margin-bottom: var(--sp-2);
+    letter-spacing: 0.5px;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .workspace { flex-direction: column; align-items: center; }
+    .navigator { position: static; width: 100%; max-width: 400px; }
+    .side-by-side { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="workspace">
+  <!-- Navigator Panel -->
+  <nav class="navigator">
+    <h3>Skeleton Views</h3>
+
+    <div class="nav-item active" data-view="daily">
+      <span class="dot"></span>
+      รายวัน (Daily)
+    </div>
+    <div class="nav-item" data-view="weekly">
+      <span class="dot"></span>
+      รายสัปดาห์ (Weekly)
+    </div>
+    <div class="nav-item" data-view="monthly">
+      <span class="dot"></span>
+      รายเดือน (Monthly)
+    </div>
+    <div class="nav-item" data-view="yearly">
+      <span class="dot"></span>
+      รายปี (Yearly)
+    </div>
+
+    <div class="nav-divider"></div>
+    <div class="nav-label">DISPLAY</div>
+
+    <div class="toggle-row">
+      Side-by-side
+      <div class="toggle" id="toggleSideBySide" onclick="toggleSideBySide()"></div>
+    </div>
+
+    <div class="toggle-row">
+      Shimmer Animation
+      <div class="toggle on" id="toggleShimmer" onclick="toggleShimmer()"></div>
+    </div>
+  </nav>
+
+  <!-- Phone Frames -->
+  <div id="phoneArea">
+    <div class="phone-container" id="skeletonContainer">
+      <div class="side-label">SKELETON</div>
+      <div class="phone-frame">
+        <div class="phone-screen">
+
+          <!-- ==================== DAILY VIEW (Figma-exact) ==================== -->
+          <div class="view active" id="view-daily">
+            <div class="gradient-bg"></div>
+            <div class="screen-content">
+
+              <!-- ① Status Bar — #fef4f5 bg -->
+              <div class="status-bar" style="background:#fef4f5">
+                <span style="font-family:Inter,sans-serif;font-size:17px;font-weight:600">09:41</span>
+                <div class="status-bar-icons">
+                  <svg width="16" height="12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1" opacity="0.3"/><rect x="4.5" y="2" width="3" height="10" rx="1" opacity="0.5"/><rect x="9" y="1" width="3" height="11" rx="1" opacity="0.7"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+                  <svg width="15" height="12" fill="currentColor"><path d="M7.5 2.5C5 2.5 2.8 3.4 1.2 5l1.4 1.4C3.8 5.2 5.5 4.5 7.5 4.5s3.7.7 4.9 1.9L13.8 5C12.2 3.4 10 2.5 7.5 2.5zM7.5 7C6.3 7 5.2 7.5 4.4 8.2l1.4 1.4c.5-.4 1.1-.6 1.7-.6s1.2.2 1.7.6l1.4-1.4C9.8 7.5 8.7 7 7.5 7z"/><circle cx="7.5" cy="11" r="1.5"/></svg>
+                  <svg width="25" height="12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="22" y="4" width="2" height="5" rx="1"/><rect x="2" y="3" width="17" height="6" rx="1"/></svg>
+                </div>
+              </div>
+
+              <!-- ② Tab Bar — white pill container -->
+              <div style="padding:0 16px">
+                <div class="d-tab-container">
+                  <div class="d-tab active">รายวัน</div>
+                  <div class="d-tab">รายสัปดาห์</div>
+                  <div class="d-tab">รายเดือน</div>
+                </div>
+              </div>
+
+              <!-- ③ Month Selector — ‹ มกราคม 2026 › -->
+              <div class="d-month-selector">
+                <div class="d-month-arrow">
+                  <div class="skeleton" style="width:16px;height:16px;border-radius:4px"></div>
+                </div>
+                <div class="skeleton" style="width:120px;height:20px;border-radius:6px"></div>
+                <div class="d-month-arrow">
+                  <div class="skeleton" style="width:16px;height:16px;border-radius:4px"></div>
+                </div>
+              </div>
+
+              <!-- ④ Week Day Selector — 7 capsules with day label + date circle -->
+              <div class="d-week-selector">
+                <!-- อา. -->
+                <div class="d-day-capsule">
+                  <div class="skeleton d-day-label delay-1"></div>
+                  <div class="skeleton-circle d-day-number delay-1"></div>
+                </div>
+                <!-- จ. -->
+                <div class="d-day-capsule">
+                  <div class="skeleton d-day-label delay-1"></div>
+                  <div class="skeleton-circle d-day-number delay-1"></div>
+                </div>
+                <!-- อ. -->
+                <div class="d-day-capsule">
+                  <div class="skeleton d-day-label delay-2"></div>
+                  <div class="skeleton-circle d-day-number delay-2"></div>
+                </div>
+                <!-- พ. (active) -->
+                <div class="d-day-capsule active-day">
+                  <div class="skeleton d-day-label delay-2"></div>
+                  <div class="skeleton-circle d-day-number delay-2"></div>
+                </div>
+                <!-- พฤ. -->
+                <div class="d-day-capsule">
+                  <div class="skeleton d-day-label delay-3"></div>
+                  <div class="skeleton-circle d-day-number delay-3"></div>
+                </div>
+                <!-- ศ. -->
+                <div class="d-day-capsule">
+                  <div class="skeleton d-day-label delay-3"></div>
+                  <div class="skeleton-circle d-day-number delay-3"></div>
+                </div>
+                <!-- ส. -->
+                <div class="d-day-capsule">
+                  <div class="skeleton d-day-label delay-4"></div>
+                  <div class="skeleton-circle d-day-number delay-4"></div>
+                </div>
+              </div>
+
+              <!-- ⑤ Character Illustration — 284×183 -->
+              <div class="d-character-area">
+                <div class="skeleton d-character-blob delay-1"></div>
+              </div>
+
+              <!-- ⑥ Main White Card -->
+              <div class="d-main-card">
+
+                <!-- Fortune Badge Pill -->
+                <div class="d-fortune-badge">
+                  <div class="skeleton d-fortune-badge-icon delay-2"></div>
+                  <div class="skeleton d-fortune-badge-text delay-2"></div>
+                </div>
+
+                <!-- Fortune Summary: Date Box + Text -->
+                <div class="d-fortune-row">
+                  <!-- Date Box (76px wide) -->
+                  <div class="d-date-box" style="background:var(--bg-light);border:1px solid var(--skeleton-base)">
+                    <div class="skeleton d-date-number delay-2"></div>
+                    <div class="skeleton d-date-month delay-2"></div>
+                  </div>
+                  <!-- Text -->
+                  <div class="d-fortune-text">
+                    <div class="d-fortune-title-row">
+                      <div class="skeleton delay-2" style="width:200px;height:16px;border-radius:4px"></div>
+                      <div class="skeleton-circle d-info-icon delay-2"></div>
+                    </div>
+                    <div class="skeleton delay-3" style="width:100%;height:14px;border-radius:4px"></div>
+                    <div class="skeleton delay-3" style="width:75%;height:14px;border-radius:4px"></div>
+                  </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="d-card-divider"></div>
+
+                <!-- สีมงคลวันนี้ Title -->
+                <div class="skeleton d-color-section-title delay-3"></div>
+
+                <!-- 5 Color Ovals + Vertical Divider before last -->
+                <div class="d-color-dots-row">
+                  <div class="d-color-item">
+                    <div class="skeleton-pill d-color-oval delay-3"></div>
+                    <div class="skeleton d-color-label delay-3"></div>
+                  </div>
+                  <div class="d-color-item">
+                    <div class="skeleton-pill d-color-oval delay-3"></div>
+                    <div class="skeleton d-color-label delay-3"></div>
+                  </div>
+                  <div class="d-color-item">
+                    <div class="skeleton-pill d-color-oval delay-4"></div>
+                    <div class="skeleton d-color-label delay-4"></div>
+                  </div>
+                  <div class="d-color-item">
+                    <div class="skeleton-pill d-color-oval delay-4"></div>
+                    <div class="skeleton d-color-label delay-4"></div>
+                  </div>
+                  <!-- Vertical Divider -->
+                  <div class="d-color-divider-v"></div>
+                  <div class="d-color-item">
+                    <div class="skeleton-pill d-color-oval delay-5"></div>
+                    <div class="skeleton d-color-label delay-5" style="width:36px"></div>
+                  </div>
+                </div>
+
+              </div><!-- end d-main-card -->
+
+              <!-- ⑦ Advice Cards — 2 side-by-side, 153px -->
+              <div class="d-advice-row" style="margin-top:16px">
+                <!-- คำแนะนำ -->
+                <div class="d-advice-card">
+                  <div class="skeleton d-advice-title delay-4"></div>
+                  <div class="d-advice-desc">
+                    <div class="skeleton delay-4" style="width:100%;height:12px;border-radius:4px"></div>
+                    <div class="skeleton delay-5" style="width:85%;height:12px;border-radius:4px"></div>
+                  </div>
+                  <div class="skeleton-circle d-advice-circle delay-5"></div>
+                </div>
+                <!-- หลีกเลี่ยง -->
+                <div class="d-advice-card">
+                  <div class="skeleton d-advice-title delay-4" style="width:56px"></div>
+                  <div class="d-advice-desc">
+                    <div class="skeleton delay-4" style="width:100%;height:12px;border-radius:4px"></div>
+                    <div class="skeleton delay-5" style="width:70%;height:12px;border-radius:4px"></div>
+                  </div>
+                  <div class="skeleton-circle d-advice-circle delay-5" style="opacity:0.3"></div>
+                </div>
+              </div>
+
+              <!-- ⑧ Planet Card — ดาวเกิด & ดาวจร -->
+              <div class="d-planet-card" style="margin-top:16px">
+                <div class="skeleton d-planet-title delay-4"></div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div class="d-planet-row">
+                    <div class="skeleton d-planet-label delay-5"></div>
+                    <div class="skeleton d-planet-value delay-5"></div>
+                  </div>
+                  <div class="d-planet-row">
+                    <div class="skeleton d-planet-label delay-5"></div>
+                    <div class="skeleton d-planet-value delay-5"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ⑨ Footer — right-aligned -->
+              <div class="d-footer" style="margin-top:16px">
+                <div class="skeleton d-footer-text delay-5"></div>
+              </div>
+
+            </div><!-- end screen-content -->
+
+            <!-- ⑩ Bottom Nav -->
+            <div class="bottom-nav">
+              <div class="bottom-nav-item active">
+                <div class="skeleton-circle icon-placeholder" style="opacity:0.5"></div>
+                <span>ปฏิทิน</span>
+              </div>
+              <div class="bottom-nav-item">
+                <div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div>
+                <span>แจ้งเตือน</span>
+              </div>
+              <div class="bottom-nav-center"></div>
+              <div class="bottom-nav-item">
+                <div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div>
+                <span>ทำนาย</span>
+              </div>
+              <div class="bottom-nav-item">
+                <div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div>
+                <span>โปรไฟล์</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== WEEKLY VIEW (Figma-exact) ==================== -->
+          <div class="view" id="view-weekly">
+            <div class="gradient-bg"></div>
+            <div class="screen-content">
+
+              <!-- ① Status Bar -->
+              <div class="status-bar" style="background:#fef4f5">
+                <span style="font-family:Inter,sans-serif;font-size:17px;font-weight:600">09:41</span>
+                <div class="status-bar-icons">
+                  <svg width="16" height="12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1" opacity="0.3"/><rect x="4.5" y="2" width="3" height="10" rx="1" opacity="0.5"/><rect x="9" y="1" width="3" height="11" rx="1" opacity="0.7"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+                  <svg width="15" height="12" fill="currentColor"><path d="M7.5 2.5C5 2.5 2.8 3.4 1.2 5l1.4 1.4C3.8 5.2 5.5 4.5 7.5 4.5s3.7.7 4.9 1.9L13.8 5C12.2 3.4 10 2.5 7.5 2.5zM7.5 7C6.3 7 5.2 7.5 4.4 8.2l1.4 1.4c.5-.4 1.1-.6 1.7-.6s1.2.2 1.7.6l1.4-1.4C9.8 7.5 8.7 7 7.5 7z"/><circle cx="7.5" cy="11" r="1.5"/></svg>
+                  <svg width="25" height="12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="22" y="4" width="2" height="5" rx="1"/><rect x="2" y="3" width="17" height="6" rx="1"/></svg>
+                </div>
+              </div>
+
+              <!-- ② Tab Bar -->
+              <div style="padding:0 16px">
+                <div class="d-tab-container">
+                  <div class="d-tab">รายวัน</div>
+                  <div class="d-tab active">รายสัปดาห์</div>
+                  <div class="d-tab">รายเดือน</div>
+                </div>
+              </div>
+
+              <!-- ③ Week Navigation — ‹ สัปดาห์ที่ 3 › -->
+              <div class="w-week-nav">
+                <div class="w-arrow-btn">
+                  <div class="skeleton" style="width:16px;height:16px;border-radius:4px"></div>
+                </div>
+                <div class="w-week-label">
+                  <div class="skeleton" style="width:90px;height:16px;border-radius:4px"></div>
+                  <div class="skeleton delay-1" style="width:130px;height:14px;border-radius:4px;margin-top:2px"></div>
+                </div>
+                <div class="w-arrow-btn">
+                  <div class="skeleton" style="width:16px;height:16px;border-radius:4px"></div>
+                </div>
+              </div>
+
+              <div style="padding:0 16px;display:flex;flex-direction:column;gap:16px">
+
+                <!-- ④ Notification Banner — info blue -->
+                <div class="w-banner">
+                  <div class="skeleton w-banner-close delay-1" style="background:white"></div>
+                  <div>
+                    <div class="skeleton delay-1" style="width:80%;height:16px;border-radius:4px"></div>
+                    <div class="skeleton delay-1" style="width:100%;height:14px;border-radius:4px;margin-top:5px"></div>
+                    <div class="skeleton delay-2" style="width:60%;height:14px;border-radius:4px;margin-top:2px"></div>
+                  </div>
+                  <div class="skeleton-pill w-banner-cta delay-2"></div>
+                  <div class="skeleton w-banner-illust delay-2"></div>
+                </div>
+
+                <!-- ⑤ AI Summary Card — gradient bg -->
+                <div class="w-ai-card">
+                  <!-- AI Badge -->
+                  <div class="w-ai-badge">
+                    <div class="skeleton" style="width:10px;height:10px;border-radius:2px"></div>
+                    <div class="skeleton" style="width:100px;height:12px;border-radius:4px"></div>
+                  </div>
+                  <!-- AI Content -->
+                  <div class="w-ai-content">
+                    <div class="skeleton delay-2" style="width:85%;height:18px;border-radius:4px"></div>
+                    <div class="skeleton delay-2" style="width:100%;height:14px;border-radius:4px"></div>
+                    <div class="skeleton delay-3" style="width:60%;height:14px;border-radius:4px"></div>
+                  </div>
+                  <!-- Do / Don't -->
+                  <div class="w-do-dont-row">
+                    <div class="w-do-card">
+                      <div class="skeleton delay-3" style="width:50px;height:12px;border-radius:3px"></div>
+                      <div class="w-bullet-item"><div class="w-bullet-dot skeleton"></div><div class="skeleton delay-3" style="width:100%;height:12px;border-radius:3px"></div></div>
+                      <div class="w-bullet-item"><div class="w-bullet-dot skeleton"></div><div class="skeleton delay-4" style="width:80%;height:12px;border-radius:3px"></div></div>
+                    </div>
+                    <div class="w-dont-card">
+                      <div class="skeleton delay-3" style="width:60px;height:12px;border-radius:3px"></div>
+                      <div class="w-bullet-item"><div class="w-bullet-dot skeleton"></div><div class="skeleton delay-3" style="width:100%;height:12px;border-radius:3px"></div></div>
+                      <div class="w-bullet-item"><div class="w-bullet-dot skeleton"></div><div class="skeleton delay-4" style="width:70%;height:12px;border-radius:3px"></div></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ⑥ Timeline Card -->
+                <div class="w-timeline-card">
+                  <!-- Header -->
+                  <div class="w-timeline-header">
+                    <div class="skeleton w-timeline-emoji delay-2" style="background:white"></div>
+                    <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                      <div class="skeleton delay-2" style="width:80px;height:15px;border-radius:4px"></div>
+                      <div class="skeleton delay-3" style="width:120px;height:13px;border-radius:4px"></div>
+                    </div>
+                  </div>
+                  <!-- Body — Day rows -->
+                  <div class="w-timeline-body" id="weeklyTimeline">
+                    <!-- Generated by JS -->
+                  </div>
+                </div>
+
+                <!-- ⑦ Footer — right-aligned -->
+                <div class="d-footer">
+                  <div class="skeleton d-footer-text delay-5"></div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Bottom Nav -->
+            <div class="bottom-nav">
+              <div class="bottom-nav-item active"><div class="skeleton-circle icon-placeholder" style="opacity:0.5"></div><span>ปฏิทิน</span></div>
+              <div class="bottom-nav-item"><div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div><span>แจ้งเตือน</span></div>
+              <div class="bottom-nav-center"></div>
+              <div class="bottom-nav-item"><div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div><span>ทำนาย</span></div>
+              <div class="bottom-nav-item"><div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div><span>โปรไฟล์</span></div>
+            </div>
+          </div>
+
+          <!-- ==================== MONTHLY VIEW (Figma-exact) ==================== -->
+          <div class="view" id="view-monthly">
+            <div class="gradient-bg"></div>
+            <div class="screen-content">
+
+              <!-- ① Status Bar — #fef4f5 bg -->
+              <div class="status-bar" style="background:#fef4f5">
+                <span style="font-family:Inter,sans-serif;font-size:17px;font-weight:600">09:41</span>
+                <div class="status-bar-icons">
+                  <svg width="16" height="12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1" opacity="0.3"/><rect x="4.5" y="2" width="3" height="10" rx="1" opacity="0.5"/><rect x="9" y="1" width="3" height="11" rx="1" opacity="0.7"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+                  <svg width="15" height="12" fill="currentColor"><path d="M7.5 2.5C5 2.5 2.8 3.4 1.2 5l1.4 1.4C3.8 5.2 5.5 4.5 7.5 4.5s3.7.7 4.9 1.9L13.8 5C12.2 3.4 10 2.5 7.5 2.5zM7.5 7C6.3 7 5.2 7.5 4.4 8.2l1.4 1.4c.5-.4 1.1-.6 1.7-.6s1.2.2 1.7.6l1.4-1.4C9.8 7.5 8.7 7 7.5 7z"/><circle cx="7.5" cy="11" r="1.5"/></svg>
+                  <svg width="25" height="12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="22" y="4" width="2" height="5" rx="1"/><rect x="2" y="3" width="17" height="6" rx="1"/></svg>
+                </div>
+              </div>
+
+              <!-- Inner wrapper — py:16px, gap:16px, items-center -->
+              <div style="padding:16px 0;display:flex;flex-direction:column;align-items:center;gap:16px">
+
+                <!-- ② Tab Bar — px:16px -->
+                <div style="padding:0 16px;width:100%">
+                  <div class="d-tab-container">
+                    <div class="d-tab">รายวัน</div>
+                    <div class="d-tab">รายสัปดาห์</div>
+                    <div class="d-tab active">รายเดือน</div>
+                  </div>
+                </div>
+
+                <!-- ③ Month Selector — h:24px, gap:12px -->
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px;height:24px;width:100%">
+                  <div class="skeleton" style="width:16px;height:16px;border-radius:4px"></div>
+                  <div class="skeleton" style="width:120px;height:20px;border-radius:6px"></div>
+                  <div class="skeleton" style="width:16px;height:16px;border-radius:4px"></div>
+                </div>
+
+                <!-- ④ Filter + Calendar wrapper — px:16px, gap:16px -->
+                <div style="padding:0 16px;width:100%;display:flex;flex-direction:column;gap:16px">
+
+                  <!-- Filter Row -->
+                  <div class="m-filter-row">
+                    <div class="m-filter-chip">
+                      <div class="skeleton" style="width:16px;height:16px;border-radius:4px"></div>
+                      <div class="skeleton delay-1" style="width:70px;height:14px;border-radius:4px"></div>
+                      <div class="skeleton" style="width:16px;height:16px;border-radius:4px"></div>
+                    </div>
+                    <div class="m-year-link">
+                      <div class="skeleton delay-1" style="width:50px;height:14px;border-radius:4px"></div>
+                      <div class="skeleton" style="width:16px;height:16px;border-radius:4px"></div>
+                    </div>
+                  </div>
+
+                  <!-- ⑤ Calendar Card — 359px, radius 16 -->
+                  <div class="m-calendar-card">
+                    <div class="m-grid-inner" id="monthlyGrid">
+                      <!-- Weekday headers -->
+                      <div class="m-weekday-header">
+                        <div class="m-weekday-cell">อา.</div>
+                        <div class="m-weekday-cell">จ.</div>
+                        <div class="m-weekday-cell">อ.</div>
+                        <div class="m-weekday-cell">พ.</div>
+                        <div class="m-weekday-cell">พฤ.</div>
+                        <div class="m-weekday-cell">ศ.</div>
+                        <div class="m-weekday-cell">ส.</div>
+                      </div>
+                      <!-- Week rows generated by JS -->
+                      <div id="monthlyCalendarBody" style="width:100%;display:flex;flex-direction:column;gap:12px"></div>
+                    </div>
+                  </div>
+
+                  <!-- ⑥ Legend — gap:14px -->
+                  <div class="m-legend-row">
+                    <div class="m-legend-item"><div class="m-legend-dot"></div><div class="skeleton" style="width:30px;height:14px;border-radius:4px"></div></div>
+                    <div class="m-legend-item"><div class="m-legend-dot"></div><div class="skeleton" style="width:24px;height:14px;border-radius:4px"></div></div>
+                    <div class="m-legend-item"><div class="m-legend-dot"></div><div class="skeleton" style="width:30px;height:14px;border-radius:4px"></div></div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Nav -->
+            <div class="bottom-nav">
+              <div class="bottom-nav-item active"><div class="skeleton-circle icon-placeholder" style="opacity:0.5"></div><span>ปฏิทิน</span></div>
+              <div class="bottom-nav-item"><div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div><span>แจ้งเตือน</span></div>
+              <div class="bottom-nav-center"></div>
+              <div class="bottom-nav-item"><div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div><span>ทำนาย</span></div>
+              <div class="bottom-nav-item"><div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div><span>โปรไฟล์</span></div>
+            </div>
+          </div>
+
+          <!-- ==================== YEARLY VIEW (Figma-exact) ==================== -->
+          <div class="view" id="view-yearly">
+            <div class="gradient-bg"></div>
+            <div class="screen-content">
+
+              <!-- ① Status Bar -->
+              <div class="status-bar" style="background:#fef4f5">
+                <span style="font-family:Inter,sans-serif;font-size:17px;font-weight:600">09:41</span>
+                <div class="status-bar-icons">
+                  <svg width="16" height="12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1" opacity="0.3"/><rect x="4.5" y="2" width="3" height="10" rx="1" opacity="0.5"/><rect x="9" y="1" width="3" height="11" rx="1" opacity="0.7"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+                  <svg width="15" height="12" fill="currentColor"><path d="M7.5 2.5C5 2.5 2.8 3.4 1.2 5l1.4 1.4C3.8 5.2 5.5 4.5 7.5 4.5s3.7.7 4.9 1.9L13.8 5C12.2 3.4 10 2.5 7.5 2.5zM7.5 7C6.3 7 5.2 7.5 4.4 8.2l1.4 1.4c.5-.4 1.1-.6 1.7-.6s1.2.2 1.7.6l1.4-1.4C9.8 7.5 8.7 7 7.5 7z"/><circle cx="7.5" cy="11" r="1.5"/></svg>
+                  <svg width="25" height="12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="22" y="4" width="2" height="5" rx="1"/><rect x="2" y="3" width="17" height="6" rx="1"/></svg>
+                </div>
+              </div>
+
+              <!-- ② Header — back 36×36 + title -->
+              <div class="y-header">
+                <div class="skeleton y-back-btn delay-1"></div>
+                <div class="skeleton y-title delay-1"></div>
+              </div>
+
+              <!-- ③ Mini Calendar Grid — 2 columns, 6 months -->
+              <div class="y-grid" id="yearlyGrid">
+                <!-- Generated by JS -->
+              </div>
+
+              <!-- ④ Legend -->
+              <div class="y-legend-row">
+                <div class="y-legend-item"><div class="y-legend-dot good"></div><span class="y-legend-text">ดวงดี</span></div>
+                <div class="y-legend-item"><div class="y-legend-dot normal"></div><span class="y-legend-text">ปกติ</span></div>
+                <div class="y-legend-item"><div class="y-legend-dot caution"></div><span class="y-legend-text">ระวัง</span></div>
+              </div>
+
+            </div>
+
+            <!-- Bottom Nav -->
+            <div class="bottom-nav">
+              <div class="bottom-nav-item active"><div class="skeleton-circle icon-placeholder" style="opacity:0.5"></div><span>ปฏิทิน</span></div>
+              <div class="bottom-nav-item"><div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div><span>แจ้งเตือน</span></div>
+              <div class="bottom-nav-center"></div>
+              <div class="bottom-nav-item"><div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div><span>ทำนาย</span></div>
+              <div class="bottom-nav-item"><div class="skeleton-circle icon-placeholder" style="opacity:0.3"></div><span>โปรไฟล์</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ========== NAVIGATION ==========
+  document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+    item.addEventListener('click', () => {
+      // Update nav
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+
+      // Update views
+      const viewId = item.dataset.view;
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-' + viewId).classList.add('active');
+
+      // Update side-by-side if active
+      if (document.getElementById('toggleSideBySide').classList.contains('on')) {
+        updateSideBySide(viewId);
+      }
+    });
+  });
+
+  // ========== GENERATE WEEKLY TIMELINE ==========
+  function generateWeeklyTimeline() {
+    const container = document.getElementById('weeklyTimeline');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const days = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+
+    days.forEach((day, i) => {
+      const row = document.createElement('div');
+      row.className = 'w-day-row';
+
+      const delay = 'delay-' + Math.min(5, Math.floor(i / 2) + 2);
+
+      // Day pill
+      row.innerHTML = `
+        <div class="w-day-pill">
+          <div class="w-day-capsule-w">
+            <div class="skeleton ${delay}" style="width:22px;height:14px;border-radius:4px"></div>
+            <div class="skeleton-circle w-day-date-circle ${delay}"></div>
+          </div>
+          ${i < 6 ? '<div class="w-timeline-bar skeleton" style="width:3px;height:30px;border-radius:2px;margin-top:-2px"></div>' : ''}
+        </div>
+        <div class="w-tooltip">
+          <svg class="w-tooltip-arrow" viewBox="0 0 9 18" fill="#fff"><polygon points="9,0 0,9 9,18"/></svg>
+          <div class="w-tooltip-card">
+            <div class="w-tooltip-text">
+              <div class="skeleton ${delay}" style="width:80%;height:14px;border-radius:4px"></div>
+              <div class="skeleton ${delay}" style="width:100%;height:12px;border-radius:4px"></div>
+            </div>
+            <div class="skeleton-circle w-tooltip-chevron ${delay}"></div>
+          </div>
+        </div>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  // ========== GENERATE MONTHLY CALENDAR ==========
+  function generateMonthlyCalendar() {
+    const body = document.getElementById('monthlyCalendarBody');
+    if (!body) return;
+    body.innerHTML = '';
+
+    // Jan 2026 starts on Thursday (index 4), 31 days
+    const emptyStart = 4;
+    const daysInMonth = 31;
+    const todayDate = 18;
+    const totalWeeks = Math.ceil((emptyStart + daysInMonth) / 7);
+
+    // Fixed icon pattern matching Figma screenshot
+    // Key: date → number of icons (0 = none, 1 = one, 2 = two)
+    const iconMap = {
+      1: 2, 2: 1, 4: 1, 6: 1, 7: 0, 8: 0, 9: 2, 10: 1,
+      12: 1, 14: 2, 16: 1, 18: 1, 20: 1, 22: 1,
+      25: 1, 27: 0
+    };
+
+    for (let w = 0; w < totalWeeks; w++) {
+      const row = document.createElement('div');
+      row.className = 'm-week-row';
+      const delay = 'delay-' + Math.min(5, w + 1);
+
+      for (let d = 0; d < 7; d++) {
+        const idx = w * 7 + d;
+        const dayNum = idx - emptyStart + 1;
+
+        if (dayNum < 1 || dayNum > daysInMonth) {
+          const empty = document.createElement('div');
+          empty.className = 'm-date-empty';
+          row.appendChild(empty);
+        } else {
+          const isToday = dayNum === todayDate;
+          const cell = document.createElement('div');
+          cell.className = 'm-date-cell' + (isToday ? ' selected' : '');
+
+          // Date circle — 32×32, radius 20
+          const circle = document.createElement('div');
+          circle.className = 'skeleton-circle m-date-circle ' + delay;
+          cell.appendChild(circle);
+
+          // Fortune icons below date
+          const numIcons = iconMap[dayNum] || 0;
+          if (numIcons > 0) {
+            const icons = document.createElement('div');
+            icons.className = 'm-date-icons';
+            for (let k = 0; k < numIcons; k++) {
+              const icon = document.createElement('div');
+              icon.className = 'skeleton m-date-icon ' + delay;
+              icons.appendChild(icon);
+            }
+            cell.appendChild(icons);
+          }
+
+          row.appendChild(cell);
+        }
+      }
+      body.appendChild(row);
+    }
+  }
+
+  // ========== GENERATE YEARLY MINI CALENDARS ==========
+  function generateYearlyGrid() {
+    const grid = document.getElementById('yearlyGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const months = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน'];
+    const dayHeaders = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+    const daysPerMonth = [31, 28, 31, 30, 31, 30];
+    const startDays = [3, 6, 6, 2, 4, 0];
+
+    // Build 3 rows of 2 cards each
+    for (let r = 0; r < 3; r++) {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'y-grid-row';
+
+      for (let c = 0; c < 2; c++) {
+        const mi = r * 2 + c;
+        const card = document.createElement('div');
+        card.className = 'y-mini-cal';
+        const delay = 'delay-' + Math.min(5, mi + 1);
+
+        // Month title skeleton
+        card.innerHTML = `<div class="skeleton y-month-title ${delay}"></div>`;
+
+        // Weekday header
+        const hdr = document.createElement('div');
+        hdr.className = 'y-weekday-hdr';
+        dayHeaders.forEach(d => { const s = document.createElement('span'); s.textContent = d; hdr.appendChild(s); });
+        card.appendChild(hdr);
+
+        // Week rows
+        const totalWeeks = Math.ceil((startDays[mi] + daysPerMonth[mi]) / 7);
+        for (let w = 0; w < totalWeeks; w++) {
+          const weekRow = document.createElement('div');
+          weekRow.className = 'y-week-row';
+          for (let d = 0; d < 7; d++) {
+            const idx = w * 7 + d;
+            const dayNum = idx - startDays[mi] + 1;
+            const cell = document.createElement('div');
+            cell.className = 'y-date-cell';
+            if (dayNum >= 1 && dayNum <= daysPerMonth[mi]) {
+              const dot = document.createElement('div');
+              dot.className = 'skeleton y-date-dot ' + delay;
+              cell.appendChild(dot);
+            }
+            weekRow.appendChild(cell);
+          }
+          card.appendChild(weekRow);
+        }
+
+        rowDiv.appendChild(card);
+      }
+      grid.appendChild(rowDiv);
+    }
+  }
+
+  // ========== SIDE-BY-SIDE ==========
+  let sideBySideActive = false;
+
+  function toggleSideBySide() {
+    const toggle = document.getElementById('toggleSideBySide');
+    toggle.classList.toggle('on');
+    sideBySideActive = toggle.classList.contains('on');
+
+    const activeView = document.querySelector('.nav-item.active').dataset.view;
+    if (sideBySideActive) {
+      updateSideBySide(activeView);
+    } else {
+      removeSideBySide();
+    }
+  }
+
+  function updateSideBySide(viewId) {
+    removeSideBySide();
+
+    const phoneArea = document.getElementById('phoneArea');
+    phoneArea.classList.add('side-by-side');
+
+    // Figma reference images
+    const figmaUrls = {
+      daily: 'https://www.figma.com/design/2tfxq0VuMNEYBh3pPzmAxt/DailyMu---App?node-id=1375-52695',
+      weekly: 'https://www.figma.com/design/2tfxq0VuMNEYBh3pPzmAxt/DailyMu---App?node-id=1287-7574',
+      monthly: 'https://www.figma.com/design/2tfxq0VuMNEYBh3pPzmAxt/DailyMu---App?node-id=773-29724',
+      yearly: 'https://www.figma.com/design/2tfxq0VuMNEYBh3pPzmAxt/DailyMu---App?node-id=1299-34727'
+    };
+
+    const refContainer = document.createElement('div');
+    refContainer.className = 'phone-container';
+    refContainer.id = 'figmaRef';
+
+    const label = document.createElement('div');
+    label.className = 'side-label';
+    label.textContent = 'FIGMA REFERENCE';
+    refContainer.appendChild(label);
+
+    const refFrame = document.createElement('div');
+    refFrame.className = 'phone-frame';
+    refFrame.style.background = '#F8F8F9';
+    refFrame.style.display = 'flex';
+    refFrame.style.alignItems = 'center';
+    refFrame.style.justifyContent = 'center';
+    refFrame.style.flexDirection = 'column';
+    refFrame.style.gap = '16px';
+    refFrame.style.padding = '40px';
+    refFrame.style.textAlign = 'center';
+
+    refFrame.innerHTML = `
+      <div style="font-size:48px;opacity:0.3">📱</div>
+      <div style="font-size:14px;color:var(--text-secondary);font-weight:700">Figma Reference</div>
+      <div style="font-size:12px;color:var(--text-tertiary);line-height:1.6">
+        เปิด Figma เพื่อดู design จริง<br>เทียบกับ skeleton ที่สร้าง
+      </div>
+      <a href="${figmaUrls[viewId]}" target="_blank"
+         style="font-size:13px;color:var(--primary);text-decoration:none;padding:8px 16px;border:1px solid var(--primary);border-radius:20px;font-weight:700">
+        Open in Figma →
+      </a>
+    `;
+
+    refContainer.appendChild(refFrame);
+    phoneArea.appendChild(refContainer);
+
+    // Add label to skeleton container
+    const skelLabel = document.querySelector('#skeletonContainer .side-label');
+    if (skelLabel) skelLabel.textContent = 'SKELETON';
+  }
+
+  function removeSideBySide() {
+    const phoneArea = document.getElementById('phoneArea');
+    phoneArea.classList.remove('side-by-side');
+    const ref = document.getElementById('figmaRef');
+    if (ref) ref.remove();
+  }
+
+  // ========== SHIMMER TOGGLE ==========
+  function toggleShimmer() {
+    const toggle = document.getElementById('toggleShimmer');
+    toggle.classList.toggle('on');
+    const isOn = toggle.classList.contains('on');
+
+    document.querySelectorAll('.skeleton, .skeleton-circle, .skeleton-pill').forEach(el => {
+      el.style.animationPlayState = isOn ? 'running' : 'paused';
+    });
+  }
+
+  // ========== INIT ==========
+  generateWeeklyTimeline();
+  generateMonthlyCalendar();
+  generateYearlyGrid();
+</script>
+
+</body>
+</html>

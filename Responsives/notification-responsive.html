@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyMu — Notification Responsive Preview</title>
+  <link href="https://fonts.cdnfonts.com/css/line-seed-sans-th" rel="stylesheet">
+  <style>
+    /* ===== 1. DESIGN TOKENS ===== */
+    :root{--primary:#EC599D;--primary-light:#FDEFF5;--primary-border:#F7BDD8;--secondary:#7279FB;--secondary-light:#F1F2FF;--text-primary:#1B1D22;--text-secondary:#6A6E83;--text-tertiary:#9A9DAD;--bg-white:#FFFFFF;--bg-light:#F8F8F9;--bg-mid:#EBECEF;--bg-page:#F9F9F9;--border:#EBECEF;--border-item:#E7E9EE;--error:#EA244F;--unread-dot:#BB1D3F;--disabled-text:#9A9DAD;--disabled-bg:#EBECEF;--font:'LINE Seed Sans TH',sans-serif;--font-sys:'Inter',-apple-system,sans-serif;--sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;--sp-10:40px;--sp-12:48px;--r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:24px;--r-full:9999px;--sh-sm:0 1px 3px rgba(0,0,0,.1);--sh-md:0 4px 6px rgba(0,0,0,.1)}
+
+    /* ===== 2. RESET ===== */
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font);background:#F0F1F3;-webkit-font-smoothing:antialiased}
+    button{cursor:pointer;outline:none}img{display:block;max-width:100%}
+
+    /* ===== 3. PREVIEW SHELL ===== */
+    .shell{padding:var(--sp-8)}
+    .page-title{font-size:13px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:var(--sp-8)}
+    .section{margin-bottom:var(--sp-12)}.section:last-child{margin-bottom:0}
+    .section-label{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:var(--sp-4)}
+    .row{display:flex;align-items:flex-start;gap:var(--sp-6);flex-wrap:wrap}
+    .col{display:flex;flex-direction:column}
+    .col-label{font-size:12px;font-weight:700;color:var(--text-tertiary);margin-bottom:var(--sp-2)}
+
+    /* ===== 4. FRAME & SHARED ===== */
+    .frame{overflow:hidden;position:relative;background:var(--bg-page)}
+    .status-time{font-family:var(--font-sys);font-weight:600;color:#000;font-size:17px;line-height:22px}
+    .status-icons{display:flex;align-items:center;gap:5px}.status-icons svg{display:block}
+    .home-bar{border-radius:100px;background:#ADB7C6}
+
+    /* ============================================
+       ★ NOTIFICATION — SHARED HEADER
+       ============================================ */
+    .noti{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg-page);overflow:hidden}
+    .noti-status{display:flex;align-items:center;justify-content:space-between;background:#FEF4F5;flex-shrink:0}
+    .noti-hdr{display:flex;align-items:center;gap:10px;flex-shrink:0;background:linear-gradient(to bottom,var(--primary-light),var(--bg-white))}
+    .noti-back{background:var(--bg-white);border:1px solid var(--border);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .noti-back svg{display:block}
+    .noti-title-row{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
+    .noti-title{font-weight:700;color:var(--text-primary);flex:1}
+    .noti-actions{display:flex;align-items:center;flex-shrink:0}
+    .noti-actions svg{display:block}
+
+    /* ============================================
+       ★ NOTIFICATION — FILTER TABS
+       ============================================ */
+    .noti-filters{display:flex;flex-shrink:0}
+    .noti-filter{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+    .noti-filter-icon{border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center}
+    .noti-filter-icon.active{background:var(--primary)}
+    .noti-filter-icon.inactive{background:var(--primary-light);border:.5px solid var(--primary-border)}
+    .noti-filter-label{text-align:center;font-family:var(--font)}
+    .noti-filter-label.active{font-weight:700;color:var(--text-primary)}
+    .noti-filter-label.inactive{font-weight:400;color:var(--text-tertiary)}
+
+    /* ============================================
+       ★ NOTIFICATION — LIST ITEMS
+       ============================================ */
+    .noti-content{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;background:var(--bg-white)}
+    .noti-list{flex:1;overflow-y:auto;background:var(--bg-white)}
+    .noti-item{display:flex;background:var(--bg-white);border-bottom:1px solid var(--border-item)}
+    .noti-item-icon{border-radius:50%;background:var(--bg-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .noti-item-icon svg{display:block}
+    .noti-item-body{flex:1;display:flex;flex-direction:column;min-width:0}
+    .noti-item-head{display:flex;align-items:center;justify-content:space-between}
+    .noti-item-name{font-weight:700;color:var(--text-primary)}
+    .noti-item-dot{border-radius:50%;background:var(--unread-dot);flex-shrink:0}
+    .noti-item-desc{font-weight:400}
+    .noti-item-desc.unread{color:var(--text-primary)}
+    .noti-item-desc.read{color:var(--text-secondary)}
+    .noti-item-time{font-weight:400}
+    .noti-item-time.unread{color:var(--text-secondary)}
+    .noti-item-time.read{color:var(--text-tertiary)}
+
+    /* ============================================
+       ★ BOTTOM TAB BAR
+       ============================================ */
+    .tab-bar{position:absolute;bottom:0;left:0;right:0;z-index:10}
+    .tab-bar-bg{position:absolute;bottom:0;left:0;right:0}
+    .tab-bar-bg svg{display:block;width:100%}
+    .tab-center{position:absolute;left:50%;transform:translateX(-50%);z-index:12;border-radius:50%;background:linear-gradient(135deg,#EC599D,#F7BDD8);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(236,89,157,.35)}
+    .tab-center svg{display:block}
+    .tab-items{position:relative;z-index:11;display:flex;align-items:flex-end;justify-content:space-around}
+    .tab-item{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+    .tab-item svg{display:block}
+    .tab-item-label{font-family:var(--font);text-align:center}
+    .tab-item-label.active{font-weight:700;color:var(--primary)}
+    .tab-item-label.inactive{font-weight:400;color:var(--text-tertiary)}
+    .tab-center-label{position:absolute;left:50%;transform:translateX(-50%);z-index:11;font-family:var(--font);text-align:center}
+    .tab-home{position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:12}
+    .tab-home .home-bar{background:#1F2937;opacity:.15}
+
+    /* ============================================
+       ★ NOTIFICATION — EMPTY STATE
+       ============================================ */
+    .noti-empty{flex:1;display:flex;flex-direction:column;align-items:center;background:var(--bg-white);overflow:hidden}
+    .noti-empty-char{object-fit:contain;flex-shrink:0}
+    .noti-empty-content{display:flex;flex-direction:column;align-items:center;text-align:center;width:100%}
+    .noti-empty-title{font-weight:700;color:var(--text-primary)}
+    .noti-empty-desc{font-weight:400;color:var(--text-secondary)}
+    .noti-empty-btn{border:none;border-radius:var(--r-md);background:var(--secondary);color:#fff;font-family:var(--font);font-weight:700;display:flex;align-items:center;justify-content:center}
+    .noti-empty-home{flex-shrink:0;display:flex;justify-content:center}
+
+    /* ============================================
+       ★ DELETE DIALOG
+       ============================================ */
+    .del-ov{position:absolute;inset:0;background:rgba(16,17,20,.7);display:flex;align-items:center;justify-content:center}
+    .del-card{background:var(--bg-white);border-radius:20px;display:flex;flex-direction:column;align-items:center}
+    .del-char-wrap{overflow:hidden;border-radius:0 0 var(--r-full) var(--r-full);background:var(--bg-white);flex-shrink:0}
+    .del-char-wrap img{width:189%;position:relative;left:-50%;top:-14%;max-width:none}
+    .del-content{display:flex;flex-direction:column;text-align:center;width:100%}
+    .del-title{font-weight:700;color:#181C2F}
+    .del-desc{font-weight:400;color:var(--text-tertiary)}
+    .del-btns{display:flex;width:100%}
+    .del-btn{flex:1;border-radius:var(--r-md);font-family:var(--font);font-weight:700;display:flex;align-items:center;justify-content:center}
+    .del-btn.cancel{background:var(--bg-white);border:1px solid var(--secondary);color:var(--secondary)}
+    .del-btn.confirm{background:var(--secondary);border:none;color:#fff}
+
+    /* ============================================
+       ★ BREAKPOINT — MOBILE
+       ============================================ */
+    .f-mobile .noti-status{padding:14px 24px 12px}
+    .f-mobile .noti-hdr{padding:var(--sp-4)}
+    .f-mobile .noti-back{width:36px;height:36px}
+    .f-mobile .noti-back svg{width:8px;height:13px}
+    .f-mobile .noti-title{font-size:20px;line-height:28px}
+    .f-mobile .noti-actions{gap:var(--sp-4)}
+    .f-mobile .noti-actions svg{width:16px;height:16px}
+    /* Filters */
+    .f-mobile .noti-filters{padding:var(--sp-4);gap:var(--sp-4)}
+    .f-mobile .noti-filter{gap:var(--sp-2)}
+    .f-mobile .noti-filter-icon{width:50px;height:50px}
+    .f-mobile .noti-filter-icon svg{width:24px;height:24px}
+    .f-mobile .noti-filter-label{font-size:16px;line-height:24px}
+    /* Items */
+    .f-mobile .noti-item{padding:var(--sp-4);gap:var(--sp-4)}
+    .f-mobile .noti-item-icon{width:40px;height:40px}
+    .f-mobile .noti-item-icon svg{width:16px;height:16px}
+    .f-mobile .noti-item-body{gap:6px}
+    .f-mobile .noti-item-name{font-size:14px;line-height:22px}
+    .f-mobile .noti-item-dot{width:10px;height:10px}
+    .f-mobile .noti-item-desc{font-size:14px;line-height:22px}
+    .f-mobile .noti-item-time{font-size:12px;line-height:20px}
+    /* Tab Bar */
+    .f-mobile .tab-bar{height:125px}
+    .f-mobile .tab-center{width:60px;height:60px;top:0}
+    .f-mobile .tab-center svg{width:26px;height:26px}
+    .f-mobile .tab-items{padding:52px 16px 28px;gap:0}
+    .f-mobile .tab-item{gap:4px;width:52px}
+    .f-mobile .tab-item svg{width:22px;height:22px}
+    .f-mobile .tab-item-label{font-size:14px;line-height:22px}
+    .f-mobile .tab-center-label{bottom:28px;font-size:14px;line-height:22px}
+    .f-mobile .tab-home .home-bar{width:134px;height:5px}
+    .f-mobile .tab-home{bottom:8px}
+    /* Empty */
+    .f-mobile .noti-empty{padding-top:120px;gap:var(--sp-10)}
+    .f-mobile .noti-empty-char{width:200px;height:200px}
+    .f-mobile .noti-empty-content{gap:var(--sp-2);padding:0 var(--sp-8)}
+    .f-mobile .noti-empty-title{font-size:18px;line-height:26px}
+    .f-mobile .noti-empty-desc{font-size:16px;line-height:24px}
+    .f-mobile .noti-empty-btn{min-width:114px;height:48px;font-size:16px;line-height:24px;padding:0 var(--sp-6);margin-top:var(--sp-10)}
+    .f-mobile .noti-empty-home{padding:var(--sp-1) 0 var(--sp-2)}
+    .f-mobile .noti-empty-home .home-bar{width:134px;height:5px}
+    /* Dialog */
+    .f-mobile .del-card{width:359px;padding:20px 16px;gap:var(--sp-6)}
+    .f-mobile .del-char-wrap{width:129px;height:130px}
+    .f-mobile .del-content{gap:var(--sp-2)}
+    .f-mobile .del-title{font-size:18px;line-height:26px}
+    .f-mobile .del-desc{font-size:16px;line-height:24px}
+    .f-mobile .del-btns{gap:10px}
+    .f-mobile .del-btn{height:40px;font-size:16px;line-height:24px}
+
+    /* ============================================
+       ★ BREAKPOINT — TABLET
+       ============================================ */
+    .f-tablet .noti-status{padding:16px 32px 14px}
+    .f-tablet .noti-hdr{padding:var(--sp-5) var(--sp-8)}
+    .f-tablet .noti-back{width:44px;height:44px}
+    .f-tablet .noti-back svg{width:10px;height:16px}
+    .f-tablet .noti-title{font-size:24px;line-height:32px}
+    .f-tablet .noti-actions{gap:var(--sp-5)}
+    .f-tablet .noti-actions svg{width:20px;height:20px}
+    /* Content centering */
+    .f-tablet .noti-content{align-items:center;padding:0 var(--sp-12)}
+    .f-tablet .noti-content .noti-filters,
+    .f-tablet .noti-content .noti-list{max-width:500px;width:100%}
+    /* Filters */
+    .f-tablet .noti-filters{padding:var(--sp-5) 0;gap:var(--sp-5)}
+    .f-tablet .noti-filter{gap:10px}
+    .f-tablet .noti-filter-icon{width:60px;height:60px;border-radius:14px}
+    .f-tablet .noti-filter-icon svg{width:28px;height:28px}
+    .f-tablet .noti-filter-label{font-size:18px;line-height:26px}
+    /* Items */
+    .f-tablet .noti-item{padding:var(--sp-5) 0;gap:var(--sp-5)}
+    .f-tablet .noti-item-icon{width:48px;height:48px}
+    .f-tablet .noti-item-icon svg{width:20px;height:20px}
+    .f-tablet .noti-item-body{gap:var(--sp-2)}
+    .f-tablet .noti-item-name{font-size:16px;line-height:24px}
+    .f-tablet .noti-item-dot{width:12px;height:12px}
+    .f-tablet .noti-item-desc{font-size:16px;line-height:24px}
+    .f-tablet .noti-item-time{font-size:14px;line-height:22px}
+    /* Tab Bar */
+    .f-tablet .tab-bar{height:140px}
+    .f-tablet .tab-center{width:70px;height:70px;top:0}
+    .f-tablet .tab-center svg{width:30px;height:30px}
+    .f-tablet .tab-items{padding:60px 32px 32px;gap:0}
+    .f-tablet .tab-item{gap:4px;width:64px}
+    .f-tablet .tab-item svg{width:24px;height:24px}
+    .f-tablet .tab-item-label{font-size:14px;line-height:22px}
+    .f-tablet .tab-center-label{bottom:32px;font-size:14px;line-height:22px}
+    .f-tablet .tab-home .home-bar{width:160px;height:5px}
+    .f-tablet .tab-home{bottom:10px}
+    /* Empty */
+    .f-tablet .noti-empty{padding-top:100px;gap:var(--sp-10)}
+    .f-tablet .noti-empty-char{width:260px;height:260px}
+    .f-tablet .noti-empty{align-items:center}
+    .f-tablet .noti-empty-content{gap:var(--sp-3);max-width:500px;padding:0 var(--sp-4)}
+    .f-tablet .noti-empty-title{font-size:24px;line-height:32px}
+    .f-tablet .noti-empty-desc{font-size:18px;line-height:26px}
+    .f-tablet .noti-empty-btn{min-width:140px;height:56px;font-size:18px;line-height:26px;padding:0 var(--sp-8);margin-top:var(--sp-10);border-radius:var(--r-lg)}
+    .f-tablet .noti-empty-home{padding:6px 0 10px}
+    .f-tablet .noti-empty-home .home-bar{width:160px;height:5px}
+    /* Dialog */
+    .f-tablet .del-card{width:460px;padding:28px 24px;gap:28px}
+    .f-tablet .del-char-wrap{width:160px;height:162px}
+    .f-tablet .del-content{gap:10px}
+    .f-tablet .del-title{font-size:22px;line-height:30px}
+    .f-tablet .del-desc{font-size:18px;line-height:26px}
+    .f-tablet .del-btns{gap:12px}
+    .f-tablet .del-btn{height:48px;font-size:18px;line-height:26px;border-radius:var(--r-lg)}
+
+    /* ============================================
+       ★ BREAKPOINT — LANDSCAPE
+       ============================================ */
+    .f-land .noti-status{padding:14px 40px 10px}
+    .f-land .noti-hdr{padding:var(--sp-4) var(--sp-10)}
+    .f-land .noti-back{width:44px;height:44px}
+    .f-land .noti-back svg{width:10px;height:16px}
+    .f-land .noti-title{font-size:22px;line-height:30px}
+    .f-land .noti-actions{gap:var(--sp-5)}
+    .f-land .noti-actions svg{width:18px;height:18px}
+    /* Content centering */
+    .f-land .noti-content{align-items:center;padding:0 var(--sp-10)}
+    .f-land .noti-content .noti-filters,
+    .f-land .noti-content .noti-list{max-width:440px;width:100%}
+    /* Filters */
+    .f-land .noti-filters{padding:var(--sp-4) 0;gap:var(--sp-5)}
+    .f-land .noti-filter{gap:var(--sp-2)}
+    .f-land .noti-filter-icon{width:56px;height:56px;border-radius:14px}
+    .f-land .noti-filter-icon svg{width:26px;height:26px}
+    .f-land .noti-filter-label{font-size:16px;line-height:24px}
+    /* Items */
+    .f-land .noti-item{padding:var(--sp-4) 0;gap:var(--sp-4)}
+    .f-land .noti-item-icon{width:44px;height:44px}
+    .f-land .noti-item-icon svg{width:18px;height:18px}
+    .f-land .noti-item-body{gap:6px}
+    .f-land .noti-item-name{font-size:15px;line-height:22px}
+    .f-land .noti-item-dot{width:10px;height:10px}
+    .f-land .noti-item-desc{font-size:15px;line-height:22px}
+    .f-land .noti-item-time{font-size:13px;line-height:20px}
+    /* Tab Bar */
+    .f-land .tab-bar{height:120px}
+    .f-land .tab-center{width:64px;height:64px;top:0}
+    .f-land .tab-center svg{width:28px;height:28px}
+    .f-land .tab-items{padding:54px 40px 26px;gap:0}
+    .f-land .tab-item{gap:4px;width:56px}
+    .f-land .tab-item svg{width:22px;height:22px}
+    .f-land .tab-item-label{font-size:13px;line-height:20px}
+    .f-land .tab-center-label{bottom:26px;font-size:13px;line-height:20px}
+    .f-land .tab-home .home-bar{width:180px;height:5px}
+    .f-land .tab-home{bottom:8px}
+    /* Empty */
+    .f-land .noti-empty{padding-top:60px;gap:var(--sp-6)}
+    .f-land .noti-empty-char{width:200px;height:200px}
+    .f-land .noti-empty{align-items:center}
+    .f-land .noti-empty-content{gap:var(--sp-2);max-width:440px;padding:0 var(--sp-4)}
+    .f-land .noti-empty-title{font-size:20px;line-height:28px}
+    .f-land .noti-empty-desc{font-size:16px;line-height:24px}
+    .f-land .noti-empty-btn{min-width:130px;height:48px;font-size:16px;line-height:24px;padding:0 var(--sp-6);margin-top:var(--sp-6);border-radius:var(--r-lg)}
+    .f-land .noti-empty-home{padding:var(--sp-1) 0 var(--sp-2)}
+    .f-land .noti-empty-home .home-bar{width:180px;height:5px}
+    /* Dialog */
+    .f-land .del-card{width:420px;padding:24px 20px;gap:var(--sp-6)}
+    .f-land .del-char-wrap{width:140px;height:142px}
+    .f-land .del-content{gap:var(--sp-2)}
+    .f-land .del-title{font-size:20px;line-height:28px}
+    .f-land .del-desc{font-size:16px;line-height:24px}
+    .f-land .del-btns{gap:10px}
+    .f-land .del-btn{height:44px;font-size:16px;line-height:24px;border-radius:var(--r-lg)}
+
+    /* ===== FRAME SIZES ===== */
+    .f-mobile{width:390px;height:844px}
+    .f-tablet{width:768px;height:1024px}
+    .f-land{width:1024px;height:768px}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="page-title">Notification — Responsive</div>
+  <div id="root"></div>
+</div>
+<script>
+/* ===== ASSETS ===== */
+const A={
+  emptyChar:'https://www.figma.com/api/mcp/asset/a28dbb4a-d0d5-408a-88de-5ec7f80bc4f6',
+  deleteChar:'https://www.figma.com/api/mcp/asset/bc4361f3-bc2b-471e-833a-d376df34a97a',
+  filterGeneral:'https://www.figma.com/api/mcp/asset/5efa04ae-d258-4bdf-928c-20f1edb06e14',
+  filterHoroscope:'https://www.figma.com/api/mcp/asset/b7dd3669-5365-448b-824e-da5d9e8208c0',
+};
+
+/* ===== SVGs ===== */
+const SVG_STATUS=`<svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#000"/><rect x="5" y="2" width="3" height="10" rx="1" fill="#000"/><rect x="10" y="0" width="3" height="12" rx="1" fill="#000"/><rect x="15" y="1" width="3" height="11" rx="1" fill="#000" opacity=".3"/></svg><svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.2 3.6 12.1 4.5 13.5 6L15 4.5C13.1 2.6 10.7 1.5 8 1.5S2.9 2.6 1 4.5L2.5 6C3.9 4.5 5.8 3.6 8 3.6Z" fill="#000"/><path d="M8 7.2C9.3 7.2 10.4 7.7 11.2 8.5L12.7 7C11.4 5.7 9.8 5 8 5S4.6 5.7 3.3 7L4.8 8.5C5.6 7.7 6.7 7.2 8 7.2Z" fill="#000"/><circle cx="8" cy="10.5" r="1.5" fill="#000"/></svg><svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0" y="1" width="22" height="11" rx="2" stroke="#000"/><rect x="1.5" y="2.5" width="19" height="8" rx="1" fill="#000"/><path d="M23.5 5v3a2 2 0 000-3Z" fill="#000" opacity=".4"/></svg>`;
+const SVG_BACK=`<svg viewBox="0 0 10 16" fill="none"><path d="M8.5 1L1.5 8l7 7" stroke="#1B1D22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_BELL=`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 016 6v3.5l1.3 2.2c.4.7-.1 1.3-.8 1.3H5.5c-.7 0-1.2-.6-.8-1.3L6 12.5V9a6 6 0 016-6z" stroke="#6A6E83" stroke-width="1.8"/><path d="M9 16a3 3 0 006 0" stroke="#6A6E83" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_ENVELOPE=`<svg viewBox="0 0 16 16" fill="none"><path d="M2 4.5l6 4 6-4" stroke="#1B1D22" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="1" y="3" width="14" height="10" rx="2" stroke="#1B1D22" stroke-width="1.5"/><path d="M1 5v6a2 2 0 002 2h10a2 2 0 002-2V5" stroke="#1B1D22" stroke-width="1.5"/></svg>`;
+const SVG_TRASH=`<svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1M6.5 7v4M9.5 7v4" stroke="#1B1D22" stroke-width="1.5" stroke-linecap="round"/><path d="M3 4l.8 9a2 2 0 002 1.8h4.4a2 2 0 002-1.8L13 4" stroke="#1B1D22" stroke-width="1.5"/></svg>`;
+/* Filter "All" icon — 4 colored squares */
+const SVG_FILTER_ALL_ACTIVE=`<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="2" fill="#fff"/><rect x="13" y="2" width="9" height="9" rx="2" fill="rgba(255,255,255,.5)"/><rect x="2" y="13" width="9" height="9" rx="2" fill="rgba(255,255,255,.6)"/><rect x="13" y="13" width="9" height="9" rx="2" fill="rgba(255,255,255,.4)" transform="rotate(3 17.5 17.5)"/></svg>`;
+const SVG_FILTER_ALL_INACTIVE=`<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="2" fill="#EA244F"/><rect x="13" y="2" width="9" height="9" rx="2" fill="#FBDEED"/><rect x="2" y="13" width="9" height="9" rx="2" fill="#FFBEE0"/><rect x="13" y="13" width="9" height="9" rx="2" fill="#C7C9FD" transform="rotate(3 17.5 17.5)"/></svg>`;
+/* Tab bar icons */
+const SVG_TAB_CAL=c=>`<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="${c}" stroke-width="1.8"/><line x1="3" y1="10" x2="21" y2="10" stroke="${c}" stroke-width="1.8"/><line x1="8" y1="3" x2="8" y2="7" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_TAB_BELL=c=>`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 016 6v3.5l1.3 2.2c.4.7-.1 1.3-.8 1.3H5.5c-.7 0-1.2-.6-.8-1.3L6 12.5V9a6 6 0 016-6z" stroke="${c}" stroke-width="1.8"/><path d="M9 16a3 3 0 006 0" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_TAB_MOON=c=>`<svg viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 1021 12.79z" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_TAB_USER=c=>`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="${c}" stroke-width="1.8"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_TAB_SUN=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></g></svg>`;
+
+/* Tab bar SVG path generator */
+function tabPath(w){const cx=w/2,ns=cx-43,ne=cx+43;return`M0 16 H${ns} C${ns+8} 16 ${ns+13} 16 ${ns+17} 20 Q${ns+25} 32 ${ns+34} 36 Q${cx-4} 38 ${cx} 38 Q${cx+4} 38 ${cx+9} 36 Q${cx+18} 32 ${cx+26} 20 C${ne-8} 16 ${ne-5} 16 ${ne} 16 H${w} V95 H0 Z`}
+
+/* ===== SCREEN DATA ===== */
+const NOTI_ITEMS=[
+  {title:'ดวงรายวัน (Daily Horoscope)',desc:'"ดวงวันนี้พร้อมแล้ว! วันนี้เป็นวัน ดวงดี มาดูรายละเอียดกัน"',time:'18 ก.พ. 69 | 1 ชั่วโมงที่แล้ว',unread:true},
+  {title:'เตือนก่อนนอน (Nightly Reminder)',desc:'"พรุ่งนี้เป็นวัน ควรระวัง เรื่องการเงิน อ่านคำแนะนำเตรียมตัวได้เลย"',time:'18 ก.พ. 69 | 3 ชั่วโมงที่แล้ว',unread:true},
+  {title:'ฤกษ์เฉพาะเรื่อง',desc:'"พรุ่งนี้ดาวพฤหัสย้ายราศี ส่งผลดีต่อ การเงิน ของคุณ"',time:'17 ก.พ. 69 | 1 วันที่แล้ว',unread:false},
+  {title:'วันฤกษ์ดี (Auspicious Day)',desc:'"วันพุธนี้เป็นวัน ฤกษ์ดี เหมาะสำหรับเริ่มต้นสิ่งใหม่"',time:'17 ก.พ. 69 | 1 วันที่แล้ว',unread:true},
+  {title:'ดวงรายวัน (Daily Horoscope)',desc:'"ดวงวันนี้พร้อมแล้ว! วันนี้เป็นวัน ดวงดี มาดูรายละเอียดกัน"',time:'18 ก.พ. 69 | 1 ชั่วโมงที่แล้ว',unread:false},
+  {title:'ดวงรายวัน (Daily Horoscope)',desc:'"ดวงวันนี้พร้อมแล้ว! วันนี้เป็นวัน ดวงดี มาดูรายละเอียดกัน"',time:'17 ก.พ. 69 | 1 วันที่แล้ว',unread:false},
+];
+
+const SCREENS=[
+  {type:'noti-list',id:'noti-list',label:'Notification — List'},
+  {type:'noti-empty',id:'noti-empty',label:'Notification — Empty'},
+  {type:'noti-delete',id:'noti-delete',label:'Notification — Delete Dialog'},
+];
+
+const BPS=[
+  {cls:'f-mobile',label:'Mobile — 390 × 844',w:390},
+  {cls:'f-tablet',label:'Tablet — 768 × 1024',w:768},
+  {cls:'f-land',label:'Landscape — 1024 × 768',w:1024},
+];
+
+/* ===== RENDER HELPERS ===== */
+function statusBar(){return`<div class="noti-status"><span class="status-time">09:41</span><div class="status-icons">${SVG_STATUS}</div></div>`}
+
+function headerSimple(){return`<div class="noti-hdr"><div class="noti-back">${SVG_BACK}</div><div class="noti-title-row"><div class="noti-title">การแจ้งเตือน</div></div></div>`}
+
+function headerFull(){return`<div class="noti-hdr"><div class="noti-back">${SVG_BACK}</div><div class="noti-title-row"><div class="noti-title">การแจ้งเตือน</div><div class="noti-actions">${SVG_ENVELOPE}${SVG_TRASH}</div></div></div>`}
+
+function filterTabs(){return`<div class="noti-filters"><div class="noti-filter"><div class="noti-filter-icon active">${SVG_FILTER_ALL_ACTIVE}</div><div class="noti-filter-label active">ทั้งหมด</div></div><div class="noti-filter"><div class="noti-filter-icon inactive"><img src="${A.filterGeneral}" style="width:24px;height:24px;object-fit:contain" alt=""></div><div class="noti-filter-label inactive">ทั่วไป</div></div><div class="noti-filter"><div class="noti-filter-icon inactive"><img src="${A.filterHoroscope}" style="width:24px;height:24px;object-fit:contain" alt=""></div><div class="noti-filter-label inactive">ฤกษ์</div></div></div>`}
+
+function notiItems(){return NOTI_ITEMS.map(it=>{const rc=it.unread?'unread':'read';return`<div class="noti-item"><div class="noti-item-icon">${SVG_BELL}</div><div class="noti-item-body"><div class="noti-item-head"><div class="noti-item-name">${it.title}</div>${it.unread?'<div class="noti-item-dot"></div>':''}</div><div class="noti-item-desc ${rc}">${it.desc}</div><div class="noti-item-time ${rc}">${it.time}</div></div></div>`}).join('')}
+
+function tabBar(w){
+  const pc='#EC599D',ic='#9A9DAD';
+  return`<div class="tab-bar"><div class="tab-bar-bg"><svg viewBox="0 0 ${w} 95" preserveAspectRatio="none"><defs><filter id="ts${w}" x="-5%" y="-20%" width="110%" height="140%"><feDropShadow dx="0" dy="-2" stdDeviation="4" floodColor="#000" floodOpacity=".06"/></filter></defs><path d="${tabPath(w)}" fill="white" filter="url(#ts${w})"/></svg></div><div class="tab-center">${SVG_TAB_SUN}</div><div class="tab-items"><div class="tab-item">${SVG_TAB_CAL(ic)}<div class="tab-item-label inactive">ปฏิทิน</div></div><div class="tab-item">${SVG_TAB_BELL(pc)}<div class="tab-item-label active">แจ้งเตือน</div></div><div style="flex:1"></div><div class="tab-item">${SVG_TAB_MOON(ic)}<div class="tab-item-label inactive">ทำนาย</div></div><div class="tab-item">${SVG_TAB_USER(ic)}<div class="tab-item-label inactive">โปรไฟล์</div></div></div><div class="tab-center-label active">ดวงวันนี้</div><div class="tab-home"><div class="home-bar"></div></div></div>`
+}
+
+/* ===== RENDER — NOTIFICATION LIST ===== */
+function renderNotiList(s,bp){
+  return`<div class="noti">${statusBar()}${headerFull()}<div class="noti-content">${filterTabs()}<div class="noti-list">${notiItems()}</div></div>${tabBar(bp.w)}</div>`
+}
+
+/* ===== RENDER — NOTIFICATION EMPTY ===== */
+function renderNotiEmpty(s){
+  return`<div class="noti" style="background:#fff">${statusBar()}${headerSimple()}<div class="noti-empty"><img class="noti-empty-char" src="${A.emptyChar}" alt="Character"><div class="noti-empty-content"><div class="noti-empty-title">ยังไม่มีการแจ้งเตือน</div><div class="noti-empty-desc">เมื่อมีการอัปเดต โปรโมชัน หรือข้อมูลสำคัญ<br>ระบบจะแจ้งเตือนคุณที่นี่</div><button class="noti-empty-btn">เปิดการแจ้งเตือน</button></div></div></div>`
+}
+
+/* ===== RENDER — DELETE DIALOG ===== */
+function renderNotiDelete(s){
+  return`<div class="del-ov"><div class="del-card"><div class="del-char-wrap"><img src="${A.deleteChar}" alt="Character"></div><div class="del-content"><div class="del-title">ลบข้อความทั้งหมด?</div><div class="del-desc">กดยืนยัน เพื่อลบข้อความแจ้งเตือนทั้งหมด</div></div><div class="del-btns"><button class="del-btn cancel">ยกเลิก</button><button class="del-btn confirm">ยืนยัน</button></div></div></div>`
+}
+
+/* ===== BUILD ===== */
+const REN={'noti-list':renderNotiList,'noti-empty':renderNotiEmpty,'noti-delete':renderNotiDelete};
+const root=document.getElementById('root');
+root.innerHTML=SCREENS.map(s=>{
+  const frames=BPS.map(bp=>{
+    const r=REN[s.type];
+    const content=s.type==='noti-list'?r(s,bp):r(s);
+    return`<div class="col"><div class="col-label">${bp.label}</div><div class="frame ${bp.cls}">${content}</div></div>`
+  }).join('');
+  return`<div class="section"><div class="section-label">${s.label}</div><div class="row">${frames}</div></div>`
+}).join('');
+</script>
+</body>
+</html>

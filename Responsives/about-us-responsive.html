@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyMu — About Us Responsive Preview</title>
+  <link href="https://fonts.cdnfonts.com/css/line-seed-sans-th" rel="stylesheet">
+  <style>
+    /* ===== 1. DESIGN TOKENS ===== */
+    :root{--primary:#EC599D;--primary-light:#FDEFF5;--primary-border:#F7BDD8;--secondary:#7279FB;--secondary-light:#F1F2FF;--text-primary:#1B1D22;--text-secondary:#6A6E83;--text-tertiary:#9A9DAD;--text-dark:#3F414E;--bg-white:#FFFFFF;--bg-light:#F8F8F9;--bg-mid:#EBECEF;--bg-page:#F8F8F9;--border:#EBECEF;--font:'LINE Seed Sans TH',sans-serif;--font-sys:'Inter',-apple-system,sans-serif;--sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;--sp-10:40px;--sp-12:48px;--r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:24px;--r-full:9999px;--sh-xs:0 1px 2px rgba(0,0,0,.08);--sh-sm:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.1);--sh-md:0 4px 6px rgba(0,0,0,.1)}
+
+    /* ===== 2. RESET ===== */
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font);background:#F0F1F3;-webkit-font-smoothing:antialiased}
+    button{cursor:pointer;outline:none;border:none;font-family:var(--font)}img{display:block;max-width:100%}a{text-decoration:none}
+
+    /* ===== 3. PREVIEW SHELL ===== */
+    .shell{padding:var(--sp-8)}
+    .page-title{font-size:13px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:var(--sp-8)}
+    .section{margin-bottom:var(--sp-12)}.section:last-child{margin-bottom:0}
+    .section-label{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:var(--sp-4)}
+    .row{display:flex;align-items:flex-start;gap:var(--sp-6);flex-wrap:wrap}
+    .col{display:flex;flex-direction:column}
+    .col-label{font-size:12px;font-weight:700;color:var(--text-tertiary);margin-bottom:var(--sp-2)}
+
+    /* ===== 4. FRAME & SHARED ===== */
+    .frame{overflow:hidden;position:relative;background:var(--bg-white)}
+    .status-time{font-family:var(--font-sys);font-weight:600;color:#000;font-size:17px;line-height:22px}
+    .status-icons{display:flex;align-items:center;gap:5px}.status-icons svg{display:block}
+    .home-bar{border-radius:100px;background:#ADB7C6}
+
+    /* ============================================
+       ★ ABOUT US — LAYOUT
+    ============================================ */
+    .abt{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg-white);overflow:hidden}
+    .abt-status{display:flex;align-items:center;justify-content:space-between;background:#FEF4F5;flex-shrink:0;height:48px}
+    .abt-hdr{flex-shrink:0;background:linear-gradient(to bottom,var(--primary-light),var(--bg-white))}
+    .abt-back{background:var(--bg-white);border:1px solid var(--border);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .abt-back svg{display:block}
+    .abt-scroll{flex:1;overflow-y:auto}
+
+    /* ===== Logo Section ===== */
+    .abt-logo{display:flex;flex-direction:column;align-items:center}
+    .abt-logo-img{object-fit:contain}
+    .abt-app-name{font-weight:700;color:var(--text-primary);text-align:center}
+    .abt-app-desc{font-weight:400;color:var(--text-dark);text-align:center}
+
+    /* ===== Contact List ===== */
+    .abt-contacts{background:var(--bg-light);border-radius:var(--r-lg);overflow:hidden}
+    .abt-contact{display:flex;align-items:center;position:relative}
+    .abt-contact:not(:last-child)::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--border)}
+    .abt-contact-icon{border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .abt-contact-icon svg{display:block}
+    .abt-contact-body{flex:1;display:flex;flex-direction:column;min-width:0}
+    .abt-contact-name{font-weight:700;color:var(--text-primary)}
+    .abt-contact-handle{font-weight:400;color:var(--text-secondary)}
+    .abt-contact-arrow{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    .abt-contact-arrow svg{display:block}
+
+    /* ===== Rate Card ===== */
+    .abt-rate{border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm);position:relative}
+    .abt-rate-gradient{background:linear-gradient(180deg,#e7e9fe 0%,#fdecfc 18%,#fdeef1 37%,#fef0e7 53%,#fef0e7 100%);position:relative}
+    .abt-rate-decos{display:flex;align-items:flex-end;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px 16px 0}
+    .abt-rate-deco{border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center}
+    .abt-rate-content{background:var(--bg-white);border-radius:var(--r-2xl) var(--r-2xl) 0 0;display:flex;flex-direction:column;align-items:center;text-align:center}
+    .abt-rate-title{font-weight:700;color:var(--text-primary)}
+    .abt-rate-desc{font-weight:400;color:var(--text-secondary)}
+    .abt-rate-btn{background:var(--secondary);border-radius:var(--r-md);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;width:100%}
+
+    /* ===== Version ===== */
+    .abt-version{font-weight:400;color:var(--text-tertiary);text-align:center}
+
+    /* ============================================
+       ★ CONTACT US — LAYOUT
+    ============================================ */
+    .cu-hdr-row{display:flex;align-items:center;gap:10px}
+    .cu-hdr-title{font-weight:700;color:var(--text-primary)}
+    .cu-cards{display:flex;flex-direction:column}
+    .cu-card{background:var(--bg-white);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-xs);display:flex;align-items:center}
+    .cu-card-icon{background:var(--primary-light);border:.5px solid var(--primary-border);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+    .cu-card-icon img,.cu-card-icon svg{display:block}
+    .cu-card-body{flex:1;display:flex;flex-direction:column;min-width:0}
+    .cu-card-name{font-weight:700;color:var(--text-primary)}
+    .cu-card-handle{font-weight:400;color:var(--primary)}
+    .cu-card-arrow{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    .cu-card-arrow svg{display:block}
+    .cu-faq{}
+    .cu-faq-head{border-bottom:1px solid var(--border);font-weight:700;color:var(--text-primary);background:var(--bg-white)}
+    .cu-faq-item{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--bg-white)}
+    .cu-faq-item-text{font-weight:400;color:var(--text-primary);flex:1}
+    .cu-faq-item-icon{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    .cu-faq-item-icon svg{display:block}
+
+    /* ============================================
+       ★ AVATAR PICKER — BOTTOM SHEET
+    ============================================ */
+    .avp-overlay{position:absolute;inset:0;background:rgba(16,17,20,.5);display:flex;flex-direction:column;justify-content:flex-end;z-index:20}
+    .avp-sheet{background:var(--bg-white);border-radius:16px 16px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.12);display:flex;flex-direction:column}
+    .avp-handle-wrap{display:flex;justify-content:center;flex-shrink:0}
+    .avp-handle{background:var(--bg-mid);border-radius:2px;flex-shrink:0}
+    .avp-title{font-weight:700;color:var(--text-primary);width:100%}
+    .avp-grid{display:grid;grid-template-columns:repeat(4,1fr);width:100%}
+    .avp-avatar{border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;aspect-ratio:1;border:2.5px solid transparent;transition:border-color .2s}
+    .avp-avatar.sel{border-color:var(--primary)}
+    .avp-btn{background:var(--secondary);border-radius:var(--r-md);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;width:100%}
+
+    /* ============================================
+       ★ CROP SCREEN
+    ============================================ */
+    .crp{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff;overflow:hidden}
+    .crp-hdr{flex-shrink:0;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+    .crp-hdr-title{font-weight:700;color:var(--text-primary)}
+    .crp-body{flex:1;position:relative;overflow:hidden}
+    .crp-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.4)}
+    .crp-crop-area{position:absolute;display:flex;align-items:center;justify-content:center}
+    .crp-circle{border-radius:50%;overflow:hidden;background-size:cover;background-position:center}
+    .crp-handle{position:absolute;background:var(--bg-white);border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+    .crp-footer{flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff}
+    .crp-btn{background:var(--secondary);border-radius:var(--r-md);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;width:100%}
+    .crp-home{position:absolute;bottom:0;left:50%;transform:translateX(-50%)}
+    .crp-home .home-bar{background:#1F2937;opacity:.15;border-radius:100px}
+
+    /* ============================================
+       ★ BOTTOM TAB BAR
+    ============================================ */
+    .tab-bar{position:absolute;bottom:0;left:0;right:0;z-index:10}
+    .tab-bar-bg{position:absolute;bottom:0;left:0;right:0}
+    .tab-bar-bg svg{display:block;width:100%}
+    .tab-center{position:absolute;left:50%;transform:translateX(-50%);z-index:12;border-radius:50%;background:linear-gradient(135deg,#EC599D,#F7BDD8);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(236,89,157,.35);overflow:hidden}
+    .tab-center img{display:block;object-fit:contain}
+    .tab-items{position:relative;z-index:11;display:flex;align-items:flex-end;justify-content:space-around}
+    .tab-item{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+    .tab-item svg{display:block}
+    .tab-item-label{font-family:var(--font);text-align:center}
+    .tab-item-label.active{font-weight:700;color:var(--primary)}
+    .tab-item-label.inactive{font-weight:400;color:var(--text-tertiary)}
+    .tab-center-label{position:absolute;left:50%;transform:translateX(-50%);z-index:11;font-family:var(--font);text-align:center;white-space:nowrap}
+    .tab-home{position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:12}
+    .tab-home .home-bar{background:#1F2937;opacity:.15}
+
+    /* ============================================
+       ★ BREAKPOINT — MOBILE (390 × 844)
+    ============================================ */
+    .f-mobile .abt-status{padding:0 24px}
+    .f-mobile .abt-hdr{padding:16px 16px 16px}
+    .f-mobile .abt-back{width:36px;height:36px}
+    .f-mobile .abt-back svg{width:8px;height:13px}
+    /* Logo */
+    .f-mobile .abt-logo{gap:12px;padding:0 16px 32px}
+    .f-mobile .abt-logo-img{width:96px;height:82px}
+    .f-mobile .abt-app-name{font-size:24px;line-height:32px}
+    .f-mobile .abt-app-desc{font-size:16px;line-height:24px}
+    /* Contacts */
+    .f-mobile .abt-contacts-wrap{padding:0 16px}
+    .f-mobile .abt-contact{padding:16px;gap:12px}
+    .f-mobile .abt-contact-icon{width:40px;height:40px}
+    .f-mobile .abt-contact-icon svg{width:22px;height:22px}
+    .f-mobile .abt-contact-name{font-size:16px;line-height:24px}
+    .f-mobile .abt-contact-handle{font-size:14px;line-height:22px}
+    .f-mobile .abt-contact-arrow svg{width:20px;height:20px}
+    /* Rate card */
+    .f-mobile .abt-rate-wrap{padding:16px 16px 0}
+    .f-mobile .abt-rate-gradient{min-height:100px}
+    .f-mobile .abt-rate-decos{min-height:90px}
+    .f-mobile .abt-rate-content{padding:20px 16px 16px;gap:16px}
+    .f-mobile .abt-rate-title{font-size:18px;line-height:26px}
+    .f-mobile .abt-rate-desc{font-size:14px;line-height:22px}
+    .f-mobile .abt-rate-btn{height:40px;font-size:16px;line-height:24px}
+    /* Version */
+    .f-mobile .abt-version{font-size:12px;line-height:20px;padding:16px}
+    /* Tab Bar */
+    .f-mobile .tab-bar{height:125px}
+    .f-mobile .tab-center{width:60px;height:60px;top:0}
+    .f-mobile .tab-center img{width:32px;height:32px}
+    .f-mobile .tab-items{padding:52px 16px 28px;gap:0}
+    .f-mobile .tab-item{gap:4px;width:52px}
+    .f-mobile .tab-item svg{width:22px;height:22px}
+    .f-mobile .tab-item-label{font-size:14px;line-height:22px}
+    .f-mobile .tab-center-label{bottom:28px;font-size:14px;line-height:22px}
+    .f-mobile .tab-home .home-bar{width:134px;height:5px}
+    .f-mobile .tab-home{bottom:8px}
+    /* Contact Us — Mobile */
+    .f-mobile .cu-hdr-title{font-size:20px;line-height:28px}
+    .f-mobile .cu-cards{gap:12px;padding:0 16px}
+    .f-mobile .cu-card{padding:12px 16px;gap:12px}
+    .f-mobile .cu-card-icon{width:50px;height:50px}
+    .f-mobile .cu-card-icon img,.f-mobile .cu-card-icon svg{width:24px;height:24px}
+    .f-mobile .cu-card-name{font-size:14px;line-height:22px}
+    .f-mobile .cu-card-handle{font-size:12px;line-height:20px}
+    .f-mobile .cu-card-arrow svg{width:16px;height:16px}
+    .f-mobile .cu-faq{margin-top:12px}
+    .f-mobile .cu-faq-head{padding:16px;font-size:16px;line-height:24px}
+    .f-mobile .cu-faq-item{padding:16px}
+    .f-mobile .cu-faq-item-text{font-size:16px;line-height:24px}
+    .f-mobile .cu-faq-item-icon svg{width:16px;height:16px}
+    /* Avatar Picker — Mobile */
+    .f-mobile .avp-sheet{padding:16px;gap:16px}
+    .f-mobile .avp-handle{width:36px;height:4px}
+    .f-mobile .avp-title{font-size:18px;line-height:26px}
+    .f-mobile .avp-grid{gap:16px;padding:0 8px}
+    .f-mobile .avp-avatar span{font-size:32px}
+    .f-mobile .avp-btn{height:40px;font-size:16px;line-height:24px;border-radius:var(--r-md)}
+    /* Crop — Mobile */
+    .f-mobile .crp-hdr{padding:16px}
+    .f-mobile .crp-hdr .abt-back{width:36px;height:36px}
+    .f-mobile .crp-hdr .abt-back svg{width:8px;height:13px}
+    .f-mobile .crp-hdr-title{font-size:20px;line-height:28px}
+    .f-mobile .crp-crop-area{left:16px;right:16px;top:50%;transform:translateY(-50%)}
+    .f-mobile .crp-circle{width:330px;height:330px;margin:0 auto}
+    .f-mobile .crp-handle{width:20px;height:20px}
+    .f-mobile .crp-footer{padding:16px}
+    .f-mobile .crp-btn{height:48px;font-size:16px;line-height:24px}
+    .f-mobile .crp-home .home-bar{width:134px;height:5px}
+    .f-mobile .crp-home{bottom:8px}
+
+    /* ============================================
+       ★ BREAKPOINT — TABLET (768 × 1024)
+       Content 500px centered
+    ============================================ */
+    .f-tablet .abt-status{padding:0 32px}
+    .f-tablet .abt-hdr{padding:16px 32px}
+    .f-tablet .abt-back{width:44px;height:44px}
+    .f-tablet .abt-back svg{width:10px;height:16px}
+    /* Content centering */
+    .f-tablet .abt-scroll{display:flex;flex-direction:column;align-items:center}
+    .f-tablet .abt-logo,.f-tablet .abt-contacts-wrap,.f-tablet .abt-rate-wrap,.f-tablet .abt-version-wrap{max-width:500px;width:100%}
+    /* Logo */
+    .f-tablet .abt-logo{gap:14px;padding:0 24px 36px}
+    .f-tablet .abt-logo-img{width:110px;height:94px}
+    .f-tablet .abt-app-name{font-size:28px;line-height:36px}
+    .f-tablet .abt-app-desc{font-size:18px;line-height:26px}
+    /* Contacts */
+    .f-tablet .abt-contacts-wrap{padding:0 24px}
+    .f-tablet .abt-contact{padding:18px 16px;gap:14px}
+    .f-tablet .abt-contact-icon{width:44px;height:44px;border-radius:12px}
+    .f-tablet .abt-contact-icon svg{width:24px;height:24px}
+    .f-tablet .abt-contact-name{font-size:18px;line-height:26px}
+    .f-tablet .abt-contact-handle{font-size:16px;line-height:24px}
+    .f-tablet .abt-contact-arrow svg{width:22px;height:22px}
+    /* Rate card */
+    .f-tablet .abt-rate-wrap{padding:20px 24px 0}
+    .f-tablet .abt-rate-gradient{min-height:110px}
+    .f-tablet .abt-rate-decos{min-height:100px}
+    .f-tablet .abt-rate-content{padding:24px 20px 20px;gap:16px}
+    .f-tablet .abt-rate-title{font-size:20px;line-height:28px}
+    .f-tablet .abt-rate-desc{font-size:16px;line-height:24px}
+    .f-tablet .abt-rate-btn{height:44px;font-size:18px;line-height:26px;border-radius:var(--r-lg)}
+    /* Version */
+    .f-tablet .abt-version{font-size:14px;line-height:22px;padding:20px}
+    /* Tab Bar — 500px centered */
+    .f-tablet .tab-bar{height:125px;width:500px;left:50%;transform:translateX(-50%);right:auto}
+    .f-tablet .tab-center{width:65px;height:65px;top:0}
+    .f-tablet .tab-center img{width:36px;height:36px}
+    .f-tablet .tab-items{padding:52px 16px 28px;gap:0}
+    .f-tablet .tab-item{gap:4px;width:64px}
+    .f-tablet .tab-item svg{width:24px;height:24px}
+    .f-tablet .tab-item-label{font-size:14px;line-height:22px}
+    .f-tablet .tab-center-label{bottom:28px;font-size:14px;line-height:22px}
+    .f-tablet .tab-home .home-bar{width:134px;height:5px}
+    .f-tablet .tab-home{bottom:4px}
+    /* Contact Us — Tablet */
+    .f-tablet .cu-hdr-title{font-size:22px;line-height:30px}
+    .f-tablet .cu-cards,.f-tablet .cu-faq{max-width:500px;width:100%}
+    .f-tablet .cu-cards{gap:14px;padding:0 24px}
+    .f-tablet .cu-card{padding:14px 16px;gap:14px}
+    .f-tablet .cu-card-icon{width:54px;height:54px}
+    .f-tablet .cu-card-icon img,.f-tablet .cu-card-icon svg{width:26px;height:26px}
+    .f-tablet .cu-card-name{font-size:16px;line-height:24px}
+    .f-tablet .cu-card-handle{font-size:14px;line-height:22px}
+    .f-tablet .cu-card-arrow svg{width:18px;height:18px}
+    .f-tablet .cu-faq{margin-top:14px;max-width:500px;width:100%}
+    .f-tablet .cu-faq-head{padding:18px 16px;font-size:18px;line-height:26px}
+    .f-tablet .cu-faq-item{padding:18px 16px}
+    .f-tablet .cu-faq-item-text{font-size:18px;line-height:26px}
+    .f-tablet .cu-faq-item-icon svg{width:18px;height:18px}
+    /* Avatar Picker — Tablet */
+    .f-tablet .avp-sheet{padding:24px 48px;gap:20px}
+    .f-tablet .avp-handle{width:44px;height:4px}
+    .f-tablet .avp-title{font-size:22px;line-height:30px}
+    .f-tablet .avp-grid{gap:18px;padding:0 10px}
+    .f-tablet .avp-avatar span{font-size:36px}
+    .f-tablet .avp-btn{height:48px;font-size:18px;line-height:26px;border-radius:var(--r-lg)}
+    /* Crop — Tablet */
+    .f-tablet .crp-hdr{padding:16px 32px}
+    .f-tablet .crp-hdr .abt-back{width:44px;height:44px}
+    .f-tablet .crp-hdr .abt-back svg{width:10px;height:16px}
+    .f-tablet .crp-hdr-title{font-size:22px;line-height:30px}
+    .f-tablet .crp-crop-area{left:50%;top:50%;transform:translate(-50%,-50%);width:500px}
+    .f-tablet .crp-circle{width:420px;height:420px;margin:0 auto}
+    .f-tablet .crp-handle{width:22px;height:22px}
+    .f-tablet .crp-footer{padding:20px 32px;max-width:500px;margin:0 auto;width:100%}
+    .f-tablet .crp-btn{height:52px;font-size:18px;line-height:26px}
+    .f-tablet .crp-home .home-bar{width:134px;height:5px}
+    .f-tablet .crp-home{bottom:4px}
+
+    /* ============================================
+       ★ BREAKPOINT — LANDSCAPE (1024 × 768)
+       Content 440px centered
+    ============================================ */
+    .f-land .abt-status{padding:0 40px}
+    .f-land .abt-hdr{padding:12px 40px}
+    .f-land .abt-back{width:44px;height:44px}
+    .f-land .abt-back svg{width:10px;height:16px}
+    /* Content centering */
+    .f-land .abt-scroll{display:flex;flex-direction:column;align-items:center}
+    .f-land .abt-logo,.f-land .abt-contacts-wrap,.f-land .abt-rate-wrap,.f-land .abt-version-wrap{max-width:440px;width:100%}
+    /* Logo */
+    .f-land .abt-logo{gap:10px;padding:0 16px 24px}
+    .f-land .abt-logo-img{width:80px;height:68px}
+    .f-land .abt-app-name{font-size:22px;line-height:30px}
+    .f-land .abt-app-desc{font-size:15px;line-height:22px}
+    /* Contacts */
+    .f-land .abt-contacts-wrap{padding:0 16px}
+    .f-land .abt-contact{padding:14px 16px;gap:12px}
+    .f-land .abt-contact-icon{width:38px;height:38px;border-radius:10px}
+    .f-land .abt-contact-icon svg{width:20px;height:20px}
+    .f-land .abt-contact-name{font-size:15px;line-height:22px}
+    .f-land .abt-contact-handle{font-size:14px;line-height:22px}
+    .f-land .abt-contact-arrow svg{width:18px;height:18px}
+    /* Rate card */
+    .f-land .abt-rate-wrap{padding:14px 16px 0}
+    .f-land .abt-rate-gradient{min-height:80px}
+    .f-land .abt-rate-decos{min-height:70px}
+    .f-land .abt-rate-content{padding:18px 16px 14px;gap:12px}
+    .f-land .abt-rate-title{font-size:17px;line-height:24px}
+    .f-land .abt-rate-desc{font-size:14px;line-height:22px}
+    .f-land .abt-rate-btn{height:38px;font-size:15px;line-height:22px}
+    /* Version */
+    .f-land .abt-version{font-size:12px;line-height:20px;padding:12px}
+    /* Tab Bar — 440px centered */
+    .f-land .tab-bar{height:125px;width:440px;left:50%;transform:translateX(-50%);right:auto}
+    .f-land .tab-center{width:65px;height:65px;top:0}
+    .f-land .tab-center img{width:34px;height:34px}
+    .f-land .tab-items{padding:52px 16px 28px;gap:0}
+    .f-land .tab-item{gap:4px;width:52px}
+    .f-land .tab-item svg{width:24px;height:24px}
+    .f-land .tab-item-label{font-size:14px;line-height:22px}
+    .f-land .tab-center-label{bottom:28px;font-size:14px;line-height:22px}
+    .f-land .tab-home .home-bar{width:134px;height:5px}
+    .f-land .tab-home{bottom:4px}
+    /* Contact Us — Landscape */
+    .f-land .cu-hdr-title{font-size:20px;line-height:28px}
+    .f-land .cu-cards,.f-land .cu-faq{max-width:440px;width:100%}
+    .f-land .cu-cards{gap:10px;padding:0 16px}
+    .f-land .cu-card{padding:12px 16px;gap:12px}
+    .f-land .cu-card-icon{width:46px;height:46px}
+    .f-land .cu-card-icon img,.f-land .cu-card-icon svg{width:22px;height:22px}
+    .f-land .cu-card-name{font-size:15px;line-height:22px}
+    .f-land .cu-card-handle{font-size:13px;line-height:20px}
+    .f-land .cu-card-arrow svg{width:16px;height:16px}
+    .f-land .cu-faq{margin-top:10px;max-width:440px;width:100%}
+    .f-land .cu-faq-head{padding:14px 16px;font-size:16px;line-height:24px}
+    .f-land .cu-faq-item{padding:14px 16px}
+    .f-land .cu-faq-item-text{font-size:15px;line-height:22px}
+    .f-land .cu-faq-item-icon svg{width:16px;height:16px}
+    /* Avatar Picker — Landscape */
+    .f-land .avp-sheet{padding:20px 40px;gap:16px}
+    .f-land .avp-handle{width:40px;height:4px}
+    .f-land .avp-title{font-size:20px;line-height:28px}
+    .f-land .avp-grid{gap:12px;padding:0 4px}
+    .f-land .avp-avatar span{font-size:26px}
+    .f-land .avp-btn{height:44px;font-size:16px;line-height:24px;border-radius:var(--r-lg)}
+    /* Crop — Landscape */
+    .f-land .crp-hdr{padding:12px 40px}
+    .f-land .crp-hdr .abt-back{width:44px;height:44px}
+    .f-land .crp-hdr .abt-back svg{width:10px;height:16px}
+    .f-land .crp-hdr-title{font-size:20px;line-height:28px}
+    .f-land .crp-crop-area{left:50%;top:50%;transform:translate(-50%,-50%);width:440px}
+    .f-land .crp-circle{width:360px;height:360px;margin:0 auto}
+    .f-land .crp-handle{width:20px;height:20px}
+    .f-land .crp-footer{padding:14px 40px;max-width:440px;margin:0 auto;width:100%}
+    .f-land .crp-btn{height:44px;font-size:16px;line-height:24px}
+    .f-land .crp-home .home-bar{width:134px;height:5px}
+    .f-land .crp-home{bottom:4px}
+
+    /* ===== FRAME SIZES ===== */
+    .f-mobile{width:390px;height:844px}
+    .f-tablet{width:768px;height:1024px}
+    .f-land{width:1024px;height:768px}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="page-title">About Us & Contact Us — Responsive</div>
+  <div id="root"></div>
+</div>
+<script>
+/* ===== ASSETS ===== */
+const A={
+  logo:'https://www.figma.com/api/mcp/asset/3f68e44d-df73-444b-9c47-a7d080332cb2',
+  tabCrystal:'https://www.figma.com/api/mcp/asset/fa07e72c-d53e-414e-a9c1-dc5e92565dd6',
+};
+
+/* ===== SVGs ===== */
+const SVG_STATUS=`<svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#000"/><rect x="5" y="2" width="3" height="10" rx="1" fill="#000"/><rect x="10" y="0" width="3" height="12" rx="1" fill="#000"/><rect x="15" y="1" width="3" height="11" rx="1" fill="#000" opacity=".3"/></svg><svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.2 3.6 12.1 4.5 13.5 6L15 4.5C13.1 2.6 10.7 1.5 8 1.5S2.9 2.6 1 4.5L2.5 6C3.9 4.5 5.8 3.6 8 3.6Z" fill="#000"/><path d="M8 7.2C9.3 7.2 10.4 7.7 11.2 8.5L12.7 7C11.4 5.7 9.8 5 8 5S4.6 5.7 3.3 7L4.8 8.5C5.6 7.7 6.7 7.2 8 7.2Z" fill="#000"/><circle cx="8" cy="10.5" r="1.5" fill="#000"/></svg><svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0" y="1" width="22" height="11" rx="2" stroke="#000"/><rect x="1.5" y="2.5" width="19" height="8" rx="1" fill="#000"/><path d="M23.5 5v3a2 2 0 000-3Z" fill="#000" opacity=".4"/></svg>`;
+const SVG_BACK=`<svg viewBox="0 0 10 16" fill="none"><path d="M8.5 1L1.5 8l7 7" stroke="#1B1D22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_LINK=`<svg viewBox="0 0 20 20" fill="none"><path d="M7.5 4l6 6-6 6" stroke="#9A9DAD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/* Social icons */
+const SVG_LINE=`<svg viewBox="0 0 22 22" fill="none"><path d="M11 2C5.9 2 1.8 5.5 1.8 9.8c0 3.8 3.4 7.1 8 7.7.3.1.7.2.8.4.1.2.1.5 0 .7l-.1.5c-.1.3-.2.7.6.4.9-.3 4.6-2.7 6.3-4.6C19 12.8 20.2 11.4 20.2 9.8 20.2 5.5 16.1 2 11 2zm-3 11h-.1l-2.3-3.1v3c0 .2-.1.3-.3.3h-.1c-.2 0-.3-.1-.3-.3V8.7c0-.2.2-.3.3-.3h.2l2.3 3.1V8.7c0-.2.1-.3.3-.3.2 0 .3.1.3.3v4.1c0 .1-.1.2-.3.2zm1.6-.1c-.2 0-.3-.1-.3-.3V8.7c0-.2.1-.3.3-.3.2 0 .3.1.3.3v3.9c0 .2-.1.3-.3.3zm4.5 0h-2.6c-.2 0-.3-.1-.3-.3V8.7c0-.2.1-.3.3-.3.2 0 .3.1.3.3v3.7h2.3c.2 0 .3.1.3.3 0 .1-.1.2-.3.2zm3.2-1.7c.2 0 .3.1.3.3s-.1.3-.3.3H15c-.2 0-.3-.1-.3-.3V8.7c0-.2.1-.3.3-.3h2.3c.2 0 .3.1.3.3s-.1.3-.3.3H15v1.2h2.3c.2 0 .3.1.3.3 0 .1-.1.3-.3.3H15v1.2h2.3z" fill="white"/></svg>`;
+const SVG_FB=`<svg viewBox="0 0 22 22" fill="none"><path d="M12.5 19.5v-7.7h2.6l.4-3h-3V7c0-.9.2-1.5 1.5-1.5H16V2.7c-.3 0-1.2-.2-2.3-.2-2.3 0-3.8 1.4-3.8 4v2.3H7.3v3h2.6v7.7h2.6z" fill="white"/></svg>`;
+const SVG_IG=`<svg viewBox="0 0 22 22" fill="none"><rect x="3.5" y="3.5" width="15" height="15" rx="4" stroke="white" stroke-width="1.6"/><circle cx="11" cy="11" r="3.2" stroke="white" stroke-width="1.6"/><circle cx="15.5" cy="6.5" r="1" fill="white"/></svg>`;
+const SVG_TT=`<svg viewBox="0 0 22 22" fill="none"><path d="M16.2 4.7c-.8-.5-1.3-1.4-1.4-2.4h-2.6v12c0 1.5-1.2 2.7-2.7 2.7s-2.7-1.2-2.7-2.7 1.2-2.7 2.7-2.7c.3 0 .6 0 .8.1V9c-.3 0-.5-.1-.8-.1-3 0-5.4 2.4-5.4 5.4s2.4 5.4 5.4 5.4 5.4-2.4 5.4-5.4V9c1.1.7 2.4 1.1 3.8 1.1V7.5c-1.3 0-2.5-.7-3.2-1.7.1-.4.2-.7.2-1.1h.5z" fill="white"/></svg>`;
+const SVG_WEB=`<svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="7.5" stroke="#EC599D" stroke-width="1.5"/><ellipse cx="11" cy="11" rx="3.5" ry="7.5" stroke="#EC599D" stroke-width="1.5"/><line x1="3.5" y1="11" x2="18.5" y2="11" stroke="#EC599D" stroke-width="1.5"/></svg>`;
+
+/* Contact Us icons */
+const SVG_CU_EMAIL=`<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2.5" fill="#FFD166"/><path d="M2.5 7l9.5 5.5L21.5 7" stroke="#E8A817" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="5" width="20" height="14" rx="2.5" stroke="#E8A817" stroke-width=".5"/></svg>`;
+const SVG_CU_LINE=`<svg viewBox="0 0 24 24" fill="none"><rect x="1" y="1" width="22" height="22" rx="6" fill="#06C755"/><path d="M12 6c-3.5 0-6.3 2.3-6.3 5.2 0 2.5 2.2 4.6 5.2 5 .2 0 .5.1.5.3 0 .1 0 .3 0 .5 0 .2-.1.4.4.2.6-.2 3.2-1.9 4.4-3.2.8-.9 1.6-1.8 1.6-2.8C18.3 8.3 15.5 6 12 6z" fill="white"/></svg>`;
+const SVG_CU_PHONE=`<svg viewBox="0 0 24 24" fill="none"><path d="M6 4.5h3.5l1.5 4-2 1.5a10.5 10.5 0 004.5 4.5l1.5-2 4 1.5V18a2 2 0 01-2 2A15 15 0 014 6.5a2 2 0 012-2z" fill="#6CB4EE" stroke="#4A90D9" stroke-width=".5"/></svg>`;
+const SVG_CHEVRON_R=`<svg viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="#EC599D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_CHEVRON_DOWN=`<svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#9A9DAD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/* Sticker emojis for rate card */
+const SVG_HEART=`<svg viewBox="0 0 28 28" fill="none"><path d="M14 25s-9-6-9-13a5 5 0 019-3 5 5 0 019 3c0 7-9 13-9 13z" fill="#FF6B8A"/></svg>`;
+const SVG_SPARKLE=`<svg viewBox="0 0 20 20" fill="none"><path d="M10 1l2.2 6.8H19l-5.5 4 2.1 6.8L10 14.5l-5.6 4.1 2.1-6.8L1 7.8h6.8z" fill="#FFD166"/></svg>`;
+const SVG_SMILE=`<svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#FFD93D"/><circle cx="12" cy="14" r="2" fill="#333"/><circle cx="24" cy="14" r="2" fill="#333"/><path d="M10 22c2 4 6 5 8 5s6-1 8-5" stroke="#333" stroke-width="2" stroke-linecap="round"/></svg>`;
+
+/* Tab bar icons */
+const SVG_TAB_CAL=c=>`<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="${c}" stroke-width="1.8"/><line x1="3" y1="10" x2="21" y2="10" stroke="${c}" stroke-width="1.8"/><line x1="8" y1="3" x2="8" y2="7" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_TAB_BELL=c=>`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 016 6v3.5l1.3 2.2c.4.7-.1 1.3-.8 1.3H5.5c-.7 0-1.2-.6-.8-1.3L6 12.5V9a6 6 0 016-6z" stroke="${c}" stroke-width="1.8"/><path d="M9 16a3 3 0 006 0" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const SVG_TAB_MOON=c=>`<svg viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 1021 12.79z" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_TAB_USER=c=>`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="${c}" stroke-width="1.8"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+
+/* Tab bar notch path */
+function tabPath(w){const cx=w/2,ns=cx-43,ne=cx+43;return`M0 16 H${ns} C${ns+8} 16 ${ns+13} 16 ${ns+17} 20 Q${ns+25} 32 ${ns+34} 36 Q${cx-4} 38 ${cx} 38 Q${cx+4} 38 ${cx+9} 36 Q${cx+18} 32 ${cx+26} 20 C${ne-8} 16 ${ne-5} 16 ${ne} 16 H${w} V95 H0 Z`}
+
+/* ===== DATA ===== */
+const CONTACTS=[
+  {name:'LINE Official', handle:'@mucalendar',     bg:'#06C755', icon:SVG_LINE},
+  {name:'Facebook',      handle:'Mu Calendar',     bg:'#1877F2', icon:SVG_FB},
+  {name:'Instagram',     handle:'@mucalendar',     bg:'linear-gradient(45deg,#F09433,#E6683C,#DC2743,#CC2366,#BC1888)', icon:SVG_IG},
+  {name:'TikTok',        handle:'@mucalendar',     bg:'#010101', icon:SVG_TT},
+  {name:'Website',       handle:'mucalendar.com',  bg:'#FDEFF5', border:'#F7BDD8', icon:SVG_WEB},
+];
+
+const CU_CONTACTS=[
+  {name:'อีเมล', handle:'Info@mucalendar.co.th', icon:SVG_CU_EMAIL},
+  {name:'LINE OA', handle:'@mucalendar', icon:SVG_CU_LINE},
+  {name:'เบอร์โทรศัพท์', handle:'02-123-4567', icon:SVG_CU_PHONE},
+];
+const FAQ_ITEMS=[
+  'วิธีผูกดวง',
+  'วิธีเปลี่ยนโปรไฟล์ดูดวง',
+  'ดวงไม่แสดง ทำอย่างไร',
+  'วิธีลบบัญชี',
+];
+
+const ZODIACS=[
+  {sym:'♑',name:'มังกร'},{sym:'♈',name:'แกะ'},{sym:'♎',name:'ตาชั่ง'},{sym:'♓',name:'ปลา'},
+  {sym:'♐',name:'ธนู'},{sym:'♏',name:'แมงป่อง'},{sym:'♉',name:'วัว'},{sym:'♍',name:'หญิงสาว'},
+  {sym:'♒',name:'คนแบกหม้อ'},{sym:'♋',name:'ปู'},{sym:'♊',name:'คนคู่'},{sym:'♌',name:'สิงห์'},
+];
+const CROP_IMG='https://www.figma.com/api/mcp/asset/16152f6d-f6b6-4e1f-9224-90bdb74d5320';
+
+const SCREENS=[
+  {type:'about-main', label:'เกี่ยวกับเรา — About Us'},
+  {type:'contact-us', label:'ติดต่อเรา — Contact Us'},
+  {type:'avatar-picker', label:'เลือก Avatar — Avatar Picker'},
+  {type:'crop-screen', label:'ตัดรูปภาพ — Crop Image'},
+];
+
+const BPS=[
+  {id:'mobile',  label:'Mobile — 390 × 844',     cls:'f-mobile', w:390,  navW:390},
+  {id:'tablet',  label:'Tablet — 768 × 1024',    cls:'f-tablet', w:768,  navW:500},
+  {id:'land',    label:'Landscape — 1024 × 768',  cls:'f-land',   w:1024, navW:440},
+];
+
+/* ===== RENDER HELPERS ===== */
+function statusBar(){
+  return`<div class="abt-status"><span class="status-time">09:41</span><div class="status-icons">${SVG_STATUS}</div></div>`;
+}
+
+function header(){
+  return`<div class="abt-hdr"><div class="abt-back">${SVG_BACK}</div></div>`;
+}
+
+function contactList(){
+  return`<div class="abt-contacts-wrap"><div class="abt-contacts">${CONTACTS.map(c=>{
+    const isGrad=c.bg.includes('gradient');
+    const bgStyle=isGrad?`background:${c.bg}`:`background:${c.bg}`;
+    const borderStyle=c.border?`;border:1px solid ${c.border}`:'';
+    return`<div class="abt-contact"><div class="abt-contact-icon" style="${bgStyle}${borderStyle}">${c.icon}</div><div class="abt-contact-body"><div class="abt-contact-name">${c.name}</div><div class="abt-contact-handle">${c.handle}</div></div><div class="abt-contact-arrow">${SVG_LINK}</div></div>`;
+  }).join('')}</div></div>`;
+}
+
+function rateCard(){
+  return`<div class="abt-rate-wrap"><div class="abt-rate"><div class="abt-rate-gradient"><div class="abt-rate-decos"><span style="font-size:28px">💖</span><span style="font-size:22px">✨</span><span style="font-size:32px">😊</span><span style="font-size:20px">🌟</span><span style="font-size:24px">💪</span></div><div class="abt-rate-content"><div style="display:flex;flex-direction:column;gap:6px"><div class="abt-rate-title">ชอบ Mu Calendar กันไหม?</div><div class="abt-rate-desc">ช่วยให้คะแนนเพื่อเป็นกำลังใจให้ทีมงานด้วยนะ ✨</div></div><button class="abt-rate-btn">ให้คะแนนบน Store</button></div></div></div></div>`;
+}
+
+function versionText(){
+  return`<div class="abt-version-wrap"><div class="abt-version">เวอร์ชันแอป v1.0.0 (build 42)</div></div>`;
+}
+
+function tabBar(navW){
+  const pc='#EC599D',ic='#9A9DAD';
+  return`<div class="tab-bar"><div class="tab-bar-bg"><svg viewBox="0 0 ${navW} 95" preserveAspectRatio="none"><defs><filter id="ts${navW}" x="-5%" y="-20%" width="110%" height="140%"><feDropShadow dx="0" dy="-2" stdDeviation="4" floodColor="#000" floodOpacity=".06"/></filter></defs><path d="${tabPath(navW)}" fill="white" filter="url(#ts${navW})"/></svg></div><div class="tab-center"><img src="${A.tabCrystal}" alt="ดวง"></div><div class="tab-items"><div class="tab-item">${SVG_TAB_CAL(ic)}<div class="tab-item-label inactive">ปฏิทิน</div></div><div class="tab-item">${SVG_TAB_BELL(ic)}<div class="tab-item-label inactive">แจ้งเตือน</div></div><div style="flex:1"></div><div class="tab-item">${SVG_TAB_MOON(ic)}<div class="tab-item-label inactive">ทำนาย</div></div><div class="tab-item">${SVG_TAB_USER(pc)}<div class="tab-item-label active">โปรไฟล์</div></div></div><div class="tab-center-label inactive" style="color:var(--text-tertiary)">ดวงวันนี้</div><div class="tab-home"><div class="home-bar"></div></div></div>`;
+}
+
+/* ===== RENDER — ABOUT US ===== */
+function renderAbout(s,bp){
+  return`<div class="abt">${statusBar()}${header()}<div class="abt-scroll"><div class="abt-logo"><img class="abt-logo-img" src="${A.logo}" alt="Mu Calendar"><div class="abt-app-name">Mu Calendar</div><div class="abt-app-desc">ปฏิทินดูดวง ช่วยวางแผนชีวิตทุกวัน</div></div>${contactList()}${rateCard()}${versionText()}</div>${tabBar(bp.navW)}</div>`;
+}
+
+/* ===== RENDER — CONTACT US ===== */
+function renderContactUs(s,bp){
+  const cards=CU_CONTACTS.map(c=>`<div class="cu-card"><div class="cu-card-icon">${c.icon}</div><div class="cu-card-body"><div class="cu-card-name">${c.name}</div><div class="cu-card-handle">${c.handle}</div></div><div class="cu-card-arrow">${SVG_CHEVRON_R}</div></div>`).join('');
+  const faqItems=FAQ_ITEMS.map(q=>`<div class="cu-faq-item"><div class="cu-faq-item-text">${q}</div><div class="cu-faq-item-icon">${SVG_CHEVRON_DOWN}</div></div>`).join('');
+  return`<div class="abt">${statusBar()}<div class="abt-hdr"><div class="cu-hdr-row"><div class="abt-back">${SVG_BACK}</div><div class="cu-hdr-title">ติดต่อเรา</div></div></div><div class="abt-scroll"><div class="cu-cards">${cards}</div><div class="cu-faq"><div class="cu-faq-head">คำถามที่พบบ่อย</div>${faqItems}</div></div>${tabBar(bp.navW)}</div>`;
+}
+
+/* ===== RENDER — AVATAR PICKER ===== */
+function renderAvatarPicker(s,bp){
+  const avatars=ZODIACS.map((z,i)=>`<div class="avp-avatar${i===0?' sel':''}" title="${z.name}"><span>${z.sym}</span></div>`).join('');
+  return`<div class="abt"><div class="avp-overlay"><div class="avp-sheet"><div class="avp-handle-wrap"><div class="avp-handle"></div></div><div class="avp-title">เลือก Avatar</div><div class="avp-grid">${avatars}</div><button class="avp-btn">ยืนยัน</button></div></div></div>`;
+}
+
+/* ===== RENDER — CROP SCREEN ===== */
+function renderCropScreen(s,bp){
+  const handles=[[0,0],[100,0],[0,100],[100,100]].map(([x,y])=>`<div class="crp-handle" style="position:absolute;${x?'right':'left'}:-10px;${y?'bottom':'top'}:-10px"></div>`).join('');
+  return`<div class="crp">${statusBar()}<div class="crp-hdr"><div class="abt-back">${SVG_BACK}</div><div class="crp-hdr-title">ตัดรูปภาพ</div></div><div class="crp-body"><div class="crp-img-bg" style="background-image:url('${CROP_IMG}')"></div><div class="crp-crop-area"><div style="position:relative"><div class="crp-circle" style="background-image:url('${CROP_IMG}')"></div>${handles}</div></div></div><div class="crp-footer"><button class="crp-btn">ยืนยัน</button></div><div class="crp-home"><div class="home-bar"></div></div></div>`;
+}
+
+/* ===== BUILD ===== */
+const REN={'about-main':renderAbout,'contact-us':renderContactUs,'avatar-picker':renderAvatarPicker,'crop-screen':renderCropScreen};
+const root=document.getElementById('root');
+root.innerHTML=SCREENS.map(s=>{
+  const frames=BPS.map(bp=>{
+    const content=REN[s.type](s,bp);
+    return`<div class="col"><div class="col-label">${bp.label}</div><div class="frame ${bp.cls}">${content}</div></div>`;
+  }).join('');
+  return`<div class="section"><div class="section-label">${s.label}</div><div class="row">${frames}</div></div>`;
+}).join('');
+</script>
+</body>
+</html>

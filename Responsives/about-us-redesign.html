@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0">
+<title>About Us - Redesign</title>
+<link href="https://fonts.cdnfonts.com/css/line-seed-sans-th" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'LINE Seed Sans TH', sans-serif;
+    width: 390px;
+    height: 844px;
+    background: #FFFFFF;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+  }
+
+  /* ─── Status Bar ─── */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px 12px;
+    background: #FEF4F5;
+  }
+  .status-bar .time {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 22px;
+    color: #000;
+  }
+  .status-icons {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+  .status-icons svg { width: 18px; height: 12px; }
+
+  /* ─── Header Gradient ─── */
+  .header-area {
+    background: linear-gradient(180deg, #FDEFF5 0%, #E8B8D4 100%);
+    padding: 16px 16px 56px;
+    position: relative;
+  }
+  .back-btn {
+    width: 38px;
+    height: 38px;
+    background: #FFFFFF;
+    border: 1px solid #EBECEF;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 2;
+    cursor: pointer;
+  }
+  .back-btn svg { width: 20px; height: 20px; color: #1B1D22; }
+
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 8px;
+    gap: 8px;
+  }
+  .app-logo {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #EC599D 0%, #7279FB 50%, #F9C74F 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 36px;
+    font-weight: 700;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.05);
+  }
+  .app-name {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    color: #1B1D22;
+  }
+  .app-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #3F414E;
+  }
+
+  /* ─── Content Area ─── */
+  .content-area {
+    background: #FFFFFF;
+    border-radius: 24px 24px 0 0;
+    margin-top: -24px;
+    position: relative;
+    z-index: 1;
+    padding: 28px 0 0;
+    overflow-y: auto;
+    height: calc(100% - 260px);
+    padding-bottom: 100px;
+  }
+
+  /* ─── Section ─── */
+  .section {
+    padding: 0 16px;
+    margin-bottom: 24px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .section-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 26px;
+    color: #1B1D22;
+  }
+
+  /* ─── Contact List ─── */
+  .contact-list {
+    display: flex;
+    flex-direction: column;
+    background: #F8F8F9;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    position: relative;
+  }
+  .contact-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 68px;
+    right: 16px;
+    height: 1px;
+    background: #EBECEF;
+  }
+  .contact-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .contact-icon-wrap.line { background: #06C755; }
+  .contact-icon-wrap.facebook { background: #1877F2; }
+  .contact-icon-wrap.instagram { background: linear-gradient(45deg, #F09433, #E6683C, #DC2743, #CC2366, #BC1888); }
+  .contact-icon-wrap.tiktok { background: #010101; }
+  .contact-icon-wrap.website { background: #FDEFF5; border: 1px solid #F7BDD8; }
+  .contact-icon-wrap svg { width: 22px; height: 22px; }
+  .contact-icon-wrap.website svg { color: #EC599D; }
+
+  .contact-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .contact-name {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #1B1D22;
+  }
+  .contact-handle {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: #6A6E83;
+  }
+  .contact-arrow {
+    width: 20px;
+    height: 20px;
+    color: #9A9DAD;
+    flex-shrink: 0;
+  }
+
+  /* ─── Divider ─── */
+  .divider {
+    height: 8px;
+    background: #F8F8F9;
+    margin-bottom: 24px;
+  }
+
+  /* ─── Rate Card ─── */
+  .rate-card {
+    background: linear-gradient(135deg, #F1F2FF 0%, #FDEFF5 100%);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .rate-stars {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .rate-stars svg {
+    width: 32px;
+    height: 32px;
+    fill: #F9C74F;
+  }
+  .rate-text-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .rate-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 26px;
+    color: #1B1D22;
+    text-align: center;
+  }
+  .rate-subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: #6A6E83;
+    text-align: center;
+  }
+  .rate-buttons {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+  }
+  .btn-primary {
+    flex: 1;
+    background: #7279FB;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'LINE Seed Sans TH', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #FFFFFF;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-primary svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .btn-secondary {
+    background: #FFFFFF;
+    border: 1px solid #EBECEF;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-family: 'LINE Seed Sans TH', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: #6A6E83;
+    text-align: center;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ─── Version ─── */
+  .version-info {
+    text-align: center;
+    padding: 12px 16px 16px;
+  }
+  .version-text {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #9A9DAD;
+  }
+
+  /* ─── Bottom Nav ─── */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 83px;
+    background: #FFFFFF;
+    border-top: 1px solid #EBECEF;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding: 10px 16px 0;
+    z-index: 10;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 48px;
+    cursor: pointer;
+  }
+  .nav-item svg { width: 24px; height: 24px; color: #6A6E83; }
+  .nav-item.active svg { color: #EC599D; }
+  .nav-label {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: #6A6E83;
+  }
+  .nav-item.active .nav-label {
+    color: #EC599D;
+    font-weight: 700;
+  }
+  .nav-center {
+    position: relative;
+    top: -22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .nav-center-circle {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #EC599D, #F7BDD8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(236, 89, 157, 0.3);
+  }
+  .nav-center-circle svg { width: 28px; height: 28px; color: white; }
+</style>
+</head>
+<body>
+
+<!-- Status Bar -->
+<div class="status-bar">
+  <span class="time">9:41</span>
+  <div class="status-icons">
+    <svg viewBox="0 0 18 12" fill="#000"><rect x="0" y="3" width="3" height="9" rx="0.5"/><rect x="5" y="2" width="3" height="10" rx="0.5"/><rect x="10" y="0" width="3" height="12" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5" opacity="0.3"/></svg>
+    <svg viewBox="0 0 16 12" fill="#000"><path d="M8 1C4.5 1 1.5 2.5 0 5l1.5 1.5C2.8 4.3 5.2 3 8 3s5.2 1.3 6.5 3.5L16 5c-1.5-2.5-4.5-4-8-4zM8 5C6 5 4.2 6 3 7.5L4.5 9C5.3 7.8 6.6 7 8 7s2.7.8 3.5 2L13 7.5C11.8 6 10 5 8 5zM8 9c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+    <svg viewBox="0 0 25 12" fill="#000"><rect x="0" y="0" width="22" height="12" rx="2" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="16" height="8" rx="1" fill="#000"/><rect x="23" y="3.5" width="2" height="5" rx="1" fill="#000" opacity="0.4"/></svg>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="header-area">
+  <div class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </div>
+  <div class="header-content">
+    <div class="app-logo">M</div>
+    <div class="app-name">Mu Calendar</div>
+    <div class="app-subtitle">ปฏิทินดูดวง ช่วยวางแผนชีวิตทุกวัน</div>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="content-area">
+
+  <!-- Section 1: ช่องทางการติดต่อ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#EC599D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+        </svg>
+      </div>
+      <div class="section-title">ช่องทางการติดต่อ</div>
+    </div>
+
+    <div class="contact-list">
+      <!-- LINE -->
+      <div class="contact-item">
+        <div class="contact-icon-wrap line">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.271.173-.508.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-name">LINE Official</div>
+          <div class="contact-handle">@mucalendar</div>
+        </div>
+        <svg class="contact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+
+      <!-- Facebook -->
+      <div class="contact-item">
+        <div class="contact-icon-wrap facebook">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-name">Facebook</div>
+          <div class="contact-handle">Mu Calendar</div>
+        </div>
+        <svg class="contact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+
+      <!-- Instagram -->
+      <div class="contact-item">
+        <div class="contact-icon-wrap instagram">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-name">Instagram</div>
+          <div class="contact-handle">@mucalendar</div>
+        </div>
+        <svg class="contact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+
+      <!-- TikTok -->
+      <div class="contact-item">
+        <div class="contact-icon-wrap tiktok">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-name">TikTok</div>
+          <div class="contact-handle">@mucalendar</div>
+        </div>
+        <svg class="contact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+
+      <!-- Website -->
+      <div class="contact-item">
+        <div class="contact-icon-wrap website">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-name">Website</div>
+          <div class="contact-handle">mucalendar.com</div>
+        </div>
+        <svg class="contact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider"></div>
+
+  <!-- Section 2: ให้คะแนน App ใน Store -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="#EC599D" width="24" height="24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <div class="section-title">ให้คะแนน App</div>
+    </div>
+
+    <div class="rate-card">
+      <div class="rate-stars">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <div class="rate-text-group">
+        <div class="rate-title">ชอบ Mu Calendar กันไหม?</div>
+        <div class="rate-subtitle">ช่วยให้คะแนนเพื่อเป็นกำลังใจให้ทีมงานด้วยนะ</div>
+      </div>
+      <div class="rate-buttons">
+        <button class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          ให้คะแนนบน Store
+        </button>
+        <button class="btn-secondary">ไว้ทีหลัง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Version -->
+  <div class="version-info">
+    <div class="version-text">เวอร์ชันแอป v1.0.0 (build 42)</div>
+  </div>
+
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span class="nav-label">ปฏิทิน</span>
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span class="nav-label">แจ้งเตือน</span>
+  </div>
+  <div class="nav-center">
+    <div class="nav-center-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </div>
+    <span class="nav-label">ดวงวันนี้</span>
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <span class="nav-label">ทำนาย</span>
+  </div>
+  <div class="nav-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="nav-label">โปรไฟล์</span>
+  </div>
+</div>
+
+</body>
+</html>
