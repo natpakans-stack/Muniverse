@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Review — DailyMu Calendar</title>
+<style>
+  :root {
+    --primary: #EC599D;
+    --primary-lowest: #FDEFF5;
+    --primary-dark: #BD477E;
+    --fg-high: #1B1D22;
+    --fg-mid: #6A6E83;
+    --fg-low: #9A9DAD;
+    --bg-white: #FFFFFF;
+    --bg-light: #F8F8F9;
+    --bg-mid: #EBECEF;
+    --border: #EBECEF;
+    --error: #EA244F;
+    --error-bg: #FDE9ED;
+    --warning: #C69A2A;
+    --warning-bg: #FEF9EB;
+    --success: #559652;
+    --success-bg: #F0F8F0;
+    --info: #026486;
+    --info-bg: #E6F6FC;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #F0F0F3;
+    color: var(--fg-high);
+    line-height: 1.7;
+  }
+
+  /* ═══════ HERO ═══════ */
+  .hero {
+    background: linear-gradient(135deg, #1B1D22 0%, #2D1B3D 50%, #1B1D22 100%);
+    color: white;
+    padding: 56px 24px 48px;
+    text-align: center;
+  }
+  .hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
+  .hero .subtitle { font-size: 17px; opacity: 0.65; margin-bottom: 28px; }
+  .hero .meta { font-size: 13px; opacity: 0.45; margin-top: 16px; }
+
+  .score-ring {
+    width: 160px; height: 160px;
+    margin: 0 auto 20px;
+    position: relative;
+  }
+  .score-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .score-ring circle { fill: none; stroke-width: 8; cx: 80; cy: 80; r: 66; }
+  .score-ring .bg { stroke: rgba(255,255,255,0.12); }
+  .score-ring .fg { stroke: #F8C135; stroke-dasharray: 415; stroke-linecap: round; }
+  .score-ring .value {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -54%);
+    font-size: 48px; font-weight: 800;
+  }
+  .score-ring .label {
+    position: absolute; bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 13px; opacity: 0.5;
+  }
+  .score-badge {
+    display: inline-block;
+    background: rgba(248,193,53,0.2);
+    color: #F8C135;
+    padding: 6px 20px;
+    border-radius: 99px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  /* ═══════ Layout ═══════ */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+  .section {
+    background: white;
+    border-radius: 20px;
+    margin: 20px auto;
+    padding: 32px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* ═══════ Score Table ═══════ */
+  .score-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .score-table th {
+    text-align: left; padding: 12px 14px;
+    background: var(--bg-light);
+    font-weight: 700; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--fg-mid);
+  }
+  .score-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+  .score-bar { height: 10px; border-radius: 5px; background: var(--bg-mid); overflow: hidden; min-width: 100px; }
+  .score-bar-fill { height: 100%; border-radius: 5px; }
+  .score-val { font-weight: 800; font-size: 18px; min-width: 40px; text-align: center; }
+
+  /* ═══════ Strengths ═══════ */
+  .strength-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .strength-item:last-child { border-bottom: none; }
+  .strength-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 800; flex-shrink: 0;
+    background: var(--success-bg); color: var(--success);
+  }
+  .strength-text { font-size: 15px; }
+  .strength-text strong { display: block; font-size: 16px; margin-bottom: 4px; }
+
+  /* ═══════ Issue Card ═══════ */
+  .issue-card {
+    border-radius: 16px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .issue-header {
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-weight: 800;
+    font-size: 17px;
+    flex-wrap: wrap;
+  }
+  .issue-header .badge {
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    min-width: 36px; height: 28px;
+    border-radius: 8px;
+    font-size: 13px; font-weight: 800;
+    color: white; padding: 0 10px;
+    flex-shrink: 0;
+  }
+  .issue-header .tag {
+    font-size: 12px; padding: 3px 10px;
+    border-radius: 99px; font-weight: 700;
+    margin-left: auto; flex-shrink: 0;
+  }
+  .critical .issue-header { background: var(--error-bg); color: #B91C3B; }
+  .critical .badge { background: var(--error); }
+  .critical .tag { background: rgba(234,36,79,0.12); color: var(--error); }
+  .major .issue-header { background: var(--warning-bg); color: #A07820; }
+  .major .badge { background: var(--warning); }
+  .major .tag { background: rgba(198,154,42,0.12); color: var(--warning); }
+  .minor .issue-header { background: var(--info-bg); color: #034D66; }
+  .minor .badge { background: var(--info); }
+  .minor .tag { background: rgba(2,100,134,0.12); color: var(--info); }
+
+  .issue-body { padding: 0 24px 24px; }
+
+  /* Part Labels */
+  .part {
+    font-size: 12px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    padding: 5px 14px; border-radius: 6px;
+    display: inline-block;
+    margin: 24px 0 12px;
+  }
+  .part-where { background: #EEF2FF; color: #4338CA; }
+  .part-visual { background: #FFF7ED; color: #C2410C; }
+  .part-fix { background: #ECFDF5; color: #059669; }
+
+  .desc { font-size: 15px; line-height: 1.8; margin-bottom: 8px; }
+  .desc strong { color: var(--fg-high); }
+
+  /* ═══════ BIG Phone Mockup ═══════ */
+  .mockup-wrap {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .phone {
+    width: 280px;
+    background: linear-gradient(180deg, #FEF4F5 0%, #FFF 20%, #FDE7F3 100%);
+    border-radius: 32px;
+    border: 3px solid #222;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    font-size: 10px;
+    font-family: 'Helvetica Neue', sans-serif;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  }
+  .ph-status {
+    background: #FEF4F5; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+  }
+  .ph-tabs {
+    display: flex; margin: 6px 12px;
+    background: white; border-radius: 99px;
+    padding: 3px; border: 1px solid var(--bg-light);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .ph-tab {
+    flex: 1; text-align: center; padding: 5px 0;
+    font-size: 9px; font-weight: 700;
+    border-radius: 99px; color: var(--fg-high);
+  }
+  .ph-tab.active { background: var(--primary); color: white; }
+  .ph-month {
+    display: flex; align-items: center;
+    justify-content: center; gap: 8px;
+    padding: 6px; font-size: 10px; font-weight: 700;
+  }
+  .ph-chevron {
+    width: 14px; height: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: var(--fg-high);
+  }
+  .ph-week {
+    display: flex; gap: 4px; justify-content: center; padding: 6px 10px;
+  }
+  .ph-day {
+    width: 30px; height: 54px; border-radius: 16px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-size: 8px; gap: 1px;
+    background: linear-gradient(180deg, white, #FFD2EB);
+    color: var(--fg-high);
+  }
+  .ph-day.sel { background: var(--primary); color: white; }
+  .ph-day .dn { font-weight: 700; font-size: 9px; }
+  .ph-illust {
+    height: 80px; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 40px;
+  }
+  .ph-cards { padding: 6px 12px; }
+  .ph-card {
+    background: white; border-radius: 10px;
+    padding: 8px; margin-bottom: 5px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    font-size: 7px;
+  }
+  .ph-card-t { font-weight: 700; font-size: 8px; margin-bottom: 2px; }
+  .ph-two { display: flex; gap: 5px; }
+  .ph-two .ph-card { flex: 1; }
+  .ph-nav {
+    display: flex; justify-content: space-around;
+    padding: 8px 6px 14px;
+    background: white; border-top: 1px solid #eee;
+    font-size: 7px; color: var(--fg-low);
+  }
+  .ph-nav-item {
+    text-align: center;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+  }
+  .ph-nav-item.act { color: var(--primary); }
+  .ph-nav-icon { font-size: 14px; }
+
+  /* Highlight Ring */
+  .ring {
+    position: absolute;
+    border: 3px solid var(--error);
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 10;
+    animation: pulse 2s infinite;
+  }
+  .ring.w { border-color: var(--warning); }
+  .ring.i { border-color: var(--info); }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  .ring-tag {
+    position: absolute;
+    font-size: 10px; font-weight: 800;
+    color: white; padding: 2px 7px;
+    border-radius: 5px; top: -12px; left: -2px;
+    line-height: 1;
+  }
+  .ring-tag.c { background: var(--error); }
+  .ring-tag.m { background: var(--warning); }
+
+  /* Legend */
+  .legend {
+    flex: 1; min-width: 320px;
+  }
+  .leg-head {
+    font-size: 13px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--fg-mid); margin-bottom: 10px;
+  }
+  .leg-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .leg-item:last-child { border-bottom: none; }
+  .leg-badge {
+    min-width: 34px; height: 24px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: white;
+    flex-shrink: 0;
+  }
+
+  /* ═══════ VISUAL Compare (BIG) ═══════ */
+  .vis-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 12px 0;
+  }
+  .vis-box {
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .vis-before { background: #FEF2F2; border: 1.5px solid #FECACA; }
+  .vis-after { background: #F0FDF4; border: 1.5px solid #BBF7D0; }
+  .vis-label {
+    font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 12px; display: block;
+  }
+  .vis-before .vis-label { color: var(--error); }
+  .vis-after .vis-label { color: var(--success); }
+
+  .swatch-row {
+    display: flex; align-items: center;
+    gap: 10px; justify-content: center;
+    margin: 8px 0;
+  }
+  .swatch {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.08);
+    display: inline-block;
+  }
+  .swatch-text { font-size: 14px; font-family: 'SF Mono', monospace; font-weight: 600; }
+  .ratio-badge {
+    display: inline-block;
+    padding: 4px 12px; border-radius: 6px;
+    font-size: 14px; font-weight: 800;
+    margin-top: 6px;
+  }
+  .ratio-fail { background: var(--error-bg); color: var(--error); }
+  .ratio-pass { background: var(--success-bg); color: var(--success); }
+
+  .size-box {
+    display: flex; align-items: center; justify-content: center;
+    border: 2.5px dashed rgba(0,0,0,0.2);
+    border-radius: 6px;
+    margin: 8px auto;
+  }
+
+  /* Token reference */
+  .tok {
+    display: inline-block;
+    background: var(--bg-light); border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 5px;
+    font-family: 'SF Mono', monospace;
+    font-size: 12px; color: var(--fg-mid);
+  }
+
+  /* ═══════ FIX GUIDE ═══════ */
+  .fix-list { list-style: none; padding: 0; margin: 10px 0; }
+  .fix-list li {
+    position: relative;
+    padding: 12px 0 12px 36px;
+    font-size: 15px;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.7;
+  }
+  .fix-list li:last-child { border-bottom: none; }
+  .fix-list li::before {
+    content: attr(data-n);
+    position: absolute; left: 0; top: 12px;
+    width: 24px; height: 24px;
+    background: var(--success); color: white;
+    border-radius: 50%;
+    font-size: 12px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .why {
+    display: block;
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--fg-mid);
+    font-style: italic;
+    padding-left: 4px;
+    border-left: 3px solid var(--bg-mid);
+  }
+
+  /* Audit table */
+  .audit-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .audit-table th {
+    text-align: left; padding: 10px 12px;
+    background: var(--bg-light); font-weight: 700;
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--fg-mid);
+  }
+  .audit-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .audit-pass { color: var(--success); font-weight: 800; }
+  .audit-fail { color: var(--error); font-weight: 800; }
+  .sw-inline {
+    width: 20px; height: 20px;
+    border-radius: 5px; display: inline-block;
+    vertical-align: middle;
+    border: 1px solid rgba(0,0,0,0.08);
+    margin-right: 6px;
+  }
+
+  /* Checklist */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .ck {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; flex-shrink: 0;
+  }
+  .ck-c { background: var(--error-bg); color: var(--error); }
+  .ck-m { background: var(--warning-bg); color: var(--warning); }
+  .ck-i { background: var(--info-bg); color: var(--info); }
+
+  /* TOC */
+  .toc { list-style: none; padding: 0; }
+  .toc li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .toc li:last-child { border-bottom: none; }
+  .toc a {
+    text-decoration: none; color: var(--fg-high);
+    font-size: 15px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .toc a:hover { color: var(--primary); }
+  .toc-count {
+    font-size: 11px; font-weight: 800;
+    padding: 3px 10px; border-radius: 99px; color: white;
+  }
+
+  @media (max-width: 640px) {
+    .vis-compare { grid-template-columns: 1fr; }
+    .mockup-wrap { flex-direction: column; align-items: center; }
+    .phone { width: 240px; }
+    .section { padding: 20px; }
+    .hero h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<div class="hero">
+  <div class="score-ring">
+    <svg viewBox="0 0 160 160">
+      <circle class="bg" />
+      <!-- 67% fill: 415 × 0.33 = 137 offset -->
+      <circle class="fg" style="stroke-dashoffset: 137" />
+    </svg>
+    <div class="value">6.7</div>
+    <div class="label">/ 10</div>
+  </div>
+  <h1>DailyMu — Calendar Screen</h1>
+  <div class="subtitle">Figma Frame Review &middot; node 773:28231</div>
+  <div class="score-badge">ปานกลาง — ต้องแก้หลายจุด</div>
+  <div class="meta">
+    Platform: iOS (390&times;844) &nbsp;|&nbsp; File: DailyMu - App &nbsp;|&nbsp; Reviewed: 19 Feb 2026
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════ TOC ═══════ -->
+<div class="section">
+  <div class="section-title">สารบัญ</div>
+  <ul class="toc">
+    <li><a href="#scores">คะแนนแต่ละมิติ (8 ด้าน)</a></li>
+    <li><a href="#map">แผนที่จุดที่ต้องแก้ (Annotated Mockup)</a></li>
+    <li><a href="#strengths">จุดแข็ง (4 ข้อ)</a></li>
+    <li><a href="#critical"><span class="toc-count" style="background:var(--error);">4</span> Critical — ต้องแก้ทันที</a></li>
+    <li><a href="#major"><span class="toc-count" style="background:var(--warning);">4</span> Major — ควรแก้</a></li>
+    <li><a href="#minor"><span class="toc-count" style="background:var(--info);">3</span> Minor — แก้ได้ก็ดี</a></li>
+    <li><a href="#contrast">Contrast Audit Table</a></li>
+    <li><a href="#checklist">สรุป Checklist</a></li>
+  </ul>
+</div>
+
+<!-- ═══════ SCORE BREAKDOWN ═══════ -->
+<div class="section" id="scores">
+  <div class="section-title">คะแนนแต่ละมิติ</div>
+  <table class="score-table">
+    <thead><tr><th>มิติ</th><th>Weight</th><th>คะแนน</th><th style="min-width:120px;"></th></tr></thead>
+    <tbody>
+      <tr><td>Visual Hierarchy & Layout</td><td>15%</td><td class="score-val" style="color:var(--success);">8</td><td><div class="score-bar"><div class="score-bar-fill" style="width:80%;background:var(--success);"></div></div></td></tr>
+      <tr><td>Typography</td><td>10%</td><td class="score-val" style="color:var(--success);">8</td><td><div class="score-bar"><div class="score-bar-fill" style="width:80%;background:var(--success);"></div></div></td></tr>
+      <tr><td>Color & Contrast</td><td>15%</td><td class="score-val" style="color:var(--error);">5</td><td><div class="score-bar"><div class="score-bar-fill" style="width:50%;background:var(--error);"></div></div></td></tr>
+      <tr><td>Component Design</td><td>15%</td><td class="score-val" style="color:var(--warning);">7</td><td><div class="score-bar"><div class="score-bar-fill" style="width:70%;background:var(--warning);"></div></div></td></tr>
+      <tr><td>Spacing & Consistency</td><td>10%</td><td class="score-val" style="color:var(--success);">8</td><td><div class="score-bar"><div class="score-bar-fill" style="width:80%;background:var(--success);"></div></div></td></tr>
+      <tr><td>UX Heuristics</td><td>20%</td><td class="score-val" style="color:var(--warning);">7</td><td><div class="score-bar"><div class="score-bar-fill" style="width:70%;background:var(--warning);"></div></div></td></tr>
+      <tr><td>Accessibility</td><td>10%</td><td class="score-val" style="color:var(--error);">5</td><td><div class="score-bar"><div class="score-bar-fill" style="width:50%;background:var(--error);"></div></div></td></tr>
+      <tr><td>Edge Cases</td><td>5%</td><td class="score-val" style="color:var(--error);">4</td><td><div class="score-bar"><div class="score-bar-fill" style="width:40%;background:var(--error);"></div></div></td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:14px;font-size:14px;color:var(--fg-mid);">
+    Weighted Total = (15%&times;8)+(10%&times;8)+(15%&times;5)+(15%&times;7)+(10%&times;8)+(20%&times;7)+(10%&times;5)+(5%&times;4) = <strong style="color:var(--fg-high);font-size:18px;">6.7 / 10</strong>
+  </div>
+</div>
+
+<!-- ═══════ ANNOTATION MAP ═══════ -->
+<div class="section" id="map">
+  <div class="section-title">แผนที่จุดที่ต้องแก้</div>
+  <div class="mockup-wrap">
+
+    <!-- BIG Phone Mockup -->
+    <div class="phone">
+      <div class="ph-status">09:41</div>
+
+      <!-- Tab Selector -->
+      <div style="position:relative;">
+        <div class="ph-tabs">
+          <div class="ph-tab active">รายวัน</div>
+          <div class="ph-tab">รายเดือน</div>
+          <div class="ph-tab">รายปี</div>
+        </div>
+        <div class="ring w" style="top:2px;left:10px;right:10px;bottom:2px;border-radius:99px;">
+          <span class="ring-tag m">M1</span>
+        </div>
+      </div>
+
+      <!-- Month Nav -->
+      <div style="position:relative;">
+        <div class="ph-month">
+          <div class="ph-chevron">&lsaquo;</div>
+          <span>มกราคม 2026</span>
+          <div class="ph-chevron">&rsaquo;</div>
+        </div>
+        <div class="ring" style="top:2px;left:34px;width:18px;height:22px;">
+          <span class="ring-tag c">C2</span>
+        </div>
+        <div class="ring" style="top:2px;right:34px;width:18px;height:22px;"></div>
+      </div>
+
+      <!-- Week Selector -->
+      <div style="position:relative;">
+        <div class="ph-week">
+          <div class="ph-day"><span>จ.</span><span class="dn">13</span><span>⚖️</span></div>
+          <div class="ph-day"><span>อ.</span><span class="dn">14</span><span>🔥</span></div>
+          <div class="ph-day sel"><span>พ.</span><span class="dn">15</span><span>🔮</span></div>
+          <div class="ph-day"><span>พฤ.</span><span class="dn">16</span><span>🔮</span></div>
+          <div class="ph-day"><span>ศ.</span><span class="dn">17</span><span>⚖️</span></div>
+          <div class="ph-day"><span>ส.</span><span class="dn">18</span><span>🔮</span></div>
+          <div class="ph-day"><span>อา.</span><span class="dn">19</span><span>🔥</span></div>
+        </div>
+        <div class="ring" style="top:0;left:6px;right:6px;bottom:0;border-radius:18px;">
+          <span class="ring-tag c" style="left:auto;right:0;">C4</span>
+        </div>
+      </div>
+
+      <!-- Illustration -->
+      <div style="position:relative;">
+        <div class="ph-illust">🧙‍♂️</div>
+        <div class="ring w" style="top:2px;left:10px;right:10px;bottom:2px;">
+          <span class="ring-tag m">M3</span>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="ph-cards">
+        <div style="position:relative;">
+          <div class="ph-card">
+            <div style="display:flex;gap:6px;align-items:flex-start;">
+              <div style="width:28px;height:28px;border-radius:6px;background:var(--primary-lowest);border:1px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:var(--primary);flex-shrink:0;line-height:1;">
+                15<br>ม.ค.
+              </div>
+              <div>
+                <div class="ph-card-t">วันนี้พลังงานเปล่งประกายที่สุด</div>
+                <div style="font-size:6px;color:var(--fg-mid);">เป็นวันที่พลังงานโดยรวมไหลลื่น...</div>
+              </div>
+            </div>
+          </div>
+          <div class="ring" style="top:5px;left:6px;width:30px;height:32px;">
+            <span class="ring-tag c">C3</span>
+          </div>
+        </div>
+
+        <div class="ph-card">
+          <div class="ph-card-t">สีมงคลวันนี้</div>
+          <div style="display:flex;gap:4px;margin:3px 0;">
+            <span style="width:14px;height:10px;border-radius:5px;background:#8B5CF6;"></span>
+            <span style="width:14px;height:10px;border-radius:5px;background:#3B82F6;"></span>
+            <span style="width:14px;height:10px;border-radius:5px;background:#EAB308;"></span>
+            <span style="width:14px;height:10px;border-radius:5px;background:#EC4899;"></span>
+            <span style="width:14px;height:10px;border-radius:5px;background:#374151;"></span>
+          </div>
+          <div style="text-align:right;color:var(--fg-low);font-size:5px;">อ้างอิงจากตำรามหาหมอดู</div>
+        </div>
+
+        <div class="ph-two">
+          <div class="ph-card"><div class="ph-card-t">คำแนะนำ</div><div style="font-size:5px;">เหมาะกับเริ่มต้นสิ่งใหม่</div></div>
+          <div class="ph-card"><div class="ph-card-t">หลีกเลี่ยง</div><div style="font-size:5px;">หลีกเลี่ยงการเซ็นสัญญา</div></div>
+        </div>
+
+        <div style="position:relative;">
+          <div class="ph-card">
+            <div class="ph-card-t">ดาวเกิด &amp; ดาวจร</div>
+            <div style="font-size:5px;">ดาวเกิด: ดาวอาทิตย์อยู่ราศีกุมภ์...</div>
+          </div>
+          <div class="ring w" style="top:-2px;left:-2px;right:-2px;bottom:-2px;border-radius:12px;">
+            <span class="ring-tag m">M4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div style="position:relative;">
+        <div class="ph-nav">
+          <div class="ph-nav-item act">
+            <span class="ph-nav-icon">📅</span>
+            ปฏิทิน
+          </div>
+          <div class="ph-nav-item">
+            <span class="ph-nav-icon">🔔</span>
+            แจ้งเตือน
+          </div>
+          <div class="ph-nav-item" style="position:relative;">
+            <span class="ph-nav-icon" style="visibility:hidden;">⚪</span>
+            ดวงวันนี้
+            <div class="ring w" style="top:-3px;left:-6px;right:-6px;bottom:-3px;">
+              <span class="ring-tag m">M2</span>
+            </div>
+          </div>
+          <div class="ph-nav-item">
+            <span class="ph-nav-icon">🌙</span>
+            ทำนาย
+          </div>
+          <div class="ph-nav-item">
+            <span class="ph-nav-icon">👤</span>
+            โปรไฟล์
+          </div>
+        </div>
+        <div class="ring" style="top:0;left:0;right:0;bottom:0;">
+          <span class="ring-tag c">C1</span>
+        </div>
+      </div>
+    </div><!-- /phone -->
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="leg-head">Issue Legend — รวม 11 ข้อ</div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--error);margin:12px 0 4px;text-transform:uppercase;letter-spacing:1px;">Critical (4)</div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--error);">C1</span>
+        <span>Tab Bar labels สี <span class="tok">#9A9DAD</span> ไม่ผ่าน Contrast (2.7:1 ต้อง 4.5:1)</span>
+      </div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--error);">C2</span>
+        <span>ลูกศร Chevron เล็กเกินไป (16&times;16px ต้อง &ge;44&times;44px)</span>
+      </div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--error);">C3</span>
+        <span>Date Badge text <span class="tok">#EC599D</span> บน <span class="tok">#FDEFF5</span> (2.9:1 ต้อง 4.5:1)</span>
+      </div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--error);">C4</span>
+        <span>Day Cell กว้าง 41px &lt; minimum 44px touch target</span>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--warning);margin:16px 0 4px;text-transform:uppercase;letter-spacing:1px;">Major (4)</div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--warning);">M1</span>
+        <span>Active Tab text white บน <span class="tok">#EC599D</span> (3.2:1, 16px Bold ต้อง 4.5:1)</span>
+      </div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--warning);">M2</span>
+        <span>Tab "ดวงวันนี้" ไม่มี Icon — ไม่สอดคล้องกับ tab อื่น</span>
+      </div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--warning);">M3</span>
+        <span>Illustration สูง 238px (28% viewport) ดัน content ลง</span>
+      </div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--warning);">M4</span>
+        <span>Card border radius 15px ไม่ตรง Token (ใกล้สุด 12 หรือ 16px)</span>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--info);margin:16px 0 4px;text-transform:uppercase;letter-spacing:1px;">Minor (3)</div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--info);">m1</span>
+        <span>Status Bar bg <span class="tok">#FEF4F5</span> ต่างจาก gradient หลัก</span>
+      </div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--info);">m2</span>
+        <span>ไม่มี Loading / Empty / Error state variants</span>
+      </div>
+      <div class="leg-item">
+        <span class="leg-badge" style="background:var(--info);">m3</span>
+        <span>Shadow ใช้หลายค่าผสม ควรเลือก 1 token</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ STRENGTHS ═══════ -->
+<div class="section" id="strengths">
+  <div class="section-title">จุดแข็ง</div>
+  <div class="strength-item">
+    <div class="strength-icon">1</div>
+    <div class="strength-text">
+      <strong>Typography System ดีมาก</strong>
+      ใช้ LINE Seed Sans TH App ทั้งหน้า — Bold สำหรับ heading, Regular สำหรับ body<br>
+      Type scale ตรง Token: Label.3 (16px/24px Bold), Caption.4 (14px/22px Regular), Heading.5 (24px/32px Bold)
+    </div>
+  </div>
+  <div class="strength-item">
+    <div class="strength-icon">2</div>
+    <div class="strength-text">
+      <strong>Day Selector สื่อสารชัดเจน</strong>
+      Gradient pill + emoji ทำให้แต่ละวันมี personality — วันที่เลือก (พ.15) ใช้ solid primary แยกออกชัด ตาม Von Restorff Effect
+    </div>
+  </div>
+  <div class="strength-item">
+    <div class="strength-icon">3</div>
+    <div class="strength-text">
+      <strong>Card Layout จัดกลุ่มดี</strong>
+      Card-based layout แบ่งข้อมูลชัด (Gestalt — Common Region) — สีมงคล, คำแนะนำ/หลีกเลี่ยง, ดาวเกิด/ดาวจร แยกกลุ่มเรียบร้อย
+    </div>
+  </div>
+  <div class="strength-item">
+    <div class="strength-icon">4</div>
+    <div class="strength-text">
+      <strong>Spacing System ตรง Token</strong>
+      ใช้ spacing จาก Design Tokens สม่ำเสมอ — padding 16px (spacing-4), gap 12px (spacing-3), 8px (spacing-2) ตาม 4px grid
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CRITICAL ISSUES
+     ═══════════════════════════════════════════════════════ -->
+<div class="section" id="critical">
+  <div class="section-title" style="color:var(--error);">Critical — ต้องแก้ทันที (4 ข้อ)</div>
+
+  <!-- ━━━ C1 ━━━ -->
+  <div class="issue-card critical">
+    <div class="issue-header">
+      <span class="badge">C1</span>
+      ข้อความสี #9A9DAD ไม่ผ่าน WCAG Contrast
+      <span class="tag">WCAG 1.4.3</span>
+    </div>
+    <div class="issue-body">
+
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        <strong>Bottom Tab Bar</strong> — label ที่ไม่ active ทุกตัว (แจ้งเตือน, ดวงวันนี้, ทำนาย, โปรไฟล์) ใช้สี <span class="tok">#9A9DAD</span> บนพื้นขาว<br>
+        และข้อความ <strong>"อ้างอิงจากตำรามหาหมอดู"</strong> ใน card สีมงคลก็ใช้สีนี้เหมือนกัน
+      </p>
+
+      <div class="part part-visual">VISUAL — ก่อน / หลัง</div>
+      <div class="vis-compare">
+        <div class="vis-box vis-before">
+          <span class="vis-label">ตอนนี้</span>
+          <div class="swatch-row">
+            <span class="swatch" style="background:#9A9DAD;"></span>
+            <span class="swatch-text">#9A9DAD</span>
+          </div>
+          <div style="font-size:12px;color:var(--fg-mid);margin:4px 0;">บนพื้น</div>
+          <div class="swatch-row">
+            <span class="swatch" style="background:#FFFFFF;"></span>
+            <span class="swatch-text">#FFFFFF</span>
+          </div>
+          <div class="ratio-badge ratio-fail">2.7 : 1 — FAIL AA</div>
+        </div>
+        <div class="vis-box vis-after">
+          <span class="vis-label">แก้เป็น</span>
+          <div class="swatch-row">
+            <span class="swatch" style="background:#6A6E83;"></span>
+            <span class="swatch-text">#6A6E83</span>
+          </div>
+          <div style="font-size:12px;color:var(--fg-mid);margin:4px 0;">บนพื้น</div>
+          <div class="swatch-row">
+            <span class="swatch" style="background:#FFFFFF;"></span>
+            <span class="swatch-text">#FFFFFF</span>
+          </div>
+          <div class="ratio-badge ratio-pass">5.0 : 1 — PASS AA</div>
+        </div>
+      </div>
+
+      <div class="part part-fix">FIX GUIDE — วิธีแก้ใน Figma</div>
+      <ol class="fix-list">
+        <li data-n="1">
+          เลือก text layer ของ inactive tab labels ทุกตัว → เปลี่ยน Fill จาก <span class="tok">#9A9DAD</span> เป็น <span class="tok">#6A6E83</span>
+          <span class="why">เหตุผล: สี #9A9DAD มี contrast ratio 2.7:1 ไม่ผ่าน WCAG AA (ต้อง &ge; 4.5:1) — ผู้ใช้ที่มีปัญหาสายตาจะอ่านไม่ออก</span>
+        </li>
+        <li data-n="2">
+          เลือก text "อ้างอิงจากตำรามหาหมอดู" → เปลี่ยน Fill เป็น <span class="tok">#6A6E83</span> เช่นกัน
+          <span class="why">เหตุผล: ข้อความอ้างอิงเป็น secondary info แต่ก็ต้องอ่านได้ — #6A6E83 ให้ 5.0:1 ผ่าน AA สบาย ยังดูเบาพอไม่แย่ง attention</span>
+        </li>
+        <li data-n="3">
+          ใน Variables: ถ้า token <span class="tok">semantic/disabled/fg/on-white</span> ถูกใช้กับ "inactive" text → พิจารณาสร้าง token ใหม่ <span class="tok">semantic/gray-neutral/fg/inactive</span> ค่า #6A6E83 แยกจาก disabled
+          <span class="why">เหตุผล: "ไม่ active" กับ "disabled" ไม่เหมือนกัน — ข้อความ inactive ยังต้องอ่านได้ แต่ disabled อาจจงใจให้อ่านยาก</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ━━━ C2 ━━━ -->
+  <div class="issue-card critical">
+    <div class="issue-header">
+      <span class="badge">C2</span>
+      ลูกศร Chevron เล็กเกินไป — ไม่ผ่าน Touch Target
+      <span class="tag">WCAG 2.5.5 / HIG 44pt</span>
+    </div>
+    <div class="issue-body">
+
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        <strong>Month Selector</strong> — ปุ่มลูกศร &lsaquo; (ซ้าย) และ &rsaquo; (ขวา) ข้าง "มกราคม 2026"<br>
+        ขนาดจริง <strong>16&times;16px</strong> — น้อยกว่า minimum touch target 44&times;44px ของ HIG มาก
+      </p>
+
+      <div class="part part-visual">VISUAL — ก่อน / หลัง</div>
+      <div class="vis-compare">
+        <div class="vis-box vis-before">
+          <span class="vis-label">ตอนนี้</span>
+          <div style="margin:12px auto;">
+            <div class="size-box" style="width:40px;height:40px;border-color:var(--error);">
+              <span style="font-size:20px;color:var(--fg-mid);">&lsaquo;</span>
+            </div>
+          </div>
+          <div style="font-size:16px;font-weight:800;color:var(--error);">16 &times; 16 px</div>
+          <div style="font-size:12px;color:var(--fg-mid);">(กดพลาดง่ายมาก)</div>
+        </div>
+        <div class="vis-box vis-after">
+          <span class="vis-label">แก้เป็น</span>
+          <div style="margin:12px auto;">
+            <div class="size-box" style="width:52px;height:52px;border-color:var(--success);">
+              <span style="font-size:20px;color:var(--fg-mid);">&lsaquo;</span>
+            </div>
+          </div>
+          <div style="font-size:16px;font-weight:800;color:var(--success);">44 &times; 44 px</div>
+          <div style="font-size:12px;color:var(--fg-mid);">(icon 16px + padding 14px)</div>
+        </div>
+      </div>
+
+      <div class="part part-fix">FIX GUIDE — วิธีแก้ใน Figma</div>
+      <ol class="fix-list">
+        <li data-n="1">
+          เลือก chevron-left และ chevron-right frame → เปลี่ยน size จาก 16&times;16 เป็น <strong>44&times;44px</strong>
+          <span class="why">เหตุผล: Apple HIG กำหนด minimum touch target 44pt — ปุ่ม 16px เล็กกว่า 3 เท่า ผู้ใช้ต้องจิ้มหลายรอบถึงจะกดโดน</span>
+        </li>
+        <li data-n="2">
+          คง icon ข้างในไว้ 16px → ปรับ frame ให้ center icon + เพิ่ม padding 14px รอบ
+          <span class="why">เหตุผล: ขนาด visual icon ยังดูพอดี แค่ขยาย tap area รอบนอกให้กว้างขึ้น — ใช้ Constraints &gt; Center</span>
+        </li>
+        <li data-n="3">
+          Set Fill เป็น transparent (ไม่มีสี) → ผู้ใช้จะไม่เห็น frame แต่กดโดนง่ายขึ้น
+          <span class="why">เหตุผล: Invisible hit area เป็น pattern มาตรฐานสำหรับ icon button ที่ไม่ต้องการ visual padding</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ━━━ C3 ━━━ -->
+  <div class="issue-card critical">
+    <div class="issue-header">
+      <span class="badge">C3</span>
+      Date Badge ข้อความ Contrast ต่ำมาก
+      <span class="tag">WCAG 1.4.3</span>
+    </div>
+    <div class="issue-body">
+
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        <strong>Date Badge</strong> (ซ้ายบน card หลัก) — ตัวเลข "15" และ "ม.ค."<br>
+        ใช้สี <span class="tok">#EC599D</span> (primary) บนพื้น <span class="tok">#FDEFF5</span> (primary-lowest)<br>
+        Contrast ratio <strong>2.9:1</strong> — ไม่ผ่านแม้แต่ Large Text (ต้อง &ge;3:1)
+      </p>
+
+      <div class="part part-visual">VISUAL — ก่อน / หลัง</div>
+      <div class="vis-compare">
+        <div class="vis-box vis-before">
+          <span class="vis-label">ตอนนี้</span>
+          <div style="width:80px;height:80px;border-radius:12px;background:#FDEFF5;border:2px solid #EC599D;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:8px auto;">
+            <span style="font-size:28px;font-weight:800;color:#EC599D;">15</span>
+            <span style="font-size:14px;font-weight:700;color:#EC599D;">ม.ค.</span>
+          </div>
+          <div class="ratio-badge ratio-fail">2.9 : 1 — FAIL</div>
+        </div>
+        <div class="vis-box vis-after">
+          <span class="vis-label">แก้เป็น</span>
+          <div style="width:80px;height:80px;border-radius:12px;background:#FDEFF5;border:2px solid #BD477E;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:8px auto;">
+            <span style="font-size:28px;font-weight:800;color:#BD477E;">15</span>
+            <span style="font-size:14px;font-weight:700;color:#BD477E;">ม.ค.</span>
+          </div>
+          <div class="ratio-badge ratio-pass">4.8 : 1 — PASS AA</div>
+        </div>
+      </div>
+
+      <div class="part part-fix">FIX GUIDE — วิธีแก้ใน Figma</div>
+      <ol class="fix-list">
+        <li data-n="1">
+          เลือก text "15" และ "ม.ค." ใน Date Badge → เปลี่ยน Fill จาก <span class="tok">#EC599D</span> เป็น <span class="tok">#BD477E</span>
+          <span class="why">เหตุผล: #EC599D (primary) บนพื้น #FDEFF5 (primary-lowest) สีใกล้กันเกินไป — สมองต้องทำงานหนักเพื่ออ่าน ผู้ใช้สายตาไม่ดีจะเห็นเป็นก้อนชมพูเดียว</span>
+        </li>
+        <li data-n="2">
+          เปลี่ยน Stroke ของ badge frame ด้วยเป็น <span class="tok">#BD477E</span> ให้สอดคล้องกัน
+          <span class="why">เหตุผล: border สี #EC599D ก็มี contrast ต่ำกับพื้นเหมือนกัน — เปลี่ยนพร้อม text ให้ consistent</span>
+        </li>
+        <li data-n="3">
+          Token: ใช้ <span class="tok">semantic/support/pink/bg/high #BD477E</span> ซึ่งเป็นค่าที่อยู่ในระบบอยู่แล้ว
+          <span class="why">เหตุผล: ไม่ต้องสร้างสีใหม่ — ใช้ค่าที่มีอยู่ใน token system เพื่อรักษา consistency</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ━━━ C4 ━━━ -->
+  <div class="issue-card critical">
+    <div class="issue-header">
+      <span class="badge">C4</span>
+      Day Cell กว้าง 41px &lt; Minimum Touch Target 44px
+      <span class="tag">HIG 44pt / Fitts's Law</span>
+    </div>
+    <div class="issue-body">
+
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        <strong>Week Day Selector</strong> — ทุก Day Container กว้าง <strong>41px</strong> สูง 78px<br>
+        กว้างไม่ถึง 44px ตาม Apple HIG — นิ้วโป้งอาจกดพลาดวัน โดยเฉพาะวันที่อยู่ติดกัน
+      </p>
+
+      <div class="part part-visual">VISUAL — ก่อน / หลัง</div>
+      <div class="vis-compare">
+        <div class="vis-box vis-before">
+          <span class="vis-label">ตอนนี้</span>
+          <div style="display:flex;gap:4px;justify-content:center;margin:8px 0;">
+            <div style="width:41px;height:60px;border-radius:14px;background:linear-gradient(180deg,white,#FFD2EB);border:2px dashed var(--error);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">41</div>
+            <div style="width:41px;height:60px;border-radius:14px;background:linear-gradient(180deg,white,#FFD2EB);border:2px dashed rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;font-size:11px;">41</div>
+            <div style="width:41px;height:60px;border-radius:14px;background:var(--primary);border:2px dashed rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;font-size:11px;color:white;">41</div>
+          </div>
+          <div style="font-size:14px;font-weight:800;color:var(--error);">41px wide</div>
+          <div style="font-size:12px;color:var(--fg-mid);">gap 12px</div>
+        </div>
+        <div class="vis-box vis-after">
+          <span class="vis-label">แก้เป็น</span>
+          <div style="display:flex;gap:3px;justify-content:center;margin:8px 0;">
+            <div style="width:44px;height:60px;border-radius:14px;background:linear-gradient(180deg,white,#FFD2EB);border:2px solid var(--success);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">44</div>
+            <div style="width:44px;height:60px;border-radius:14px;background:linear-gradient(180deg,white,#FFD2EB);border:2px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;font-size:11px;">44</div>
+            <div style="width:44px;height:60px;border-radius:14px;background:var(--primary);border:2px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;font-size:11px;color:white;">44</div>
+          </div>
+          <div style="font-size:14px;font-weight:800;color:var(--success);">44px wide</div>
+          <div style="font-size:12px;color:var(--fg-mid);">gap 8px + padding ลดเป็น 12px</div>
+        </div>
+      </div>
+
+      <div class="part part-fix">FIX GUIDE — วิธีแก้ใน Figma</div>
+      <ol class="fix-list">
+        <li data-n="1">
+          เลือกทุก Day Container (815:18357 ถึง 815:18390) → เปลี่ยน Width จาก 41 เป็น <strong>44px</strong>
+          <span class="why">เหตุผล: Fitts's Law — target ที่ใหญ่ขึ้น 3px ลดเวลาในการ aim ลงอย่างมีนัยสำคัญ โดยเฉพาะเมื่อกดด้วยนิ้วโป้งมือเดียว</span>
+        </li>
+        <li data-n="2">
+          ลด Item Spacing ของ Week container จาก 12px เป็น <strong>8px</strong>
+          <span class="why">เหตุผล: 7 days &times; 44px + 6 gaps &times; 8px = 308 + 48 = 356px → ภายใน 358px (390 - 2&times;16 padding) พอดี</span>
+        </li>
+        <li data-n="3">
+          ตรวจว่า padding ซ้าย-ขวาของ Week row ลดเป็น 16px ถ้ายังเป็น 16px อยู่ = ใช้ได้เลย
+          <span class="why">เหตุผล: คำนวณ — 356px content + 2&times;16px = 388px &lt; 390px &rarr; เข้าพอดี</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAJOR ISSUES
+     ═══════════════════════════════════════════════════════ -->
+<div class="section" id="major">
+  <div class="section-title" style="color:var(--warning);">Major — ควรแก้ (4 ข้อ)</div>
+
+  <!-- ━━━ M1 ━━━ -->
+  <div class="issue-card major">
+    <div class="issue-header">
+      <span class="badge">M1</span>
+      Active Tab ข้อความ Contrast ไม่ถึง AA
+      <span class="tag">WCAG 1.4.3</span>
+    </div>
+    <div class="issue-body">
+
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        <strong>Tab Selector</strong> — ข้อความ "รายวัน" สีขาว <span class="tok">#FFFFFF</span> บนพื้น primary <span class="tok">#EC599D</span><br>
+        Contrast 3.2:1 — ผ่านเฉพาะ Large Text (&ge;18.66px Bold) แต่ตอนนี้ใช้ 16px Bold ซึ่ง ไม่นับเป็น Large Text
+      </p>
+
+      <div class="part part-visual">VISUAL — ก่อน / หลัง</div>
+      <div class="vis-compare">
+        <div class="vis-box vis-before">
+          <span class="vis-label">ตอนนี้</span>
+          <div style="background:#EC599D;padding:10px 24px;border-radius:99px;display:inline-block;margin:8px 0;">
+            <span style="color:white;font-size:16px;font-weight:700;">รายวัน</span>
+          </div>
+          <div style="font-size:12px;color:var(--fg-mid);">16px Bold &mdash; ไม่นับ Large Text</div>
+          <div class="ratio-badge ratio-fail">3.2 : 1 — FAIL AA</div>
+        </div>
+        <div class="vis-box vis-after">
+          <span class="vis-label">ทางเลือก A (แนะนำ)</span>
+          <div style="background:#EC599D;padding:10px 24px;border-radius:99px;display:inline-block;margin:8px 0;">
+            <span style="color:white;font-size:19px;font-weight:700;">รายวัน</span>
+          </div>
+          <div style="font-size:12px;color:var(--fg-mid);">18.66px+ Bold = Large Text</div>
+          <div class="ratio-badge ratio-pass">3.2 : 1 — PASS (Large Text)</div>
+        </div>
+      </div>
+
+      <div class="part part-fix">FIX GUIDE — วิธีแก้ใน Figma</div>
+      <ol class="fix-list">
+        <li data-n="A">
+          <strong>ทางเลือก A (แนะนำ)</strong>: เพิ่ม font size เป็น 18px Bold → จะนับเป็น Large Text → 3.2:1 ผ่าน
+          <span class="why">เหตุผล: แค่เพิ่ม 2px จาก 16→18 ก็ข้ามเกณฑ์ Large Text ได้ — impact ต่อ layout น้อยมาก</span>
+        </li>
+        <li data-n="B">
+          <strong>ทางเลือก B</strong>: เปลี่ยน active tab bg เป็น <span class="tok">#BD477E</span> → contrast 4.8:1 ผ่าน AA ที่ 16px
+          <span class="why">เหตุผล: สี primary เข้มขึ้น ได้ contrast สูงกว่า แต่ look อาจเปลี่ยนจาก brand สีชมพูสดใส</span>
+        </li>
+        <li data-n="C">
+          <strong>ทางเลือก C</strong>: ยอมรับ 3.2:1 เป็น design decision (ผ่าน Large Text อยู่แล้ว)
+          <span class="why">เหตุผล: ถ้าทีมตัดสินใจว่า tab text ขนาดนี้อ่านได้สบาย บนมือถือ 16px จะใหญ่กว่า pixel จริง</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ━━━ M2 ━━━ -->
+  <div class="issue-card major">
+    <div class="issue-header">
+      <span class="badge">M2</span>
+      Tab "ดวงวันนี้" ไม่มี Icon — ไม่สอดคล้อง
+      <span class="tag">H4 Consistency / Jakob's Law</span>
+    </div>
+    <div class="issue-body">
+
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        <strong>Bottom Navigation</strong> — tab ตรงกลาง "ดวงวันนี้" มี แค่ text ไม่มี icon ด้านบน<br>
+        ในขณะที่ tab อื่นทุกตัว (ปฏิทิน, แจ้งเตือน, ทำนาย, โปรไฟล์) มีทั้ง icon + label
+      </p>
+
+      <div class="part part-visual">VISUAL — ก่อน / หลัง</div>
+      <div class="vis-compare">
+        <div class="vis-box vis-before">
+          <span class="vis-label">ตอนนี้</span>
+          <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;padding:12px 8px;background:white;border-radius:8px;border:1px solid #eee;">
+            <div style="text-align:center;font-size:12px;">
+              <div style="font-size:20px;">📅</div>
+              <div style="color:var(--primary);font-weight:700;">ปฏิทิน</div>
+            </div>
+            <div style="text-align:center;font-size:12px;">
+              <div style="font-size:20px;">🔔</div>
+              แจ้งเตือน
+            </div>
+            <div style="text-align:center;font-size:12px;border:2px solid var(--error);border-radius:8px;padding:4px 8px;">
+              <div style="font-size:20px;visibility:hidden;">⚪</div>
+              <div style="color:var(--error);font-weight:700;">ดวงวันนี้</div>
+              <div style="font-size:9px;color:var(--error);">ไม่มี icon!</div>
+            </div>
+            <div style="text-align:center;font-size:12px;">
+              <div style="font-size:20px;">🌙</div>
+              ทำนาย
+            </div>
+            <div style="text-align:center;font-size:12px;">
+              <div style="font-size:20px;">👤</div>
+              โปรไฟล์
+            </div>
+          </div>
+        </div>
+        <div class="vis-box vis-after">
+          <span class="vis-label">แก้เป็น</span>
+          <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;padding:12px 8px;background:white;border-radius:8px;border:1px solid #ddd;">
+            <div style="text-align:center;font-size:12px;">
+              <div style="font-size:20px;">📅</div>
+              <div style="color:var(--primary);font-weight:700;">ปฏิทิน</div>
+            </div>
+            <div style="text-align:center;font-size:12px;">
+              <div style="font-size:20px;">🔔</div>
+              แจ้งเตือน
+            </div>
+            <div style="text-align:center;font-size:12px;border:2px solid var(--success);border-radius:8px;padding:4px 8px;">
+              <div style="font-size:20px;">⭐</div>
+              <div style="font-weight:700;">ดวงวันนี้</div>
+            </div>
+            <div style="text-align:center;font-size:12px;">
+              <div style="font-size:20px;">🌙</div>
+              ทำนาย
+            </div>
+            <div style="text-align:center;font-size:12px;">
+              <div style="font-size:20px;">👤</div>
+              โปรไฟล์
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="part part-fix">FIX GUIDE — วิธีแก้ใน Figma</div>
+      <ol class="fix-list">
+        <li data-n="1">
+          เปิด MainNav component → เพิ่ม icon 25&times;25px ใน "ดวงวันนี้" tab ให้ตรงกับ tab อื่น
+          <span class="why">เหตุผล: Jakob's Law — ผู้ใช้คาดหวังว่า bottom nav ทุก tab จะมี icon+label เหมือนกัน Tab ที่ไม่มี icon จะดูเหมือน "ไม่ครบ" หรือ "ยังทำไม่เสร็จ"</span>
+        </li>
+        <li data-n="2">
+          เลือก icon ที่สื่อถึง "ดวง/โหราศาสตร์" — เช่น star, sparkle, crystal ball, zodiac
+          <span class="why">เหตุผล: icon ช่วยให้ scan navigation ได้เร็วขึ้น โดยเฉพาะผู้ใช้ที่ไม่อ่านภาษาไทย</span>
+        </li>
+        <li data-n="3">
+          ใช้ icon style เดียวกับ tab อื่น (solid fill, single color, 25&times;25px)
+          <span class="why">เหตุผล: ความ consistent ของ icon style ทำให้ nav bar ดูเป็นชุดเดียวกัน (Gestalt — Similarity)</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ━━━ M3 ━━━ -->
+  <div class="issue-card major">
+    <div class="issue-header">
+      <span class="badge">M3</span>
+      Illustration สูง 238px ดัน Content ลงนอก Fold
+      <span class="tag">H8 Minimalist / Content Priority</span>
+    </div>
+    <div class="issue-body">
+
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        <strong>Character Illustration Area</strong> — อยู่ระหว่าง Week Selector กับ Content Cards<br>
+        ความสูง <strong>238px</strong> กินพื้นที่ <strong>28%</strong> ของ viewport (844px) — ทำให้ card สีมงคลและคำแนะนำลงไปอยู่นอก fold ต้อง scroll
+      </p>
+
+      <div class="part part-visual">VISUAL — ก่อน / หลัง</div>
+      <div class="vis-compare">
+        <div class="vis-box vis-before">
+          <span class="vis-label">ตอนนี้</span>
+          <div style="border:1px solid #eee;border-radius:8px;overflow:hidden;">
+            <div style="background:#F0E6F6;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--fg-mid);">Tab + Week Selector</div>
+            <div style="background:linear-gradient(180deg,#fff,#FDE7F3);height:80px;display:flex;align-items:center;justify-content:center;font-size:28px;border:2px dashed var(--error);">🧙‍♂️</div>
+            <div style="background:#fff;padding:6px;font-size:10px;color:var(--fg-mid);">
+              <div style="background:#f5f5f5;border-radius:4px;padding:4px;margin-bottom:3px;">สีมงคลวันนี้ ▾</div>
+              <div style="background:#f5f5f5;border-radius:4px;padding:4px;opacity:0.5;">คำแนะนำ / หลีกเลี่ยง ▾</div>
+            </div>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--error);margin-top:6px;">238px = 28% viewport</div>
+          <div style="font-size:11px;color:var(--fg-mid);">content อยู่ใต้ fold</div>
+        </div>
+        <div class="vis-box vis-after">
+          <span class="vis-label">แก้เป็น</span>
+          <div style="border:1px solid #eee;border-radius:8px;overflow:hidden;">
+            <div style="background:#F0E6F6;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--fg-mid);">Tab + Week Selector</div>
+            <div style="background:linear-gradient(180deg,#fff,#FDE7F3);height:48px;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid var(--success);">🧙‍♂️</div>
+            <div style="background:#fff;padding:6px;font-size:10px;color:var(--fg-mid);">
+              <div style="background:#f5f5f5;border-radius:4px;padding:4px;margin-bottom:3px;">สีมงคลวันนี้ ✓</div>
+              <div style="background:#f5f5f5;border-radius:4px;padding:4px;">คำแนะนำ / หลีกเลี่ยง ✓</div>
+            </div>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--success);margin-top:6px;">~160px = 19% viewport</div>
+          <div style="font-size:11px;color:var(--fg-mid);">content เห็นก่อน scroll</div>
+        </div>
+      </div>
+
+      <div class="part part-fix">FIX GUIDE — วิธีแก้ใน Figma</div>
+      <ol class="fix-list">
+        <li data-n="1">
+          เลือก Container (815:18396) ที่ครอบ illustration → ลด Height จาก 238px เป็น <strong>~160px</strong>
+          <span class="why">เหตุผล: H8 Minimalist — ตัวละครน่ารักแต่กิน prime real estate มากเกินไป ข้อมูลสำคัญ (สีมงคล, คำแนะนำ) ควรเห็นได้โดยไม่ต้อง scroll</span>
+        </li>
+        <li data-n="2">
+          หรือ ย้ายตัวละครไปซ้อนหลัง card (ใช้เป็น background decoration)
+          <span class="why">เหตุผล: ตัวละครยังอยู่แต่ไม่กิน vertical space — เป็น decorative element ที่ enhance mood โดยไม่ block content</span>
+        </li>
+        <li data-n="3">
+          เป้าหมาย: ให้ card "สีมงคลวันนี้" ปรากฏ above the fold (ภายใน 844px แรก)
+          <span class="why">เหตุผล: content ที่ผู้ใช้มาดูคือดวงวันนี้ ไม่ใช่ตัวละคร — ตัวละครคือ decoration ไม่ใช่ primary content</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ━━━ M4 ━━━ -->
+  <div class="issue-card major">
+    <div class="issue-header">
+      <span class="badge">M4</span>
+      Card Border Radius 15px ไม่ตรง Token
+      <span class="tag">H4 Consistency / Token System</span>
+    </div>
+    <div class="issue-body">
+
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        <strong>ทุก Content Card</strong> — สีมงคล, คำแนะนำ, หลีกเลี่ยง, ดาวเกิด &amp; ดาวจร<br>
+        ใช้ border radius <strong>15px</strong> ซึ่งไม่ตรงค่าใน Design Token (ใกล้สุด: <span class="tok">radius-lg = 12px</span> หรือ <span class="tok">radius-xl = 16px</span>)
+      </p>
+
+      <div class="part part-visual">VISUAL — ก่อน / หลัง</div>
+      <div class="vis-compare">
+        <div class="vis-box vis-before">
+          <span class="vis-label">ตอนนี้</span>
+          <div style="width:120px;height:70px;border:2.5px solid var(--border);border-radius:15px;margin:12px auto;display:flex;align-items:center;justify-content:center;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+            <span style="font-size:16px;font-weight:800;color:var(--error);">15px</span>
+          </div>
+          <div style="font-size:12px;color:var(--fg-mid);">ไม่ตรง Token</div>
+        </div>
+        <div class="vis-box vis-after">
+          <span class="vis-label">แก้เป็น</span>
+          <div style="width:120px;height:70px;border:2.5px solid var(--success);border-radius:16px;margin:12px auto;display:flex;align-items:center;justify-content:center;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+            <span style="font-size:16px;font-weight:800;color:var(--success);">16px</span>
+          </div>
+          <div style="font-size:12px;"><span class="tok">radius-xl = 16px</span></div>
+        </div>
+      </div>
+
+      <div class="part part-fix">FIX GUIDE — วิธีแก้ใน Figma</div>
+      <ol class="fix-list">
+        <li data-n="1">
+          เลือก card ทุกตัว → เปลี่ยน Corner Radius จาก 15 เป็น <strong>16px</strong>
+          <span class="why">เหตุผล: Design Token กำหนด radius-lg=12px, radius-xl=16px ไม่มี 15px — ค่ากลางจะทำให้ระบบ Token เสีย ใช้ 16px เพราะ card เป็น large element ควรใช้ radius-xl</span>
+        </li>
+        <li data-n="2">
+          ตรวจ Tab Selector pill ด้วย — ถ้าใช้ <span class="tok">radius-full (9999px)</span> อยู่แล้วก็ถูกต้อง
+          <span class="why">เหตุผล: pill shape ใช้ radius-full (9999px) ซึ่งถูกต้องตาม Token แล้ว ไม่ต้องแก้</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MINOR ISSUES
+     ═══════════════════════════════════════════════════════ -->
+<div class="section" id="minor">
+  <div class="section-title" style="color:var(--info);">Minor — แก้ได้ก็ดี (3 ข้อ)</div>
+
+  <!-- ━━━ m1 ━━━ -->
+  <div class="issue-card minor">
+    <div class="issue-header">
+      <span class="badge">m1</span>
+      Status Bar bg ต่างจาก gradient หลัก
+      <span class="tag">H4 Consistency</span>
+    </div>
+    <div class="issue-body">
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        <strong>Status Bar / Top Nav</strong> — ใช้สีพื้น <span class="tok">#FEF4F5</span> แต่ gradient หลักเริ่มจาก white → <span class="tok">#FDE7F3</span><br>
+        เกิดขอบเส้นบางๆ ระหว่าง status bar กับ content ที่ดูไม่ smooth
+      </p>
+      <div class="part part-fix">FIX GUIDE</div>
+      <ol class="fix-list">
+        <li data-n="1">
+          เปลี่ยน [NEW]Top-Nav bg จาก <span class="tok">#FEF4F5</span> เป็น <span class="tok">#FFFFFF</span> (white) ให้ตรงกับจุดเริ่ม gradient
+          <span class="why">เหตุผล: transition ระหว่าง status bar กับ content จะ seamless — ไม่มีขอบแบ่ง</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ━━━ m2 ━━━ -->
+  <div class="issue-card minor">
+    <div class="issue-header">
+      <span class="badge">m2</span>
+      ไม่มี Loading / Empty / Error States
+      <span class="tag">H1 Visibility / H9 Error Recovery</span>
+    </div>
+    <div class="issue-body">
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        ทั้งหน้าจอไม่เห็น design สำหรับ edge cases:
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;">
+        <div style="background:var(--bg-light);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:24px;margin-bottom:6px;">⏳</div>
+          <div style="font-size:14px;font-weight:700;">Loading</div>
+          <div style="font-size:12px;color:var(--fg-mid);">กำลังโหลดข้อมูลดวง</div>
+        </div>
+        <div style="background:var(--bg-light);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:24px;margin-bottom:6px;">📭</div>
+          <div style="font-size:14px;font-weight:700;">Empty</div>
+          <div style="font-size:12px;color:var(--fg-mid);">ไม่มีข้อมูลวันนั้น</div>
+        </div>
+        <div style="background:var(--bg-light);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:24px;margin-bottom:6px;">⚠️</div>
+          <div style="font-size:14px;font-weight:700;">Error</div>
+          <div style="font-size:12px;color:var(--fg-mid);">โหลดไม่สำเร็จ</div>
+        </div>
+      </div>
+      <div class="part part-fix">FIX GUIDE</div>
+      <ol class="fix-list">
+        <li data-n="1">
+          สร้าง <strong>Skeleton Loading</strong> variant: Card placeholder + shimmer animation
+          <span class="why">เหตุผล: H1 — ผู้ใช้ต้องรู้ว่าระบบกำลังทำงาน ไม่ใช่ค้าง</span>
+        </li>
+        <li data-n="2">
+          สร้าง <strong>Empty State</strong>: ข้อความ "ยังไม่มีข้อมูลดวงของวันนี้" + ตัวละคร
+          <span class="why">เหตุผล: H10 — ให้คำแนะนำเมื่อไม่มีข้อมูล ไม่ใช่แสดงหน้าว่างเปล่า</span>
+        </li>
+        <li data-n="3">
+          สร้าง <strong>Error State</strong>: ข้อความ "โหลดข้อมูลไม่สำเร็จ" + ปุ่ม "ลองอีกครั้ง"
+          <span class="why">เหตุผล: H9 — ช่วยให้ผู้ใช้ recover จาก error ได้ด้วยตัวเอง</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ━━━ m3 ━━━ -->
+  <div class="issue-card minor">
+    <div class="issue-header">
+      <span class="badge">m3</span>
+      Shadow ใช้หลายค่าผสม
+      <span class="tag">Token Compliance</span>
+    </div>
+    <div class="issue-body">
+      <div class="part part-where">WHERE — ตำแหน่ง</div>
+      <p class="desc">
+        <strong>Content Cards</strong> — ใช้ shadow 2 layer ซ้อน:<br>
+        Layer 1: <span class="tok">0 4px 6px rgba(0,0,0,0.05)</span><br>
+        Layer 2: <span class="tok">0 10px 15px rgba(0,0,0,0.1)</span><br>
+        ไม่ตรงค่า token ที่กำหนดไว้ (shadow-sm / shadow-md / shadow-lg)
+      </p>
+      <div class="part part-fix">FIX GUIDE</div>
+      <ol class="fix-list">
+        <li data-n="1">
+          เลือกใช้ <span class="tok">shadow-md</span> (0 4px 6px rgba(0,0,0,0.1)) เป็นค่ากลางสำหรับ card
+          <span class="why">เหตุผล: shadow-md ให้ lift พอดีสำหรับ card ปกติ — ไม่ต้องซ้อน 2 layer ให้สับสน</span>
+        </li>
+        <li data-n="2">
+          ลบ shadow layer ที่เกินออก → ใช้ค่าเดียวทุก card
+          <span class="why">เหตุผล: ใน Token System มี 1 ค่าต่อ elevation level — ผสมหลายค่าจะทำให้ dev สับสนตอน implement</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════ CONTRAST AUDIT ═══════ -->
+<div class="section" id="contrast">
+  <div class="section-title">Contrast Audit Table</div>
+  <div style="overflow-x:auto;">
+    <table class="audit-table">
+      <thead>
+        <tr><th>Color Pair</th><th>Foreground</th><th>Background</th><th>Ratio</th><th>Normal</th><th>Large</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Body text</td>
+          <td><span class="sw-inline" style="background:#1B1D22;"></span>#1B1D22</td>
+          <td><span class="sw-inline" style="background:#FFF;"></span>#FFFFFF</td>
+          <td><strong>16.9 : 1</strong></td>
+          <td class="audit-pass">AAA</td>
+          <td class="audit-pass">AAA</td>
+        </tr>
+        <tr>
+          <td>Secondary text</td>
+          <td><span class="sw-inline" style="background:#6A6E83;"></span>#6A6E83</td>
+          <td><span class="sw-inline" style="background:#FFF;"></span>#FFFFFF</td>
+          <td><strong>5.0 : 1</strong></td>
+          <td class="audit-pass">AA</td>
+          <td class="audit-pass">AAA</td>
+        </tr>
+        <tr style="background:#FEF2F2;">
+          <td><strong>Inactive tabs (C1)</strong></td>
+          <td><span class="sw-inline" style="background:#9A9DAD;"></span>#9A9DAD</td>
+          <td><span class="sw-inline" style="background:#FFF;"></span>#FFFFFF</td>
+          <td><strong style="color:var(--error);">2.7 : 1</strong></td>
+          <td class="audit-fail">FAIL</td>
+          <td class="audit-fail">FAIL</td>
+        </tr>
+        <tr style="background:#FEF2F2;">
+          <td><strong>Active tab (M1)</strong></td>
+          <td><span class="sw-inline" style="background:#FFF;border:1px solid #ddd;"></span>#FFFFFF</td>
+          <td><span class="sw-inline" style="background:#EC599D;"></span>#EC599D</td>
+          <td><strong style="color:var(--warning);">3.2 : 1</strong></td>
+          <td class="audit-fail">FAIL</td>
+          <td class="audit-pass">AA</td>
+        </tr>
+        <tr style="background:#FEF2F2;">
+          <td><strong>Date badge (C3)</strong></td>
+          <td><span class="sw-inline" style="background:#EC599D;"></span>#EC599D</td>
+          <td><span class="sw-inline" style="background:#FDEFF5;border:1px solid #F7BDD8;"></span>#FDEFF5</td>
+          <td><strong style="color:var(--error);">2.9 : 1</strong></td>
+          <td class="audit-fail">FAIL</td>
+          <td class="audit-fail">FAIL</td>
+        </tr>
+        <tr style="background:#FEF2F2;">
+          <td><strong>Selected day text</strong></td>
+          <td><span class="sw-inline" style="background:#FFF;border:1px solid #ddd;"></span>#FFFFFF</td>
+          <td><span class="sw-inline" style="background:#EC599D;"></span>#EC599D</td>
+          <td><strong style="color:var(--warning);">3.2 : 1</strong></td>
+          <td class="audit-fail">FAIL</td>
+          <td class="audit-pass">AA</td>
+        </tr>
+        <tr>
+          <td>Star info text</td>
+          <td><span class="sw-inline" style="background:#6A6E83;"></span>#6A6E83</td>
+          <td><span class="sw-inline" style="background:#FFF;"></span>#FFFFFF</td>
+          <td><strong>5.0 : 1</strong></td>
+          <td class="audit-pass">AA</td>
+          <td class="audit-pass">AAA</td>
+        </tr>
+        <tr style="background:#FEF2F2;">
+          <td><strong>Reference text (C1)</strong></td>
+          <td><span class="sw-inline" style="background:#9A9DAD;"></span>#9A9DAD</td>
+          <td><span class="sw-inline" style="background:#FFF;"></span>#FFFFFF</td>
+          <td><strong style="color:var(--error);">2.7 : 1</strong></td>
+          <td class="audit-fail">FAIL</td>
+          <td class="audit-fail">FAIL</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:12px;font-size:13px;color:var(--fg-mid);">
+    <strong>WCAG AA:</strong> Normal text &ge; 4.5:1 &nbsp;|&nbsp; Large text (&ge;18.66px Bold / &ge;24px Regular) &ge; 3:1 &nbsp;|&nbsp; UI components &ge; 3:1
+  </div>
+</div>
+
+<!-- ═══════ CHECKLIST ═══════ -->
+<div class="section" id="checklist">
+  <div class="section-title">สรุป Checklist — เรียงตาม Priority</div>
+  <ul class="checklist">
+    <li>
+      <span class="ck ck-c">C1</span>
+      <span>เปลี่ยนสี inactive tab labels + reference text จาก <span class="tok">#9A9DAD</span> → <strong>#6A6E83</strong></span>
+    </li>
+    <li>
+      <span class="ck ck-c">C2</span>
+      <span>เพิ่ม touch area ลูกศร chevron เป็น <strong>44&times;44px</strong> (เพิ่ม padding, fill = transparent)</span>
+    </li>
+    <li>
+      <span class="ck ck-c">C3</span>
+      <span>เปลี่ยนสี Date Badge text + border จาก <span class="tok">#EC599D</span> → <strong>#BD477E</strong></span>
+    </li>
+    <li>
+      <span class="ck ck-c">C4</span>
+      <span>เพิ่มความกว้าง Day Cell จาก 41px → <strong>44px</strong> (ลด gap เป็น 8px ชดเชย)</span>
+    </li>
+    <li>
+      <span class="ck ck-m">M1</span>
+      <span>Active tab: เพิ่ม font เป็น <strong>18px Bold</strong> หรือเปลี่ยนพื้นเป็น <strong>#BD477E</strong></span>
+    </li>
+    <li>
+      <span class="ck ck-m">M2</span>
+      <span>เพิ่ม icon 25&times;25px ให้ tab "ดวงวันนี้" (star / sparkle / crystal ball)</span>
+    </li>
+    <li>
+      <span class="ck ck-m">M3</span>
+      <span>ลดความสูง Illustration จาก 238px → <strong>~160px</strong></span>
+    </li>
+    <li>
+      <span class="ck ck-m">M4</span>
+      <span>ปรับ Card border radius จาก 15px → <strong>16px</strong> <span class="tok">radius-xl</span></span>
+    </li>
+    <li>
+      <span class="ck ck-i">m1</span>
+      <span>ปรับ Status Bar bg จาก <span class="tok">#FEF4F5</span> → <strong>#FFFFFF</strong></span>
+    </li>
+    <li>
+      <span class="ck ck-i">m2</span>
+      <span>เพิ่ม <strong>Loading, Empty, Error</strong> state variants</span>
+    </li>
+    <li>
+      <span class="ck ck-i">m3</span>
+      <span>ใช้ shadow token ค่าเดียว <span class="tok">shadow-md</span> ไม่ผสมหลาย layer</span>
+    </li>
+  </ul>
+</div>
+
+<!-- Footer -->
+<div style="text-align:center; padding:32px 16px 56px; color:var(--fg-low); font-size:13px;">
+  Generated by <strong>figma-design-critique</strong> skill &nbsp;|&nbsp;
+  Figma: DailyMu - App / Calendar (773:28231) &nbsp;|&nbsp;
+  19 Feb 2026
+</div>
+
+</div>
+</body>
+</html>

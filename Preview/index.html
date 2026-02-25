@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyMu — ดวงวันนี้ (Home)</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/line-seed-sans-th" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { margin: 0; padding: 0; overflow-x: hidden; }
+    * { box-sizing: border-box; }
+    input, button, textarea, select {
+      font-family: "LINE Seed Sans TH", "Noto Sans Thai", -apple-system, sans-serif !important;
+    }
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    /* ═══════════════════════════════════════════
+       DESIGN TOKENS
+    ═══════════════════════════════════════════ */
+    const T = {
+      primary: '#EC599D',
+      primaryLight: '#FDEFF5',
+      primaryMid: '#F7BDD8',
+      secondary: '#7279FB',
+      secondaryLight: '#F1F2FF',
+      secondaryMid: '#C7C9FD',
+      success: '#559652',
+      successLight: '#E1F2E0',
+      successBg: '#F0F8F0',
+      warning: '#F8C135',
+      warningLight: '#FEF3D7',
+      warningBg: '#FEF9EB',
+      error: '#EA244F',
+      errorLight: '#FBD3DC',
+      errorBg: '#FDE9ED',
+      fgHigh: '#1B1D22',
+      fgMid: '#6A6E83',
+      fgLow: '#9A9DAD',
+      bgWhite: '#FFFFFF',
+      bgLight: '#F8F8F9',
+      bgMid: '#EBECEF',
+      bgDark: '#CFD1D9',
+      border: '#EBECEF',
+      rSm: '4px', rMd: '8px', rLg: '12px', rXl: '16px', r2xl: '24px', rFull: '9999px',
+      font: '"LINE Seed Sans TH", "Noto Sans Thai", -apple-system, sans-serif',
+    };
+
+    /* ═══════════════════════════════════════════
+       MOCK DATA
+    ═══════════════════════════════════════════ */
+    const mock = {
+      date: '17 กุมภาพันธ์ 2569',
+      dayName: 'วันอังคาร',
+      status: 'good',
+      statusLabel: 'วันนี้ดวงดี',
+      statusIcon: '⭐',
+      aiSummary: 'วันนี้ดาวพฤหัสส่องสว่าง เรื่องการเงินมีโชค แต่ระวังการตัดสินใจเรื่องความรัก อย่าใจร้อน',
+      luckyColors: [
+        { aspect: 'งาน',    c1: '#E85D3A', c2: '#F5A623', name: 'ส้ม-แดง' },
+        { aspect: 'เงิน',   c1: '#F5C842', c2: '#E8B730', name: 'ทอง' },
+        { aspect: 'โชค',    c1: '#C8C8C8', c2: '#EFEFEF', name: 'เทา' },
+        { aspect: 'รัก',    c1: '#F8A4C8', c2: '#FADCE8', name: 'ชมพู' },
+        { aspect: 'โชคร้าย', c1: '#9B59B6', c2: '#D2B4DE', name: 'ม่วง' },
+      ],
+      doList: ['เหมาะกับการเริ่มต้นสิ่งใหม่', 'ลงทุนระยะสั้นจะได้ผลดี'],
+      avoidList: ['หลีกเลี่ยงการเซ็นสัญญา', 'อย่าใจร้อนเรื่องความรัก'],
+      luckyNumbers: [9, 14, 23],
+      times: [
+        { time: '06:00-09:00', label: 'ดีมาก', level: 'good' },
+        { time: '09:00-12:00', label: 'ปกติ', level: 'neutral' },
+        { time: '12:00-14:00', label: 'ระวัง', level: 'caution' },
+        { time: '14:00-18:00', label: 'ดี', level: 'good' },
+        { time: '18:00-21:00', label: 'ดีมาก', level: 'good' },
+        { time: '21:00-00:00', label: 'ปกติ', level: 'neutral' },
+      ],
+      natal: 'ดาวอาทิตย์อยู่ราศีกุมภ์ ดาวจันทร์อยู่ราศีพฤษภ',
+      transit: 'ดาวพฤหัสจรผ่านราศีเมถุน ส่งพลังด้านการเงิน',
+      aiSuggestion: 'วันนี้ดาวพฤหัสส่งพลังการเงิน ลองซื้อหวยหรือเริ่มลงทุนใหม่ ดวงความรักดี ชวนคนพิเศษไปทานข้าว',
+    };
+
+    const engines = [
+      { id: 'siamsi', name: 'เซียมซีวันนี้', sub: 'สุ่มเซียมซี ได้คำทำนายประจำวัน', icon: '🎋', badge: 'ยอดนิยม' },
+      { id: 'tarot', name: 'เปิดไพ่ทำนาย', sub: 'เปิดไพ่ 3 ใบ รู้ดวงวันนี้', icon: '🃏', badge: null },
+      { id: 'dream', name: 'ทำนายฝัน', sub: 'เล่าฝัน แปลความหมาย', icon: '💭', badge: 'ใหม่' },
+    ];
+
+    const MO = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    const DH = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+
+    const genCalData = (y, m) => {
+      const days = new Date(y, m + 1, 0).getDate();
+      const d = {}; const now = new Date();
+      for (let i = 1; i <= days; i++) {
+        const r = Math.sin(y * 100 + m * 31 + i * 7) * 0.5 + 0.5;
+        d[i] = r < 0.35 ? 'good' : r < 0.7 ? 'neutral' : 'caution';
+      }
+      if (now.getFullYear() === y && now.getMonth() === m) d[now.getDate()] = 'good';
+      return d;
+    };
+
+    /* ═══════════════════════════════════════════
+       HELPERS
+    ═══════════════════════════════════════════ */
+    const FaIcon = ({ fa, size = 12, color = T.fgMid, style: s }) => React.createElement('i', { className: fa, style: { fontSize: `${size}px`, color, ...s } });
+    const sColor = s => s === 'good' ? T.success : s === 'neutral' ? T.warning : T.error;
+    const sBg = s => s === 'good' ? T.successBg : s === 'neutral' ? T.warningBg : T.errorBg;
+    const sLabel = s => s === 'good' ? 'ดวงดี' : s === 'neutral' ? 'ปกติ' : 'ระวัง';
+    const sIcon = s => s === 'good' ? '⭐' : s === 'neutral' ? '🌤️' : '⚠️';
+
+    const DualColor = ({ c1, c2, size = 32 }) => {
+      const r = size / 2;
+      const overlap = size * 0.3;
+      return (
+        <div style={{ position:'relative', width: size + size - overlap, height: size }}>
+          <div style={{ position:'absolute', left:0, top:0, width:size, height:size, borderRadius:'50%', background:c1, border:'2px solid #fff', zIndex:1 }} />
+          <div style={{ position:'absolute', left:size - overlap, top:0, width:size, height:size, borderRadius:'50%', background:c2, border:'2px solid #fff' }} />
+        </div>
+      );
+    };
+
+    /* ═══════════════════════════════════════════
+       MAIN APP
+    ═══════════════════════════════════════════ */
+    const App = () => {
+      const [screen, setScreen] = useState('today');
+      const [selDay, setSelDay] = useState(null);
+      const [cM, setCM] = useState(new Date().getMonth());
+      const [cY, setCY] = useState(new Date().getFullYear());
+      const [calData, setCalData] = useState({});
+      const [pageState, setPageState] = useState('normal');
+      const now = new Date();
+
+      useEffect(() => { setCalData(genCalData(cY, cM)); }, [cM, cY]);
+
+      const go = (s, day) => {
+        if (day) setSelDay(day);
+        setPageState('normal');
+        setScreen(s);
+      };
+      const goState = (s, st) => { setScreen(s); setPageState(st); };
+      const prevMonth = () => { if (cM === 0) { setCM(11); setCY(y => y - 1); } else setCM(m => m - 1); };
+      const nextMonth = () => { if (cM === 11) { setCM(0); setCY(y => y + 1); } else setCM(m => m + 1); };
+
+      /* ─── Navigator Groups ─── */
+      const groups = [
+        { label: 'TODAY', items: [
+          { id: 'today', name: 'ดวงวันนี้' },
+          { id: 'today', name: 'Loading', state:'loading', indent:true },
+          { id: 'today', name: 'Empty', state:'empty', indent:true },
+          { id: 'today', name: 'Error', state:'error', indent:true },
+        ]},
+        { label: 'DAY DETAIL', items: [
+          { id: 'daydetail', name: 'รายละเอียดดวง' },
+        ]},
+        { label: 'SHARE', items: [
+          { id: 'share', name: 'Share Card (IG Story)' },
+        ]},
+      ];
+
+      /* ─── Shared Components ─── */
+      const DynamicIsland = () => (
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '10px' }}>
+          <div style={{ width: '126px', height: '36px', background: '#000', borderRadius: '20px' }} />
+        </div>
+      );
+
+      const StatusBar = () => (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 24px 0', height: '44px' }}>
+          <span style={{ fontFamily: T.font, fontSize: '15px', fontWeight: 600, color: T.fgHigh }}>9:41</span>
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <svg width="17" height="12" viewBox="0 0 17 12"><path d="M1 4.5C3.5.8 7.2-0.3 8.5 0.2c1.3.5 2.8 1.8 4.2 4" stroke="#1B1D22" fill="none" strokeWidth="1.5"/><path d="M3 6.8c1.5-2 3.5-2.8 5.5-1.8s3 2.5 3.5 3.5" stroke="#1B1D22" fill="none" strokeWidth="1.5"/><circle cx="8.5" cy="10" r="1.5" fill="#1B1D22"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12"><rect x="0" y="0" width="3" height="12" rx="1" fill="#1B1D22" opacity="0.3"/><rect x="4.5" y="3" width="3" height="9" rx="1" fill="#1B1D22" opacity="0.3"/><rect x="9" y="1" width="3" height="11" rx="1" fill="#1B1D22"/><rect x="13" y="0" width="3" height="12" rx="1" fill="#1B1D22"/></svg>
+            <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="22" height="10" rx="2.5" stroke="#1B1D22" strokeWidth="1" fill="none"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="#1B1D22" opacity="0.4"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5" fill="#559652"/></svg>
+          </div>
+        </div>
+      );
+
+      const TabBar = ({ active = 'today' }) => {
+        const tabs = [
+          { id:'calendar', fa:'fa-solid fa-calendar-days', l:'ปฏิทิน' },
+          { id:'notify',   fa:'fa-solid fa-bell',          l:'แจ้งเตือน' },
+          { id:'today',    fa:'fa-solid fa-sun',            l:'ดวงวันนี้', center:true },
+          { id:'fortune',  fa:'fa-solid fa-wand-magic-sparkles', l:'ทำนาย' },
+          { id:'profile',  fa:'fa-solid fa-user',           l:'โปรไฟล์' },
+        ];
+        return (
+          <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'83px', zIndex:20 }}>
+            {/* Floating center button */}
+            <div onClick={() => go('today')} style={{
+              position:'absolute', top:'-20px', left:'50%', transform:'translateX(-50%)', zIndex:12,
+              width:'56px', height:'56px', borderRadius:'50%',
+              background:`linear-gradient(135deg, ${T.primary}, #F472B6)`,
+              boxShadow:`0 4px 16px ${T.primary}40`,
+              display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
+            }}>
+              <FaIcon fa="fa-solid fa-sun" size={22} color="#fff" />
+            </div>
+            {/* Bar BG with curved notch */}
+            <svg viewBox="0 0 390 95" style={{ position:'absolute', bottom:0, left:0, width:'100%', height:'95px' }}>
+              <defs>
+                <filter id="tabS" x="-5%" y="-20%" width="110%" height="140%">
+                  <feDropShadow dx="0" dy="-2" stdDeviation="4" floodColor="#000" floodOpacity="0.06"/>
+                </filter>
+              </defs>
+              <path d="M0 16 H152 C160 16 165 16 169 20 Q177 32 186 36 Q191 38 195 38 Q199 38 204 36 Q213 32 221 20 C225 16 230 16 238 16 H390 V95 H0 Z" fill="white" filter="url(#tabS)"/>
+            </svg>
+            {/* Tab items */}
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, display:'flex', justifyContent:'space-around', alignItems:'flex-end', padding:'0 8px 28px', height:'83px', zIndex:11 }}>
+              {tabs.map(t => {
+                if (t.center) return <div key={t.id} style={{ width:'56px' }} />;
+                const isActive = active === t.id;
+                return (
+                  <div key={t.id} onClick={() => {
+                    if (t.id === 'today') go('today');
+                    else window.location.href = `../today-preview.html`;
+                  }} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'3px', cursor:'pointer', minWidth:'50px' }}>
+                    <FaIcon fa={t.fa} size={18} color={isActive ? T.primary : T.fgLow} />
+                    <span style={{ fontFamily:T.font, fontSize:'10px', fontWeight:isActive?700:400, color:isActive?T.primary:T.fgLow }}>{t.l}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      };
+
+      const Skel = ({ w='100%', h='16px', r='8px', style:s }) => (
+        <div style={{ width:w, height:h, borderRadius:r, background:`linear-gradient(90deg, ${T.bgMid} 25%, ${T.bgLight} 50%, ${T.bgMid} 75%)`, backgroundSize:'800px 100%', animation:'shimmer 1.5s ease-in-out infinite', ...s }} />
+      );
+
+      const SecHead = ({ title, sub, action, onAction }) => (
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginBottom:'12px' }}>
+          <div>
+            <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:700, color:T.fgHigh }}>{title}</div>
+            {sub && <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, marginTop:'2px' }}>{sub}</div>}
+          </div>
+          {action && <div onClick={onAction} style={{ fontFamily:T.font, fontSize:'13px', color:T.secondary, fontWeight:600, cursor:'pointer' }}>{action}</div>}
+        </div>
+      );
+
+      const BackHeader = ({ title, onBack }) => (
+        <div style={{ padding:'12px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:`1px solid ${T.border}` }}>
+          <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
+            <div onClick={onBack || (() => go('today'))} style={{ cursor:'pointer', fontSize:'20px', lineHeight:1 }}>←</div>
+            <div style={{ fontFamily:T.font, fontSize:'16px', fontWeight:700, color:T.fgHigh }}>{title}</div>
+          </div>
+        </div>
+      );
+
+      const EmptyState = ({ icon, fa, title, desc, cta, onCta, color }) => (
+        <div style={{ padding:'48px 20px', textAlign:'center', animation:'fadeIn 0.4s ease-out' }}>
+          {fa ? <div style={{ width:'64px', height:'64px', borderRadius:T.rFull, background:(color||T.fgLow)+'12', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px' }}><FaIcon fa={fa} size={28} color={color||T.fgLow} /></div>
+           : <div style={{ fontSize:'64px', marginBottom:'16px', animation:'float 3s ease-in-out infinite' }}>{icon||'📭'}</div>}
+          <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh, marginBottom:'6px' }}>{title}</div>
+          <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, lineHeight:'21px', marginBottom:'20px' }}>{desc}</div>
+          {cta && <div onClick={onCta} style={{ height:'44px', borderRadius:T.rFull, margin:'0 48px', background:`linear-gradient(135deg, ${T.primary}, ${T.secondary})`, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:T.font, fontSize:'14px', fontWeight:700, cursor:'pointer', boxShadow:`0 4px 16px ${T.primary}40` }}>{cta}</div>}
+        </div>
+      );
+
+      const ErrorState = ({ title, desc, onRetry }) => (
+        <div style={{ padding:'48px 20px', textAlign:'center', animation:'fadeIn 0.4s ease-out' }}>
+          <div style={{ width:'64px', height:'64px', borderRadius:T.rFull, background:T.error+'12', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px' }}>
+            <FaIcon fa="fa-solid fa-triangle-exclamation" size={28} color={T.error} />
+          </div>
+          <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:T.fgHigh, marginBottom:'6px' }}>{title||'เกิดข้อผิดพลาด'}</div>
+          <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, lineHeight:'21px', marginBottom:'20px' }}>{desc||'ไม่สามารถโหลดข้อมูลได้\nกรุณาลองใหม่อีกครั้ง'}</div>
+          <div onClick={onRetry} style={{ height:'44px', borderRadius:T.rFull, margin:'0 60px', border:`2px solid ${T.primary}`, color:T.primary, display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', fontFamily:T.font, fontSize:'14px', fontWeight:700, cursor:'pointer' }}>
+            <FaIcon fa="fa-solid fa-rotate-right" size={13} color={T.primary} /> ลองใหม่
+          </div>
+        </div>
+      );
+
+      /* ═══════ SECTION 1: DAILY SUMMARY ═══════ */
+      const DailySummary = () => (
+        <div style={{ animation:'fadeIn 0.4s ease-out' }}>
+          <SecHead title="สรุปในวันนี้" sub={`${mock.dayName}ที่ ${mock.date}`} />
+          <div style={{ background:`linear-gradient(135deg, ${sBg(mock.status)} 0%, ${T.bgWhite} 100%)`, borderRadius:T.rXl, padding:'20px', border:`1px solid ${T.border}`, boxShadow:'0 2px 8px rgba(0,0,0,0.04)' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'14px' }}>
+              <div style={{ width:'40px', height:'40px', borderRadius:T.rFull, background:sBg(mock.status), border:`2px solid ${sColor(mock.status)}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'20px' }}>{mock.statusIcon}</div>
+              <div>
+                <div style={{ fontFamily:T.font, fontSize:'16px', fontWeight:700, color:sColor(mock.status) }}>{mock.statusLabel}</div>
+                <div style={{ fontFamily:T.font, fontSize:'12px', color:T.fgMid }}>อัปเดตทุกวัน เที่ยงคืน</div>
+              </div>
+            </div>
+            <div style={{ fontFamily:T.font, fontSize:'14px', lineHeight:'22px', color:T.fgHigh, marginBottom:'16px', padding:'12px', background:'rgba(255,255,255,0.7)', borderRadius:T.rMd }}>{mock.aiSummary}</div>
+            <div style={{ display:'flex', gap:'6px', marginBottom:'16px', overflowX:'auto' }}>
+              {mock.luckyColors.map((c,i) => (
+                <div key={i} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'5px', minWidth:'52px' }}>
+                  <DualColor c1={c.c1} c2={c.c2} size={28} />
+                  <div style={{ fontFamily:T.font, fontSize:'10px', color:T.fgLow }}>{c.aspect}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display:'flex', gap:'8px', marginBottom:'14px' }}>
+              <div style={{ flex:1, padding:'10px', background:T.successBg, borderRadius:T.rMd, border:`1px solid ${T.successLight}` }}>
+                <div style={{ fontFamily:T.font, fontSize:'11px', fontWeight:700, color:T.success, marginBottom:'6px' }}>✅ ควรทำ</div>
+                {mock.doList.map((d,i) => <div key={i} style={{ fontFamily:T.font, fontSize:'12px', lineHeight:'18px', color:T.fgHigh, marginBottom:'2px' }}>• {d}</div>)}
+              </div>
+              <div style={{ flex:1, padding:'10px', background:T.errorBg, borderRadius:T.rMd, border:`1px solid ${T.errorLight}` }}>
+                <div style={{ fontFamily:T.font, fontSize:'11px', fontWeight:700, color:T.error, marginBottom:'6px' }}>❌ หลีกเลี่ยง</div>
+                {mock.avoidList.map((a,i) => <div key={i} style={{ fontFamily:T.font, fontSize:'12px', lineHeight:'18px', color:T.fgHigh, marginBottom:'2px' }}>• {a}</div>)}
+              </div>
+            </div>
+            <div style={{ display:'flex', gap:'8px' }}>
+              <div onClick={() => go('share')} style={{ flex:1, height:'40px', borderRadius:T.rMd, background:T.primary, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', fontFamily:T.font, fontSize:'14px', fontWeight:700, cursor:'pointer' }}>📤 แชร์ดวงวันนี้</div>
+              <div onClick={() => go('daydetail', now.getDate())} style={{ height:'40px', padding:'0 16px', borderRadius:T.rMd, border:`1.5px solid ${T.border}`, background:T.bgWhite, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:T.font, fontSize:'13px', color:T.secondary, fontWeight:600, cursor:'pointer' }}>อ่านเพิ่ม →</div>
+            </div>
+          </div>
+        </div>
+      );
+
+      /* ═══════ SECTION 2: CALENDAR ═══════ */
+      const CalGrid = ({ compact = true }) => {
+        const fd = new Date(cY, cM, 1).getDay();
+        const dim = new Date(cY, cM + 1, 0).getDate();
+        const isToday = d => now.getDate()===d && now.getMonth()===cM && now.getFullYear()===cY;
+        const cells = []; for(let i=0;i<fd;i++) cells.push(null); for(let d=1;d<=dim;d++) cells.push(d);
+        return (
+          <div style={{ animation:'fadeIn 0.4s ease-out' }}>
+            {compact && <SecHead title="ปฏิทินดูดวง" sub="ดูแนวโน้มดวงล่วงหน้า" />}
+            <div style={{ background:T.bgWhite, borderRadius:T.rXl, padding:'16px', border:`1px solid ${T.border}`, boxShadow:'0 2px 8px rgba(0,0,0,0.04)' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'14px' }}>
+                <div onClick={prevMonth} style={{ width:'32px', height:'32px', borderRadius:T.rFull, background:T.bgLight, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', fontFamily:T.font, fontSize:'16px', fontWeight:700, color:T.fgMid }}>‹</div>
+                <div style={{ fontFamily:T.font, fontSize:'16px', fontWeight:700, color:T.fgHigh }}>{MO[cM]} {cY + 543}</div>
+                <div onClick={nextMonth} style={{ width:'32px', height:'32px', borderRadius:T.rFull, background:T.bgLight, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', fontFamily:T.font, fontSize:'16px', fontWeight:700, color:T.fgMid }}>›</div>
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:'2px', marginBottom:'6px' }}>
+                {DH.map((d,i) => <div key={i} style={{ textAlign:'center', fontFamily:T.font, fontSize:'11px', fontWeight:600, color:i===0?T.error:T.fgMid, padding:'4px 0' }}>{d}</div>)}
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:'2px' }}>
+                {cells.map((d,i) => {
+                  if(!d) return <div key={i}/>;
+                  const st = calData[d]; const td = isToday(d);
+                  return (
+                    <div key={i} onClick={() => go('daydetail', d)} style={{ textAlign:'center', padding:'6px 0', cursor:'pointer', borderRadius:T.rMd, background:td?T.primary+'15':'transparent', border:td?`2px solid ${T.primary}`:'2px solid transparent', transition:'all 0.15s' }}>
+                      <div style={{ fontFamily:T.font, fontSize:'13px', fontWeight:td?700:400, color:td?T.primary:T.fgHigh }}>{d}</div>
+                      <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:sColor(st), margin:'3px auto 0' }} />
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ display:'flex', justifyContent:'center', gap:'16px', marginTop:'12px', paddingTop:'10px', borderTop:`1px solid ${T.border}` }}>
+                {[{s:'good',l:'ดวงดี'},{s:'neutral',l:'ปกติ'},{s:'caution',l:'ระวัง'}].map((x,i) => (
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:'5px' }}>
+                    <div style={{ width:'8px', height:'8px', borderRadius:'50%', background:sColor(x.s) }} />
+                    <span style={{ fontFamily:T.font, fontSize:'11px', color:T.fgMid }}>{x.l}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      /* ═══════ SECTION 3: FORTUNE SHORTCUTS ═══════ */
+      const Shortcuts = () => (
+        <div style={{ animation:'fadeIn 0.4s ease-out' }}>
+          <SecHead title="ทำนายดวงวันนี้" sub="ลองดูดวงวันนี้ของคุณ" />
+          <div style={{ display:'flex', gap:'10px', overflowX:'auto', paddingBottom:'4px' }}>
+            {engines.map((e,i) => (
+              <div key={i} style={{ minWidth:'140px', flex:1, padding:'16px 12px', background:`linear-gradient(135deg, ${i===0?T.primaryLight:i===1?T.secondaryLight:T.warningBg} 0%, ${T.bgWhite} 100%)`, borderRadius:T.rXl, border:`1px solid ${T.border}`, cursor:'pointer', position:'relative', textAlign:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.04)' }}>
+                {e.badge && <div style={{ position:'absolute', top:'-6px', right:'-4px', background:e.badge==='ยอดนิยม'?T.primary:T.secondary, color:'#fff', fontFamily:T.font, fontSize:'9px', fontWeight:700, padding:'2px 8px', borderRadius:T.rFull }}>{e.badge}</div>}
+                <div style={{ fontSize:'32px', marginBottom:'8px', animation:'float 3s ease-in-out infinite', animationDelay:`${i*0.3}s` }}>{e.icon}</div>
+                <div style={{ fontFamily:T.font, fontSize:'13px', fontWeight:700, color:T.fgHigh, marginBottom:'4px' }}>{e.name}</div>
+                <div style={{ fontFamily:T.font, fontSize:'11px', color:T.fgMid, lineHeight:'16px' }}>{e.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
+      /* ═══════ TODAY PAGE (FULL SCROLL) ═══════ */
+      const TodayPage = () => {
+        const TodayLoading = () => (
+          <div style={{ padding:'16px 20px' }} role="status" aria-label="กำลังโหลดดวงวันนี้">
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px' }}>
+              <div><Skel w="140px" h="24px" /><Skel w="100px" h="14px" style={{ marginTop:'6px' }} /></div>
+              <Skel w="40px" h="40px" r="50%" />
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:'12px', marginBottom:'20px' }}>
+              <Skel w="48px" h="48px" r="50%" />
+              <div><Skel w="120px" h="18px" /><Skel w="100px" h="12px" style={{ marginTop:'4px' }} /></div>
+            </div>
+            <Skel w="100%" h="3px" r="2px" style={{ marginBottom:'16px' }} />
+            <Skel w="100%" h="60px" r="8px" style={{ marginBottom:'20px' }} />
+            <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'20px' }}>
+              {[1,2,3,4,5].map(i => <Skel key={i} w="52px" h="52px" r="50%" />)}
+            </div>
+            <div style={{ display:'flex', gap:'8px', marginBottom:'20px' }}>
+              <Skel w="50%" h="100px" r="12px" />
+              <Skel w="50%" h="100px" r="12px" />
+            </div>
+            <div style={{ display:'flex', gap:'8px', marginBottom:'20px' }}>
+              <Skel w="60%" h="40px" r="20px" />
+              <Skel w="40%" h="40px" r="20px" />
+            </div>
+            <Skel w="100%" h="200px" r="16px" style={{ marginBottom:'16px' }} />
+            <div style={{ display:'flex', gap:'10px' }}>
+              <Skel w="33%" h="110px" r="16px" />
+              <Skel w="33%" h="110px" r="16px" />
+              <Skel w="33%" h="110px" r="16px" />
+            </div>
+          </div>
+        );
+
+        if (pageState !== 'normal') return (
+          <div style={{ flex:1, overflowY:'auto' }}>
+            {pageState === 'loading' && <TodayLoading />}
+            {pageState === 'empty' && <EmptyState icon="🌙" title="ยังไม่ได้ผูกดวง" desc={'ผูกข้อมูลวัน เดือน ปีเกิด\nเพื่อดูดวงประจำวันของคุณ'} cta="ผูกดวงของคุณ" />}
+            {pageState === 'error' && <ErrorState title="ไม่สามารถโหลดดวงได้" desc={'ระบบกำลังอัปเดตข้อมูล\nกรุณารอสักครู่แล้วลองใหม่'} onRetry={() => setPageState('normal')} />}
+          </div>
+        );
+
+        return (
+        <div style={{ overflowY:'auto', height:'100%', paddingBottom:'100px' }}>
+          {/* ── 1. HERO BANNER ── */}
+          <div style={{
+            background:`linear-gradient(180deg, ${sBg(mock.status)} 0%, ${T.bgWhite} 100%)`,
+            padding:'16px 20px 20px',
+            animation:'fadeIn 0.4s ease-out',
+          }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'18px' }}>
+              <div>
+                <div style={{ fontFamily:T.font, fontSize:'22px', fontWeight:800, color:T.fgHigh }}>สวัสดี! ☀️</div>
+                <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, marginTop:'2px' }}>{mock.dayName}ที่ {mock.date}</div>
+              </div>
+              <div style={{ width:'40px', height:'40px', borderRadius:T.rFull, background:`linear-gradient(135deg, ${T.primary}, ${T.secondary})`, display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontFamily:T.font, fontSize:'16px', fontWeight:700 }}>มู</div>
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:'12px', marginBottom:'16px' }}>
+              <div style={{ width:'48px', height:'48px', borderRadius:T.rFull, background:sBg(mock.status), border:`2.5px solid ${sColor(mock.status)}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'24px', flexShrink:0 }}>{mock.statusIcon}</div>
+              <div>
+                <div style={{ fontFamily:T.font, fontSize:'18px', fontWeight:800, color:sColor(mock.status) }}>{mock.statusLabel}</div>
+                <div style={{ fontFamily:T.font, fontSize:'11px', color:T.fgMid }}>อัปเดตทุกวัน เที่ยงคืน</div>
+              </div>
+            </div>
+            <div style={{ fontFamily:T.font, fontSize:'14px', lineHeight:'22px', color:T.fgHigh, paddingLeft:'14px', borderLeft:`3px solid ${T.secondary}` }}>
+              {mock.aiSummary}
+            </div>
+          </div>
+
+          {/* ── 2. LUCKY COLORS ── */}
+          <div style={{ padding:'4px 20px 16px', animation:'fadeIn 0.5s ease-out' }}>
+            <div style={{ fontFamily:T.font, fontSize:'11px', fontWeight:700, color:T.fgLow, textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'10px' }}>สีมงคลวันนี้</div>
+            <div style={{ display:'flex', justifyContent:'space-between' }}>
+              {mock.luckyColors.map((c,i) => (
+                <div key={i} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'5px' }}>
+                  <DualColor c1={c.c1} c2={c.c2} size={34} />
+                  <div style={{ fontFamily:T.font, fontSize:'10px', color:T.fgLow }}>{c.aspect}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── 3. DO / AVOID ── */}
+          <div style={{ padding:'0 20px 16px', animation:'fadeIn 0.55s ease-out' }}>
+            <div style={{ display:'flex', gap:'8px' }}>
+              <div style={{ flex:1, padding:'12px', background:T.successBg, borderRadius:T.rLg }}>
+                <div style={{ fontFamily:T.font, fontSize:'11px', fontWeight:700, color:T.success, marginBottom:'6px' }}>✅ ควรทำ</div>
+                {mock.doList.map((d,i) => <div key={i} style={{ fontFamily:T.font, fontSize:'12px', lineHeight:'18px', color:T.fgHigh, marginBottom:'2px' }}>• {d}</div>)}
+              </div>
+              <div style={{ flex:1, padding:'12px', background:T.errorBg, borderRadius:T.rLg }}>
+                <div style={{ fontFamily:T.font, fontSize:'11px', fontWeight:700, color:T.error, marginBottom:'6px' }}>❌ หลีกเลี่ยง</div>
+                {mock.avoidList.map((a,i) => <div key={i} style={{ fontFamily:T.font, fontSize:'12px', lineHeight:'18px', color:T.fgHigh, marginBottom:'2px' }}>• {a}</div>)}
+              </div>
+            </div>
+          </div>
+
+          {/* ── 4. ACTIONS ── */}
+          <div style={{ padding:'0 20px 20px', display:'flex', gap:'8px', animation:'fadeIn 0.6s ease-out' }}>
+            <div onClick={() => go('share')} style={{ flex:1, height:'40px', borderRadius:T.rFull, background:T.primary, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', fontFamily:T.font, fontSize:'14px', fontWeight:700, cursor:'pointer', boxShadow:`0 3px 12px ${T.primary}30` }}>📤 แชร์ดวงวันนี้</div>
+            <div onClick={() => go('daydetail', now.getDate())} style={{ height:'40px', padding:'0 18px', borderRadius:T.rFull, border:`1.5px solid ${T.border}`, background:T.bgWhite, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:T.font, fontSize:'13px', color:T.secondary, fontWeight:600, cursor:'pointer' }}>อ่านเพิ่ม →</div>
+          </div>
+
+          <div style={{ margin:'0 20px 16px', height:'1px', background:T.border }} />
+
+          {/* ── 5. CALENDAR ── */}
+          <div style={{ padding:'0 20px' }}>
+            <CalGrid compact={true} />
+          </div>
+
+          <div style={{ margin:'20px 20px 16px', height:'1px', background:T.border }} />
+
+          {/* ── 6. FORTUNE SHORTCUTS ── */}
+          <div style={{ padding:'0 20px 20px' }}>
+            <Shortcuts />
+          </div>
+        </div>
+        );
+      };
+
+      /* ═══════ DAY DETAIL PAGE ═══════ */
+      const DayDetailPage = () => {
+        const d = selDay || now.getDate();
+        const dd = new Date(cY, cM, d);
+        const DF = ['วันอาทิตย์','วันจันทร์','วันอังคาร','วันพุธ','วันพฤหัสบดี','วันศุกร์','วันเสาร์'];
+        const st = calData[d] || 'good';
+        return (
+          <div style={{ overflowY:'auto', height:'100%', paddingBottom:'100px' }}>
+            <BackHeader title="รายละเอียดดวง" />
+            <div style={{ padding:'16px 20px' }}>
+              {/* A: Header */}
+              <div style={{ padding:'20px', borderRadius:T.rXl, marginBottom:'16px', background:`linear-gradient(135deg, ${sBg(st)} 0%, ${T.bgWhite} 100%)`, border:`1px solid ${T.border}` }}>
+                <div style={{ fontFamily:T.font, fontSize:'14px', color:T.fgMid }}>{DF[dd.getDay()]}</div>
+                <div style={{ fontFamily:T.font, fontSize:'20px', fontWeight:800, color:T.fgHigh, margin:'4px 0 8px' }}>{d} {MO[cM]} {cY+543}</div>
+                <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', padding:'6px 14px', borderRadius:T.rFull, background:sColor(st)+'20', border:`1.5px solid ${sColor(st)}` }}>
+                  <span style={{ fontSize:'16px' }}>{sIcon(st)}</span>
+                  <span style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:sColor(st) }}>{sLabel(st)}</span>
+                </div>
+              </div>
+              {/* B: Stars */}
+              <div style={{ padding:'16px', borderRadius:T.rLg, marginBottom:'12px', background:T.bgLight, border:`1px solid ${T.border}` }}>
+                <div style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:T.fgHigh, marginBottom:'10px' }}>🌟 ดาวเกิด & ดาวจร</div>
+                <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, lineHeight:'20px', marginBottom:'8px' }}><span style={{ fontWeight:600, color:T.fgHigh }}>ดาวเกิด: </span>{mock.natal}</div>
+                <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgMid, lineHeight:'20px' }}><span style={{ fontWeight:600, color:T.fgHigh }}>ดาวจร: </span>{mock.transit}</div>
+              </div>
+              {/* C: AI Summary */}
+              <div style={{ padding:'16px', borderRadius:T.rLg, marginBottom:'12px', background:T.secondaryLight, border:`1px solid ${T.secondaryMid}` }}>
+                <div style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:T.secondary, marginBottom:'8px' }}>🤖 AI สรุปดวงวันนี้</div>
+                <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgHigh, lineHeight:'22px' }}>{mock.aiSummary}</div>
+              </div>
+              {/* D & E: Do / Avoid */}
+              <div style={{ display:'flex', gap:'8px', marginBottom:'12px' }}>
+                <div style={{ flex:1, padding:'12px', background:T.successBg, borderRadius:T.rLg, border:`1px solid ${T.successLight}` }}>
+                  <div style={{ fontFamily:T.font, fontSize:'13px', fontWeight:700, color:T.success, marginBottom:'8px' }}>✅ คำแนะนำ</div>
+                  {mock.doList.map((x,i) => <div key={i} style={{ fontFamily:T.font, fontSize:'12px', lineHeight:'20px', color:T.fgHigh }}>• {x}</div>)}
+                </div>
+                <div style={{ flex:1, padding:'12px', background:T.errorBg, borderRadius:T.rLg, border:`1px solid ${T.errorLight}` }}>
+                  <div style={{ fontFamily:T.font, fontSize:'13px', fontWeight:700, color:T.error, marginBottom:'8px' }}>❌ หลีกเลี่ยง</div>
+                  {mock.avoidList.map((x,i) => <div key={i} style={{ fontFamily:T.font, fontSize:'12px', lineHeight:'20px', color:T.fgHigh }}>• {x}</div>)}
+                </div>
+              </div>
+              {/* F: Lucky Colors & Numbers */}
+              <div style={{ padding:'16px', borderRadius:T.rLg, marginBottom:'12px', background:T.bgWhite, border:`1px solid ${T.border}` }}>
+                <div style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:T.fgHigh, marginBottom:'12px' }}>🎨 สีมงคล & เลขมงคล</div>
+                <div style={{ display:'flex', gap:'10px', marginBottom:'12px', flexWrap:'wrap' }}>
+                  {mock.luckyColors.map((c,i) => (
+                    <div key={i} style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+                      <DualColor c1={c.c1} c2={c.c2} size={22} />
+                      <div style={{ fontFamily:T.font, fontSize:'11px', color:T.fgMid }}>{c.aspect}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+                  <span style={{ fontFamily:T.font, fontSize:'13px', fontWeight:600, color:T.fgHigh }}>🔢 เลขมงคล:</span>
+                  {mock.luckyNumbers.map((n,i) => (
+                    <div key={i} style={{ width:'32px', height:'32px', borderRadius:T.rFull, background:T.primaryLight, border:`1.5px solid ${T.primaryMid}`, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:T.font, fontSize:'14px', fontWeight:700, color:T.primary }}>{n}</div>
+                  ))}
+                </div>
+              </div>
+              {/* G: Auspicious Times */}
+              <div style={{ padding:'16px', borderRadius:T.rLg, marginBottom:'12px', background:T.bgWhite, border:`1px solid ${T.border}` }}>
+                <div style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:T.fgHigh, marginBottom:'12px' }}>⏰ ช่วงเวลามงคล</div>
+                {mock.times.map((t,i) => (
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'6px' }}>
+                    <div style={{ fontFamily:T.font, fontSize:'12px', color:T.fgMid, width:'80px', flexShrink:0 }}>{t.time}</div>
+                    <div style={{ flex:1, height:'20px', borderRadius:T.rSm, background:sColor(t.level)+'25', overflow:'hidden' }}>
+                      <div style={{ height:'100%', width:t.level==='good'?'100%':t.level==='neutral'?'60%':'30%', background:sColor(t.level)+'50', borderRadius:T.rSm }} />
+                    </div>
+                    <div style={{ fontFamily:T.font, fontSize:'11px', fontWeight:600, color:sColor(t.level), width:'40px', textAlign:'right' }}>{t.label}</div>
+                  </div>
+                ))}
+              </div>
+              {/* H: AI Suggestion */}
+              <div style={{ padding:'16px', borderRadius:T.rLg, marginBottom:'16px', background:`linear-gradient(135deg, ${T.primaryLight} 0%, ${T.secondaryLight} 100%)`, border:`1px solid ${T.primaryMid}` }}>
+                <div style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:T.primary, marginBottom:'8px' }}>💡 วันนี้ทำอะไรดี?</div>
+                <div style={{ fontFamily:T.font, fontSize:'13px', color:T.fgHigh, lineHeight:'22px' }}>{mock.aiSuggestion}</div>
+              </div>
+              <div onClick={() => go('share')} style={{ height:'48px', borderRadius:T.rMd, background:T.primary, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', fontFamily:T.font, fontSize:'15px', fontWeight:700, cursor:'pointer' }}>📤 แชร์ดวงวันนี้</div>
+            </div>
+          </div>
+        );
+      };
+
+      /* ═══════ SHARE PAGE (IG Story) ═══════ */
+      const SharePage = () => {
+        const themes = [
+          { name:'Cosmic Night', bg:'linear-gradient(180deg, #1a0533 0%, #2d1b69 50%, #0f0c29 100%)', fg:'#fff', fgSub:'rgba(255,255,255,0.7)', accent:'#E8A0FF' },
+          { name:'Soft Pastel', bg:'linear-gradient(180deg, #E8F4FD 0%, #FCE4EC 50%, #F3E5F5 100%)', fg:'#1B1D22', fgSub:'#6A6E83', accent:T.primary },
+          { name:'Gold Classic', bg:'linear-gradient(180deg, #0D1B2A 0%, #1B2838 50%, #0D1B2A 100%)', fg:'#FFD700', fgSub:'rgba(255,215,0,0.6)', accent:'#FFD700' },
+          { name:'Fresh Bloom', bg:`linear-gradient(180deg, #fff 0%, ${T.primaryLight} 50%, ${T.secondaryLight} 100%)`, fg:T.fgHigh, fgSub:T.fgMid, accent:T.primary },
+        ];
+        const [ti, setTi] = useState(0);
+        const th = themes[ti];
+        const isDark = ti === 0 || ti === 2;
+        const chromeColor = isDark ? 'rgba(255,255,255,0.85)' : T.fgMid;
+        return (
+          <div style={{ width:'100%', height:'100%', background:th.bg, display:'flex', flexDirection:'column', position:'relative', overflow:'hidden', transition:'background 0.35s ease' }}
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              if (x > rect.width * 0.7) setTi(p => p < themes.length - 1 ? p + 1 : 0);
+              else if (x < rect.width * 0.3) setTi(p => p > 0 ? p - 1 : themes.length - 1);
+            }}>
+            {/* Story progress */}
+            <div style={{ display:'flex', gap:'3px', padding:'8px 12px 0' }}>
+              {themes.map((_,i) => (
+                <div key={i} style={{ flex:1, height:'2px', borderRadius:'1px', background: i <= ti ? chromeColor : 'rgba(255,255,255,0.3)', transition:'background 0.3s' }} />
+              ))}
+            </div>
+            {/* User row */}
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+                <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:`linear-gradient(135deg, ${T.primary}, ${T.secondary})`, display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontFamily:T.font, fontSize:'12px', fontWeight:700 }}>มู</div>
+                <div>
+                  <div style={{ fontFamily:T.font, fontSize:'13px', fontWeight:700, color:chromeColor }}>DailyMu</div>
+                  <div style={{ fontFamily:T.font, fontSize:'10px', color:chromeColor, opacity:0.6 }}>5 นาทีที่แล้ว</div>
+                </div>
+              </div>
+              <div onClick={(e) => { e.stopPropagation(); go('today'); }} style={{ cursor:'pointer' }}>
+                <FaIcon fa="fa-solid fa-xmark" size={20} color={chromeColor} />
+              </div>
+            </div>
+            {/* Card content */}
+            <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 32px', gap:'16px' }}>
+              <div style={{ fontSize:'48px' }}>{mock.statusIcon}</div>
+              <div style={{ fontFamily:T.font, fontSize:'24px', fontWeight:800, color:th.fg, textAlign:'center' }}>{mock.statusLabel}</div>
+              <div style={{ fontFamily:T.font, fontSize:'13px', color:th.fgSub, textAlign:'center' }}>{mock.dayName}ที่ {mock.date}</div>
+              <div style={{ width:'40px', height:'2px', background:th.accent, borderRadius:'1px', margin:'4px 0' }} />
+              <div style={{ fontFamily:T.font, fontSize:'14px', lineHeight:'24px', color:th.fg, textAlign:'center', maxWidth:'280px' }}>{mock.aiSummary}</div>
+              <div style={{ display:'flex', gap:'8px', marginTop:'8px' }}>
+                {mock.luckyColors.slice(0,3).map((c,i) => (
+                  <div key={i} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'4px' }}>
+                    <DualColor c1={c.c1} c2={c.c2} size={28} />
+                    <div style={{ fontFamily:T.font, fontSize:'9px', color:th.fgSub }}>{c.aspect}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontFamily:T.font, fontSize:'11px', color:th.fgSub, marginTop:'12px' }}>DailyMu — ดูดวงประจำวัน</div>
+            </div>
+            {/* Bottom IG-style */}
+            <div style={{ padding:'12px 14px 30px', display:'flex', alignItems:'center', gap:'10px' }}>
+              <div style={{ flex:1, height:'36px', borderRadius:'18px', background:isDark?'rgba(255,255,255,0.1)':'rgba(0,0,0,0.05)', border:`1px solid ${isDark?'rgba(255,255,255,0.2)':'rgba(0,0,0,0.1)'}`, display:'flex', alignItems:'center', padding:'0 14px' }}>
+                <span style={{ fontFamily:T.font, fontSize:'13px', color:chromeColor, opacity:0.5 }}>ส่งข้อความ...</span>
+              </div>
+              <FaIcon fa="fa-regular fa-heart" size={22} color={chromeColor} />
+              <div onClick={(e) => { e.stopPropagation(); go('today'); }} style={{ cursor:'pointer' }}>
+                <FaIcon fa="fa-solid fa-share-nodes" size={14} color={chromeColor} />
+                <span style={{ fontFamily:T.font, fontSize:'14px', fontWeight:700, color:chromeColor }}>แชร์</span>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      /* ═══════ RENDER ═══════ */
+      const showTabBar = screen === 'today';
+
+      const renderScreen = () => {
+        switch(screen) {
+          case 'today': return <TodayPage />;
+          case 'daydetail': return <DayDetailPage />;
+          case 'share': return <SharePage />;
+          default: return <TodayPage />;
+        }
+      };
+
+      /* ═══════ DESIGN SPECS ═══════ */
+      const specs = {
+        today: { t:'Today Page (Full Scroll — Home)', s:[
+          { l:'STRUCTURE', i:['3 Sections scroll: Summary → Calendar → Shortcuts','Header: ทักทาย + Avatar','Padding: 20px | Section gap: 24px'] },
+          { l:'TAB BAR', i:['Floating center button (56px, gradient pink)','Curved notch SVG path in bar bg','5 tabs: ปฏิทิน / แจ้งเตือน / ดวงวันนี้ / ทำนาย / โปรไฟล์','Active: primary color + bold label'] },
+          { l:'STATES', i:['ปกติ: แสดงข้อมูลดวงวันนี้ครบ','Loading: Skeleton shimmer ตาม layout จริง','Empty: ยังไม่ได้ผูกดวง + CTA ผูกดวง','Error: ไม่สามารถโหลดดวง + ปุ่มลองใหม่'] },
+          { l:'BA NOTES', i:['AC-1.1: Load ภายใน 3 วินาที','NF-1: Cache ตาม วัน + user','Reset เที่ยงคืน timezone ผู้ใช้'] },
+        ]},
+        daydetail: { t:'Day Detail Page', s:[
+          { l:'8 SECTIONS', i:['A: Header (วันที่ + สถานะ + วันพิเศษ)','B: ดาวเกิด & ดาวจร','C: AI Summary เฉพาะวัน','D: คำแนะนำ Do (3-5 ข้อ)','E: หลีกเลี่ยง Avoid (3-5 ข้อ)','F: สีมงคล + เลขมงคล','G: ช่วงเวลามงคล (Timeline)','H: AI Suggestion (actionable)'] },
+          { l:'AC MUST', i:['AC-2.6: ดาวเกิด/จร + AI + Do/Avoid','AC-2.7: AI unique ทุกวัน','NF-3: โหลด < 2 วินาที'] },
+        ]},
+        share: { t:'Share Card (IG Story Viewer)', s:[
+          { l:'IG STORY UI', i:['Full-screen 9:16 — fills entire phone frame','Story progress bars at top (4 segments)','User row: avatar + "DailyMu" + time + close','Bottom: reply input + heart + share (IG-style)'] },
+          { l:'INTERACTION', i:['Tap right 70% → next theme','Tap left 30% → previous theme','X button → close back to Today'] },
+          { l:'4 THEMES', i:['Cosmic Night: dark purple gradient','Soft Pastel: light blue-pink','Gold Classic: dark navy + gold accent','Fresh Bloom: white + primary gradient'] },
+        ]},
+      };
+
+      const sp = specs[screen] || specs.today;
+
+      /* ═══════ MAIN LAYOUT: 3 columns ═══════ */
+      return (
+        <div style={{ display:'flex', minHeight:'100vh', background:'#F0F1F3', fontFamily:T.font }}>
+          {/* LEFT: Navigator */}
+          <div style={{ width:'260px', background:T.bgWhite, borderRight:`1px solid ${T.border}`, padding:'20px 14px', overflowY:'auto', flexShrink:0 }}>
+            <div style={{ fontSize:'20px', fontWeight:800, color:T.fgHigh, marginBottom:'2px' }}>DailyMu</div>
+            <div style={{ fontSize:'11px', color:T.fgMid, marginBottom:'20px' }}>Home — ดวงวันนี้</div>
+            {groups.map((g,gi) => (
+              <div key={gi} style={{ marginBottom:'16px' }} role="navigation" aria-label={g.label}>
+                <div style={{ fontSize:'9px', fontWeight:700, color:T.fgLow, textTransform:'uppercase', letterSpacing:'1px', marginBottom:'6px' }}>{g.label}</div>
+                {g.items.map((s,si) => {
+                  const isActive = s.state
+                    ? (screen===s.id && pageState===s.state)
+                    : (screen===s.id && pageState==='normal');
+                  return (
+                    <button key={`${s.id}-${s.state||'n'}-${si}`}
+                      onClick={() => s.state ? goState(s.id, s.state) : go(s.id)}
+                      aria-current={isActive ? 'page' : undefined}
+                      style={{
+                        display:'block', width:'100%', textAlign:'left', border:'none',
+                        padding: s.indent ? '5px 12px 5px 24px' : '7px 12px',
+                        borderRadius:T.rMd, marginBottom:'2px', cursor:'pointer',
+                        background:isActive?T.secondary:'transparent',
+                        color:isActive?'#fff': s.indent?T.fgMid:T.fgHigh,
+                        fontWeight:isActive?700: s.indent?400:400,
+                        fontSize:s.indent?'11px':'13px',
+                        fontFamily:T.font, transition:'all 0.15s',
+                      }}>{s.indent?'└ ':''}{s.name}</button>
+                  );
+                })}
+              </div>
+            ))}
+            {/* Link back to full app */}
+            <div style={{ marginTop:'20px', padding:'12px', background:T.bgLight, borderRadius:T.rMd }}>
+              <div style={{ fontSize:'10px', fontWeight:700, color:T.fgLow, textTransform:'uppercase', letterSpacing:'1px', marginBottom:'6px' }}>NAVIGATION</div>
+              <a href="../today-preview.html" style={{ fontSize:'12px', color:T.secondary, fontWeight:600, textDecoration:'none', display:'block', marginBottom:'4px' }}>← กลับ Full App Preview</a>
+            </div>
+            {/* Jira Reference */}
+            <div style={{ marginTop:'12px', padding:'12px', background:T.bgLight, borderRadius:T.rMd }}>
+              <div style={{ fontSize:'10px', fontWeight:700, color:T.fgLow, textTransform:'uppercase', letterSpacing:'1px', marginBottom:'6px' }}>JIRA REFERENCE</div>
+              <div style={{ fontSize:'11px', color:T.fgMid, lineHeight:'18px' }}>
+                DAIL-33: Flow - Feature<br/>
+                DAIL-54: Sec 1 Daily Summary<br/>
+                DAIL-73: Sec 2 Calendar<br/>
+                DAIL-74: Sec 3 Shortcuts
+              </div>
+            </div>
+          </div>
+
+          {/* CENTER: iPhone 15 Pro Frame */}
+          <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'20px' }}>
+            <div style={{ width:'390px', height:'844px', background:T.bgWhite, borderRadius:'48px', boxShadow:'0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05)', overflow:'hidden', display:'flex', flexDirection:'column', position:'relative' }}>
+              <DynamicIsland />
+              <StatusBar />
+              <div style={{ flex:1, overflow:'hidden', display:'flex', flexDirection:'column' }}>
+                {renderScreen()}
+              </div>
+              {showTabBar && <TabBar active="today" />}
+            </div>
+          </div>
+
+          {/* RIGHT: Design Specs */}
+          <div style={{ width:'300px', background:T.bgWhite, borderLeft:`1px solid ${T.border}`, flexShrink:0, overflowY:'auto' }}>
+            <div style={{ padding:'20px' }}>
+              <div style={{ fontFamily:T.font, fontSize:'13px', fontWeight:700, color:T.secondary, marginBottom:'4px' }}>📋 Design Spec</div>
+              <div style={{ fontFamily:T.font, fontSize:'16px', fontWeight:800, color:T.fgHigh, marginBottom:'16px' }}>{sp.t}</div>
+              {sp.s.map((sec,i) => (
+                <div key={i} style={{ marginBottom:'16px' }}>
+                  <div style={{ fontFamily:T.font, fontSize:'10px', fontWeight:700, color:T.fgLow, textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>{sec.l}</div>
+                  {sec.i.map((item,j) => (
+                    <div key={j} style={{ fontFamily:T.font, fontSize:'12px', lineHeight:'18px', color:T.fgHigh, padding:'6px 10px', marginBottom:'4px', background:T.bgLight, borderRadius:T.rSm, borderLeft:`3px solid ${item.startsWith('AC')||item.startsWith('NF')?T.primary:T.border}` }}>{item}</div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

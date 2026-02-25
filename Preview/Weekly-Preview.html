@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyMu — Weekly Calendar Preview</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.cdnfonts.com/css/line-seed-sans-th');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'LINE Seed Sans TH', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #F0F1F3;
+      overflow-x: hidden;
+    }
+    :root {
+      /* Primary */
+      --primary: #EC599D;
+      --primary-light: #FDEFF5;
+      --primary-fg: #EC599D;
+      /* Secondary */
+      --secondary: #7279FB;
+      --secondary-light: #F1F2FF;
+      /* Neutrals */
+      --text-primary: #1B1D22;
+      --text-secondary: #6A6E83;
+      --text-tertiary: #9A9DAD;
+      --bg-white: #FFFFFF;
+      --bg-light: #F8F8F9;
+      --bg-mid: #EBECEF;
+      --border: #EBECEF;
+      /* Feedback */
+      --error: #EA244F;
+      --error-bg: #FDE9ED;
+      --warning: #F8C135;
+      --warning-bg: #FEF9EB;
+      --success: #559652;
+      --success-bg: #F0F8F0;
+      --info: #0386B3;
+      --info-bg: #E6F6FC;
+      /* Shadows */
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.05);
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    /* ────────────────────────────────────────
+       DATA
+    ──────────────────────────────────────── */
+    const WEEKS_DATA = [
+      {
+        weekNum: 2,
+        range: '8 ม.ค. - 14 ม.ค.',
+        summary: { title: 'ดาวอังคารย้ายราศี พลังขับเคลื่อน', desc: 'ดาวอังคารเข้าราศีเมษ ส่งพลังให้กล้าตัดสินใจ ต้นสัปดาห์เหมาะเริ่มงานใหม่ ปลายสัปดาห์ระวังใจร้อน ✨' },
+        advice: 'เจรจาต่อรองวันอังคาร-พุธ\nสมัครงาน/เปลี่ยนงานจังหวะดี',
+        avoid: 'อย่าเซ็นสัญญาวันเสาร์\nระวังทะเลาะคนใกล้ชิด',
+        days: [
+          { day: 'จ.', date: 8, level: 'good', label: null, title: 'การงานได้ไฟเขียว', desc: 'หัวหน้าอนุมัติโปรเจกต์ที่ค้างไว้', detail: { work: 'ได้รับมอบหมายงานใหม่ที่ท้าทาย', love: 'คนรักให้กำลังใจ อบอุ่นหัวใจ', money: 'รายรับคงที่ ไม่มีรายจ่ายใหญ่', health: 'พลังงานดี ออกกำลังกายได้เต็มที่', lucky: { color: 'เขียว', number: '3, 9', direction: 'ตะวันออก' } } },
+          { day: 'อ.', date: 9, level: 'good', label: null, title: 'เงินเข้าไม่คาดคิด', desc: 'มีรายได้เสริมหรือเงินที่รอมานาน', detail: { work: 'ประชุมราบรื่น ไอเดียได้รับการยอมรับ', love: 'มีเพื่อนแนะนำคนให้รู้จัก', money: 'เงินที่รอคืนกลับมา โบนัสเล็กๆ', health: 'ระวังปวดคอจากนั่งนาน', lucky: { color: 'เหลือง', number: '2, 7', direction: 'เหนือ' } } },
+          { day: 'พ.', date: 10, level: 'good', label: 'วันมงคล', title: 'ดวงดีรอบด้าน', desc: 'เหมาะทำบุญ เปิดกิจการ ขอเงินกู้', detail: { work: 'ลูกค้าใหม่เข้ามา ปิดดีลสำเร็จ', love: 'บรรยากาศโรแมนติก เดทสุดพิเศษ', money: 'ดวงการเงินเปิด เหมาะลงทุนระยะสั้น', health: 'สุขภาพแข็งแรง จิตใจแจ่มใส', lucky: { color: 'ทอง', number: '1, 6', direction: 'ตะวันออกเฉียงเหนือ' } } },
+          { day: 'พฤ.', date: 11, level: 'warning', label: null, title: 'ระวังเอกสารผิดพลาด', desc: 'ตรวจทานให้ดีก่อนส่ง อ่านละเอียด', detail: { work: 'ตรวจเอกสาร 2 รอบก่อนส่ง มีจุดผิดแน่', love: 'ไม่ควรพูดเรื่องอดีตกับคนรัก', money: 'ค่าใช้จ่ายซ่อมแซมเล็กน้อย', health: 'ปวดตาจากจอคอม พักสายตาบ่อยๆ', lucky: { color: 'ฟ้า', number: '4, 8', direction: 'ใต้' } } },
+          { day: 'ศ.', date: 12, level: 'warning', label: null, title: 'ความรักมีปากเสียง', desc: 'อย่ายึดความคิดตัวเอง ฟังอีกฝ่ายบ้าง', detail: { work: 'งานเดินช้า รอการอนุมัติจากข้างบน', love: 'ทะเลาะเรื่องเล็กน้อย ใจเย็นๆ', money: 'อย่าให้ยืมเงินวันนี้', health: 'เครียดสะสม ทำสมาธิก่อนนอน', lucky: { color: 'ชมพู', number: '5, 9', direction: 'ตะวันตก' } } },
+          { day: 'ส.', date: 13, level: 'danger', label: 'ระวังการเงิน', title: 'เงินรั่วไหลง่าย', desc: 'ของล่อตาเยอะ คิดก่อนรูด อย่ากู้ยืม', detail: { work: 'วันหยุดแต่อาจมีงานด่วนเข้ามา', love: 'อย่าเอาเรื่องเงินมาทะเลาะกัน', money: 'เลี่ยงช้อปปิ้ง เลี่ยงกดบัตรเครดิต', health: 'กินอาหารจุ๊กจิ๊กมาก ระวังท้องเสีย', lucky: { color: 'ขาว', number: '1, 3', direction: 'อยู่บ้านดีที่สุด' } } },
+          { day: 'อา.', date: 14, level: 'good', label: null, title: 'พักผ่อนเติมพลัง', desc: 'อยู่บ้านทำอาหาร ดูหนัง ชาร์จแบต', detail: { work: 'วางแผนสัปดาห์หน้าล่วงหน้า', love: 'ใช้เวลาคุณภาพกับครอบครัว', money: 'ทำบัญชีรายรับรายจ่ายประจำสัปดาห์', health: 'นอนเต็มอิ่ม ร่างกายฟื้นตัวดี', lucky: { color: 'ส้ม', number: '6, 8', direction: 'เหนือ' } } },
+        ]
+      },
+      {
+        weekNum: 3,
+        range: '15 ม.ค. - 21 ม.ค.',
+        summary: { title: 'ดาวพุธตรีโกณ พูดปั๊บสำเร็จ', desc: 'ดาวพุธเล็งศุภมุมกับดาวพฤหัสฯ การสื่อสารทรงพลัง พูดอะไรคนเชื่อ นำเสนอผ่านฉลุย ✨' },
+        advice: 'นำเสนองานวันอังคาร-พฤหัส\nคุยเรื่องขึ้นเงินเดือนได้เลย',
+        avoid: 'อย่าให้สัญญาเกินตัว\nหลีกเลี่ยงนินทาลับหลัง',
+        days: [
+          { day: 'จ.', date: 15, level: 'warning', label: null, title: 'เช้าหมอกหนา บ่ายสดใส', desc: 'ครึ่งเช้ายุ่งวุ่นวาย บ่ายเริ่มลงตัว', detail: { work: 'เช้าวุ่นวาย บ่ายเคลียร์งานได้หมด', love: 'คนรักส่งข้อความหวานๆ มา', money: 'จ่ายค่าบิลต้นเดือน ตามแผน', health: 'ง่วงมากช่วงบ่าย ดื่มน้ำมากๆ', lucky: { color: 'เทา', number: '2, 5', direction: 'ตะวันตก' } } },
+          { day: 'อ.', date: 16, level: 'good', label: null, title: 'พูดจาเป็นเงินเป็นทอง', desc: 'ปิดดีลได้ ลูกค้าประทับใจ ยอดเข้า', detail: { work: 'นำเสนอสำเร็จ ลูกค้าซื้อแพ็กเกจใหญ่', love: 'เสน่ห์พุ่ง มีคนแอบชอบ', money: 'ค่าคอมมิชชันเข้า ยอดขายทะลุเป้า', health: 'พลังเต็มเปี่ยม กระฉับกระเฉง', lucky: { color: 'แดง', number: '8, 9', direction: 'ตะวันออก' } } },
+          { day: 'พ.', date: 17, level: 'good', label: null, title: 'ความรักหวานฉ่ำ', desc: 'คนโสดเจอคนถูกใจ คนมีคู่ซึ้งขึ้น', detail: { work: 'ได้ทำงานที่ชอบ หัวหน้าให้อิสระ', love: 'โมเมนต์หวานๆ เกิดขึ้นไม่คาดคิด', money: 'มีคนเลี้ยงข้าว ประหยัดค่าอาหาร', health: 'สุขภาพจิตดีเยี่ยม ยิ้มทั้งวัน', lucky: { color: 'ชมพู', number: '3, 7', direction: 'เหนือ' } } },
+          { day: 'พฤ.', date: 18, level: 'good', label: 'วันเฮง', title: 'โชคลาภเข้าหา', desc: 'ลุ้นรางวัลมีลุ้น เงินก้อนเล็กเข้ามา', detail: { work: 'ได้เลื่อนตำแหน่งหรือขึ้นเงินเดือน', love: 'คนรักเซอร์ไพรส์ของขวัญ', money: 'ลุ้นรางวัลได้ เงินเข้าจากช่องทางใหม่', health: 'แข็งแรง กินอิ่มนอนหลับ', lucky: { color: 'ทอง', number: '1, 8', direction: 'ตะวันออกเฉียงใต้' } } },
+          { day: 'ศ.', date: 19, level: 'warning', label: null, title: 'สุขภาพต้องดูแล', desc: 'ปวดหัว/ภูมิแพ้กำเริบ พักให้พอ', detail: { work: 'งานหนัก deadline ซ้อน อย่าโอเวอร์', love: 'ไม่มีเวลาให้คนรัก อาจน้อยใจ', money: 'ค่ายารักษาเล็กน้อย', health: 'ภูมิแพ้/ไมเกรน พักผ่อนสำคัญ', lucky: { color: 'เขียว', number: '4, 6', direction: 'ใต้' } } },
+          { day: 'ส.', date: 20, level: 'danger', label: 'ระวังอุบัติเหตุ', title: 'ขับขี่ระวังมากขึ้น', desc: 'เดินทางไกลเลี่ยงได้เลี่ยง ดูแลตัวเอง', detail: { work: 'วันหยุด หลีกเลี่ยงงานด่วน', love: 'ทะเลาะกันเพราะแพลนเที่ยวไม่ตรงกัน', money: 'ค่าซ่อมรถ/ของเสียหายจากอุบัติเหตุ', health: 'ระวังแผลถลอก/หกล้ม เดินช้าลง', lucky: { color: 'ขาว', number: '1, 2', direction: 'อยู่บ้าน' } } },
+          { day: 'อา.', date: 21, level: 'good', label: null, title: 'วันครอบครัวอบอุ่น', desc: 'ทำบุญตักบาตร กินข้าวกับครอบครัว', detail: { work: 'วางแผนเป้าหมายสัปดาห์หน้า', love: 'ครอบครัวอบอุ่น ได้ยินคำว่ารัก', money: 'ทำบุญได้บุญ เงินจะหมุนกลับมา', health: 'หัวใจเบิกบาน จิตใจสงบ', lucky: { color: 'ส้ม', number: '5, 9', direction: 'ตะวันออก' } } },
+        ]
+      },
+      {
+        weekNum: 4,
+        range: '22 ม.ค. - 28 ม.ค.',
+        summary: { title: 'ดาวศุกร์เข้าราศี เสน่ห์แรง', desc: 'ดาวศุกร์โคจรเข้าราศีมีน ส่งพลังเรื่องความรักและเงินทอง ของขวัญจากคนรอบข้างมาไม่ขาด 🌟' },
+        advice: 'สารภาพรักหรือขอแต่งงาน\nลงทุนทองคำ/กองทุนระยะสั้น',
+        avoid: 'อย่าโอ้อวดเรื่องเงิน\nระวังคนอิจฉา อย่าไว้ใจง่าย',
+        days: [
+          { day: 'จ.', date: 22, level: 'good', label: null, title: 'เริ่มงานราบรื่น', desc: 'ได้ไอเดียใหม่ ทีมร่วมมือดี', detail: { work: 'ทีมพร้อม ประชุมคิกออฟลื่นไหล', love: 'ส่งข้อความหาก่อน จะได้ใจ', money: 'เงินเดือนเข้า จัดสรรให้ดี', health: 'ตื่นเช้าได้สดใส วิ่งเช้าเติมพลัง', lucky: { color: 'เขียว', number: '3, 7', direction: 'ตะวันออก' } } },
+          { day: 'อ.', date: 23, level: 'good', label: 'ดวงการเงินเฮง', title: 'มีคนหยิบยื่นโอกาส', desc: 'รุ่นพี่/เจ้านายเก่าแนะนำงานให้', detail: { work: 'มีออฟเฟอร์ใหม่เข้ามา ตำแหน่งดี', love: 'คนรักสนับสนุนเต็มที่', money: 'โบนัส/ค่าคอมฯ เข้าบัญชี', health: 'อารมณ์ดี หัวเราะเยอะ', lucky: { color: 'ทอง', number: '8, 9', direction: 'ตะวันตกเฉียงเหนือ' } } },
+          { day: 'พ.', date: 24, level: 'good', label: null, title: 'ความรักสุกงอม', desc: 'คนมีคู่แพลนเดทหวาน คนโสดมีคนจีบ', detail: { work: 'ได้รับคำชมจากลูกค้า', love: 'เดทสุดโรแมนติก/คนโสดมีคนส่งดอกไม้', money: 'ได้ของขวัญราคาดีจากคนพิเศษ', health: 'สุขภาพจิตเบิกบาน', lucky: { color: 'ชมพู', number: '2, 6', direction: 'เหนือ' } } },
+          { day: 'พฤ.', date: 25, level: 'warning', label: null, title: 'ใช้เงินเกินแผน', desc: 'ค่าซ่อม/ค่ารักษาไม่คาดคิด ตั้งสำรอง', detail: { work: 'งานล่าช้า ต้องแก้ไขงานเดิม', love: 'คนรักงอน เพราะไม่มีเวลาให้', money: 'ค่าซ่อมเครื่องใช้ไฟฟ้า/ค่ารักษา', health: 'ปวดหลังจากนั่งทำงานนาน', lucky: { color: 'ฟ้า', number: '4, 5', direction: 'ใต้' } } },
+          { day: 'ศ.', date: 26, level: 'danger', label: 'ระวังคนรอบข้าง', title: 'มีคนพูดลับหลัง', desc: 'อย่าเล่าเรื่องส่วนตัว วางตัวเป็นกลาง', detail: { work: 'การเมืองในออฟฟิศ อย่าเข้าข้างใคร', love: 'มีคนพยายามยุแยง ไม่ต้องสนใจ', money: 'อย่าให้คนยืมเงินวันนี้ ไม่ได้คืน', health: 'เครียดจากคนรอบข้าง หายใจลึกๆ', lucky: { color: 'ม่วง', number: '1, 3', direction: 'ตะวันตก' } } },
+          { day: 'ส.', date: 27, level: 'good', label: null, title: 'เดินทางเสริมดวง', desc: 'ไปทะเลหรือน้ำตก เปลี่ยนบรรยากาศ', detail: { work: 'วันหยุดผ่อนคลาย ได้ไอเดียใหม่', love: 'ทริปเที่ยวด้วยกัน ความสัมพันธ์แน่นขึ้น', money: 'จ่ายค่าเที่ยว แต่คุ้มค่ากับความสุข', health: 'ได้ออกกำลัง อากาศดี สดชื่น', lucky: { color: 'ฟ้า', number: '6, 9', direction: 'ตะวันออก' } } },
+          { day: 'อา.', date: 28, level: 'good', label: null, title: 'สิ้นสุดสัปดาห์อย่างสดใส', desc: 'ทำบุญสะเดาะเคราะห์ รับพลังดีๆ', detail: { work: 'เตรียมแผนสัปดาห์หน้าอย่างมั่นใจ', love: 'กอดกันอบอุ่นก่อนนอน', money: 'ทำบุญ ตั้งจิตอธิษฐานเรื่องเงิน', health: 'นอนเต็มอิ่ม พร้อมสู้สัปดาห์ใหม่', lucky: { color: 'ขาว', number: '7, 8', direction: 'เหนือ' } } },
+        ]
+      }
+    ];
+
+    /* ────────────────────────────────────────
+       ICONS (SVG Components)
+    ──────────────────────────────────────── */
+    const ChevronLeft = ({ size = 16, color = '#1B1D22' }) => (
+      <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+        <path d="M10 12L6 8L10 4" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    );
+
+    const ChevronRight = ({ size = 16, color = '#1B1D22' }) => (
+      <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+        <path d="M6 4L10 8L6 12" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    );
+
+    const XIcon = ({ size = 12, color = '#6A6E83' }) => (
+      <svg width={size} height={size} viewBox="0 0 12 12" fill="none">
+        <path d="M9 3L3 9M3 3L9 9" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    );
+
+    const BellIcon = ({ size = 20, color = '#0386B3' }) => (
+      <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
+        <path d="M15 6.667a5 5 0 00-10 0c0 5.833-2.5 7.5-2.5 7.5h15S15 12.5 15 6.667M11.442 16.667a1.667 1.667 0 01-2.884 0" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    );
+
+    const CheckIcon = ({ size = 16, color = '#559652' }) => (
+      <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+        <path d="M13.333 4L6 11.333 2.667 8" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    );
+
+    const WarningIcon = ({ size = 16, color = '#C69A2A' }) => (
+      <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+        <path d="M8 5.333V8M8 10.667h.007M6.86 2.573L1.213 12a1.333 1.333 0 001.14 2h11.294a1.333 1.333 0 001.14-2L9.14 2.573a1.333 1.333 0 00-2.28 0z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    );
+
+    const DangerIcon = ({ size = 16, color = '#EA244F' }) => (
+      <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="6" stroke={color} strokeWidth="1.5"/>
+        <path d="M8 5.333V8M8 10.667h.007" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    );
+
+    /* ────────────────────────────────────────
+       HELPER
+    ──────────────────────────────────────── */
+    const getLevelColor = (level) => {
+      switch(level) {
+        case 'good': return { bg: '#F0F8F0', fg: '#559652', dot: '#559652' };
+        case 'warning': return { bg: '#FEF9EB', fg: '#C69A2A', dot: '#F8C135' };
+        case 'danger': return { bg: '#FDE9ED', fg: '#EA244F', dot: '#EA244F' };
+        default: return { bg: '#F8F8F9', fg: '#6A6E83', dot: '#9A9DAD' };
+      }
+    };
+
+    const getLevelIcon = (level) => {
+      switch(level) {
+        case 'good': return <CheckIcon size={14} color="#559652" />;
+        case 'warning': return <WarningIcon size={14} color="#C69A2A" />;
+        case 'danger': return <DangerIcon size={14} color="#EA244F" />;
+        default: return null;
+      }
+    };
+
+    const getLevelLabel = (level) => {
+      switch(level) {
+        case 'good': return 'ดี';
+        case 'warning': return 'เฉยๆ';
+        case 'danger': return 'ระวัง';
+        default: return '';
+      }
+    };
+
+    /* ────────────────────────────────────────
+       PHONE SCREEN — Weekly Calendar
+    ──────────────────────────────────────── */
+    /* ────────────────────────────────────────
+       DAILY VIEW — หน้ารายวัน
+    ──────────────────────────────────────── */
+    const DailyView = ({ week, dayIndex, setDayIndex, onBack }) => {
+      const dayData = week.days[dayIndex];
+      const c = getLevelColor(dayData.level);
+      const MONTHS = ['ม.ค.'];
+      const FULL_DAYS = ['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์','อาทิตย์'];
+      const fullDay = FULL_DAYS[dayIndex] || dayData.day;
+
+      const categories = [
+        { icon: 'fa-briefcase', label: 'การงาน', text: dayData.detail?.work, color: '#7279FB' },
+        { icon: 'fa-heart', label: 'ความรัก', text: dayData.detail?.love, color: '#EC599D' },
+        { icon: 'fa-coins', label: 'การเงิน', text: dayData.detail?.money, color: '#F8C135' },
+        { icon: 'fa-spa', label: 'สุขภาพ', text: dayData.detail?.health, color: '#559652' },
+      ];
+
+      const ds = {
+        wrap: { padding: '0 16px 24px', display: 'flex', flexDirection: 'column', gap: '16px' },
+        // Back button
+        backRow: { display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0', cursor: 'pointer' },
+        backText: { fontSize: '14px', color: '#EC599D', fontWeight: 700 },
+        // Day selector
+        daySel: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '4px 0' },
+        daySelArrow: { width: '32px', height: '32px', borderRadius: '50%', border: 'none', background: '#F8F8F9', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' },
+        daySelCenter: { textAlign: 'center' },
+        daySelTitle: { fontSize: '18px', fontWeight: 700, color: '#1B1D22', lineHeight: '28px' },
+        daySelSub: { fontSize: '14px', color: '#6A6E83', lineHeight: '22px' },
+        // Hero card
+        hero: { background: c.bg, borderRadius: '16px', padding: '20px', border: `1px solid ${c.dot}30`, position: 'relative', overflow: 'hidden' },
+        heroBadge: { display: 'inline-flex', alignItems: 'center', gap: '6px', background: c.dot, color: '#FFF', fontSize: '12px', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', marginBottom: '12px' },
+        heroTitle: { fontSize: '18px', lineHeight: '28px', fontWeight: 700, color: '#1B1D22', marginBottom: '4px' },
+        heroDesc: { fontSize: '14px', lineHeight: '22px', color: '#1B1D22' },
+        heroEmoji: { position: 'absolute', right: '16px', top: '16px', fontSize: '36px', opacity: 0.2 },
+        // Category card
+        catCard: { background: '#FFFFFF', borderRadius: '14px', padding: '14px 16px', border: '1px solid #F8F8F9', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', display: 'flex', gap: '14px', alignItems: 'flex-start' },
+        catIcon: (color) => ({ width: '36px', height: '36px', borderRadius: '10px', background: color + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: color, fontSize: '16px' }),
+        catBody: { flex: 1 },
+        catLabel: { fontSize: '13px', fontWeight: 700, color: '#6A6E83', marginBottom: '2px' },
+        catText: { fontSize: '15px', lineHeight: '22px', fontWeight: 400, color: '#1B1D22' },
+        // Lucky section
+        luckyCard: { background: 'linear-gradient(135deg, #FDEFF5 0%, #F1F2FF 100%)', borderRadius: '16px', padding: '16px 20px' },
+        luckyTitle: { fontSize: '14px', fontWeight: 700, color: '#EC599D', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' },
+        luckyGrid: { display: 'flex', gap: '12px' },
+        luckyItem: { flex: 1, textAlign: 'center' },
+        luckyLabel: { fontSize: '11px', color: '#6A6E83', fontWeight: 700, marginBottom: '4px', textTransform: 'uppercase' },
+        luckyValue: { fontSize: '14px', fontWeight: 700, color: '#1B1D22' },
+      };
+
+      return (
+        <div style={ds.wrap}>
+          {/* Back */}
+          <div style={ds.backRow} onClick={onBack}>
+            <ChevronLeft size={16} color="#EC599D" />
+            <div style={ds.backText}>กลับรายสัปดาห์</div>
+          </div>
+
+          {/* Day selector */}
+          <div style={ds.daySel}>
+            <button style={{...ds.daySelArrow, opacity: dayIndex === 0 ? 0.3 : 1}} onClick={() => dayIndex > 0 && setDayIndex(dayIndex - 1)}>
+              <ChevronLeft size={16} />
+            </button>
+            <div style={ds.daySelCenter}>
+              <div style={ds.daySelTitle}>วัน{fullDay}</div>
+              <div style={ds.daySelSub}>{dayData.date} {MONTHS[0]} 2568</div>
+            </div>
+            <button style={{...ds.daySelArrow, opacity: dayIndex === 6 ? 0.3 : 1}} onClick={() => dayIndex < 6 && setDayIndex(dayIndex + 1)}>
+              <ChevronRight size={16} />
+            </button>
+          </div>
+
+          {/* Hero */}
+          <div style={ds.hero}>
+            <div style={ds.heroBadge}>
+              {getLevelIcon(dayData.level)}
+              {getLevelLabel(dayData.level) === 'ดี' ? 'วันดี' : getLevelLabel(dayData.level) === 'ระวัง' ? 'วันระวัง' : 'วันเฉยๆ'}
+            </div>
+            <div style={ds.heroTitle}>{dayData.title}</div>
+            <div style={ds.heroDesc}>{dayData.desc}</div>
+            <div style={ds.heroEmoji}>{dayData.level === 'good' ? '✨' : dayData.level === 'danger' ? '⚠️' : '🌤️'}</div>
+          </div>
+
+          {/* Categories */}
+          {categories.map((cat, i) => (
+            <div key={i} style={ds.catCard}>
+              <div style={ds.catIcon(cat.color)}>
+                <i className={`fas ${cat.icon}`}></i>
+              </div>
+              <div style={ds.catBody}>
+                <div style={ds.catLabel}>{cat.label}</div>
+                <div style={ds.catText}>{cat.text}</div>
+              </div>
+            </div>
+          ))}
+
+          {/* Lucky */}
+          {dayData.detail?.lucky && (
+            <div style={ds.luckyCard}>
+              <div style={ds.luckyTitle}>
+                <i className="fas fa-star" style={{ fontSize: '12px' }}></i>
+                เสริมดวง
+              </div>
+              <div style={ds.luckyGrid}>
+                <div style={ds.luckyItem}>
+                  <div style={ds.luckyLabel}>สี</div>
+                  <div style={ds.luckyValue}>{dayData.detail.lucky.color}</div>
+                </div>
+                <div style={ds.luckyItem}>
+                  <div style={ds.luckyLabel}>เลข</div>
+                  <div style={ds.luckyValue}>{dayData.detail.lucky.number}</div>
+                </div>
+                <div style={ds.luckyItem}>
+                  <div style={ds.luckyLabel}>ทิศ</div>
+                  <div style={ds.luckyValue}>{dayData.detail.lucky.direction}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Ref */}
+          <div style={{ textAlign: 'right', fontSize: '14px', color: '#9A9DAD' }}>อ้างอิงจากตำรามหาหมอดู</div>
+        </div>
+      );
+    };
+
+    const WeeklyCalendarScreen = ({ weekIndex, setWeekIndex, activeTab, setActiveTab, showBanner, setShowBanner, expandedDay, setExpandedDay, selectedDay, setSelectedDay }) => {
+      const week = WEEKS_DATA[weekIndex];
+
+      const s = {
+        screen: {
+          width: '100%', height: '100%', background: '#FFFFFF', overflow: 'hidden',
+          display: 'flex', flexDirection: 'column', position: 'relative',
+        },
+        scrollArea: {
+          flex: 1, overflowY: 'auto', overflowX: 'hidden',
+          WebkitOverflowScrolling: 'touch',
+        },
+        // Status bar
+        statusBar: {
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          padding: '14px 24px 8px', background: 'linear-gradient(180deg, #FEF4F5 0%, #FEF4F5 100%)',
+          flexShrink: 0,
+        },
+        statusTime: {
+          fontFamily: 'Inter, -apple-system, sans-serif', fontWeight: 600,
+          fontSize: '17px', lineHeight: '22px', color: '#000',
+        },
+        statusIcons: {
+          display: 'flex', gap: '5px', alignItems: 'center',
+        },
+        // Tab switcher
+        tabContainer: {
+          padding: '0 16px 12px', flexShrink: 0,
+        },
+        tabGroup: {
+          display: 'flex', background: '#FFFFFF', borderRadius: '9999px',
+          padding: '4px', border: '1px solid #F8F8F9',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
+        },
+        tab: (active) => ({
+          flex: 1, padding: '7px 0', borderRadius: '9999px', textAlign: 'center',
+          fontSize: '16px', lineHeight: '24px', fontWeight: 700, cursor: 'pointer',
+          transition: 'all 0.25s ease',
+          background: active ? '#EC599D' : 'transparent',
+          color: active ? '#FFFFFF' : '#1B1D22',
+          boxShadow: active ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+        }),
+        // Week selector
+        weekSelector: {
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '8px 0 12px', gap: '12px', flexShrink: 0,
+        },
+        weekArrow: {
+          width: '32px', height: '32px', borderRadius: '50%', border: 'none',
+          background: '#F8F8F9', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', transition: 'all 0.15s ease',
+        },
+        weekLabel: {
+          textAlign: 'center',
+        },
+        weekTitle: {
+          fontSize: '16px', lineHeight: '24px', fontWeight: 700, color: '#1B1D22',
+        },
+        weekRange: {
+          fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#6A6E83',
+        },
+        // Content padding
+        content: {
+          padding: '0 16px 24px', display: 'flex', flexDirection: 'column', gap: '16px',
+        },
+        // Banner
+        banner: {
+          background: '#E6F6FC', borderRadius: '12px', padding: '16px 20px',
+          position: 'relative', overflow: 'hidden', border: '1px solid #D4EEF7',
+          animation: 'fadeIn 0.3s ease',
+        },
+        bannerClose: {
+          position: 'absolute', top: '12px', right: '12px',
+          width: '24px', height: '24px', borderRadius: '8px',
+          background: '#FFFFFF', border: 'none', display: 'flex',
+          alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+        },
+        bannerTitle: {
+          fontSize: '16px', lineHeight: '24px', fontWeight: 700, color: '#1B1D22',
+          marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px',
+        },
+        bannerDesc: {
+          fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#1B1D22',
+          marginBottom: '12px', maxWidth: '220px',
+        },
+        bannerBtn: {
+          background: '#0386B3', color: '#FFFFFF', border: 'none', borderRadius: '9999px',
+          padding: '6px 16px', fontSize: '14px', fontWeight: 700, lineHeight: '22px',
+          cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        },
+        bannerChar: {
+          position: 'absolute', right: '10px', bottom: '-5px',
+          width: '120px', height: '130px', opacity: 0.15,
+          fontSize: '100px', lineHeight: '130px', textAlign: 'center',
+        },
+        // Summary card
+        summaryCard: {
+          borderRadius: '20px', overflow: 'hidden',
+          background: 'linear-gradient(150deg, #FDEFF5 0%, #F1F2FF 60%, #E6F6FC 100%)',
+          position: 'relative', animation: 'fadeIn 0.4s ease',
+        },
+        summaryInner: {
+          padding: '20px 20px 0', position: 'relative', zIndex: 1,
+        },
+        summaryBadge: {
+          display: 'inline-flex', alignItems: 'center', gap: '5px',
+          background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(8px)',
+          padding: '4px 12px', borderRadius: '9999px',
+          fontSize: '11px', fontWeight: 700, color: '#7279FB',
+          marginBottom: '12px', border: '1px solid rgba(114,121,251,0.15)',
+        },
+        summaryTitle: {
+          fontSize: '18px', lineHeight: '26px', fontWeight: 700, color: '#1B1D22',
+          marginBottom: '6px',
+        },
+        summaryDesc: {
+          fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#6A6E83',
+        },
+        summaryDeco: {
+          position: 'absolute', right: '-10px', top: '-10px',
+          width: '80px', height: '80px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(114,121,251,0.12) 0%, transparent 70%)',
+          zIndex: 0,
+        },
+        summaryDeco2: {
+          position: 'absolute', left: '30%', bottom: '40px',
+          width: '50px', height: '50px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(236,89,157,0.08) 0%, transparent 70%)',
+          zIndex: 0,
+        },
+        // Advice cards row
+        adviceRow: {
+          display: 'flex', gap: '10px', padding: '16px',
+        },
+        adviceCard: (type) => ({
+          flex: 1,
+          background: type === 'advice' ? 'rgba(85,150,82,0.06)' : 'rgba(234,36,79,0.05)',
+          borderRadius: '14px', padding: '14px',
+          borderLeft: `3px solid ${type === 'advice' ? '#559652' : '#EA244F'}`,
+          position: 'relative', overflow: 'hidden',
+        }),
+        adviceLabel: (type) => ({
+          fontSize: '12px', lineHeight: '20px', fontWeight: 700,
+          color: type === 'advice' ? '#559652' : '#EA244F',
+          marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px',
+        }),
+        adviceItems: {
+          display: 'flex', flexDirection: 'column', gap: '6px',
+        },
+        adviceItem: (type) => ({
+          display: 'flex', alignItems: 'flex-start', gap: '8px',
+          fontSize: '13px', lineHeight: '20px', fontWeight: 400, color: '#1B1D22',
+        }),
+        adviceBullet: (type) => ({
+          width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0,
+          marginTop: '7px',
+          background: type === 'advice' ? '#559652' : '#EA244F',
+        }),
+        adviceDecoIcon: {
+          position: 'absolute', right: '6px', bottom: '6px',
+          fontSize: '28px', opacity: 0.08,
+        },
+        // Timeline card
+        timelineCard: {
+          background: '#FFFFFF', borderRadius: '16px',
+          border: '0.5px solid #F8F8F9', boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
+          overflow: 'hidden', animation: 'fadeIn 0.5s ease',
+        },
+        timelineHeader: {
+          background: 'linear-gradient(135deg, #FDEFF5 0%, #F1F2FF 100%)',
+          padding: '14px 16px',
+          display: 'flex', alignItems: 'center', gap: '12px',
+        },
+        timelineHeaderBadge: {
+          width: '40px', height: '40px', borderRadius: '12px', flexShrink: 0,
+          background: '#EC599D', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: '#FFFFFF', fontSize: '18px', fontWeight: 700, lineHeight: '24px',
+          boxShadow: '0 2px 6px rgba(236,89,157,0.3)',
+        },
+        timelineHeaderText: {
+          flex: 1,
+        },
+        timelineHeaderWeek: {
+          fontSize: '15px', lineHeight: '22px', fontWeight: 700, color: '#1B1D22',
+        },
+        timelineHeaderRange: {
+          fontSize: '13px', lineHeight: '20px', fontWeight: 400, color: '#6A6E83',
+        },
+        timelineBody: {
+          padding: '16px',
+          background: '#F4F4F6',
+          borderRadius: '0 0 16px 16px',
+        },
+        // Day row
+        dayRow: (isLast) => ({
+          display: 'flex', gap: '0', alignItems: 'stretch',
+        }),
+        // Left track — คอลัมน์ซ้าย ใช้ absolute line วิ่งผ่านหลัง pill
+        dayTrack: {
+          width: '48px', flexShrink: 0,
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'flex-start',
+          position: 'relative',
+        },
+        trackLineAbsolute: (level, isFirst, isLast) => {
+          const c = getLevelColor(level);
+          return {
+            position: 'absolute',
+            left: '50%', transform: 'translateX(-50%)',
+            top: isFirst ? '47px' : '0',
+            bottom: isLast ? 'calc(100% - 47px)' : '0',
+            width: '2.5px', background: c.dot, opacity: 0.3,
+            borderRadius: '2px', zIndex: 1,
+          };
+        },
+        // Day pill — active: ขยาย + glow + สีเข้ม
+        dayPill: (level, isExpanded) => {
+          const c = getLevelColor(level);
+          return {
+            width: '48px', display: 'flex', flexDirection: 'column',
+            alignItems: 'center', gap: '4px', padding: '10px 0',
+            borderRadius: '70px',
+            background: isExpanded ? c.bg : '#FFFFFF',
+            border: isExpanded ? `2px solid ${c.fg}` : '1px solid #EBECEF',
+            transition: 'all 0.2s ease', cursor: 'pointer',
+            position: 'relative', zIndex: 2,
+            transform: isExpanded ? 'scale(1.12)' : 'scale(1)',
+            boxShadow: isExpanded ? `0 3px 12px ${c.dot}50` : 'none',
+          };
+        },
+        dayLabel: {
+          fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#1B1D22',
+          textAlign: 'center',
+        },
+        dayDot: (level) => {
+          const c = getLevelColor(level);
+          return {
+            width: '22px', height: '22px', borderRadius: '11px',
+            background: c.dot, display: 'flex', alignItems: 'center',
+            justifyContent: 'center', color: '#FFFFFF', fontSize: '12px',
+            fontWeight: 700, lineHeight: '20px',
+          };
+        },
+        // Day content
+        dayContent: {
+          flex: 1, minWidth: 0, paddingBottom: '12px',
+        },
+        dayCard: (level, hasLabel) => ({
+          background: '#FFFFFF', borderRadius: '12px',
+          border: 'none', boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+          overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s ease',
+          borderTopLeftRadius: '2px', borderBottomLeftRadius: '2px',
+        }),
+        dayCardLabelWrap: {
+          display: 'flex', justifyContent: 'flex-end',
+        },
+        dayCardLabel: (level) => {
+          const c = getLevelColor(level);
+          return {
+            background: c.bg, padding: '2px 16px',
+            borderBottomLeftRadius: '20px', display: 'inline-block',
+            fontSize: '12px', lineHeight: '20px', fontWeight: 700, color: c.fg,
+          };
+        },
+        dayCardBody: {
+          padding: '10px 12px 12px 16px',
+          display: 'flex', alignItems: 'center', gap: '8px',
+        },
+        dayCardText: {
+          flex: 1, minWidth: 0,
+        },
+        dayCardTitle: {
+          fontSize: '15px', lineHeight: '24px', fontWeight: 700, color: '#1B1D22',
+          marginBottom: '2px',
+        },
+        dayCardDesc: {
+          fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#6A6E83',
+        },
+        dayCardArrow: {
+          flexShrink: 0, width: '28px', height: '28px', borderRadius: '50%',
+          background: '#F8F8F9', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        },
+        // Chat bubble tail
+        dayCardTail: {
+          width: '10px', height: '10px', flexShrink: 0, alignSelf: 'flex-start',
+          marginTop: '20px',
+          background: '#FFFFFF',
+          transform: 'rotate(45deg)',
+          marginLeft: '4px', marginRight: '-6px', zIndex: 1,
+          boxShadow: '-1px -1px 2px rgba(0,0,0,0.04)',
+        },
+        // Reference
+        reference: {
+          textAlign: 'right', fontSize: '14px', lineHeight: '22px',
+          fontWeight: 400, color: '#9A9DAD', paddingTop: '4px',
+        },
+        // Bottom nav — ใช้ flex child แทน absolute เพื่อไม่ให้ทับเนื้อหา
+        bottomNav: {
+          height: '85px', background: '#FFFFFF',
+          borderTop: '1px solid #F0F0F0',
+          display: 'flex', alignItems: 'flex-start', justifyContent: 'space-around',
+          padding: '10px 16px 0', flexShrink: 0,
+        },
+        navItem: (active) => ({
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
+          cursor: 'pointer', minWidth: '52px',
+        }),
+        navIcon: (active) => ({
+          fontSize: '20px', color: active ? '#EC599D' : '#9A9DAD',
+          transition: 'color 0.2s ease',
+        }),
+        navLabel: (active) => ({
+          fontSize: '12px', lineHeight: '18px', fontWeight: active ? 700 : 400,
+          color: active ? '#EC599D' : '#6A6E83', textAlign: 'center',
+          transition: 'all 0.2s ease',
+        }),
+        navCenter: {
+          width: '52px', height: '52px', borderRadius: '50%',
+          background: 'linear-gradient(135deg, #EC599D 0%, #F47EB8 100%)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          marginTop: '-20px', boxShadow: '0 4px 12px rgba(236,89,157,0.3)',
+          color: '#FFFFFF', fontSize: '22px',
+        },
+        homeIndicator: {
+          width: '134px', height: '5px', background: 'rgba(0,0,0,0.15)',
+          borderRadius: '100px', margin: '8px auto 0',
+        },
+      };
+
+      return (
+        <div style={s.screen}>
+          {/* Status Bar */}
+          <div style={s.statusBar}>
+            <div style={s.statusTime}>9:41</div>
+            <div style={s.statusIcons}>
+              <i className="fas fa-signal" style={{ fontSize: '14px' }}></i>
+              <i className="fas fa-wifi" style={{ fontSize: '14px' }}></i>
+              <i className="fas fa-battery-full" style={{ fontSize: '14px' }}></i>
+            </div>
+          </div>
+
+          {/* Tab Switcher */}
+          <div style={s.tabContainer}>
+            <div style={s.tabGroup}>
+              {['รายวัน', 'รายสัปดาห์', 'รายเดือน'].map((label, i) => (
+                <div key={i} style={s.tab(activeTab === i)} onClick={() => setActiveTab(i)}>
+                  {label}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Week Selector — ซ่อนเมื่ออยู่หน้ารายวัน */}
+          {activeTab === 1 && (
+            <div style={s.weekSelector}>
+              <button
+                style={{...s.weekArrow, opacity: weekIndex === 0 ? 0.3 : 1 }}
+                onClick={() => weekIndex > 0 && setWeekIndex(weekIndex - 1)}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <div style={s.weekLabel}>
+                <div style={s.weekTitle}>สัปดาห์ที่ {week.weekNum}</div>
+                <div style={s.weekRange}>({week.range})</div>
+              </div>
+              <button
+                style={{...s.weekArrow, opacity: weekIndex === WEEKS_DATA.length - 1 ? 0.3 : 1 }}
+                onClick={() => weekIndex < WEEKS_DATA.length - 1 && setWeekIndex(weekIndex + 1)}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
+
+          {/* Scrollable Content */}
+          <div style={s.scrollArea}>
+            {/* ── Daily View ── */}
+            {activeTab === 0 && (
+              <DailyView
+                week={week}
+                dayIndex={selectedDay}
+                setDayIndex={setSelectedDay}
+                onBack={() => { setActiveTab(1); }}
+              />
+            )}
+
+            {/* ── Weekly View ── */}
+            {activeTab === 1 && (
+            <div style={s.content}>
+              {/* Notification Banner */}
+              {showBanner && (
+                <div style={s.banner}>
+                  <button style={s.bannerClose} onClick={() => setShowBanner(false)}>
+                    <XIcon size={12} />
+                  </button>
+                  <div style={s.bannerTitle}>
+                    <BellIcon size={18} />
+                    ตั้งการแจ้งเตือน
+                  </div>
+                  <div style={s.bannerDesc}>
+                    อย่าพลาดดวงของคุณ! ตั้งการแจ้งเตือนเพื่อให้เราบอกดวงคุณทุกวัน
+                  </div>
+                  <button style={s.bannerBtn}>
+                    <i className="fas fa-bell" style={{ fontSize: '12px' }}></i>
+                    ตั้งค่าแจ้งเตือน
+                  </button>
+                  <div style={s.bannerChar}>🔮</div>
+                </div>
+              )}
+
+              {/* Summary Card */}
+              <div style={s.summaryCard} key={`summary-${weekIndex}`}>
+                <div style={s.summaryDeco}></div>
+                <div style={s.summaryDeco2}></div>
+                <div style={s.summaryInner}>
+                  <div style={s.summaryBadge}>
+                    <i className="fas fa-star" style={{ fontSize: '10px' }}></i>
+                    สรุปดวงประจำสัปดาห์
+                  </div>
+                  <div style={s.summaryTitle}>{week.summary.title}</div>
+                  <div style={s.summaryDesc}>{week.summary.desc}</div>
+                </div>
+                <div style={s.adviceRow}>
+                  <div style={s.adviceCard('advice')}>
+                    <div style={s.adviceLabel('advice')}>
+                      <i className="fas fa-check-circle" style={{ fontSize: '12px' }}></i>
+                      ควรทำ
+                    </div>
+                    <div style={s.adviceItems}>
+                      {week.advice.split('\n').map((line, i) => (
+                        <div key={i} style={s.adviceItem('advice')}>
+                          <div style={s.adviceBullet('advice')}></div>
+                          {line}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={s.adviceDecoIcon}>✅</div>
+                  </div>
+                  <div style={s.adviceCard('avoid')}>
+                    <div style={s.adviceLabel('avoid')}>
+                      <i className="fas fa-times-circle" style={{ fontSize: '12px' }}></i>
+                      ควรเลี่ยง
+                    </div>
+                    <div style={s.adviceItems}>
+                      {week.avoid.split('\n').map((line, i) => (
+                        <div key={i} style={s.adviceItem('avoid')}>
+                          <div style={s.adviceBullet('avoid')}></div>
+                          {line}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={s.adviceDecoIcon}>⛔</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Timeline */}
+              <div style={s.timelineCard} key={`timeline-${weekIndex}`}>
+                <div style={s.timelineHeader}>
+                  <div style={s.timelineHeaderBadge}>{week.weekNum}</div>
+                  <div style={s.timelineHeaderText}>
+                    <div style={s.timelineHeaderWeek}>สัปดาห์ที่ {week.weekNum}</div>
+                    <div style={s.timelineHeaderRange}>{week.range}</div>
+                  </div>
+                </div>
+                <div style={s.timelineBody}>
+                  {week.days.map((dayData, idx) => {
+                    const isFirst = idx === 0;
+                    const isLast = idx === week.days.length - 1;
+                    const isSingle = week.days.length === 1;
+                    const isExpanded = expandedDay === idx;
+                    return (
+                      <div key={idx} style={s.dayRow(isLast)}>
+                        {/* Left track: absolute line + pill on top */}
+                        <div style={s.dayTrack}>
+                          {!isSingle && (
+                            <div style={s.trackLineAbsolute(dayData.level, isFirst, isLast)}></div>
+                          )}
+                          <div
+                            style={s.dayPill(dayData.level, isExpanded)}
+                            onClick={() => setExpandedDay(isExpanded ? null : idx)}
+                          >
+                            <div style={s.dayLabel}>{dayData.day}</div>
+                            <div style={s.dayDot(dayData.level)}>{dayData.date}</div>
+                          </div>
+                        </div>
+
+                        {/* Bubble tail */}
+                        <div style={s.dayCardTail}></div>
+
+                        {/* Right: card content — กดแล้วไปหน้ารายวัน */}
+                        <div style={s.dayContent}>
+                          <div style={s.dayCard(dayData.level, !!dayData.label)}
+                               onClick={() => { setSelectedDay(idx); setActiveTab(0); }}>
+                            {dayData.label && (
+                              <div style={s.dayCardLabelWrap}>
+                                <div style={s.dayCardLabel(dayData.level)}>
+                                  {dayData.label}
+                                </div>
+                              </div>
+                            )}
+                            <div style={s.dayCardBody}>
+                              <div style={s.dayCardText}>
+                                <div style={s.dayCardTitle}>{dayData.title}</div>
+                                <div style={s.dayCardDesc}>{dayData.desc}</div>
+                              </div>
+                              <div style={s.dayCardArrow}>
+                                <ChevronRight size={16} color="#9A9DAD" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Reference */}
+              <div style={s.reference}>อ้างอิงจากตำรามหาหมอดู</div>
+            </div>
+            )}
+
+            {/* ── Monthly placeholder ── */}
+            {activeTab === 2 && (
+              <div style={{ padding: '40px 16px', textAlign: 'center', color: '#9A9DAD' }}>
+                <i className="fas fa-calendar" style={{ fontSize: '48px', marginBottom: '16px', display: 'block', opacity: 0.3 }}></i>
+                <div style={{ fontSize: '16px', fontWeight: 700, color: '#1B1D22', marginBottom: '4px' }}>ปฏิทินรายเดือน</div>
+                <div style={{ fontSize: '14px' }}>เร็วๆ นี้</div>
+              </div>
+            )}
+          </div>
+
+          {/* Bottom Nav */}
+          <div style={s.bottomNav}>
+            <div style={s.navItem(true)}>
+              <i className="fas fa-calendar-alt" style={s.navIcon(true)}></i>
+              <div style={s.navLabel(true)}>ปฏิทิน</div>
+            </div>
+            <div style={s.navItem(false)}>
+              <i className="fas fa-bell" style={s.navIcon(false)}></i>
+              <div style={s.navLabel(false)}>แจ้งเตือน</div>
+            </div>
+            <div style={s.navItem(false)}>
+              <div style={s.navCenter}>
+                <i className="fas fa-sun"></i>
+              </div>
+              <div style={{...s.navLabel(false), marginTop: '4px'}}>ดวงวันนี้</div>
+            </div>
+            <div style={s.navItem(false)}>
+              <i className="fas fa-moon" style={s.navIcon(false)}></i>
+              <div style={s.navLabel(false)}>ทำนาย</div>
+            </div>
+            <div style={s.navItem(false)}>
+              <i className="fas fa-user" style={s.navIcon(false)}></i>
+              <div style={s.navLabel(false)}>โปรไฟล์</div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    /* ────────────────────────────────────────
+       MAIN APP — 3 Column Layout
+    ──────────────────────────────────────── */
+    const App = () => {
+      const [weekIndex, setWeekIndex] = React.useState(1); // default week 3
+      const [activeTab, setActiveTab] = React.useState(1); // weekly tab
+      const [showBanner, setShowBanner] = React.useState(true);
+      const [expandedDay, setExpandedDay] = React.useState(null);
+      const [selectedDay, setSelectedDay] = React.useState(0);
+      const [showSpecs, setShowSpecs] = React.useState(true);
+
+      const week = WEEKS_DATA[weekIndex];
+
+      // Count levels
+      const levelCounts = { good: 0, warning: 0, danger: 0 };
+      week.days.forEach(d => { levelCounts[d.level] = (levelCounts[d.level] || 0) + 1; });
+
+      const s = {
+        wrapper: {
+          display: 'flex', justifyContent: 'center', alignItems: 'flex-start',
+          minHeight: '100vh', padding: '32px 24px', gap: '32px',
+          background: 'linear-gradient(135deg, #F8F8F9 0%, #F0F1F3 50%, #EDE8F0 100%)',
+        },
+        // Left panel — Navigator
+        navPanel: {
+          width: '260px', flexShrink: 0,
+          display: 'flex', flexDirection: 'column', gap: '16px',
+          position: 'sticky', top: '32px',
+        },
+        panelCard: {
+          background: '#FFFFFF', borderRadius: '16px', padding: '20px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+        },
+        panelTitle: {
+          fontSize: '14px', fontWeight: 700, color: '#6A6E83',
+          textTransform: 'uppercase', letterSpacing: '0.5px',
+          marginBottom: '12px',
+        },
+        navBtn: (active) => ({
+          display: 'flex', alignItems: 'center', gap: '10px',
+          padding: '10px 12px', borderRadius: '10px', cursor: 'pointer',
+          background: active ? '#FDEFF5' : 'transparent',
+          border: active ? '1px solid #EC599D40' : '1px solid transparent',
+          transition: 'all 0.15s ease', marginBottom: '4px', width: '100%',
+        }),
+        navBtnDot: (level) => {
+          const c = getLevelColor(level);
+          return {
+            width: '10px', height: '10px', borderRadius: '50%',
+            background: c.dot, flexShrink: 0,
+          };
+        },
+        navBtnLabel: (active) => ({
+          fontSize: '14px', lineHeight: '20px', fontWeight: active ? 700 : 400,
+          color: active ? '#EC599D' : '#1B1D22', flex: 1,
+        }),
+        // Toggle
+        toggleRow: {
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '8px 0',
+        },
+        toggleLabel: {
+          fontSize: '14px', fontWeight: 400, color: '#1B1D22',
+        },
+        toggle: (on) => ({
+          width: '44px', height: '24px', borderRadius: '12px',
+          background: on ? '#EC599D' : '#EBECEF', cursor: 'pointer',
+          position: 'relative', transition: 'background 0.2s ease',
+        }),
+        toggleDot: (on) => ({
+          width: '20px', height: '20px', borderRadius: '50%', background: '#FFFFFF',
+          position: 'absolute', top: '2px', left: on ? '22px' : '2px',
+          transition: 'left 0.2s ease', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+        }),
+        // Phone frame
+        phoneFrame: {
+          width: '393px', height: '852px', borderRadius: '50px',
+          background: '#1B1D22', padding: '12px',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.2), 0 8px 20px rgba(0,0,0,0.1)',
+          position: 'relative', flexShrink: 0,
+        },
+        phoneScreen: {
+          width: '100%', height: '100%', borderRadius: '40px',
+          overflow: 'hidden', background: '#FFFFFF',
+        },
+        phoneDynamic: {
+          position: 'absolute', top: '22px', left: '50%', transform: 'translateX(-50%)',
+          width: '126px', height: '35px', borderRadius: '20px',
+          background: '#1B1D22', zIndex: 10,
+        },
+        // Right panel — Specs
+        specsPanel: {
+          width: '300px', flexShrink: 0,
+          display: 'flex', flexDirection: 'column', gap: '16px',
+          position: 'sticky', top: '32px',
+        },
+        specSection: {
+          marginBottom: '16px',
+        },
+        specLabel: {
+          fontSize: '11px', fontWeight: 700, color: '#9A9DAD',
+          textTransform: 'uppercase', letterSpacing: '0.8px',
+          marginBottom: '8px',
+        },
+        specRow: {
+          display: 'flex', alignItems: 'center', gap: '8px',
+          marginBottom: '6px',
+        },
+        specDot: (color) => ({
+          width: '14px', height: '14px', borderRadius: '4px',
+          background: color, flexShrink: 0, border: '1px solid rgba(0,0,0,0.08)',
+        }),
+        specText: {
+          fontSize: '13px', lineHeight: '18px', color: '#1B1D22',
+        },
+        specMeta: {
+          fontSize: '11px', lineHeight: '16px', color: '#9A9DAD',
+          marginLeft: 'auto', fontFamily: 'monospace',
+        },
+        statBar: {
+          display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '8px',
+        },
+        statBarSegment: (color, pct) => ({
+          height: '6px', borderRadius: '3px', background: color,
+          width: `${pct}%`, transition: 'width 0.3s ease',
+        }),
+        statLabel: {
+          fontSize: '12px', lineHeight: '18px', color: '#6A6E83',
+          display: 'flex', alignItems: 'center', gap: '6px',
+        },
+        statCount: (color) => ({
+          fontWeight: 700, color: color,
+        }),
+      };
+
+      return (
+        <div style={s.wrapper}>
+          {/* ── Left Panel: Navigator ── */}
+          <div style={s.navPanel}>
+            <div style={s.panelCard}>
+              <div style={s.panelTitle}>📅 สัปดาห์</div>
+              {WEEKS_DATA.map((w, i) => (
+                <div key={i} style={s.navBtn(weekIndex === i)} onClick={() => { setWeekIndex(i); setExpandedDay(null); }}>
+                  <div style={{ fontSize: '14px', fontWeight: 700, color: weekIndex === i ? '#EC599D' : '#6A6E83', width: '28px' }}>W{w.weekNum}</div>
+                  <div style={s.navBtnLabel(weekIndex === i)}>{w.range}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={s.panelCard}>
+              <div style={s.panelTitle}>🎯 วันในสัปดาห์</div>
+              {week.days.map((d, i) => (
+                <div key={i} style={s.navBtn(expandedDay === i)} onClick={() => setExpandedDay(expandedDay === i ? null : i)}>
+                  <div style={s.navBtnDot(d.level)}></div>
+                  <div style={s.navBtnLabel(expandedDay === i)}>{d.day} {d.date} ม.ค.</div>
+                  <div style={{ fontSize: '11px', color: getLevelColor(d.level).fg, fontWeight: 600 }}>
+                    {getLevelLabel(d.level)}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={s.panelCard}>
+              <div style={s.panelTitle}>⚙️ ตัวเลือก</div>
+              <div style={s.toggleRow}>
+                <div style={s.toggleLabel}>แสดง Banner</div>
+                <div style={s.toggle(showBanner)} onClick={() => setShowBanner(!showBanner)}>
+                  <div style={s.toggleDot(showBanner)}></div>
+                </div>
+              </div>
+              <div style={s.toggleRow}>
+                <div style={s.toggleLabel}>แสดง Specs</div>
+                <div style={s.toggle(showSpecs)} onClick={() => setShowSpecs(!showSpecs)}>
+                  <div style={s.toggleDot(showSpecs)}></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Center: iPhone Frame ── */}
+          <div style={s.phoneFrame}>
+            <div style={s.phoneDynamic}></div>
+            <div style={s.phoneScreen}>
+              <WeeklyCalendarScreen
+                weekIndex={weekIndex}
+                setWeekIndex={setWeekIndex}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                showBanner={showBanner}
+                setShowBanner={setShowBanner}
+                expandedDay={expandedDay}
+                setExpandedDay={setExpandedDay}
+                selectedDay={selectedDay}
+                setSelectedDay={setSelectedDay}
+              />
+            </div>
+          </div>
+
+          {/* ── Right Panel: Design Specs ── */}
+          {showSpecs && (
+            <div style={s.specsPanel}>
+              <div style={s.panelCard}>
+                <div style={s.panelTitle}>📊 สรุปดวงสัปดาห์</div>
+                {/* Bar chart */}
+                <div style={s.statBar}>
+                  <div style={s.statBarSegment('#559652', (levelCounts.good / 7) * 100)}></div>
+                  <div style={s.statBarSegment('#F8C135', (levelCounts.warning / 7) * 100)}></div>
+                  <div style={s.statBarSegment('#EA244F', (levelCounts.danger / 7) * 100)}></div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div style={s.statLabel}>
+                    <div style={s.specDot('#559652')}></div>
+                    ดี <span style={s.statCount('#559652')}>{levelCounts.good} วัน</span>
+                  </div>
+                  <div style={s.statLabel}>
+                    <div style={s.specDot('#F8C135')}></div>
+                    เฉยๆ <span style={s.statCount('#C69A2A')}>{levelCounts.warning} วัน</span>
+                  </div>
+                  <div style={s.statLabel}>
+                    <div style={s.specDot('#EA244F')}></div>
+                    ระวัง <span style={s.statCount('#EA244F')}>{levelCounts.danger} วัน</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style={s.panelCard}>
+                <div style={s.panelTitle}>🎨 Color Tokens</div>
+                <div style={s.specSection}>
+                  <div style={s.specLabel}>Primary</div>
+                  <div style={s.specRow}>
+                    <div style={s.specDot('#EC599D')}></div>
+                    <div style={s.specText}>Primary</div>
+                    <div style={s.specMeta}>#EC599D</div>
+                  </div>
+                  <div style={s.specRow}>
+                    <div style={s.specDot('#FDEFF5')}></div>
+                    <div style={s.specText}>Primary Light</div>
+                    <div style={s.specMeta}>#FDEFF5</div>
+                  </div>
+                </div>
+                <div style={s.specSection}>
+                  <div style={s.specLabel}>Feedback</div>
+                  <div style={s.specRow}>
+                    <div style={s.specDot('#559652')}></div>
+                    <div style={s.specText}>Success</div>
+                    <div style={s.specMeta}>#559652</div>
+                  </div>
+                  <div style={s.specRow}>
+                    <div style={s.specDot('#F8C135')}></div>
+                    <div style={s.specText}>Warning</div>
+                    <div style={s.specMeta}>#F8C135</div>
+                  </div>
+                  <div style={s.specRow}>
+                    <div style={s.specDot('#EA244F')}></div>
+                    <div style={s.specText}>Error/Danger</div>
+                    <div style={s.specMeta}>#EA244F</div>
+                  </div>
+                  <div style={s.specRow}>
+                    <div style={s.specDot('#0386B3')}></div>
+                    <div style={s.specText}>Info</div>
+                    <div style={s.specMeta}>#0386B3</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={s.panelCard}>
+                <div style={s.panelTitle}>📐 Typography</div>
+                <div style={s.specSection}>
+                  <div style={s.specLabel}>Font Family</div>
+                  <div style={{...s.specText, marginBottom: '8px' }}>LINE Seed Sans TH</div>
+                </div>
+                <div style={s.specSection}>
+                  <div style={s.specLabel}>Scale</div>
+                  <div style={s.specRow}>
+                    <div style={{...s.specText, fontWeight: 700, fontSize: '16px' }}>Label.3</div>
+                    <div style={s.specMeta}>16/24 Bold</div>
+                  </div>
+                  <div style={s.specRow}>
+                    <div style={{...s.specText, fontSize: '14px' }}>Caption.4</div>
+                    <div style={s.specMeta}>14/22 Regular</div>
+                  </div>
+                  <div style={s.specRow}>
+                    <div style={{...s.specText, fontWeight: 700, fontSize: '12px' }}>Label.5</div>
+                    <div style={s.specMeta}>12/20 Bold</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={s.panelCard}>
+                <div style={s.panelTitle}>📏 Spacing</div>
+                <div style={s.specSection}>
+                  <div style={s.specRow}>
+                    <div style={{ width: '16px', height: '8px', background: '#EC599D40', borderRadius: '2px' }}></div>
+                    <div style={s.specText}>Card padding</div>
+                    <div style={s.specMeta}>16px</div>
+                  </div>
+                  <div style={s.specRow}>
+                    <div style={{ width: '12px', height: '8px', background: '#EC599D40', borderRadius: '2px' }}></div>
+                    <div style={s.specText}>Gap between cards</div>
+                    <div style={s.specMeta}>16px</div>
+                  </div>
+                  <div style={s.specRow}>
+                    <div style={{ width: '8px', height: '8px', background: '#EC599D40', borderRadius: '2px' }}></div>
+                    <div style={s.specText}>Inner gap</div>
+                    <div style={s.specMeta}>8px</div>
+                  </div>
+                  <div style={s.specRow}>
+                    <div style={{ width: '6px', height: '8px', background: '#EC599D40', borderRadius: '2px' }}></div>
+                    <div style={s.specText}>Timeline gap</div>
+                    <div style={s.specMeta}>6px</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={s.panelCard}>
+                <div style={s.panelTitle}>🔲 Border Radius</div>
+                <div style={s.specRow}>
+                  <div style={{ width: '16px', height: '16px', borderRadius: '16px', border: '2px solid #EC599D' }}></div>
+                  <div style={s.specText}>Cards</div>
+                  <div style={s.specMeta}>16px</div>
+                </div>
+                <div style={s.specRow}>
+                  <div style={{ width: '16px', height: '16px', borderRadius: '12px', border: '2px solid #7279FB' }}></div>
+                  <div style={s.specText}>Inner cards</div>
+                  <div style={s.specMeta}>12px</div>
+                </div>
+                <div style={s.specRow}>
+                  <div style={{ width: '16px', height: '16px', borderRadius: '9999px', border: '2px solid #559652' }}></div>
+                  <div style={s.specText}>Pills, tabs</div>
+                  <div style={s.specMeta}>9999px</div>
+                </div>
+                <div style={s.specRow}>
+                  <div style={{ width: '16px', height: '16px', borderRadius: '70px', border: '2px solid #F8C135' }}></div>
+                  <div style={s.specText}>Day pill</div>
+                  <div style={s.specMeta}>70px</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

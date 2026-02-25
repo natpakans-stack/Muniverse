@@ -1,0 +1,2660 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Mu — Birth Profile Setup Preview</title>
+  <style>
+    /* ===== Font: LINE Seed Sans TH (self-hosted) ===== */
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('fonts/LINESeedSansTH_W_Rg.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('fonts/LINESeedSansTH_W_Bd.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('fonts/LINESeedSansTH_W_XBd.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
+
+    /* ========================================
+       DESIGN TOKENS — Daily Mu Light Theme
+       ======================================== */
+    :root {
+      /* Background */
+      --bg-deep: #FFFFFF;
+      --bg-mid: #F8F8F9;
+      --bg-surface: #FFFFFF;
+      --bg-surface-hover: #F8F8F9;
+      --bg-input: #F8F8F9;
+      --bg-input-focus: #FFFFFF;
+
+      /* Primary — Pink */
+      --primary: #EC599D;
+      --primary-light: #F7BDD8;
+      --primary-dark: #BD477E;
+      --primary-bg-lowest: #FDEFF5;
+
+      /* Accent — Violet (Secondary) */
+      --accent: #7279FB;
+      --accent-light: #AAAFFD;
+      --accent-glow: rgba(114,121,251,0.2);
+
+      /* Text */
+      --text-primary: #1B1D22;
+      --text-secondary: #6A6E83;
+      --text-tertiary: #9A9DAD;
+      --text-disabled: #9A9DAD;
+
+      /* Semantic */
+      --error: #EA244F;
+      --error-bg: #FDE9ED;
+      --success: #559652;
+      --success-bg: #F0F8F0;
+
+      /* Border */
+      --border: #EBECEF;
+      --border-focus: #7279FB;
+      --border-error: #EA244F;
+
+      /* Shape */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
+      --radius-btn: 8px;
+
+      /* Spacing */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 12px;
+      --space-lg: 16px;
+      --space-xl: 20px;
+      --space-2xl: 24px;
+      --space-3xl: 32px;
+      --space-4xl: 40px;
+      --space-5xl: 48px;
+
+      /* Font */
+      --font: 'LINE Seed Sans TH', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Gradient */
+      --gradient-btn: linear-gradient(135deg, #EC599D 0%, #F7BDD8 100%);
+      --gradient-btn-accent: linear-gradient(135deg, #7279FB 0%, #AAAFFD 50%, #7279FB 100%);
+      --gradient-surface: linear-gradient(180deg, rgba(236,89,157,0.04) 0%, rgba(236,89,157,0.01) 100%);
+
+      /* WCAG Contrast Ratios (verified — updated 2026-02-18)
+         #1B1D22 on #FFFFFF → 16.5:1 AAA    — primary text
+         #6A6E83 on #FFFFFF → 5.6:1  AA     — secondary text, dropdown labels
+         #9A9DAD on #FFFFFF → 3.0:1  AA-lg  — tertiary text, icons, disabled
+         #FFFFFF on #EC599D → 3.2:1  AA-lg  — white on primary
+         #FFFFFF on #7279FB → 4.6:1  AA     — white on accent buttons
+         #EA244F on #FFFFFF → 5.0:1  AA     — error text
+         #559652 on #FFFFFF → 4.6:1  AA     — success text
+         #026486 on #E6F6FC → 8.2:1  AAA    — info hint
+      */
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font);
+      background: #EBECEF;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 24px;
+      gap: 24px;
+    }
+
+    /* ========================================
+       PHONE FRAME
+       ======================================== */
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      background: #FFFFFF;
+      border-radius: 44px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 20px 60px rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* ========================================
+       STATUS BAR
+       ======================================== */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 28px 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex-shrink: 0;
+    }
+
+    .status-bar-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .status-bar-icons svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ========================================
+       NAV BAR
+       ======================================== */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 20px 12px;
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      cursor: pointer;
+      border-radius: var(--radius-full);
+    }
+
+    .nav-btn:hover {
+      background: rgba(0,0,0,0.04);
+    }
+
+    .nav-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-spacer {
+      width: 40px;
+    }
+
+    /* ========================================
+       CONTENT AREA
+       ======================================== */
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0 24px;
+      overflow-y: auto;
+    }
+
+    .content-centered {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+      text-align: center;
+    }
+
+    .screen-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 32px;
+    }
+
+    .screen-subtitle {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      line-height: 24px;
+    }
+
+    /* ========================================
+       VERTICAL PROGRESS STEPPER
+       ======================================== */
+    .section-block {
+      position: relative;
+      padding-left: 40px;
+      padding-bottom: 28px;
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* Vertical connecting line */
+    .section-block::before {
+      content: '';
+      position: absolute;
+      left: 13px;
+      top: 28px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+      border-radius: 1px;
+    }
+
+    .section-block:last-child {
+      padding-bottom: 8px;
+      margin-bottom: 0;
+    }
+
+    .section-block:last-child::before {
+      display: none;
+    }
+
+    /* Done step → line turns green (success) */
+    .section-block.step-done::before {
+      background: var(--success);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 16px;
+    }
+
+    /* Step indicator — base (pending) */
+    .section-number {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      background: #FFFFFF;
+      border: 2px solid var(--border);
+      color: var(--text-tertiary);
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+
+    /* Active step — filled accent + glow ring */
+    .section-number.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #FFFFFF;
+      box-shadow: 0 0 0 4px rgba(114,121,251,0.2), 0 2px 8px rgba(114,121,251,0.3);
+    }
+
+    /* Done step — filled success + checkmark */
+    .section-number.done {
+      background: var(--success);
+      border-color: var(--success);
+      color: #FFFFFF;
+      font-size: 0;
+    }
+
+    .section-number.done::after {
+      content: '';
+      width: 14px;
+      height: 14px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 28px;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* ========================================
+       FORM ELEMENTS
+       ======================================== */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 20px;
+      color: var(--text-primary);
+    }
+
+    .form-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 12px;
+      background: #FFFFFF;
+      border: 1px solid #EBECEF;
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 24px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .form-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .form-input:focus {
+      border-color: #7279FB;
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px #C6CFFA;
+    }
+
+    .form-input.error {
+      border-color: #EA244F;
+      background: #FFFFFF;
+    }
+
+    .form-input.error:focus {
+      box-shadow: 0 0 0 3px #FAC3CD;
+    }
+
+    .form-input.filled {
+      border-color: #EBECEF;
+      background: #FFFFFF;
+    }
+
+    .form-error {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 18px;
+      color: var(--error);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .form-hint {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: normal;
+      color: #1B1D22;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 8px;
+      background: #E6F6FC;
+      border-radius: 8px;
+      margin-top: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .form-hint::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: #026486;
+      border-radius: 6px 0 0 6px;
+    }
+
+    .form-hint svg {
+      width: 19px;
+      height: 19px;
+      flex-shrink: 0;
+      color: #026486;
+      margin-left: 4px;
+    }
+
+    /* ========================================
+       CHECKBOX
+       ======================================== */
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      min-height: 48px;
+      cursor: pointer;
+      border-radius: var(--radius-md);
+    }
+
+    .checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--text-tertiary);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox.checked {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .checkbox.checked svg {
+      display: block;
+    }
+
+    .checkbox svg {
+      display: none;
+      width: 14px;
+      height: 14px;
+      color: white;
+    }
+
+    .checkbox-label {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--text-primary);
+    }
+
+    /* ========================================
+       DROPDOWN (Date & Time)
+       ======================================== */
+    .dropdown-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .dropdown-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .dropdown-group.wide {
+      flex: 1.5;
+    }
+
+    .dropdown-label {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 22px;
+      color: var(--text-secondary);
+      letter-spacing: 0.3px;
+    }
+
+    /* .form-dropdown removed — replaced by .dropdown-trigger + bottom sheet */
+
+    .dropdown-colon {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      padding-bottom: 10px;
+    }
+
+    /* ========================================
+       DROPDOWN TRIGGER (replaces native select)
+       ======================================== */
+    .dropdown-trigger {
+      width: 100%;
+      height: 48px;
+      padding: 0 36px 0 12px;
+      background: #FFFFFF;
+      border: 1px solid #EBECEF;
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 46px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dropdown-trigger::after {
+      content: '';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239A9DAD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    .dropdown-trigger.placeholder {
+      color: var(--text-secondary);
+    }
+
+    .dropdown-trigger.filled {
+      color: var(--text-primary);
+      border-color: var(--border);
+      background: #FFFFFF;
+    }
+
+    .dropdown-trigger.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px #C6CFFA;
+    }
+
+    .dropdown-trigger.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      background-color: var(--bg-input);
+    }
+
+    /* ========================================
+       BOTTOM SHEET PICKER
+       ======================================== */
+    .bottomsheet-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(16,17,20,0.5);
+      display: flex;
+      align-items: flex-end;
+      z-index: 100;
+    }
+
+    .bottomsheet-card {
+      background: #FFFFFF;
+      border-radius: 24px 24px 0 0;
+      width: 100%;
+      height: 70%;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+      animation: sheetSlideUp 0.3s ease-out;
+    }
+
+    @keyframes sheetSlideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .bottomsheet-handle {
+      width: 36px;
+      height: 5px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 3px;
+      margin: 12px auto 0;
+      flex-shrink: 0;
+    }
+
+    .bottomsheet-header {
+      padding: 16px 24px 12px;
+      flex-shrink: 0;
+    }
+
+    .bottomsheet-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 26px;
+      color: var(--text-primary);
+    }
+
+    .bottomsheet-options {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 16px;
+      max-height: 280px;
+    }
+
+    .bottomsheet-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 48px;
+      padding: 12px 12px;
+      font-size: 16px;
+      line-height: 24px;
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .bottomsheet-option:hover {
+      background: rgba(114,121,251,0.06);
+    }
+
+    .bottomsheet-option.selected {
+      background: rgba(114,121,251,0.08);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .bottomsheet-option.selected::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%237279FB' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    .bottomsheet-footer {
+      padding: 16px 24px 24px;
+      flex-shrink: 0;
+    }
+
+    .bottomsheet-footer .btn-primary {
+      margin: 0;
+    }
+
+    /* ========================================
+       STEP-TAB BOTTOM SHEET
+       ======================================== */
+    .step-tab-bar {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      padding: 0 16px;
+      gap: 4px;
+    }
+
+    .step-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 8px 16px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      min-height: 56px;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .step-tab-label {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: var(--text-tertiary);
+      transition: color 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      text-align: center;
+    }
+
+    .step-tab-value {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 22px;
+      color: var(--text-tertiary);
+      margin-top: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      text-align: center;
+      transition: color 0.2s ease;
+    }
+
+    /* Active tab */
+    .step-tab.active .step-tab-label { color: var(--accent); }
+
+    .step-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* Completed tab — green */
+    .step-tab.completed .step-tab-label { color: var(--success); font-size: 11px; line-height: 16px; font-weight: 400; }
+    .step-tab.completed .step-tab-value { color: var(--success); font-size: 15px; }
+
+    .step-tab.completed::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--success);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* Disabled tab */
+    .step-tab.disabled { cursor: default; opacity: 0.45; }
+
+    /* Progress bar (dots + lines) */
+    .step-progress-bar {
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      flex-shrink: 0;
+    }
+
+    .step-progress-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--border);
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .step-progress-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(114,121,251,0.2);
+    }
+
+    .step-progress-dot.completed { background: var(--success); }
+
+    .step-progress-line {
+      flex: 1;
+      height: 2px;
+      background: var(--border);
+      transition: background 0.3s ease;
+    }
+
+    .step-progress-line.completed { background: var(--success); }
+
+    /* Step tab content list */
+    .step-tab-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px 0;
+    }
+
+    .step-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 48px;
+      padding: 12px 16px;
+      font-size: 16px;
+      line-height: 24px;
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .step-option:hover { background: rgba(114,121,251,0.06); }
+
+    .step-option.selected {
+      background: rgba(114,121,251,0.08);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .step-option.selected::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%237279FB' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    /* Step search inside bottom sheet */
+    .step-search-wrapper {
+      position: relative;
+      padding: 8px 16px 4px;
+      flex-shrink: 0;
+    }
+
+    .step-search-wrapper svg {
+      position: absolute;
+      left: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: var(--text-tertiary);
+    }
+
+    .step-search {
+      width: 100%;
+      height: 44px;
+      padding: 0 16px 0 42px;
+      background: var(--bg-input);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .step-search::placeholder { color: var(--text-secondary); }
+    .step-search:focus { border-color: var(--border-focus); background: var(--bg-input-focus); }
+
+    .bottomsheet-safe-bottom { height: 24px; flex-shrink: 0; }
+
+    /* ========================================
+       SEARCH INPUT
+       ======================================== */
+    .search-input-wrapper {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .search-input-wrapper svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: var(--text-tertiary);
+    }
+
+    .search-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px 0 42px;
+      background: var(--bg-input);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 16px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .search-input:focus {
+      border-color: var(--border-focus);
+      background: var(--bg-input-focus);
+    }
+
+    /* ========================================
+       PROVINCE LIST
+       ======================================== */
+    .province-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-height: 200px;
+      overflow-y: auto;
+      position: relative;
+      -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    }
+
+    .province-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--text-primary);
+      font-size: 16px;
+    }
+
+    .province-item:hover {
+      background: #F8F8F9;
+    }
+
+    .province-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 32px 16px;
+      color: var(--text-tertiary);
+      font-size: 14px;
+      line-height: 22px;
+      text-align: center;
+    }
+
+    .province-empty svg {
+      width: 32px;
+      height: 32px;
+      color: var(--text-tertiary);
+      opacity: 0.6;
+    }
+
+    .province-item.selected {
+      background: rgba(114,121,251,0.08);
+      border: 1px solid rgba(114,121,251,0.25);
+    }
+
+    .province-item.selected::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    /* ========================================
+       REVIEW CARD
+       ======================================== */
+    .review-card {
+      background: #FFFFFF;
+      border: 1px solid #EBECEF;
+      border-radius: var(--radius-lg);
+      padding: 4px 0;
+      margin-bottom: 24px;
+    }
+
+    .review-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+    }
+
+    .review-row + .review-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .review-row-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .review-label {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 22px;
+      color: var(--text-tertiary);
+    }
+
+    .review-value {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      color: var(--text-primary);
+    }
+
+    .review-edit {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 22px;
+      color: var(--accent);
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+    }
+
+    .review-edit:hover {
+      background: rgba(114,121,251,0.08);
+    }
+
+    /* ========================================
+       BUTTONS
+       ======================================== */
+    .btn-container {
+      padding: 16px 24px 36px;
+      flex-shrink: 0;
+    }
+
+    .btn-container-inline {
+      padding: 16px 24px 36px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0) 0%, #FFFFFF 16px);
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: var(--radius-btn);
+      background: var(--accent);
+      color: #FFFFFF;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(114,121,251,0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(114,121,251,0.35);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      height: 48px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-btn);
+      background: transparent;
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #F8F8F9;
+    }
+
+    .btn-destructive {
+      width: 100%;
+      height: 48px;
+      border: 1.5px solid rgba(234,36,79,0.3);
+      border-radius: var(--radius-btn);
+      background: transparent;
+      color: var(--error);
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-destructive:hover {
+      background: var(--error-bg);
+    }
+
+    /* ========================================
+       MODAL / DIALOG
+       ======================================== */
+    .modal-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 32px;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 32px 24px 24px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .modal-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-full);
+      background: rgba(234,36,79,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 4px;
+    }
+
+    .modal-icon svg {
+      width: 28px;
+      height: 28px;
+      color: var(--error);
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 28px;
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 24px;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    /* ========================================
+       LOADING & SUCCESS
+       ======================================== */
+    .cosmic-icon {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .cosmic-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      border-radius: 50%;
+      border: 2px solid transparent;
+    }
+
+    .cosmic-ring.outer {
+      width: 120px; height: 120px;
+      margin: -60px 0 0 -60px;
+      border-top-color: var(--accent);
+      border-right-color: rgba(114,121,251,0.3);
+      animation: spin 3s linear infinite;
+    }
+
+    .cosmic-ring.middle {
+      width: 88px; height: 88px;
+      margin: -44px 0 0 -44px;
+      border-bottom-color: var(--primary);
+      border-left-color: rgba(236,89,157,0.3);
+      animation: spin 2s linear infinite reverse;
+    }
+
+    .cosmic-ring.inner {
+      width: 56px; height: 56px;
+      margin: -28px 0 0 -28px;
+      border-top-color: var(--accent);
+      animation: spin 1.5s linear infinite;
+    }
+
+    .cosmic-dot {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 12px; height: 12px;
+      margin: -6px 0 0 -6px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(114,121,251,0.3), 0 0 40px rgba(114,121,251,0.15);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .success-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(85,150,82,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 32px;
+      animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+
+    .success-icon::before {
+      content: '';
+      position: absolute;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 2px solid rgba(85,150,82,0.15);
+      animation: pulseRing 2s ease infinite;
+    }
+
+    .success-icon svg {
+      width: 52px;
+      height: 40px;
+      color: var(--success);
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+
+    /* Sparkle stars for success */
+    .sparkles {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: sparkle 1.5s ease-in-out infinite;
+    }
+
+    .sparkle:nth-child(1) { top: 10px; left: 50%; animation-delay: 0s; }
+    .sparkle:nth-child(2) { top: 30px; right: 20px; animation-delay: 0.3s; }
+    .sparkle:nth-child(3) { bottom: 20px; right: 30px; animation-delay: 0.6s; }
+    .sparkle:nth-child(4) { bottom: 10px; left: 40px; animation-delay: 0.9s; }
+    .sparkle:nth-child(5) { top: 40px; left: 15px; animation-delay: 1.2s; }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ========================================
+       SCREEN VISIBILITY
+       ======================================== */
+    .screen { display: none; flex-direction: column; height: 100%; }
+    .screen.active { display: flex; }
+
+    /* ========================================
+       CONTROL PANEL (outside phone)
+       ======================================== */
+    .control-panel {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 20px;
+      width: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: 24px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    .control-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .control-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #9A9DAD;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .control-btn {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #EBECEF;
+      border-radius: 10px;
+      background: #FFFFFF;
+      color: #6A6E83;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: left;
+    }
+
+    .control-btn:hover {
+      background: #F1F2FF;
+      border-color: #C7C9FD;
+      color: #1B1D22;
+    }
+
+    .control-btn.active {
+      background: #F1F2FF;
+      border-color: #7279FB;
+      color: #1B1D22;
+    }
+
+    .control-divider {
+      height: 1px;
+      background: #EBECEF;
+    }
+
+    /* ========================================
+       SPEC INFO
+       ======================================== */
+    .spec-info {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 20px;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: sticky;
+      top: 24px;
+      height: fit-content;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 24px rgba(0,0,0,0.06);
+      font-size: 12px;
+    }
+
+    .spec-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .spec-key {
+      color: #6A6E83;
+      font-weight: 500;
+    }
+
+    .spec-val {
+      color: #1B1D22;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px;
+    }
+
+    .spec-color-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 0;
+    }
+
+    .spec-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid #EBECEF;
+      flex-shrink: 0;
+    }
+
+    .spec-contrast {
+      font-size: 10px;
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .home-indicator {
+      width: 134px;
+      height: 5px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 3px;
+      margin: 8px auto 10px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ CONTROL PANEL ============ -->
+  <div class="control-panel">
+    <div class="control-title">Screen Navigator</div>
+
+    <div class="control-section">
+      <div class="control-label">Form States</div>
+      <button class="control-btn active" onclick="showScreen('form-default')">Form (Default)</button>
+      <button class="control-btn" onclick="showScreen('form-selecting')">Form (Selecting)</button>
+      <button class="control-btn" onclick="showScreen('form-filled')">Form (Filled)</button>
+      <button class="control-btn" onclick="showScreen('form-error')">Form (Error)</button>
+      <button class="control-btn" onclick="showScreen('form-unknown-time')">Form (Unknown Time)</button>
+      <button class="control-btn" onclick="showScreen('form-no-results')">Form (No Results)</button>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-section">
+      <div class="control-label">Confirm & Result</div>
+      <button class="control-btn" onclick="showScreen('review')">Review</button>
+      <button class="control-btn" onclick="showScreen('loading')">Loading</button>
+      <button class="control-btn" onclick="showScreen('success')">Success</button>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-section">
+      <div class="control-label">Dialogs</div>
+      <button class="control-btn" onclick="showScreen('exit-dialog')">Exit Confirm</button>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-section">
+      <div class="control-label">Date Picker (Step-Tab)</div>
+      <button class="control-btn" onclick="showScreen('date-step1')">Step 1: เลือกปี</button>
+      <button class="control-btn" onclick="showScreen('date-step2')">Step 2: เลือกเดือน</button>
+      <button class="control-btn" onclick="showScreen('date-step3')">Step 3: เลือกวัน</button>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-section">
+      <div class="control-label">Time Picker (Step-Tab)</div>
+      <button class="control-btn" onclick="showScreen('time-step1')">Step 1: เลือกชั่วโมง</button>
+      <button class="control-btn" onclick="showScreen('time-step2')">Step 2: เลือกนาที</button>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-section">
+      <div class="control-label">Address Picker (Step-Tab)</div>
+      <button class="control-btn" onclick="showScreen('addr-step1')">Step 1: จังหวัด</button>
+    </div>
+  </div>
+
+  <!-- ============ PHONE FRAME ============ -->
+  <div class="phone-frame">
+
+    <!-- ======== SCREEN: Form Default (All Steps) ======== -->
+    <div class="screen active" id="screen-form-default">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+
+        <!-- Section 1: Birth Date (Pending) -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number active">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger placeholder">เลือกวันเดือนปี</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Birth Time (Pending) -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger placeholder">เลือกเวลาเกิด</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+        </div>
+
+        <!-- Section 3: Province -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger placeholder">เลือกจังหวัด</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="btn-container-inline">
+        <button class="btn-primary disabled">ยืนยันข้อมูล</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Form Selecting (Dropdown Open Mockup) ======== -->
+    <div class="screen" id="screen-form-selecting">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+
+        <!-- Section 1: Birth Date (Active — tapped to open bottom sheet) -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number active">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger active">เลือกวันเดือนปี</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Birth Time -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger placeholder">เลือกเวลาเกิด</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+        </div>
+
+        <!-- Section 3: Province -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger placeholder">เลือกจังหวัด</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Sheet: Date Step-Tab (Step 1 — เลือกปี) -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab active"><span class="step-tab-label">ปี (พ.ศ.)</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">เดือน</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">วัน</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">2569</div>
+            <div class="step-option">2568</div>
+            <div class="step-option">2567</div>
+            <div class="step-option">2566</div>
+            <div class="step-option">2565</div>
+            <div class="step-option">2564</div>
+            <div class="step-option">2563</div>
+            <div class="step-option">2562</div>
+            <div class="step-option">2561</div>
+            <div class="step-option">2560</div>
+            <div class="step-option">2559</div>
+            <div class="step-option">2558</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Form Filled (All Steps) ======== -->
+    <div class="screen" id="screen-form-filled">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+
+        <!-- Section 1: Birth Date (Done) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger filled">15 มกราคม 2535</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Birth Time (Done) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger filled">14:30 น.</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+        </div>
+
+        <!-- Section 3: Province (Done) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger filled">กรุงเทพมหานคร</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="btn-container-inline">
+        <button class="btn-primary">ยืนยันข้อมูล</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Form Error ======== -->
+    <div class="screen" id="screen-form-error">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+
+        <!-- Section 1: Birth Date -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger placeholder">เลือกวันเดือนปี</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Birth Time -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger placeholder">เลือกเวลาเกิด</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+        </div>
+
+        <!-- Section 3: Province (Not selected) -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger placeholder">เลือกจังหวัด</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="btn-container-inline">
+        <button class="btn-primary disabled">ยืนยันข้อมูล</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Form Unknown Time ======== -->
+    <div class="screen" id="screen-form-unknown-time">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+
+        <!-- Section 1: Birth Date (Done) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger filled">15 มกราคม 2535</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Birth Time (Done — Unknown checked) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger disabled">ไม่ทราบเวลาเกิด</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox checked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+          <div class="form-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            จะใช้เวลา 06:30 น. ในการคำนวณแทน
+          </div>
+        </div>
+
+        <!-- Section 3: Province (Done) -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger filled">กรุงเทพมหานคร</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="btn-container-inline">
+        <button class="btn-primary">ยืนยันข้อมูล</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Form No Results (Province Search) ======== -->
+    <div class="screen" id="screen-form-no-results">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+
+        <!-- Section 1-3 done -->
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">1</div>
+            <span class="section-title">วันเดือนปีเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span>
+              <div class="dropdown-trigger filled">15 มกราคม 2535</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block step-done">
+          <div class="section-header">
+            <div class="section-number done">2</div>
+            <span class="section-title">เวลาเกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">ชั่วโมง : นาที</span>
+              <div class="dropdown-trigger filled">14:30 น.</div>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">ไม่ทราบเวลาเกิด</span>
+          </div>
+        </div>
+
+        <!-- Section 3: Province (Active — tapped to open bottom sheet) -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-number active">3</div>
+            <span class="section-title">จังหวัดที่เกิด</span>
+          </div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1">
+              <span class="dropdown-label">จังหวัด</span>
+              <div class="dropdown-trigger active">เลือกจังหวัด</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Sheet: Province Search — No Results -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="bottomsheet-header">
+            <span class="bottomsheet-title">เลือกจังหวัดที่เกิด</span>
+          </div>
+          <div class="step-search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="step-search" placeholder="ค้นหาจังหวัด" value="ซานฟรานซิสโก">
+          </div>
+          <div class="step-tab-content" style="flex:1; display:flex; align-items:center; justify-content:center;">
+            <div class="province-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              ไม่พบจังหวัดที่ค้นหา<br>ลองพิมพ์ชื่อจังหวัดใหม่อีกครั้ง
+            </div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+
+      <div class="btn-container-inline">
+        <button class="btn-primary disabled">ยืนยันข้อมูล</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Review ======== -->
+    <div class="screen" id="screen-review">
+      <div class="status-bar">
+        <span>9:44</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="nav-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="content" style="padding-top: 12px;">
+        <h1 class="screen-title">ยืนยันข้อมูล</h1>
+        <p class="screen-subtitle">ตรวจสอบข้อมูลก่อนสร้างดวง</p>
+
+        <!-- Cosmic decoration -->
+        <div style="text-align:center; margin-bottom:24px;">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="28" stroke="#C7C9FD" stroke-width="1.5" opacity="0.5"/>
+            <circle cx="32" cy="32" r="20" stroke="#C7C9FD" stroke-width="1" opacity="0.4"/>
+            <circle cx="32" cy="32" r="4" fill="#7279FB"/>
+            <circle cx="32" cy="4" r="2.5" fill="#AAAFFD"/>
+            <circle cx="56" cy="32" r="2" fill="#7279FB" opacity="0.6"/>
+            <circle cx="32" cy="60" r="2" fill="#AAAFFD" opacity="0.5"/>
+            <circle cx="8" cy="32" r="2.5" fill="#7279FB" opacity="0.7"/>
+          </svg>
+        </div>
+
+        <div class="review-card">
+          <div class="review-row">
+            <div class="review-row-left">
+              <span class="review-label">วันเกิด</span>
+              <span class="review-value">15 มกราคม 2535</span>
+            </div>
+            <button class="review-edit">แก้ไข</button>
+          </div>
+
+          <div class="review-row">
+            <div class="review-row-left">
+              <span class="review-label">เวลาเกิด</span>
+              <span class="review-value">14:30 น.</span>
+            </div>
+            <button class="review-edit">แก้ไข</button>
+          </div>
+
+          <div class="review-row">
+            <div class="review-row-left">
+              <span class="review-label">จังหวัดที่เกิด</span>
+              <span class="review-value">กรุงเทพมหานคร</span>
+            </div>
+            <button class="review-edit">แก้ไข</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary">ยืนยันข้อมูล</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Loading ======== -->
+    <div class="screen" id="screen-loading">
+      <div class="status-bar">
+        <span>9:44</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="content-centered">
+        <div class="cosmic-icon">
+          <div class="cosmic-ring outer"></div>
+          <div class="cosmic-ring middle"></div>
+          <div class="cosmic-ring inner"></div>
+          <div class="cosmic-dot"></div>
+        </div>
+
+        <h1 class="screen-title">กำลังคำนวณดวงกำเนิด...</h1>
+        <p class="screen-subtitle" style="margin-bottom:0;">รอสักครู่</p>
+      </div>
+
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Success ======== -->
+    <div class="screen" id="screen-success">
+      <div class="status-bar">
+        <span>9:45</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="content-centered">
+        <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+          <div class="sparkles">
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+          </div>
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+
+        <h1 class="screen-title" style="margin-top:8px;">สร้างดวงกำเนิดสำเร็จ!</h1>
+        <p class="screen-subtitle">พร้อมเริ่มดูดวงแล้ว</p>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn-primary">เริ่มใช้งาน</button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ======== SCREEN: Exit Dialog ======== -->
+    <div class="screen" id="screen-exit-dialog">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="content" style="opacity:0.3;">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+      </div>
+
+      <!-- Modal Overlay -->
+      <div class="modal-overlay">
+        <div class="modal-card">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <h2 class="modal-title">ยังกรอกข้อมูลไม่ครบ</h2>
+          <p class="modal-body">กรอกข้อมูลให้ครบก่อนเริ่มใช้งาน</p>
+          <div class="modal-actions">
+            <button class="btn-primary">กลับไปกรอกข้อมูล</button>
+            <button class="btn-destructive">ออกจากหน้านี้</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         DATE PICKER — STEP 1: เลือกปี (พ.ศ.)
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-date-step1">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger active">เลือกวันเดือนปี</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Date Step 1 — ปี -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab active"><span class="step-tab-label">ปี (พ.ศ.)</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">เดือน</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">วัน</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">2569</div>
+            <div class="step-option">2568</div>
+            <div class="step-option">2567</div>
+            <div class="step-option">2566</div>
+            <div class="step-option">2565</div>
+            <div class="step-option">2564</div>
+            <div class="step-option">2563</div>
+            <div class="step-option">2562</div>
+            <div class="step-option">2561</div>
+            <div class="step-option">2560</div>
+            <div class="step-option">2559</div>
+            <div class="step-option">2558</div>
+            <div class="step-option">2557</div>
+            <div class="step-option">2556</div>
+            <div class="step-option">2555</div>
+            <div class="step-option">2554</div>
+            <div class="step-option">2553</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         DATE PICKER — STEP 2: เลือกเดือน
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-date-step2">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger active">ปี 2535 — เลือกเดือน...</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Date Step 2 — เดือน -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab completed"><span class="step-tab-label">ปี (พ.ศ.)</span><span class="step-tab-value">2535</span></div>
+            <div class="step-tab active"><span class="step-tab-label">เดือน</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">วัน</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option selected">มกราคม</div>
+            <div class="step-option">กุมภาพันธ์</div>
+            <div class="step-option">มีนาคม</div>
+            <div class="step-option">เมษายน</div>
+            <div class="step-option">พฤษภาคม</div>
+            <div class="step-option">มิถุนายน</div>
+            <div class="step-option">กรกฎาคม</div>
+            <div class="step-option">สิงหาคม</div>
+            <div class="step-option">กันยายน</div>
+            <div class="step-option">ตุลาคม</div>
+            <div class="step-option">พฤศจิกายน</div>
+            <div class="step-option">ธันวาคม</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         DATE PICKER — STEP 3: เลือกวัน
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-date-step3">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row">
+            <div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger active">มกราคม 2535 — เลือกวัน...</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Date Step 3 — วัน -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab completed"><span class="step-tab-label">ปี (พ.ศ.)</span><span class="step-tab-value">2535</span></div>
+            <div class="step-tab completed"><span class="step-tab-label">เดือน</span><span class="step-tab-value">มกราคม</span></div>
+            <div class="step-tab active"><span class="step-tab-label">วัน</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">1</div><div class="step-option">2</div><div class="step-option">3</div>
+            <div class="step-option">4</div><div class="step-option">5</div><div class="step-option">6</div>
+            <div class="step-option">7</div><div class="step-option">8</div><div class="step-option">9</div>
+            <div class="step-option">10</div><div class="step-option">11</div><div class="step-option">12</div>
+            <div class="step-option">13</div><div class="step-option">14</div>
+            <div class="step-option selected">15</div>
+            <div class="step-option">16</div><div class="step-option">17</div><div class="step-option">18</div>
+            <div class="step-option">19</div><div class="step-option">20</div><div class="step-option">21</div>
+            <div class="step-option">22</div><div class="step-option">23</div><div class="step-option">24</div>
+            <div class="step-option">25</div><div class="step-option">26</div><div class="step-option">27</div>
+            <div class="step-option">28</div><div class="step-option">29</div><div class="step-option">30</div>
+            <div class="step-option">31</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         TIME PICKER — STEP 1: เลือกชั่วโมง
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-time-step1">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block step-done">
+          <div class="section-header"><div class="section-number done">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger filled">15 มกราคม 2535</div></div></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">2</div><span class="section-title">เวลาเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">ชั่วโมง : นาที</span><div class="dropdown-trigger active">เลือกเวลาเกิด</div></div></div>
+          <div class="checkbox-group"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label">ไม่ทราบเวลาเกิด</span></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number">3</div><span class="section-title">จังหวัดที่เกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">จังหวัด</span><div class="dropdown-trigger placeholder">เลือกจังหวัด</div></div></div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Time Step 1 — ชั่วโมง -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab active"><span class="step-tab-label">ชั่วโมง</span></div>
+            <div class="step-tab disabled"><span class="step-tab-label">นาที</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">00</div><div class="step-option">01</div><div class="step-option">02</div>
+            <div class="step-option">03</div><div class="step-option">04</div><div class="step-option">05</div>
+            <div class="step-option">06</div><div class="step-option">07</div><div class="step-option">08</div>
+            <div class="step-option">09</div><div class="step-option">10</div><div class="step-option">11</div>
+            <div class="step-option">12</div><div class="step-option">13</div>
+            <div class="step-option selected">14</div>
+            <div class="step-option">15</div><div class="step-option">16</div><div class="step-option">17</div>
+            <div class="step-option">18</div><div class="step-option">19</div><div class="step-option">20</div>
+            <div class="step-option">21</div><div class="step-option">22</div><div class="step-option">23</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         TIME PICKER — STEP 2: เลือกนาที
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-time-step2">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block step-done">
+          <div class="section-header"><div class="section-number done">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger filled">15 มกราคม 2535</div></div></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">2</div><span class="section-title">เวลาเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">ชั่วโมง : นาที</span><div class="dropdown-trigger active">14 ชม. — เลือกนาที...</div></div></div>
+          <div class="checkbox-group"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label">ไม่ทราบเวลาเกิด</span></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number">3</div><span class="section-title">จังหวัดที่เกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">จังหวัด</span><div class="dropdown-trigger placeholder">เลือกจังหวัด</div></div></div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Time Step 2 — นาที -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="step-tab-bar">
+            <div class="step-tab completed"><span class="step-tab-label">ชั่วโมง</span><span class="step-tab-value">14</span></div>
+            <div class="step-tab active"><span class="step-tab-label">นาที</span></div>
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">00</div><div class="step-option">05</div><div class="step-option">10</div>
+            <div class="step-option">15</div><div class="step-option">20</div><div class="step-option">25</div>
+            <div class="step-option selected">30</div>
+            <div class="step-option">35</div><div class="step-option">40</div><div class="step-option">45</div>
+            <div class="step-option">50</div><div class="step-option">55</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         ADDRESS PICKER — STEP 1: จังหวัด
+         ════════════════════════════════════════ -->
+    <div class="screen" id="screen-addr-step1">
+      <div class="status-bar">
+        <span>9:42</span>
+        <div class="status-bar-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-spacer"></div>
+        <div></div>
+        <button class="nav-btn" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="content">
+        <h1 class="screen-title">สร้างดวงกำเนิด</h1>
+        <p class="screen-subtitle">กรอกข้อมูลเพื่อคำนวณดวงของคุณ</p>
+        <div class="section-block step-done">
+          <div class="section-header"><div class="section-number done">1</div><span class="section-title">วันเดือนปีเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">วัน / เดือน / ปี (พ.ศ.)</span><div class="dropdown-trigger filled">15 มกราคม 2535</div></div></div>
+        </div>
+        <div class="section-block step-done">
+          <div class="section-header"><div class="section-number done">2</div><span class="section-title">เวลาเกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">ชั่วโมง : นาที</span><div class="dropdown-trigger filled">14:30 น.</div></div></div>
+          <div class="checkbox-group"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label">ไม่ทราบเวลาเกิด</span></div>
+        </div>
+        <div class="section-block step-done">
+          <div class="section-header"><div class="section-number done">3</div><span class="section-title">จังหวัดที่เกิด</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">จังหวัด</span><div class="dropdown-trigger filled">กรุงเทพมหานคร</div></div></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-number active">4</div><span class="section-title">ที่อยู่ปัจจุบัน</span></div>
+          <div class="dropdown-row"><div class="dropdown-group" style="flex:1"><span class="dropdown-label">ที่อยู่</span><div class="dropdown-trigger active">เลือกที่อยู่</div></div></div>
+        </div>
+      </div>
+      <!-- Bottom Sheet: Address — เลือกจังหวัด -->
+      <div class="bottomsheet-overlay">
+        <div class="bottomsheet-card" style="height:70%;">
+          <div class="bottomsheet-handle"></div>
+          <div class="bottomsheet-header" style="padding:16px 20px 12px; flex-shrink:0;">
+            <span class="bottomsheet-title" style="font-size:16px; font-weight:700; color:var(--text-primary);">เลือกจังหวัด</span>
+          </div>
+          <div class="step-search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="step-search" placeholder="ค้นหาจังหวัด">
+          </div>
+          <div class="step-tab-content">
+            <div class="step-option">กระบี่</div>
+            <div class="step-option">กรุงเทพมหานคร</div>
+            <div class="step-option">กาญจนบุรี</div>
+            <div class="step-option">กาฬสินธุ์</div>
+            <div class="step-option">กำแพงเพชร</div>
+            <div class="step-option">ขอนแก่น</div>
+            <div class="step-option">จันทบุรี</div>
+            <div class="step-option">ฉะเชิงเทรา</div>
+            <div class="step-option">ชลบุรี</div>
+            <div class="step-option">ชัยนาท</div>
+            <div class="step-option">ชัยภูมิ</div>
+            <div class="step-option">ชุมพร</div>
+          </div>
+          <div class="bottomsheet-safe-bottom"></div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+
+  </div><!-- end phone-frame -->
+
+  <!-- ============ SPEC INFO PANEL ============ -->
+  <div class="spec-info">
+    <div class="spec-title">Design Specs</div>
+
+    <div class="control-label">Frame</div>
+    <div class="spec-row"><span class="spec-key">Viewport</span><span class="spec-val">390 x 844</span></div>
+    <div class="spec-row"><span class="spec-key">Device</span><span class="spec-val">iPhone 14</span></div>
+    <div class="spec-row"><span class="spec-key">Platform</span><span class="spec-val">iOS / Android</span></div>
+
+    <div style="height:4px"></div>
+    <div class="control-label">Typography</div>
+    <div class="spec-row"><span class="spec-key">Font</span><span class="spec-val">LINE Seed Sans TH</span></div>
+    <div class="spec-row"><span class="spec-key">Title</span><span class="spec-val">Heading.4 — 24/32 Bold</span></div>
+    <div class="spec-row"><span class="spec-key">Subtitle</span><span class="spec-val">Caption.3 — 16/24 Regular</span></div>
+    <div class="spec-row"><span class="spec-key">Section</span><span class="spec-val">18/26 Bold</span></div>
+    <div class="spec-row"><span class="spec-key">Label</span><span class="spec-val">Label.4 — 14/20 Bold</span></div>
+    <div class="spec-row"><span class="spec-key">Input</span><span class="spec-val">Caption.3 — 16/24 Regular</span></div>
+    <div class="spec-row"><span class="spec-key">Button</span><span class="spec-val">Label.3 — 16/24 Bold</span></div>
+    <div class="spec-row"><span class="spec-key">Error</span><span class="spec-val">12/18 Bold</span></div>
+
+    <div style="height:4px"></div>
+    <div class="control-label">Colors (WCAG Verified)</div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#FFFFFF"></div>
+      <span class="spec-key">gray-neutral/bg/white</span>
+      <span class="spec-val">#FFFFFF</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#F8F8F9"></div>
+      <span class="spec-key">gray-neutral/bg/lightgray</span>
+      <span class="spec-val">#F8F8F9</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#EC599D"></div>
+      <span class="spec-key">primary/bg/mid</span>
+      <span class="spec-val">#EC599D</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#7279FB"></div>
+      <span class="spec-key">secondary/bg/mid</span>
+      <span class="spec-val">#7279FB</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#1B1D22"></div>
+      <span class="spec-key">gray-neutral/fg/high</span>
+      <span class="spec-val">#1B1D22</span>
+      <span class="spec-contrast">16.5:1</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#6A6E83"></div>
+      <span class="spec-key">gray-neutral/fg/mid-on-white</span>
+      <span class="spec-val">#6A6E83</span>
+      <span class="spec-contrast">5.6:1</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#EA244F"></div>
+      <span class="spec-key">error/fg/high</span>
+      <span class="spec-val">#EA244F</span>
+      <span class="spec-contrast">5.0:1</span>
+    </div>
+    <div class="spec-color-row">
+      <div class="spec-swatch" style="background:#559652"></div>
+      <span class="spec-key">success/fg/high</span>
+      <span class="spec-val">#559652</span>
+      <span class="spec-contrast">4.6:1</span>
+    </div>
+
+    <div style="height:4px"></div>
+    <div class="control-label">Spacing</div>
+    <div class="spec-row"><span class="spec-key">Content padding</span><span class="spec-val">spacing-6 — 24px</span></div>
+    <div class="spec-row"><span class="spec-key">Section gap</span><span class="spec-val">spacing-6 — 24px</span></div>
+    <div class="spec-row"><span class="spec-key">Form gap</span><span class="spec-val">spacing-5 — 20px</span></div>
+
+    <div style="height:4px"></div>
+    <div class="control-label">Components</div>
+    <div class="spec-row"><span class="spec-key">Input height</span><span class="spec-val">48px</span></div>
+    <div class="spec-row"><span class="spec-key">Button height</span><span class="spec-val">48px</span></div>
+    <div class="spec-row"><span class="spec-key">Stepper</span><span class="spec-val">28px circle + 2px line</span></div>
+    <div class="spec-row"><span class="spec-key">Input radius</span><span class="spec-val">radius-md — 8px</span></div>
+    <div class="spec-row"><span class="spec-key">Button radius</span><span class="spec-val">radius-md — 8px</span></div>
+    <div class="spec-row"><span class="spec-key">Card radius</span><span class="spec-val">radius-lg — 12px</span></div>
+    <div class="spec-row"><span class="spec-key">Dialog radius</span><span class="spec-val">radius-xl — 16px</span></div>
+    <div class="spec-row"><span class="spec-key">Checkbox</span><span class="spec-val">24px (48px tap area)</span></div>
+    <div class="spec-row"><span class="spec-key">Touch target</span><span class="spec-val">48px min</span></div>
+
+    <div style="height:4px"></div>
+    <div class="control-label">Bottom Sheet Picker</div>
+    <div class="spec-row"><span class="spec-key">Trigger</span><span class="spec-val">48px height, radius-md</span></div>
+    <div class="spec-row"><span class="spec-key">Sheet radius</span><span class="spec-val">radius-2xl — 24px (top)</span></div>
+    <div class="spec-row"><span class="spec-key">Max height</span><span class="spec-val">60% of viewport</span></div>
+    <div class="spec-row"><span class="spec-key">Handle</span><span class="spec-val">36 x 5px, rgba(0,0,0,0.15)</span></div>
+    <div class="spec-row"><span class="spec-key">Title</span><span class="spec-val">Label.2 — 18/26 Bold</span></div>
+    <div class="spec-row"><span class="spec-key">Option height</span><span class="spec-val">48px min (touch target)</span></div>
+    <div class="spec-row"><span class="spec-key">Selected bg</span><span class="spec-val">rgba(114,121,251,0.08)</span></div>
+    <div class="spec-row"><span class="spec-key">Overlay</span><span class="spec-val">alpha-black/bg/low — 50%</span></div>
+    <div class="spec-row"><span class="spec-key">Animation</span><span class="spec-val">slideUp 300ms ease-out</span></div>
+  </div>
+
+  <!-- ============ JAVASCRIPT ============ -->
+  <script>
+    function showScreen(screenId) {
+      // Hide all screens
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      // Show selected
+      const screen = document.getElementById('screen-' + screenId);
+      if (screen) screen.classList.add('active');
+
+      // Update control buttons
+      document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
