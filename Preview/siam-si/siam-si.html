@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>เซียมซี — DailyMu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   RESET + DESIGN TOKENS (DailyMu)
+   ═══════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* ── Core Colors ── */
+  --primary:#EC599D;--primary-light:#FDEFF5;
+  --secondary:#7279FB;--secondary-light:#F1F2FF;
+  /* ── Neutrals ── */
+  --text-primary:#1B1D22;--text-secondary:#6A6E83;--text-tertiary:#9A9DAD;
+  --bg-white:#FFFFFF;--bg-light:#F8F8F9;--bg-mid:#EBECEF;--border:#EBECEF;
+  /* ── Feedback ── */
+  --error:#EA244F;--error-bg:#FDE9ED;
+  --warning:#C69A2A;--warning-bg:#FEF9EB;
+  --success:#559652;--success-bg:#F0F8F0;
+  /* ── Spacing (4px grid) ── */
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;--sp-10:40px;--sp-12:48px;
+  /* ── Radius ── */
+  --r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:24px;--r-full:9999px;
+  /* ── Typography ── */
+  --font:'LINE Seed Sans TH','Noto Sans Thai',-apple-system,sans-serif;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:center;align-items:center}
+
+/* ═══════════════════════════════════════
+   APP SHELL
+   ═══════════════════════════════════════ */
+#app{
+  width:100vw;height:100vh;max-width:430px;max-height:932px;
+  background:linear-gradient(180deg,var(--primary-light) 0%,var(--secondary-light) 40%,var(--bg-white) 100%);
+  position:relative;overflow:hidden;
+}
+@media(min-width:431px){
+  #app{border-radius:40px;box-shadow:0 0 60px rgba(0,0,0,.3);width:390px;height:844px}
+}
+
+/* ═══════════════════════════════════════
+   SCREENS
+   ═══════════════════════════════════════ */
+.screen{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s cubic-bezier(.4,0,.2,1);
+  will-change:transform,opacity;
+}
+.screen[data-state="next"]{transform:translateX(100%);opacity:0;pointer-events:none}
+.screen[data-state="prev"]{transform:translateX(-100%);opacity:0;pointer-events:none}
+.screen[data-state="active"]{transform:translateX(0);opacity:1}
+.screen[data-state="hidden"]{display:none}
+
+/* ═══════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════ */
+.hdr{
+  display:flex;align-items:center;justify-content:center;
+  padding:env(safe-area-inset-top,20px) var(--sp-4) 0;
+  height:88px;min-height:88px;position:relative;z-index:10;
+}
+.hdr-back,.hdr-close{
+  position:absolute;top:env(safe-area-inset-top,20px);width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+/* Heading.5: 24px as icon size */
+  background:none;border:none;cursor:pointer;font-size:24px;color:var(--text-primary);
+  border-radius:var(--r-full);transition:background .2s;
+}
+.hdr-back{left:var(--sp-2)}
+.hdr-close{right:var(--sp-2)}
+.hdr-back:active,.hdr-close:active{background:var(--bg-mid)}
+/* Label.2: 18px/26px Bold */
+.hdr-title{font-size:18px;line-height:26px;font-weight:700;color:var(--text-primary);padding-top:20px}
+
+/* ═══════════════════════════════════════
+   SCREEN 1 — WELCOME (Fantasy Landscape)
+   ═══════════════════════════════════════ */
+/* Fantasy BG override for welcome */
+#s-welcome{
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 15%,rgba(114,121,251,.12) 0%,transparent 100%),
+    linear-gradient(180deg,#F1F2FF 0%,#FDEFF5 25%,#F8F0FF 50%,#FFFFFF 75%,#FDEFF5 100%);
+}
+.welcome-body{flex:1;display:flex;flex-direction:column;align-items:center;overflow:hidden;position:relative}
+
+/* ── Light beam from top center ── */
+.wb-light{
+  position:absolute;top:-80px;left:50%;transform:translateX(-50%);
+  width:360px;height:500px;
+  background:radial-gradient(ellipse 50% 60% at 50% 0%,rgba(114,121,251,.10) 0%,rgba(236,89,157,.06) 40%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── Mountain / hill silhouettes ── */
+.wb-hill{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
+/* Far hills - very subtle */
+.wb-hill-1{
+  bottom:22%;left:-40px;width:200px;height:260px;
+  background:radial-gradient(ellipse at 50% 100%,rgba(114,121,251,.07) 0%,transparent 70%);
+}
+.wb-hill-2{
+  bottom:18%;right:-50px;width:220px;height:300px;
+  background:radial-gradient(ellipse at 50% 100%,rgba(236,89,157,.06) 0%,transparent 70%);
+}
+/* Mid hills - slightly more visible */
+.wb-hill-3{
+  bottom:12%;left:-20px;width:160px;height:180px;
+  background:radial-gradient(ellipse at 50% 100%,rgba(114,121,251,.10) 0%,transparent 65%);
+}
+.wb-hill-4{
+  bottom:10%;right:-10px;width:140px;height:160px;
+  background:radial-gradient(ellipse at 50% 100%,rgba(236,89,157,.08) 0%,transparent 65%);
+}
+
+/* ── Tree silhouettes (CSS triangles) ── */
+.wb-tree{position:absolute;pointer-events:none;z-index:0;opacity:.06}
+.wb-tree::before,.wb-tree::after{content:'';position:absolute;left:50%;transform:translateX(-50%)}
+.wb-tree::before{bottom:0;width:4px;height:20px;background:var(--secondary);border-radius:2px}
+.wb-tree::after{bottom:14px;width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-bottom:30px solid var(--secondary)}
+.wb-tree-1{bottom:28%;left:8%;transform:scale(1.2)}
+.wb-tree-2{bottom:26%;left:2%;transform:scale(.8);opacity:.04}
+.wb-tree-3{bottom:30%;right:5%;transform:scale(1)}
+.wb-tree-4{bottom:27%;right:12%;transform:scale(.7);opacity:.04}
+.wb-tree-5{bottom:25%;left:18%;transform:scale(.6);opacity:.03}
+.wb-tree-6{bottom:24%;right:20%;transform:scale(.5);opacity:.03}
+
+/* ── Cloud / mist layers ── */
+.wb-mist{position:absolute;left:0;right:0;pointer-events:none;z-index:1}
+.wb-mist-1{
+  bottom:16%;height:80px;
+  background:radial-gradient(ellipse 120% 100% at 50% 100%,rgba(255,255,255,.9) 0%,transparent 70%);
+}
+.wb-mist-2{
+  bottom:8%;height:100px;
+  background:radial-gradient(ellipse 140% 100% at 30% 100%,rgba(253,239,245,.8) 0%,transparent 60%);
+  animation:mist-drift 12s ease-in-out infinite;
+}
+.wb-mist-3{
+  bottom:0;height:120px;
+  background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.6) 30%,rgba(241,242,255,.8) 60%,#FDEFF5 100%);
+}
+@keyframes mist-drift{0%,100%{transform:translateX(0)}50%{transform:translateX(15px)}}
+
+/* ── Floating petals ── */
+.wb-petal{
+  position:absolute;pointer-events:none;z-index:2;
+  width:8px;height:5px;border-radius:50% 50% 50% 0;
+  opacity:0;
+  animation:petal-fall linear infinite;
+}
+.wb-petal:nth-child(1){left:10%;animation-duration:8s;animation-delay:0s;background:rgba(236,89,157,.25);width:7px;height:4px}
+.wb-petal:nth-child(2){left:85%;animation-duration:10s;animation-delay:2s;background:rgba(114,121,251,.2);width:6px;height:4px}
+.wb-petal:nth-child(3){left:30%;animation-duration:9s;animation-delay:4s;background:rgba(236,89,157,.2);width:9px;height:5px}
+.wb-petal:nth-child(4){left:65%;animation-duration:11s;animation-delay:1s;background:rgba(114,121,251,.25);width:5px;height:3px}
+.wb-petal:nth-child(5){left:50%;animation-duration:8.5s;animation-delay:3s;background:rgba(236,89,157,.18);width:7px;height:4px}
+.wb-petal:nth-child(6){left:20%;animation-duration:12s;animation-delay:5s;background:rgba(114,121,251,.15);width:6px;height:3px}
+.wb-petal:nth-child(7){left:75%;animation-duration:9.5s;animation-delay:0.5s;background:rgba(236,89,157,.22);width:8px;height:5px}
+.wb-petal:nth-child(8){left:45%;animation-duration:10.5s;animation-delay:6s;background:rgba(114,121,251,.18);width:5px;height:3px}
+@keyframes petal-fall{
+  0%{transform:translateY(-20px) rotate(0deg) translateX(0);opacity:0}
+  10%{opacity:.6}
+  50%{transform:translateY(50vh) rotate(180deg) translateX(30px);opacity:.5}
+  80%{opacity:.3}
+  100%{transform:translateY(100vh) rotate(360deg) translateX(-10px);opacity:0}
+}
+
+/* ── Sparkle dots ── */
+.wb-sparkle{
+  position:absolute;pointer-events:none;z-index:2;border-radius:50%;
+  background:#fff;box-shadow:0 0 4px rgba(114,121,251,.5);
+  opacity:0;animation:sparkle-twinkle 3s ease-in-out infinite;
+}
+.wb-sparkle:nth-child(1){top:10%;left:12%;width:4px;height:4px;animation-delay:0s;box-shadow:0 0 4px rgba(236,89,157,.5)}
+.wb-sparkle:nth-child(2){top:25%;right:10%;width:3px;height:3px;animation-delay:.8s}
+.wb-sparkle:nth-child(3){top:15%;right:30%;width:5px;height:5px;animation-delay:1.5s;box-shadow:0 0 6px rgba(236,89,157,.4)}
+.wb-sparkle:nth-child(4){bottom:40%;left:8%;width:3px;height:3px;animation-delay:2s}
+.wb-sparkle:nth-child(5){top:35%;left:25%;width:4px;height:4px;animation-delay:.4s;box-shadow:0 0 4px rgba(236,89,157,.5)}
+.wb-sparkle:nth-child(6){bottom:32%;right:15%;width:3px;height:3px;animation-delay:1.2s}
+.wb-sparkle:nth-child(7){top:8%;left:40%;width:3px;height:3px;animation-delay:2.5s;box-shadow:0 0 4px rgba(236,89,157,.4)}
+@keyframes sparkle-twinkle{
+  0%,100%{opacity:0;transform:scale(.3)}
+  50%{opacity:.9;transform:scale(1)}
+}
+
+/* ── Corner decorations ── */
+.wb-corner{
+  position:absolute;width:20px;height:20px;border-radius:50%;
+  border:1.5px solid rgba(114,121,251,.15);pointer-events:none;z-index:2;
+}
+.wb-corner::after{
+  content:'';position:absolute;inset:4px;border-radius:50%;
+  background:rgba(114,121,251,.06);
+}
+.wb-corner-tl{top:100px;left:16px}
+.wb-corner-tr{top:100px;right:16px}
+.wb-corner-bl{bottom:90px;left:16px}
+.wb-corner-br{bottom:90px;right:16px}
+
+/* ── Illustration with glow aura ── */
+.welcome-illust{flex:1;display:flex;align-items:center;justify-content:center;position:relative;width:100%;z-index:3}
+.welcome-illust::before{
+  content:'';position:absolute;width:280px;height:280px;
+  background:radial-gradient(circle,rgba(114,121,251,.15) 0%,rgba(236,89,157,.10) 40%,transparent 70%);
+  border-radius:50%;filter:blur(30px);pointer-events:none;
+  animation:glow-pulse 4s ease-in-out infinite;
+}
+@keyframes glow-pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.15);opacity:1}}
+.welcome-hero-img{max-width:70%;max-height:100%;object-fit:contain;position:relative;z-index:1;animation:fi-float 4s ease-in-out infinite}
+
+/* ── Heading + subtitle ── */
+.welcome-info{text-align:center;padding:var(--sp-2) var(--sp-6) 0;position:relative;z-index:3}
+/* Heading.3: 32px/40px Bold */
+.welcome-heading{font-size:32px;line-height:40px;font-weight:700;color:var(--text-primary)}
+.welcome-heading em{font-style:normal;background:linear-gradient(90deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+/* Caption.3: 16px/24px Regular */
+.welcome-sub{font-size:16px;line-height:24px;color:var(--text-secondary);margin-top:var(--sp-1)}
+
+/* Fortune sticks illustration (image-based) */
+.fi{position:relative;width:280px;height:400px;animation:fi-float 4s ease-in-out infinite}
+@keyframes fi-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.fi-pot-back{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:1;
+}
+.fi-container{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:3;
+}
+.fi-pot-img{width:200px;height:auto;display:block}
+.fi-sticks{
+  position:absolute;bottom:110px;left:50%;transform:translateX(-50%);
+  width:140px;height:220px;z-index:2;
+}
+.fi-stick{
+  position:absolute;bottom:0;left:50%;
+  transform-origin:bottom center;
+  transition:transform .15s ease;
+}
+.fi-stick-img{height:100%;width:auto;display:block;pointer-events:none}
+/* Decorative swirls */
+.fi-swirl{
+  position:absolute;width:20px;height:20px;border:2px solid var(--secondary);
+  border-radius:50%;border-right-color:transparent;border-bottom-color:transparent;
+}
+.fi-swirl-1{top:80px;right:20px;animation:swirl-spin 3s linear infinite}
+.fi-swirl-2{top:120px;left:15px;width:14px;height:14px;animation:swirl-spin 4s linear infinite reverse}
+.fi-swirl-3{bottom:100px;right:10px;width:10px;height:10px;animation:swirl-spin 2.5s linear infinite}
+.fi-swirl-4{top:60px;left:40px;width:8px;height:8px;border-width:1.5px;animation:swirl-spin 3.5s linear infinite reverse}
+@keyframes swirl-spin{to{transform:rotate(360deg)}}
+
+/* Start CTA — full-width gradient button */
+.welcome-footer{padding:var(--sp-4) var(--sp-6) var(--sp-8)}
+.btn-start{
+  width:100%;height:56px;border-radius:var(--r-full);
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  color:#fff;border:none;cursor:pointer;
+/* Label.3: 16px/24px Bold */
+  font-size:16px;line-height:24px;font-weight:700;font-family:var(--font);
+  display:flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  box-shadow:0 4px 16px rgba(236,89,157,.3);
+  transition:transform .2s,box-shadow .2s;
+}
+.btn-start:active{transform:scale(.97);box-shadow:0 2px 8px rgba(236,89,157,.2)}
+
+/* ═══════════════════════════════════════
+   SCREEN 2 — SHAKE (Full-screen tap)
+   ═══════════════════════════════════════ */
+.shake-body{
+  flex:1;display:flex;flex-direction:column;align-items:center;overflow:hidden;position:relative;
+  cursor:grab;-webkit-user-select:none;user-select:none;touch-action:none;
+}
+.shake-body:active{cursor:grabbing}
+/* Energy bar — top, below header */
+.shake-energy-wrap{
+  width:100%;padding:0 var(--sp-6);flex-shrink:0;
+}
+.shake-energy-bar{
+  width:100%;height:6px;border-radius:var(--r-full);
+  background:var(--bg-mid);overflow:hidden;
+}
+.shake-energy-fill{
+  height:100%;width:0%;border-radius:var(--r-full);
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  transition:width .15s ease;
+}
+/* Shake area — illustration centered */
+.shake-area{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  position:relative;width:100%;pointer-events:none;
+}
+/* Info below illustration */
+.shake-info{text-align:center;padding:0 var(--sp-6) var(--sp-8)}
+/* Heading.5: 24px/32px Bold */
+.shake-heading{font-size:24px;line-height:32px;font-weight:700;color:var(--text-primary)}
+/* Caption.4: 14px/22px Regular */
+.shake-sub{
+  margin-top:var(--sp-1);color:var(--text-secondary);font-size:14px;
+  line-height:22px;
+}
+/* Shake hint */
+.shake-hint{
+  color:var(--text-tertiary);font-size:12px;line-height:20px;text-align:center;
+  margin-top:var(--sp-2);
+  animation:hint-pulse 2s ease-in-out infinite;
+}
+@keyframes hint-pulse{0%,100%{opacity:.4}50%{opacity:1}}
+/* Vibration lines */
+.vib-line{
+  position:absolute;border:2px solid var(--primary);border-radius:50%;
+  opacity:0;pointer-events:none;
+}
+
+/* ═══════════════════════════════════════
+   SCREEN 3 — RESULT (Mystical Reveal)
+   ═══════════════════════════════════════ */
+#s-result{
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 15%,rgba(114,121,251,.10) 0%,transparent 100%),
+    linear-gradient(180deg,#F1F2FF 0%,#FDEFF5 25%,#F8F0FF 50%,#FFFFFF 75%,#FDEFF5 100%);
+}
+.result-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+
+/* Landscape bg layers */
+.result-body .rb-hill{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
+.rb-hill-1{bottom:5%;left:-30px;width:180px;height:200px;background:radial-gradient(ellipse at 50% 100%,rgba(114,121,251,.07) 0%,transparent 70%)}
+.rb-hill-2{bottom:2%;right:-40px;width:200px;height:240px;background:radial-gradient(ellipse at 50% 100%,rgba(236,89,157,.06) 0%,transparent 70%)}
+.result-body .rb-mist{position:absolute;left:0;right:0;bottom:0;height:100px;pointer-events:none;z-index:0;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.5) 40%,rgba(241,242,255,.7) 100%);}
+.result-body .rb-petal{
+  position:absolute;pointer-events:none;z-index:0;
+  width:7px;height:4px;border-radius:50% 50% 50% 0;opacity:0;
+  animation:petal-fall linear infinite;
+}
+.result-body .rb-petal:nth-child(1){left:12%;animation-duration:9s;animation-delay:0s;background:rgba(236,89,157,.2)}
+.result-body .rb-petal:nth-child(2){left:80%;animation-duration:11s;animation-delay:2s;background:rgba(114,121,251,.18)}
+.result-body .rb-petal:nth-child(3){left:40%;animation-duration:10s;animation-delay:3.5s;background:rgba(236,89,157,.15)}
+.result-body .rb-petal:nth-child(4){left:65%;animation-duration:8.5s;animation-delay:1s;background:rgba(114,121,251,.2)}
+
+/* ── Radial light burst behind blob ── */
+.result-burst{
+  position:absolute;width:400px;height:400px;pointer-events:none;z-index:1;
+  opacity:0;transition:opacity 1s ease;
+}
+.result-burst.show{opacity:1}
+.result-burst::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle,rgba(236,89,157,.12) 0%,transparent 50%),
+    radial-gradient(circle,rgba(114,121,251,.10) 0%,transparent 60%);
+  filter:blur(20px);
+  animation:burst-pulse 3s ease-in-out infinite;
+}
+.result-burst::after{
+  content:'';position:absolute;inset:40px;
+  background:radial-gradient(circle,rgba(255,255,255,.3) 0%,transparent 60%);
+  filter:blur(10px);
+}
+@keyframes burst-pulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.1);opacity:1}}
+
+/* ── Glowing rings ── */
+.result-ring{
+  position:absolute;border-radius:50%;pointer-events:none;z-index:1;
+  border:1.5px solid transparent;
+  opacity:0;transform:scale(.5);
+  transition:opacity .6s ease,transform .8s cubic-bezier(.34,1.56,.64,1);
+}
+.result-ring.show{opacity:1;transform:scale(1)}
+.result-ring-1{
+  width:300px;height:300px;
+  border-color:rgba(236,89,157,.15);
+  animation:ring-spin 20s linear infinite;
+}
+.result-ring-2{
+  width:340px;height:340px;
+  border-color:rgba(114,121,251,.10);
+  border-style:dashed;
+  animation:ring-spin 30s linear infinite reverse;
+}
+.result-ring-3{
+  width:380px;height:380px;
+  border-color:rgba(236,89,157,.06);
+  animation:ring-spin 25s linear infinite;
+}
+@keyframes ring-spin{to{transform:rotate(360deg)}}
+/* Ring dots — orbiting particles */
+.result-ring-1::before,.result-ring-1::after,
+.result-ring-2::before,.result-ring-2::after{
+  content:'';position:absolute;border-radius:50%;
+}
+.result-ring-1::before{top:-3px;left:50%;width:6px;height:6px;background:var(--primary);box-shadow:0 0 8px rgba(236,89,157,.5)}
+.result-ring-1::after{bottom:-3px;right:30%;width:4px;height:4px;background:var(--secondary);box-shadow:0 0 6px rgba(114,121,251,.5)}
+.result-ring-2::before{top:20%;right:-3px;width:5px;height:5px;background:var(--primary);opacity:.6;box-shadow:0 0 6px rgba(236,89,157,.4)}
+.result-ring-2::after{bottom:20%;left:-2px;width:3px;height:3px;background:var(--secondary);opacity:.5;box-shadow:0 0 4px rgba(114,121,251,.4)}
+
+/* ── Central orb (blob) ── */
+.result-blob{
+  position:relative;width:220px;height:220px;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  z-index:2;
+}
+.result-blob-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);
+  border-radius:50%;
+  box-shadow:
+    0 0 40px rgba(236,89,157,.25),
+    0 0 80px rgba(114,121,251,.15),
+    inset 0 -10px 30px rgba(0,0,0,.1);
+  transform:scale(0);transition:transform .8s cubic-bezier(.34,1.56,.64,1);
+}
+.result-blob-bg.show{transform:scale(1)}
+/* Glossy highlight */
+.result-blob-bg::after{
+  content:'';position:absolute;
+  top:10%;left:15%;width:50%;height:40%;
+  background:radial-gradient(ellipse at 40% 30%,rgba(255,255,255,.25) 0%,transparent 70%);
+  border-radius:50%;
+}
+.result-number{
+  position:relative;z-index:2;font-size:80px;font-weight:700;color:#fff;
+  font-family:var(--font);
+  text-shadow:0 2px 20px rgba(0,0,0,.15);
+  opacity:0;transform:scale(.3);transition:all .5s cubic-bezier(.34,1.56,.64,1);
+}
+.result-number.show{opacity:1;transform:scale(1)}
+
+/* ── Label above number ── */
+.result-label{
+  position:relative;z-index:2;
+  font-size:14px;line-height:22px;font-weight:700;color:rgba(255,255,255,.7);
+  letter-spacing:1px;margin-bottom:var(--sp-1);
+  opacity:0;transform:translateY(10px);transition:all .4s ease .2s;
+}
+.result-label.show{opacity:1;transform:translateY(0)}
+
+/* ── Subtitle below blob ── */
+.result-subtitle{
+  margin-top:var(--sp-6);text-align:center;z-index:2;
+  opacity:0;transform:translateY(10px);transition:all .5s ease .4s;
+}
+.result-subtitle.show{opacity:1;transform:translateY(0)}
+.result-subtitle-text{
+  font-size:20px;line-height:28px;font-weight:700;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.result-subtitle-hint{
+  font-size:14px;line-height:22px;color:var(--text-tertiary);margin-top:2px;
+}
+
+/* ── Floating stars (more + bigger) ── */
+.result-star{
+  position:absolute;opacity:0;pointer-events:none;z-index:3;
+  transition:opacity .4s,transform .4s;
+}
+.result-star.show{opacity:1}
+.result-star:nth-child(1){top:15%;right:15%;font-size:20px;color:var(--primary);animation:star-float 3s ease-in-out infinite}
+.result-star:nth-child(2){bottom:25%;left:12%;font-size:14px;color:var(--secondary);animation:star-float 3.5s ease-in-out infinite .5s}
+.result-star:nth-child(3){top:25%;left:10%;font-size:16px;color:var(--primary);opacity:.5;animation:star-float 2.8s ease-in-out infinite 1s}
+.result-star:nth-child(4){bottom:35%;right:10%;font-size:12px;color:var(--secondary);animation:star-float 4s ease-in-out infinite .3s}
+.result-star:nth-child(5){top:10%;left:30%;font-size:10px;color:var(--primary);opacity:.4;animation:star-float 3.2s ease-in-out infinite 1.5s}
+.result-star:nth-child(6){bottom:20%;right:25%;font-size:18px;color:var(--secondary);animation:star-float 3.8s ease-in-out infinite .8s}
+@keyframes star-float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(15deg)}}
+
+/* ── CTA button ── */
+.result-footer{padding:var(--sp-4) var(--sp-6) var(--sp-8);width:100%;position:relative;z-index:3}
+.btn-read{
+  width:100%;height:52px;border-radius:var(--r-full);
+  background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;border:none;cursor:pointer;
+  font-size:16px;line-height:24px;font-weight:700;font-family:var(--font);
+  box-shadow:0 4px 16px rgba(236,89,157,.3);
+  transform:translateY(40px);opacity:0;transition:all .5s cubic-bezier(.4,0,.2,1);
+}
+.btn-read.show{transform:translateY(0);opacity:1}
+.btn-read:active{transform:scale(.97)}
+
+/* ═══════════════════════════════════════
+   SCREEN 4 — FORTUNE (Fantasy Scroll)
+   ═══════════════════════════════════════ */
+/* Fantasy BG for fortune */
+#s-fortune{
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 15%,rgba(114,121,251,.10) 0%,transparent 100%),
+    linear-gradient(180deg,#F1F2FF 0%,#FDEFF5 25%,#F8F0FF 50%,#FFFFFF 75%,#FDEFF5 100%);
+}
+.fortune-body{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+/* Reuse landscape layers */
+.fortune-body .fb-hill{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
+.fb-hill-1{bottom:8%;left:-30px;width:180px;height:220px;background:radial-gradient(ellipse at 50% 100%,rgba(114,121,251,.07) 0%,transparent 70%)}
+.fb-hill-2{bottom:5%;right:-40px;width:200px;height:260px;background:radial-gradient(ellipse at 50% 100%,rgba(236,89,157,.06) 0%,transparent 70%)}
+.fortune-body .fb-mist{position:absolute;left:0;right:0;pointer-events:none;z-index:0}
+.fb-mist-b{bottom:0;height:100px;background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.5) 40%,rgba(241,242,255,.7) 100%)}
+.fortune-body .fb-petal{
+  position:absolute;pointer-events:none;z-index:0;
+  width:7px;height:4px;border-radius:50% 50% 50% 0;opacity:0;
+  animation:petal-fall linear infinite;
+}
+.fortune-body .fb-petal:nth-child(1){left:8%;animation-duration:9s;animation-delay:0s;background:rgba(236,89,157,.2)}
+.fortune-body .fb-petal:nth-child(2){left:88%;animation-duration:11s;animation-delay:2s;background:rgba(114,121,251,.18)}
+.fortune-body .fb-petal:nth-child(3){left:25%;animation-duration:10s;animation-delay:4s;background:rgba(236,89,157,.15)}
+.fortune-body .fb-petal:nth-child(4){left:70%;animation-duration:8s;animation-delay:1s;background:rgba(114,121,251,.2)}
+.fortune-body .fb-sparkle{
+  position:absolute;pointer-events:none;z-index:0;border-radius:50%;
+  background:#fff;box-shadow:0 0 4px rgba(114,121,251,.4);
+  width:3px;height:3px;opacity:0;animation:sparkle-twinkle 3s ease-in-out infinite;
+}
+.fortune-body .fb-sparkle:nth-child(5){top:12%;left:10%;animation-delay:.5s}
+.fortune-body .fb-sparkle:nth-child(6){top:20%;right:8%;animation-delay:1.5s;box-shadow:0 0 4px rgba(236,89,157,.4)}
+.fortune-body .fb-sparkle:nth-child(7){bottom:18%;left:15%;animation-delay:2s}
+.fortune-body .fb-sparkle:nth-child(8){bottom:25%;right:12%;animation-delay:.8s;box-shadow:0 0 4px rgba(236,89,157,.4)}
+
+/* ── Scroll card ── */
+.fortune-card-wrap{flex:1;padding:0 var(--sp-5);display:flex;flex-direction:column;position:relative;z-index:1}
+.fortune-card{
+  flex:1;display:flex;flex-direction:column;position:relative;
+  background:linear-gradient(170deg,rgba(255,255,255,.92) 0%,rgba(253,239,245,.6) 50%,rgba(241,242,255,.5) 100%);
+  border-radius:var(--r-lg);
+  box-shadow:0 4px 30px rgba(0,0,0,.06);
+  overflow:hidden;
+}
+/* Ornamental double border */
+.fortune-card::before{
+  content:'';position:absolute;inset:6px;
+  border:1.5px solid rgba(114,121,251,.15);
+  border-radius:calc(var(--r-lg) - 2px);pointer-events:none;z-index:1;
+}
+.fortune-card::after{
+  content:'';position:absolute;inset:10px;
+  border:1px solid rgba(236,89,157,.10);
+  border-radius:calc(var(--r-lg) - 6px);pointer-events:none;z-index:1;
+}
+/* Corner ornaments */
+.fc-ornament{
+  position:absolute;width:28px;height:28px;z-index:2;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;line-height:1;color:rgba(114,121,251,.25);
+}
+.fc-ornament-tl{top:2px;left:2px;transform:rotate(0deg)}
+.fc-ornament-tr{top:2px;right:2px;transform:rotate(90deg)}
+.fc-ornament-bl{bottom:2px;left:2px;transform:rotate(-90deg)}
+.fc-ornament-br{bottom:2px;right:2px;transform:rotate(180deg)}
+
+/* Card content */
+.fortune-card-content{
+  flex:1;padding:var(--sp-8) var(--sp-6) var(--sp-5);
+  display:flex;flex-direction:column;align-items:center;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  position:relative;z-index:1;
+}
+/* Brand label — Caption.5 */
+.fortune-brand{color:var(--text-tertiary);font-size:12px;line-height:20px;letter-spacing:2px;text-transform:uppercase;margin-bottom:var(--sp-1)}
+/* Fortune number — Heading.1 style */
+.fortune-num-big{
+  font-size:56px;line-height:64px;font-weight:700;
+  background:linear-gradient(180deg,var(--primary) 0%,var(--secondary) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:var(--sp-5);
+}
+/* Divider */
+.fortune-divider{
+  width:40px;height:1.5px;
+  background:linear-gradient(90deg,transparent,var(--primary),var(--secondary),transparent);
+  margin-bottom:var(--sp-5);border-radius:1px;
+}
+/* Caption.3: 16px/24px Regular — fortune text */
+.fortune-text{
+  color:var(--text-secondary);font-size:16px;line-height:28px;
+  text-align:center;max-width:280px;
+}
+.fortune-text p{margin-bottom:var(--sp-1)}
+/* Footer inside card */
+.fortune-card-footer{
+  margin-top:auto;padding-top:var(--sp-5);
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+.fortune-card-footer-label{color:var(--text-tertiary);font-size:12px;line-height:20px}
+.fortune-card-footer-num{color:var(--text-tertiary);font-size:14px;line-height:22px;font-weight:700}
+
+/* ── Action buttons (stacked) ── */
+.fortune-actions{
+  display:flex;flex-direction:column;gap:var(--sp-3);
+  padding:var(--sp-4) var(--sp-5) var(--sp-6);position:relative;z-index:1;
+}
+/* Label.3: 16px/24px Bold */
+.btn-retry,.btn-share{
+  width:100%;height:50px;border-radius:var(--r-full);border:none;cursor:pointer;
+  font-size:16px;line-height:24px;font-weight:700;font-family:var(--font);
+  display:flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  transition:transform .15s;
+}
+.btn-retry{background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;box-shadow:0 4px 12px rgba(236,89,157,.25)}
+.btn-share{background:var(--bg-white);color:var(--text-secondary);border:1.5px solid var(--border) !important}
+.btn-retry:active,.btn-share:active{transform:scale(.97)}
+.btn-icon{font-size:18px}
+
+/* ═══════════════════════════════════════
+   CANVAS + PARTICLES
+   ═══════════════════════════════════════ */
+#confetti{position:absolute;inset:0;pointer-events:none;z-index:50}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS — SHAKING STATE
+   ═══════════════════════════════════════ */
+.fi.shaking .fi-stick{animation:stick-rattle .12s ease-in-out infinite alternate}
+.fi.shaking .fi-stick:nth-child(odd){animation-delay:.06s}
+.fi.shaking .fi-container,.fi.shaking .fi-pot-back{animation:pot-shake .1s ease-in-out infinite alternate}
+@keyframes stick-rattle{
+  from{transform:translateX(calc(-50% + var(--sx))) rotate(calc(var(--rot) - 4deg))}
+  to{transform:translateX(calc(-50% + var(--sx))) rotate(calc(var(--rot) + 4deg))}
+}
+@keyframes pot-shake{from{transform:translateX(-52%) rotate(-2deg)}to{transform:translateX(-48%) rotate(2deg)}}
+
+/* Rising stick animation */
+.fi-stick.rising{
+  animation:stick-rise 1.2s cubic-bezier(.4,0,.2,1) forwards !important;
+  z-index:10;
+}
+@keyframes stick-rise{
+  0%{transform:translateX(calc(-50% + var(--sx))) rotate(var(--rot));filter:none}
+  /* Glow uses --secondary (#7279FB) = rgb(114,121,251) */
+  40%{filter:drop-shadow(0 0 8px rgba(114,121,251,.6))}
+  100%{transform:translateX(calc(-50% + var(--sx))) rotate(0deg) translateY(-120px);filter:drop-shadow(0 0 12px rgba(114,121,251,.8))}
+}
+
+/* ═══════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════ */
+@media(prefers-reduced-motion:reduce){
+  .screen{transition-duration:.01s}
+  .fi,.fi-stick,.fi-swirl,.result-blob-bg,.result-star,.btn-start::after,.shake-hint{animation:none !important}
+  .fi-stick.rising{animation-duration:.01s !important}
+}
+
+/* ═══════════════════════════════════════
+   LOADING / TRANSITION FLASH
+   ═══════════════════════════════════════ */
+.flash-overlay{
+  position:absolute;inset:0;background:#fff;z-index:40;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.flash-overlay.show{opacity:1;pointer-events:auto}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ═══════════════════════════════════════
+   FORTUNE DATA — 28 ใบเซียมซี
+   ═══════════════════════════════════════ */
+const FORTUNES=[
+{num:1,title:'ใบที่ 1',level:'excellent',text:'ชีวิตกำลังเข้าสู่ช่วงรุ่งเรือง\nการงานจะได้รับการสนับสนุนจากผู้ใหญ่\nการเงินไหลเข้ามาอย่างต่อเนื่อง\nความรักหวานชื่นมีคนคอยดูแล\nสุขภาพแข็งแรงไร้กังวล'},
+{num:2,title:'ใบที่ 2',level:'good',text:'สิ่งที่ตั้งใจไว้กำลังจะสำเร็จ\nอดทนอีกนิด ผลตอบแทนใกล้มาถึง\nมีเกณฑ์ได้รับข่าวดีเรื่องงาน\nความรักมีคนแอบชอบอยู่ใกล้ๆ\nดูแลสุขภาพเรื่องการนอนให้ดี'},
+{num:3,title:'ใบที่ 3',level:'good',text:'การงานก้าวหน้า มีโอกาสใหม่เข้ามา\nการเงินมีรายได้เสริมที่ไม่คาดคิด\nคนรอบข้างจะเป็นกำลังสำคัญ\nความรักราบรื่น อบอุ่นใจ\nหมั่นออกกำลังกายจะดีมาก'},
+{num:4,title:'ใบที่ 4',level:'fair',text:'ระยะนี้ต้องอดทนหน่อย\nอุปสรรคเป็นบทเรียนที่มีค่า\nการเงินยังไม่ควรลงทุนใหญ่\nความรักต้องใช้เวลาทำความเข้าใจ\nพักผ่อนให้เพียงพอ อย่าหักโหม'},
+{num:5,title:'ใบที่ 5',level:'excellent',text:'โชคลาภกำลังมาหา\nมีเกณฑ์ได้รับสิ่งดีๆ แบบไม่คาดฝัน\nการงานราบรื่น เป็นที่รักของเพื่อนร่วมงาน\nความรักสดใส มีเรื่องเซอร์ไพรส์\nสุขภาพดีเยี่ยม พลังเต็มเปี่ยม'},
+{num:6,title:'ใบที่ 6',level:'good',text:'การงานมีความเปลี่ยนแปลงที่ดี\nอาจได้รับข้อเสนอใหม่ที่น่าสนใจ\nการเงินค่อยๆ ดีขึ้นตามลำดับ\nความรักมีเรื่องให้ยิ้มได้ทุกวัน\nระวังเรื่องอาหารการกินสักหน่อย'},
+{num:7,title:'ใบที่ 7',level:'fair',text:'ช่วงนี้ให้ใจเย็นๆ อย่าเร่งรีบ\nสิ่งดีๆ กำลังจะมาถึงในเวลาที่เหมาะสม\nหลีกเลี่ยงการทะเลาะเบาะแว้ง\nเก็บเงินไว้สักพัก อย่าใช้จ่ายเกินตัว\nทำสมาธิจะช่วยให้ใจสงบ'},
+{num:8,title:'ใบที่ 8',level:'good',text:'มีผู้ใหญ่คอยช่วยเหลือเกื้อกูล\nการงานจะได้รับมอบหมายสิ่งสำคัญ\nการเงินมีโชคเรื่องตัวเลข\nความรักอาจมีคนมาจีบ\nสุขภาพดี แต่อย่าลืมพักผ่อน'},
+{num:9,title:'ใบที่ 9',level:'excellent',text:'ดวงเปิดรับสิ่งดีๆ ทุกทิศทาง\nการงานจะได้เลื่อนขั้นหรือได้รับการยอมรับ\nการเงินรุ่งเรือง มีรายได้เพิ่ม\nความรักเป็นช่วงเวลาแห่งความสุข\nร่างกายแข็งแรง จิตใจเบิกบาน'},
+{num:10,title:'ใบที่ 10',level:'fair',text:'อย่าไว้วางใจคนง่ายเกินไป\nตรวจสอบรายละเอียดให้ดีก่อนตัดสินใจ\nการเงินระวังรายจ่ายที่ไม่จำเป็น\nความรักต้องสื่อสารกันให้มากขึ้น\nดูแลเรื่องสายตาและการนอน'},
+{num:11,title:'ใบที่ 11',level:'good',text:'ความพยายามที่ผ่านมาจะเริ่มเห็นผล\nคนรอบข้างชื่นชมในตัวคุณ\nการเงินจะได้คืนจากสิ่งที่ลงทุนไป\nความรักเข้าใจกันดี มีความสุข\nสุขภาพดี ควรออกกำลังกายต่อเนื่อง'},
+{num:12,title:'ใบที่ 12',level:'fair',text:'ช่วงนี้อาจรู้สึกสับสนบ้าง\nให้ใช้เวลาทบทวนเป้าหมายชีวิต\nการเงินยังไม่ควรเสี่ยง\nความรักต้องให้เวลากับคนที่รัก\nพักผ่อนเยอะๆ จะช่วยได้'},
+{num:13,title:'ใบที่ 13',level:'good',text:'โชคดีมีลาภลอย\nอาจได้รับข่าวดีจากต่างถิ่น\nการงานราบรื่น มีคนช่วยเหลือ\nความรักหวานชื่น เหมือนเพิ่งเริ่มต้น\nสุขภาพแข็งแรง สดชื่น'},
+{num:14,title:'ใบที่ 14',level:'excellent',text:'มีผู้ใหญ่คอยสนับสนุนทั้ง\nเรื่องการงานและการเรียน\nการเงินค่อนข้างดีถึงดีมาก\nความรักดี มีแฟนเข้ามา\nคอยให้กำลังใจและเป็นที่\nปรึกษาที่ดีทั้งในเรื่องงาน\nและการวางแผนชีวิต\nสุขภาพ ควรหาเวลาไป\nฟิตเนสบ้างนะ'},
+{num:15,title:'ใบที่ 15',level:'fair',text:'ให้ระวังเรื่องคำพูด\nคิดก่อนพูดจะช่วยหลีกเลี่ยงปัญหา\nการเงินควรวางแผนให้ดี\nความรักมีเรื่องให้ต้องปรับตัว\nดูแลเรื่องกระเพาะอาหาร'},
+{num:16,title:'ใบที่ 16',level:'good',text:'การเดินทางจะนำโชคดีมาให้\nอาจได้พบคนสำคัญระหว่างทาง\nการเงินมีโอกาสได้ลาภจากต่างที่\nความรักอาจพบเจอคนพิเศษ\nสุขภาพดี เหมาะกับการทำกิจกรรม'},
+{num:17,title:'ใบที่ 17',level:'fair',text:'สิ่งที่หวังอาจต้องรอเวลา\nอย่าท้อ ทุกอย่างมีเหตุผลของมัน\nการเงินพอกินพอใช้\nความรักต้องใจเย็น อย่าเร่งรัด\nหมั่นทำบุญจะเสริมดวง'},
+{num:18,title:'ใบที่ 18',level:'good',text:'มีคนคอยช่วยเหลือไม่ขาดสาย\nการงานจะได้รับโอกาสใหม่\nการเงินค่อยๆ ดีขึ้น มีเงินเก็บ\nความรักมั่นคง ไว้ใจกันได้\nดูแลร่างกายด้วยการทานผักผลไม้'},
+{num:19,title:'ใบที่ 19',level:'excellent',text:'ดวงขึ้นสุดๆ ช่วงนี้\nทำอะไรก็ราบรื่นไปหมด\nการเงินเฮง มีโชคลาภก้อนใหญ่\nความรักสมหวังดังใจ\nสุขภาพเป็นเลิศ ชีวิตมีความสุข'},
+{num:20,title:'ใบที่ 20',level:'fair',text:'ระวังการตัดสินใจที่เร่งรีบ\nปรึกษาคนที่ไว้ใจก่อนลงมือ\nการเงินอย่าให้คนยืม\nความรักมีเรื่องเข้าใจผิดเล็กน้อย\nดูแลเรื่องหลังและไหล่'},
+{num:21,title:'ใบที่ 21',level:'good',text:'ความฝันกำลังจะเป็นจริง\nอย่าหยุดพยายาม เกือบถึงเป้าแล้ว\nการเงินมีแนวโน้มที่ดีมาก\nความรักราบรื่น เต็มไปด้วยความสุข\nสุขภาพดี มีพลังในการทำงาน'},
+{num:22,title:'ใบที่ 22',level:'caution',text:'ช่วงนี้ให้ระมัดระวังเป็นพิเศษ\nอย่าเชื่อคนง่ายๆ ตรวจสอบให้ดี\nการเงินเก็บไว้ อย่าเสี่ยง\nความรักมีเรื่องให้ต้องพิสูจน์\nดูแลสุขภาพให้ดี อย่าหักโหม'},
+{num:23,title:'ใบที่ 23',level:'good',text:'มีเกณฑ์ได้ย้ายที่อยู่หรือเปลี่ยนงาน\nการเปลี่ยนแปลงครั้งนี้จะดีขึ้น\nการเงินจะดีขึ้นหลังการเปลี่ยนแปลง\nความรักมีคนใหม่เข้ามาในชีวิต\nสุขภาพดี แต่ดูแลเรื่องภูมิแพ้'},
+{num:24,title:'ใบที่ 24',level:'fair',text:'ต้องใช้ความอดทนเป็นพิเศษ\nผลของความพยายามจะมาช้าแต่ชัวร์\nการเงินค่อยๆ สะสม\nความรักต้องให้เวลากัน\nทำสมาธิหรือโยคะจะช่วยได้มาก'},
+{num:25,title:'ใบที่ 25',level:'excellent',text:'โชคดีรอบด้าน ดวงเปิด\nการงานจะมีข่าวดีที่รอคอย\nการเงินเฮงมาก มีลาภลอย\nความรักสุดหวาน มีเซอร์ไพรส์\nสุขภาพเป็นเลิศ สดใสร่าเริง'},
+{num:26,title:'ใบที่ 26',level:'good',text:'ความตั้งใจดีจะนำพาสิ่งดีมา\nมีคนเห็นความพยายามของคุณ\nการเงินมีรายได้พิเศษ\nความรักเข้าใจกัน ผูกพันแน่นแฟ้น\nดูแลร่างกายด้วยการพักผ่อนให้เต็มที่'},
+{num:27,title:'ใบที่ 27',level:'fair',text:'ให้ระวังเรื่องเอกสารสำคัญ\nตรวจทานให้ดีก่อนเซ็นอะไร\nการเงินระวังการใช้จ่ายเกินตัว\nความรักมีเรื่องเล็กน้อยให้แก้ไข\nดูแลเรื่องกระดูกและข้อต่อ'},
+{num:28,title:'ใบที่ 28',level:'good',text:'การรอคอยจะได้ผลคุ้มค่า\nมีโชคจากการทำบุญ\nการเงินจะมีคนมาช่วยเรื่องเงิน\nความรักงอกงาม เติบโตไปด้วยกัน\nสุขภาพดี หมั่นดื่มน้ำเยอะๆ'}
+];
+
+/* ═══════════════════════════════════════
+   STICK VISUAL DATA
+   ═══════════════════════════════════════ */
+/* Stick tip colors: primary #EC599D, secondary #7279FB, mixed */
+const STICK_VIS=[
+  {num:12,sx:-10,rot:-8,h:170,tip:'#EC599D'},
+  {num:7,sx:-3,rot:-3,h:180,tip:'#7279FB'},
+  {num:1,sx:0,rot:2,h:175,tip:'#EC599D'},
+  {num:24,sx:5,rot:6,h:168,tip:'#D94E8E'},
+  {num:3,sx:12,rot:10,h:172,tip:'#7279FB'},
+];
+
+/* ═══════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════ */
+let currentScreen='welcome';
+let energy=0;
+let fortuneNum=0;
+let shakeDetected=false;
+let motionPermission=false;
+let energyDecayTimer=null;
+let isShaking=false;
+let particles=[];
+let animFrame=null;
+
+const app=document.getElementById('app');
+
+/* ═══════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════ */
+const $=(s,p=document)=>p.querySelector(s);
+const $$=(s,p=document)=>p.querySelectorAll(s);
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function haptic(ms=30){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
+
+/* ═══════════════════════════════════════
+   SOUND SYSTEM (Web Audio API)
+   ═══════════════════════════════════════ */
+let audioCtx=null;
+function getAudioCtx(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  return audioCtx;
+}
+
+/* เสียงกระทบไม้ — สั้น คม เหมือนไม้เซียมซีกระทบกัน */
+function playSfxShake(){
+  const ctx=getAudioCtx();
+  const t=ctx.currentTime;
+
+  /* Noise burst → bandpass filter = เสียงไม้ */
+  const len=Math.floor(ctx.sampleRate*0.04);
+  const buf=ctx.createBuffer(1,len,ctx.sampleRate);
+  const d=buf.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=(Math.random()*2-1);
+
+  const src=ctx.createBufferSource();
+  src.buffer=buf;
+
+  const bp=ctx.createBiquadFilter();
+  bp.type='bandpass';
+  bp.frequency.value=900+Math.random()*600;
+  bp.Q.value=6;
+
+  /* ใส่ resonance ให้เหมือนไม้กลวง */
+  const hp=ctx.createBiquadFilter();
+  hp.type='highpass';
+  hp.frequency.value=400;
+
+  const gain=ctx.createGain();
+  gain.gain.setValueAtTime(0.35,t);
+  gain.gain.exponentialRampToValueAtTime(0.001,t+0.045);
+
+  src.connect(bp);bp.connect(hp);hp.connect(gain);gain.connect(ctx.destination);
+  src.start(t);src.stop(t+0.05);
+}
+
+/* เสียงไม้ลอยขึ้น — ascending shimmer */
+function playSfxRise(){
+  const ctx=getAudioCtx();
+  const t=ctx.currentTime;
+  [440,587,740,880].forEach((freq,i)=>{
+    const osc=ctx.createOscillator();
+    osc.type='sine';
+    osc.frequency.value=freq;
+    const g=ctx.createGain();
+    g.gain.setValueAtTime(0,t+i*0.12);
+    g.gain.linearRampToValueAtTime(0.15,t+i*0.12+0.04);
+    g.gain.exponentialRampToValueAtTime(0.001,t+i*0.12+0.35);
+    osc.connect(g);g.connect(ctx.destination);
+    osc.start(t+i*0.12);osc.stop(t+i*0.12+0.35);
+  });
+}
+
+/* เสียง chime ตอนเฉลยเลข — C5 E5 G5 chord */
+function playSfxReveal(){
+  const ctx=getAudioCtx();
+  const t=ctx.currentTime;
+  [523.25,659.25,783.99].forEach((freq,i)=>{
+    const osc=ctx.createOscillator();
+    osc.type='triangle';
+    osc.frequency.value=freq;
+    const g=ctx.createGain();
+    g.gain.setValueAtTime(0.18,t+i*0.08);
+    g.gain.exponentialRampToValueAtTime(0.001,t+i*0.08+0.6);
+    osc.connect(g);g.connect(ctx.destination);
+    osc.start(t+i*0.08);osc.stop(t+i*0.08+0.6);
+  });
+}
+
+/* ═══════════════════════════════════════
+   RENDER — FORTUNE STICKS ILLUSTRATION
+   ═══════════════════════════════════════ */
+function renderSticks(showNums=true){
+  return STICK_VIS.map((s,i)=>{
+    const h=s.h+50;
+    return`
+    <div class="fi-stick" data-idx="${i}" style="height:${h}px;--sx:${s.sx}px;--rot:${s.rot}deg;transform:translateX(calc(-50% + ${s.sx}px)) rotate(${s.rot}deg)">
+      <img src="stick.png" alt="" class="fi-stick-img" draggable="false">
+    </div>`;
+  }).join('');
+}
+
+function renderContainer(){
+  return`
+    <div class="fi-pot-back">
+      <img src="pot.png" alt="" class="fi-pot-img" draggable="false">
+    </div>
+    <div class="fi-container">
+      <img src="MicroService_FortuneSticks_test.png" alt="" class="fi-pot-img" draggable="false">
+    </div>`;
+}
+
+function renderSwirls(){
+  return`
+    <div class="fi-swirl fi-swirl-1"></div>
+    <div class="fi-swirl fi-swirl-2"></div>
+    <div class="fi-swirl fi-swirl-3"></div>
+    <div class="fi-swirl fi-swirl-4"></div>`;
+}
+
+/* ═══════════════════════════════════════
+   RENDER — SCREENS
+   ═══════════════════════════════════════ */
+function renderApp(){
+  app.innerHTML=`
+    <!-- SCREEN 1: WELCOME (Redesigned) -->
+    <div class="screen" id="s-welcome" data-state="active">
+      <div class="hdr">
+        <button class="hdr-back" aria-label="กลับ">‹</button>
+        <span class="hdr-title">เซียมซี</span>
+      </div>
+      <div class="welcome-body">
+        <!-- Fantasy landscape background -->
+        <div class="wb-light"></div>
+        <div class="wb-hill wb-hill-1"></div>
+        <div class="wb-hill wb-hill-2"></div>
+        <div class="wb-hill wb-hill-3"></div>
+        <div class="wb-hill wb-hill-4"></div>
+        <div class="wb-tree wb-tree-1"></div>
+        <div class="wb-tree wb-tree-2"></div>
+        <div class="wb-tree wb-tree-3"></div>
+        <div class="wb-tree wb-tree-4"></div>
+        <div class="wb-tree wb-tree-5"></div>
+        <div class="wb-tree wb-tree-6"></div>
+        <div class="wb-mist wb-mist-1"></div>
+        <div class="wb-mist wb-mist-2"></div>
+        <div class="wb-mist wb-mist-3"></div>
+        <div class="wb-petal"></div><div class="wb-petal"></div>
+        <div class="wb-petal"></div><div class="wb-petal"></div>
+        <div class="wb-petal"></div><div class="wb-petal"></div>
+        <div class="wb-petal"></div><div class="wb-petal"></div>
+        <div class="wb-sparkle"></div><div class="wb-sparkle"></div>
+        <div class="wb-sparkle"></div><div class="wb-sparkle"></div>
+        <div class="wb-sparkle"></div><div class="wb-sparkle"></div>
+        <div class="wb-sparkle"></div>
+        <div class="wb-corner wb-corner-tl"></div>
+        <div class="wb-corner wb-corner-tr"></div>
+        <div class="wb-corner wb-corner-bl"></div>
+        <div class="wb-corner wb-corner-br"></div>
+        <div class="welcome-info">
+          <div class="welcome-heading">เสี่ยง<em>เซียมซี</em>ออนไลน์</div>
+          <div class="welcome-sub">ตั้งสมาธิ เขย่า แล้วดูดวงของคุณ</div>
+        </div>
+        <div class="welcome-illust">
+          <img src="MicroService_FortuneSticks_Object.png" alt="เซียมซี DailyMu" class="welcome-hero-img">
+        </div>
+      </div>
+      <div class="welcome-footer">
+        <button class="btn-start" id="btn-start">เริ่มเสี่ยงเซียมซี ✦</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: SHAKE (Full-screen tap) -->
+    <div class="screen" id="s-shake" data-state="next">
+      <div class="hdr">
+        <button class="hdr-back" aria-label="กลับ" id="shake-back">‹</button>
+        <span class="hdr-title">เซียมซี</span>
+      </div>
+      <div class="shake-body" id="shake-area">
+        <div class="shake-energy-wrap">
+          <div class="shake-energy-bar"><div class="shake-energy-fill" id="energy-fill"></div></div>
+        </div>
+        <div class="shake-area">
+          <div class="fi" id="fi-shake">
+            <div class="fi-sticks">${renderSticks(false)}</div>
+            ${renderContainer()}
+          </div>
+        </div>
+        <div class="shake-info">
+          <div class="shake-heading">เขย่าเพื่อเสี่ยงโชค</div>
+          <div class="shake-sub">ตั้งสมาธิ นึกถึงสิ่งที่อยากรู้ แล้วเขย่า</div>
+          <div class="shake-hint" id="shake-hint">แตะหน้าจอ หรือเขย่ามือถือ</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: RESULT (Mystical Reveal) -->
+    <div class="screen" id="s-result" data-state="next">
+      <div class="hdr">
+        <button class="hdr-back" aria-label="กลับ" id="result-back">‹</button>
+        <span class="hdr-title">เซียมซี</span>
+      </div>
+      <div class="result-body">
+        <!-- Landscape bg -->
+        <div class="rb-petal"></div><div class="rb-petal"></div>
+        <div class="rb-petal"></div><div class="rb-petal"></div>
+        <div class="rb-hill rb-hill-1"></div>
+        <div class="rb-hill rb-hill-2"></div>
+        <div class="rb-mist"></div>
+        <!-- Stars scattered -->
+        <div class="result-star">✦</div>
+        <div class="result-star">✧</div>
+        <div class="result-star">✦</div>
+        <div class="result-star">☆</div>
+        <div class="result-star">✧</div>
+        <div class="result-star">✦</div>
+        <!-- Light burst -->
+        <div class="result-burst" id="result-burst"></div>
+        <!-- Glowing rings -->
+        <div class="result-ring result-ring-3" id="result-ring-3"></div>
+        <div class="result-ring result-ring-2" id="result-ring-2"></div>
+        <div class="result-ring result-ring-1" id="result-ring-1"></div>
+        <!-- Central orb -->
+        <div class="result-blob">
+          <div class="result-blob-bg" id="result-blob"></div>
+          <div class="result-label" id="result-label">เลขนำโชค</div>
+          <div class="result-number" id="result-number">0</div>
+        </div>
+        <!-- Subtitle -->
+        <div class="result-subtitle" id="result-subtitle">
+          <div class="result-subtitle-text">ดวงของคุณกำลังเปิด</div>
+          <div class="result-subtitle-hint">แตะเพื่ออ่านคำทำนาย</div>
+        </div>
+      </div>
+      <div class="result-footer">
+        <button class="btn-read" id="btn-read">อ่านคำทำนาย ✦</button>
+      </div>
+      <canvas id="confetti"></canvas>
+    </div>
+
+    <!-- SCREEN 4: FORTUNE (Fantasy Scroll) -->
+    <div class="screen" id="s-fortune" data-state="next">
+      <div class="hdr">
+        <button class="hdr-back" aria-label="กลับ" id="fortune-back">‹</button>
+        <span class="hdr-title">เซียมซี</span>
+        <button class="hdr-close" aria-label="ปิด" id="fortune-close">✕</button>
+      </div>
+      <div class="fortune-body">
+        <!-- Landscape bg -->
+        <div class="fb-petal"></div><div class="fb-petal"></div>
+        <div class="fb-petal"></div><div class="fb-petal"></div>
+        <div class="fb-sparkle"></div><div class="fb-sparkle"></div>
+        <div class="fb-sparkle"></div><div class="fb-sparkle"></div>
+        <div class="fb-hill fb-hill-1"></div>
+        <div class="fb-hill fb-hill-2"></div>
+        <div class="fb-mist fb-mist-b"></div>
+        <!-- Scroll card -->
+        <div class="fortune-card-wrap">
+          <div class="fortune-card">
+            <div class="fc-ornament fc-ornament-tl">❧</div>
+            <div class="fc-ornament fc-ornament-tr">❧</div>
+            <div class="fc-ornament fc-ornament-bl">❧</div>
+            <div class="fc-ornament fc-ornament-br">❧</div>
+            <div class="fortune-card-content">
+              <div class="fortune-brand">DailyMu</div>
+              <div class="fortune-num-big" id="fortune-num-big">0</div>
+              <div class="fortune-divider"></div>
+              <div class="fortune-text" id="fortune-text"></div>
+              <div class="fortune-card-footer">
+                <span class="fortune-card-footer-label">เสียงกระซิบแห่งความโชคดี</span>
+                <span class="fortune-card-footer-num" id="fortune-footer-num">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Stacked buttons -->
+        <div class="fortune-actions">
+          <button class="btn-retry" id="btn-retry">
+            <span class="btn-icon">↻</span> เสี่ยงเซียมซีอีกครั้ง
+          </button>
+          <button class="btn-share" id="btn-share">กลับหน้าหลัก</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flash-overlay" id="flash"></div>
+  `;
+  bindEvents();
+}
+
+/* ═══════════════════════════════════════
+   SCREEN TRANSITIONS
+   ═══════════════════════════════════════ */
+function goTo(screenId,direction='forward'){
+  const screens=['s-welcome','s-shake','s-result','s-fortune'];
+  screens.forEach(id=>{
+    const el=$('#'+id);
+    if(id===screenId){
+      el.dataset.state='active';
+    }else{
+      /* determine if this screen is "before" or "after" */
+      const targetIdx=screens.indexOf(screenId);
+      const thisIdx=screens.indexOf(id);
+      el.dataset.state=thisIdx<targetIdx?'prev':'next';
+    }
+  });
+  currentScreen=screenId.replace('s-','');
+}
+
+async function transitionTo(screenId){
+  const flash=$('#flash');
+  if(screenId==='s-result'){
+    flash.classList.add('show');
+    await wait(300);
+    goTo(screenId);
+    await wait(100);
+    flash.classList.remove('show');
+    await wait(400);
+    playResultAnimation();
+  }else{
+    goTo(screenId);
+  }
+}
+
+/* ═══════════════════════════════════════
+   EVENT BINDING
+   ═══════════════════════════════════════ */
+function bindEvents(){
+  /* Welcome → Shake */
+  $('#btn-start').addEventListener('click',()=>{
+    goTo('s-shake');
+    requestMotionPermission();
+  });
+
+  /* Shake back */
+  $('#shake-back').addEventListener('click',()=>{
+    resetShakeState();
+    goTo('s-welcome');
+  });
+
+  /* Shake interactions */
+  const shakeArea=$('#shake-area');
+  let tapCount=0;
+  let rapidTapTimer=null;
+
+  /* Tap anywhere on shake body — adds energy */
+  let holdInterval=null;
+  shakeArea.addEventListener('pointerdown',(e)=>{
+    e.preventDefault();
+    if(energy>=100)return;
+    addEnergy(6);
+    tapCount++;
+    triggerVisualClink();
+    playSfxShake();
+    haptic(15);
+    clearTimeout(rapidTapTimer);
+    rapidTapTimer=setTimeout(()=>{tapCount=0},600);
+    /* Hold to continuously add energy */
+    holdInterval=setInterval(()=>{
+      if(energy>=100){clearInterval(holdInterval);return}
+      addEnergy(2);
+      haptic(10);
+    },60);
+  });
+  const stopHold=()=>{clearInterval(holdInterval);holdInterval=null};
+  shakeArea.addEventListener('pointerup',stopHold);
+  shakeArea.addEventListener('pointerleave',stopHold);
+  shakeArea.addEventListener('pointercancel',stopHold);
+
+  /* Result → Read fortune */
+  $('#btn-read').addEventListener('click',()=>{
+    goTo('s-fortune');
+    showFortune();
+  });
+
+  /* Result back */
+  $('#result-back').addEventListener('click',()=>{
+    resetShakeState();
+    goTo('s-shake');
+  });
+
+  /* Fortune back */
+  $('#fortune-back').addEventListener('click',()=>{
+    goTo('s-result');
+  });
+
+  /* Fortune close → restart */
+  $('#fortune-close').addEventListener('click',()=>{
+    resetAll();
+    goTo('s-welcome');
+  });
+
+  /* Retry */
+  $('#btn-retry').addEventListener('click',()=>{
+    resetShakeState();
+    goTo('s-shake');
+  });
+
+  /* Go home (was share) */
+  $('#btn-share').addEventListener('click',()=>{
+    resetAll();
+    goTo('s-welcome');
+  });
+
+  /* Welcome back (close app / go back) */
+  $('#s-welcome .hdr-back').addEventListener('click',()=>{
+    /* In a real app, this would navigate back. For demo, do nothing or show alert */
+    if(window.history.length>1)window.history.back();
+  });
+}
+
+/* ═══════════════════════════════════════
+   SHAKE DETECTION (DeviceMotion)
+   ═══════════════════════════════════════ */
+function requestMotionPermission(){
+  if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){
+    DeviceMotionEvent.requestPermission().then(state=>{
+      if(state==='granted'){
+        motionPermission=true;
+        startMotionListener();
+      }
+    }).catch(()=>{});
+  }else if('DeviceMotionEvent' in window){
+    motionPermission=true;
+    startMotionListener();
+  }
+}
+
+let lastAcc={x:0,y:0,z:0};
+function startMotionListener(){
+  window.addEventListener('devicemotion',handleMotion);
+}
+
+function handleMotion(e){
+  if(currentScreen!=='shake'||energy>=100)return;
+  const a=e.accelerationIncludingGravity;
+  if(!a)return;
+  const dx=Math.abs(a.x-lastAcc.x);
+  const dy=Math.abs(a.y-lastAcc.y);
+  const dz=Math.abs(a.z-lastAcc.z);
+  const total=dx+dy+dz;
+  lastAcc={x:a.x,y:a.y,z:a.z};
+  if(total>18){
+    addEnergy(Math.min(8,total/5));
+    haptic(15);
+    playSfxShake();
+  }
+}
+
+/* ═══════════════════════════════════════
+   ENERGY SYSTEM
+   ═══════════════════════════════════════ */
+function addEnergy(amount){
+  if(energy>=100)return;
+  energy=Math.min(100,energy+amount);
+  updateEnergyUI();
+  setShaking(true);
+
+  clearTimeout(energyDecayTimer);
+  energyDecayTimer=setTimeout(()=>{
+    if(energy<100)decayEnergy();
+  },800);
+
+  if(energy>=100){
+    triggerReveal();
+  }
+}
+
+function decayEnergy(){
+  if(energy<=0||energy>=100){setShaking(false);return}
+  energy=Math.max(0,energy-1);
+  updateEnergyUI();
+  if(energy>0){
+    energyDecayTimer=setTimeout(decayEnergy,60);
+  }else{
+    setShaking(false);
+  }
+}
+
+function updateEnergyUI(){
+  const fill=$('#energy-fill');
+  if(fill)fill.style.width=energy+'%';
+}
+
+function setShaking(on){
+  const fi=$('#fi-shake');
+  if(!fi)return;
+  if(on&&!isShaking){
+    fi.classList.add('shaking');
+    isShaking=true;
+  }else if(!on&&isShaking){
+    fi.classList.remove('shaking');
+    isShaking=false;
+  }
+}
+
+function resetShakeState(){
+  energy=0;
+  isShaking=false;
+  clearTimeout(energyDecayTimer);
+  const fi=$('#fi-shake');
+  if(fi){fi.classList.remove('shaking');$$('.fi-stick.rising',fi).forEach(s=>s.classList.remove('rising'))}
+  updateEnergyUI();
+  const hint=$('#shake-hint');
+  if(hint)hint.style.display='';
+}
+
+function resetAll(){
+  resetShakeState();
+  fortuneNum=0;
+  particles=[];
+  cancelAnimationFrame(animFrame);
+}
+
+/* ═══════════════════════════════════════
+   VISUAL FEEDBACK — CLINK EFFECT
+   ═══════════════════════════════════════ */
+function triggerVisualClink(){
+  const area=$('#shake-area');
+  if(!area)return;
+  const clink=document.createElement('div');
+  clink.style.cssText=`
+    position:absolute;left:${30+Math.random()*40}%;top:${20+Math.random()*40}%;
+    width:24px;height:24px;border:2px solid var(--primary);border-radius:50%;
+    opacity:1;pointer-events:none;z-index:5;
+    animation:clink-expand .5s ease-out forwards;
+  `;
+  area.appendChild(clink);
+  setTimeout(()=>clink.remove(),500);
+}
+
+/* Add clink animation */
+if(!document.getElementById('dynamic-styles')){
+  const style=document.createElement('style');
+  style.id='dynamic-styles';
+  style.textContent=`
+    @keyframes clink-expand{
+      0%{transform:scale(.3);opacity:.8}
+      100%{transform:scale(1.5);opacity:0}
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+/* ═══════════════════════════════════════
+   TRIGGER REVEAL
+   ═══════════════════════════════════════ */
+async function triggerReveal(){
+  /* Pick random fortune */
+  fortuneNum=Math.floor(Math.random()*28)+1;
+
+  /* Animate rising stick */
+  const fi=$('#fi-shake');
+  if(fi){
+    fi.classList.remove('shaking');
+    const sticks=$$('.fi-stick',fi);
+    const risingIdx=Math.floor(Math.random()*sticks.length);
+    sticks[risingIdx].classList.add('rising');
+    haptic(100);
+    playSfxRise();
+    await wait(1200);
+  }
+
+  /* Hide hint */
+  const hint=$('#shake-hint');
+  if(hint)hint.style.display='none';
+
+  /* Transition to result */
+  transitionTo('s-result');
+}
+
+/* ═══════════════════════════════════════
+   RESULT ANIMATION
+   ═══════════════════════════════════════ */
+async function playResultAnimation(){
+  const blob=$('#result-blob');
+  const numEl=$('#result-number');
+  const labelEl=$('#result-label');
+  const burst=$('#result-burst');
+  const ring1=$('#result-ring-1');
+  const ring2=$('#result-ring-2');
+  const ring3=$('#result-ring-3');
+  const subtitle=$('#result-subtitle');
+  const stars=$$('.result-star');
+  const btnRead=$('#btn-read');
+
+  /* Reset all */
+  [blob,burst,ring1,ring2,ring3,subtitle,btnRead].forEach(el=>{if(el)el.classList.remove('show')});
+  if(numEl){numEl.classList.remove('show');numEl.textContent='0'}
+  if(labelEl)labelEl.classList.remove('show');
+  stars.forEach(s=>s.classList.remove('show'));
+
+  await wait(200);
+
+  /* 1. Light burst fades in */
+  if(burst)burst.classList.add('show');
+  await wait(300);
+
+  /* 2. Rings expand outward */
+  if(ring1)ring1.classList.add('show');
+  await wait(150);
+  if(ring2)ring2.classList.add('show');
+  await wait(150);
+  if(ring3)ring3.classList.add('show');
+  await wait(300);
+
+  /* 3. Orb scales in */
+  blob.classList.add('show');
+  await wait(500);
+
+  /* 4. Label + Number counter */
+  if(labelEl)labelEl.classList.add('show');
+  await wait(200);
+  numEl.classList.add('show');
+  await animateCounter(numEl,fortuneNum);
+  haptic(50);
+  playSfxReveal();
+  await wait(200);
+
+  /* 5. Confetti burst */
+  launchConfetti();
+  await wait(200);
+
+  /* 6. Stars appear staggered */
+  stars.forEach((s,i)=>setTimeout(()=>s.classList.add('show'),i*120));
+  await wait(400);
+
+  /* 7. Subtitle */
+  if(subtitle)subtitle.classList.add('show');
+  await wait(300);
+
+  /* 8. Button slides up */
+  btnRead.classList.add('show');
+}
+
+/* ═══════════════════════════════════════
+   NUMBER COUNTER ANIMATION
+   ═══════════════════════════════════════ */
+async function animateCounter(el,target){
+  const delays=[
+    ...Array(12).fill(50),
+    ...Array(5).fill(100),
+    ...Array(3).fill(150),
+    200,300,400
+  ];
+  for(const d of delays){
+    el.textContent=Math.floor(Math.random()*28)+1;
+    await wait(d);
+  }
+  el.textContent=target;
+  /* Bounce effect */
+  el.style.transform='scale(1.2)';
+  await wait(150);
+  el.style.transform='scale(1)';
+}
+
+/* ═══════════════════════════════════════
+   CONFETTI / PARTICLE SYSTEM
+   ═══════════════════════════════════════ */
+function launchConfetti(){
+  const canvas=$('#confetti');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width;
+  canvas.height=rect.height;
+
+  /* Confetti: primary pink, secondary purple, light tones */
+  const colors=['#EC599D','#7279FB','#FDEFF5','#F1F2FF','#D94E8E','#9A9FFD','#FDE9ED'];
+  particles=[];
+
+  /* Spawn confetti */
+  const cx=canvas.width/2;
+  const cy=canvas.height*0.4;
+  for(let i=0;i<60;i++){
+    const angle=Math.random()*Math.PI*2;
+    const speed=3+Math.random()*8;
+    particles.push({
+      x:cx,y:cy,
+      vx:Math.cos(angle)*speed,
+      vy:Math.sin(angle)*speed-3,
+      size:3+Math.random()*5,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      rotation:Math.random()*360,
+      spin:(Math.random()-.5)*10,
+      life:1,
+      decay:.008+Math.random()*.015,
+      gravity:.15,
+      shape:Math.random()>.5?'rect':'circle'
+    });
+  }
+
+  cancelAnimationFrame(animFrame);
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles=particles.filter(p=>p.life>0);
+    for(const p of particles){
+      p.vy+=p.gravity;
+      p.x+=p.vx;
+      p.y+=p.vy;
+      p.vx*=.98;
+      p.life-=p.decay;
+      p.rotation+=p.spin;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rotation*Math.PI/180);
+      ctx.globalAlpha=p.life;
+      ctx.fillStyle=p.color;
+      if(p.shape==='rect'){
+        ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+      }else{
+        ctx.beginPath();
+        ctx.arc(0,0,p.size/2,0,Math.PI*2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    if(particles.length>0){
+      animFrame=requestAnimationFrame(animate);
+    }else{
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+  }
+  animate();
+}
+
+/* ═══════════════════════════════════════
+   FORTUNE DISPLAY
+   ═══════════════════════════════════════ */
+function showFortune(){
+  const fortune=FORTUNES.find(f=>f.num===fortuneNum)||FORTUNES[0];
+  const numBig=$('#fortune-num-big');
+  const footerNum=$('#fortune-footer-num');
+  const text=$('#fortune-text');
+  if(numBig)numBig.textContent=fortune.num;
+  if(footerNum)footerNum.textContent=fortune.num;
+  if(text){
+    text.innerHTML='';
+    /* Typewriter effect */
+    const lines=fortune.text.split('\n');
+    let i=0;
+    function addLine(){
+      if(i>=lines.length)return;
+      const p=document.createElement('p');
+      p.style.cssText='opacity:0;transform:translateY(8px);transition:all .4s ease';
+      p.textContent=lines[i];
+      text.appendChild(p);
+      requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>{
+          p.style.opacity='1';
+          p.style.transform='translateY(0)';
+        });
+      });
+      i++;
+      if(i<lines.length)setTimeout(addLine,150);
+    }
+    setTimeout(addLine,300);
+  }
+}
+
+/* ═══════════════════════════════════════
+   SHARE
+   ═══════════════════════════════════════ */
+async function shareFortune(){
+  const fortune=FORTUNES.find(f=>f.num===fortuneNum)||FORTUNES[0];
+  const shareText=`🔮 เซียมซี ${fortune.title}\n\n${fortune.text.replace(/\n/g,'\n')}\n\n— DailyMu`;
+
+  if(navigator.share){
+    try{
+      await navigator.share({title:'เซียมซี DailyMu',text:shareText});
+    }catch(e){/* user cancelled */}
+  }else{
+    /* Fallback: copy to clipboard */
+    try{
+      await navigator.clipboard.writeText(shareText);
+      showCopiedToast();
+    }catch(e){
+      /* Extra fallback */
+      const ta=document.createElement('textarea');
+      ta.value=shareText;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      showCopiedToast();
+    }
+  }
+}
+
+function showCopiedToast(){
+  const toast=document.createElement('div');
+  toast.textContent='คัดลอกแล้ว!';
+  toast.style.cssText=`
+    position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+    background:var(--text-primary);color:#fff;padding:10px 24px;
+    border-radius:var(--r-full);font-size:14px;font-weight:700;
+    font-family:var(--font);z-index:999;
+    animation:toast-in .3s ease;
+  `;
+  document.body.appendChild(toast);
+  setTimeout(()=>{
+    toast.style.opacity='0';
+    toast.style.transition='opacity .3s';
+    setTimeout(()=>toast.remove(),300);
+  },1500);
+}
+
+/* Toast animation */
+{
+  const s=document.createElement('style');
+  s.textContent=`@keyframes toast-in{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}`;
+  document.head.appendChild(s);
+}
+
+/* ═══════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════ */
+renderApp();
+</script>
+</body>
+</html>
