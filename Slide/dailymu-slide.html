@@ -103,24 +103,25 @@
     body {
       font-family: 'LINE Seed Sans TH', sans-serif;
       background: #0e0e12;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
       color: var(--gray-fg-high);
     }
 
-    /* ===== Slide Container (16:9) ===== */
+    /* ===== Slide Container (fixed 1920×1080, scaled by JS) ===== */
     .slide-viewport {
-      position: relative;
-      width: 100vw;
-      height: 56.25vw; /* 16:9 */
-      max-height: 100vh;
-      max-width: 177.78vh; /* 16:9 inverse */
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
       overflow: hidden;
       background: var(--gray-bg-white);
       box-shadow: 0 0 60px rgba(0,0,0,0.3);
+      container-type: size;
+      transform-origin: 0 0;
     }
 
     /* ===== Slides ===== */
@@ -227,7 +228,7 @@
     }
 
     .slide-header .section-label {
-      font-size: clamp(10px, 1.1vw, 16px);
+      font-size: clamp(10px, 1.1cqw, 16px);
       font-weight: 600;
       color: var(--gray-fg-mid-on-white);
       text-transform: uppercase;
@@ -275,53 +276,53 @@
 
     .col-visual img {
       max-width: 100%;
-      max-height: 50vh;
+      max-height: 50cqh;
       object-fit: contain;
       filter: drop-shadow(0 8px 24px rgba(0,0,0,0.08));
     }
 
     /* ===== Typography ===== */
     .title-xl {
-      font-size: clamp(28px, 4vw, 64px);
+      font-size: clamp(28px, 4cqw, 64px);
       font-weight: 800;
       line-height: 1.15;
       letter-spacing: -0.02em;
     }
 
     .title-lg {
-      font-size: clamp(22px, 3vw, 48px);
+      font-size: clamp(22px, 3cqw, 48px);
       font-weight: 700;
       line-height: 1.2;
     }
 
     .title-md {
-      font-size: clamp(18px, 2.2vw, 36px);
+      font-size: clamp(18px, 2.2cqw, 36px);
       font-weight: 700;
       line-height: 1.3;
     }
 
     .title-sm {
-      font-size: clamp(14px, 1.5vw, 24px);
+      font-size: clamp(14px, 1.5cqw, 24px);
       font-weight: 700;
       line-height: 1.4;
     }
 
     .body-lg {
-      font-size: clamp(13px, 1.4vw, 22px);
+      font-size: clamp(13px, 1.4cqw, 22px);
       font-weight: 400;
       line-height: 1.6;
       color: var(--gray-fg-mid-on-white);
     }
 
     .body-md {
-      font-size: clamp(11px, 1.1vw, 18px);
+      font-size: clamp(11px, 1.1cqw, 18px);
       font-weight: 400;
       line-height: 1.6;
       color: var(--gray-fg-mid-on-white);
     }
 
     .body-sm {
-      font-size: clamp(10px, 0.9vw, 14px);
+      font-size: clamp(10px, 0.9cqw, 14px);
       font-weight: 400;
       line-height: 1.5;
       color: var(--gray-fg-low-on-white);
@@ -346,7 +347,7 @@
       gap: var(--spacing-2);
       padding: var(--spacing-1) var(--spacing-3);
       border-radius: var(--radius-full);
-      font-size: clamp(9px, 0.85vw, 13px);
+      font-size: clamp(9px, 0.85cqw, 13px);
       font-weight: 600;
       white-space: nowrap;
     }
@@ -387,10 +388,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: clamp(36px, 3.5vw, 56px);
-      height: clamp(36px, 3.5vw, 56px);
+      width: clamp(36px, 3.5cqw, 56px);
+      height: clamp(36px, 3.5cqw, 56px);
       border-radius: var(--radius-lg);
-      font-size: clamp(16px, 1.8vw, 28px);
+      font-size: clamp(16px, 1.8cqw, 28px);
       font-weight: 800;
       color: #fff;
       flex-shrink: 0;
@@ -403,8 +404,8 @@
     .agenda-card:nth-child(5) .agenda-num { background: var(--support-orange-fg-low); }
 
     .agenda-card .agenda-text { flex: 1; }
-    .agenda-card .agenda-title { font-size: clamp(14px, 1.5vw, 24px); font-weight: 700; margin-bottom: 2px; }
-    .agenda-card .agenda-desc { font-size: clamp(10px, 1vw, 16px); color: var(--gray-fg-mid-on-white); }
+    .agenda-card .agenda-title { font-size: clamp(14px, 1.5cqw, 24px); font-weight: 700; margin-bottom: 2px; }
+    .agenda-card .agenda-desc { font-size: clamp(10px, 1cqw, 16px); color: var(--gray-fg-mid-on-white); }
 
     /* ===== Outcome Grid ===== */
     .outcome-grid {
@@ -437,12 +438,12 @@
     }
 
     .outcome-card .card-title {
-      font-size: clamp(14px, 1.4vw, 22px);
+      font-size: clamp(14px, 1.4cqw, 22px);
       font-weight: 700;
     }
 
     .outcome-card .card-desc {
-      font-size: clamp(11px, 0.95vw, 15px);
+      font-size: clamp(11px, 0.95cqw, 15px);
       color: var(--gray-fg-mid-on-white);
       line-height: 1.5;
     }
@@ -451,7 +452,7 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
-      font-size: clamp(10px, 0.85vw, 13px);
+      font-size: clamp(10px, 0.85cqw, 13px);
       color: var(--gray-fg-mid-on-white);
     }
 
@@ -466,7 +467,7 @@
       gap: 4px;
       padding: 4px 12px;
       border-radius: var(--radius-full);
-      font-size: clamp(10px, 0.9vw, 14px);
+      font-size: clamp(10px, 0.9cqw, 14px);
       font-weight: 700;
       white-space: nowrap;
       flex-shrink: 0;
@@ -477,7 +478,7 @@
     .card-status.wip { background: var(--info-bg-lowest); color: var(--info-fg-high); }
 
     .outcome-card .card-link {
-      font-size: clamp(9px, 0.85vw, 13px);
+      font-size: clamp(9px, 0.85cqw, 13px);
       color: var(--secondary-fg-high);
       text-decoration: none;
       font-weight: 600;
@@ -500,7 +501,7 @@
       display: flex;
       align-items: flex-start;
       gap: var(--spacing-3);
-      font-size: clamp(12px, 1.2vw, 19px);
+      font-size: clamp(12px, 1.2cqw, 19px);
       line-height: 1.55;
       color: var(--gray-fg-high);
     }
@@ -508,8 +509,8 @@
     .bullet-list li::before {
       content: '';
       flex-shrink: 0;
-      width: clamp(8px, 0.7vw, 10px);
-      height: clamp(8px, 0.7vw, 10px);
+      width: clamp(8px, 0.7cqw, 10px);
+      height: clamp(8px, 0.7cqw, 10px);
       border-radius: 50%;
       background: var(--primary-fg-high);
       margin-top: 0.45em;
@@ -540,12 +541,12 @@
 
     .asset-item img {
       width: 100%;
-      max-height: 28vh;
+      max-height: 28cqh;
       object-fit: contain;
     }
 
     .asset-item span {
-      font-size: clamp(8px, 0.7vw, 11px);
+      font-size: clamp(8px, 0.7cqw, 11px);
       color: var(--gray-fg-low-on-white);
       text-align: center;
     }
@@ -560,7 +561,7 @@
       background: var(--gray-bg-lightgray);
       color: var(--secondary-fg-high);
       text-decoration: none;
-      font-size: clamp(10px, 0.9vw, 14px);
+      font-size: clamp(10px, 0.9cqw, 14px);
       font-weight: 600;
       transition: background var(--duration-fast);
       width: fit-content;
@@ -590,8 +591,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: clamp(32px, 3vw, 44px);
-      height: clamp(32px, 3vw, 44px);
+      width: clamp(32px, 3cqw, 44px);
+      height: clamp(32px, 3cqw, 44px);
       border-radius: var(--radius-md);
       border: 1px solid var(--gray-bg-midgray);
       background: var(--gray-bg-white);
@@ -612,8 +613,8 @@
     .nav-btn:active { transform: scale(0.95); }
 
     .nav-btn svg {
-      width: clamp(14px, 1.2vw, 18px);
-      height: clamp(14px, 1.2vw, 18px);
+      width: clamp(14px, 1.2cqw, 18px);
+      height: clamp(14px, 1.2cqw, 18px);
     }
 
     .nav-bar.dark-nav .nav-btn {
@@ -628,7 +629,7 @@
     }
 
     .nav-counter {
-      font-size: clamp(11px, 1vw, 14px);
+      font-size: clamp(11px, 1cqw, 14px);
       color: var(--gray-fg-mid-on-white);
       font-weight: 700;
       min-width: 50px;
@@ -655,7 +656,7 @@
       background: transparent;
       cursor: pointer;
       font-family: 'LINE Seed Sans TH', sans-serif;
-      font-size: clamp(10px, 0.9vw, 13px);
+      font-size: clamp(10px, 0.9cqw, 13px);
       font-weight: 600;
       color: var(--gray-fg-low-on-white);
       opacity: 0.45;
@@ -681,8 +682,8 @@
     }
 
     .page-dropdown-btn svg {
-      width: clamp(11px, 0.9vw, 14px);
-      height: clamp(11px, 0.9vw, 14px);
+      width: clamp(11px, 0.9cqw, 14px);
+      height: clamp(11px, 0.9cqw, 14px);
       transition: transform var(--duration-fast) var(--easing-default);
     }
 
@@ -698,8 +699,8 @@
       position: absolute;
       top: calc(100% + var(--spacing-1));
       right: 0;
-      min-width: clamp(220px, 22vw, 320px);
-      max-height: 60vh;
+      min-width: clamp(220px, 22cqw, 320px);
+      max-height: 60cqh;
       overflow-y: auto;
       background: var(--gray-bg-white);
       border: 1px solid var(--gray-bg-midgray);
@@ -730,7 +731,7 @@
       background: none;
       cursor: pointer;
       font-family: 'LINE Seed Sans TH', sans-serif;
-      font-size: clamp(10px, 0.9vw, 13px);
+      font-size: clamp(10px, 0.9cqw, 13px);
       font-weight: 500;
       color: var(--gray-fg-mid-on-white);
       text-align: left;
@@ -755,11 +756,11 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: clamp(18px, 1.6vw, 22px);
-      height: clamp(18px, 1.6vw, 22px);
+      min-width: clamp(18px, 1.6cqw, 22px);
+      height: clamp(18px, 1.6cqw, 22px);
       border-radius: var(--radius-sm);
       background: var(--gray-bg-lightgray);
-      font-size: clamp(9px, 0.75vw, 11px);
+      font-size: clamp(9px, 0.75cqw, 11px);
       font-weight: 700;
       color: var(--gray-fg-mid-on-white);
       flex-shrink: 0;
@@ -799,7 +800,7 @@
       background: var(--secondary-fg-high);
       cursor: pointer;
       font-family: 'LINE Seed Sans TH', sans-serif;
-      font-size: clamp(11px, 1vw, 14px);
+      font-size: clamp(11px, 1cqw, 14px);
       font-weight: 700;
       color: #fff;
       transition: background var(--duration-fast) var(--easing-default),
@@ -817,8 +818,8 @@
     .present-btn:active { transform: scale(0.97); }
 
     .present-btn svg {
-      width: clamp(14px, 1.1vw, 18px);
-      height: clamp(14px, 1.1vw, 18px);
+      width: clamp(14px, 1.1cqw, 18px);
+      height: clamp(14px, 1.1cqw, 18px);
     }
 
     .present-hint {
@@ -826,7 +827,7 @@
       bottom: 12%;
       left: 50%;
       transform: translateX(-50%);
-      font-size: clamp(10px, 0.85vw, 13px);
+      font-size: clamp(10px, 0.85cqw, 13px);
       color: var(--gray-fg-low-on-white);
       opacity: 0.7;
       pointer-events: none;
@@ -843,7 +844,7 @@
       justify-content: center;
       padding: 1px 6px;
       font-family: 'LINE Seed Sans TH', sans-serif;
-      font-size: clamp(9px, 0.75vw, 12px);
+      font-size: clamp(9px, 0.75cqw, 12px);
       font-weight: 700;
       color: var(--gray-fg-mid-on-white);
       background: var(--gray-bg-white);
@@ -866,7 +867,7 @@
     }
 
     .cover-logo {
-      width: clamp(48px, 6vw, 80px);
+      width: clamp(48px, 6cqw, 80px);
       height: auto;
       margin-bottom: var(--spacing-2);
     }
@@ -879,7 +880,7 @@
       border-radius: var(--radius-full);
       background: rgba(255,255,255,0.6);
       backdrop-filter: blur(10px);
-      font-size: clamp(11px, 1.1vw, 17px);
+      font-size: clamp(11px, 1.1cqw, 17px);
       font-weight: 600;
       color: var(--gray-fg-mid-on-white);
     }
@@ -888,7 +889,7 @@
       position: absolute;
       bottom: 8%;
       right: 6%;
-      width: clamp(120px, 18vw, 280px);
+      width: clamp(120px, 18cqw, 280px);
       opacity: 0.9;
       filter: drop-shadow(0 8px 24px rgba(0,0,0,0.06));
     }
@@ -897,7 +898,7 @@
       position: absolute;
       bottom: 8%;
       left: 6%;
-      width: clamp(100px, 14vw, 220px);
+      width: clamp(100px, 14cqw, 220px);
       opacity: 0.7;
       filter: drop-shadow(0 8px 24px rgba(0,0,0,0.06));
     }
@@ -914,7 +915,7 @@
     }
 
     .end-character {
-      width: clamp(150px, 20vw, 300px);
+      width: clamp(150px, 20cqw, 300px);
       filter: drop-shadow(0 12px 32px rgba(0,0,0,0.08));
     }
 
@@ -970,7 +971,7 @@
     }
 
     .section-tag span {
-      font-size: clamp(10px, 0.9vw, 14px);
+      font-size: clamp(10px, 0.9cqw, 14px);
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -982,13 +983,13 @@
       flex-direction: column;
       gap: 0;
       position: relative;
-      padding-left: clamp(20px, 2vw, 32px);
+      padding-left: clamp(20px, 2cqw, 32px);
     }
 
     .timeline::before {
       content: '';
       position: absolute;
-      left: clamp(5px, 0.5vw, 8px);
+      left: clamp(5px, 0.5cqw, 8px);
       top: 4px;
       bottom: 4px;
       width: 2px;
@@ -1004,10 +1005,10 @@
     .timeline-item::before {
       content: '';
       position: absolute;
-      left: calc(-1 * clamp(20px, 2vw, 32px) + clamp(2px, 0.2vw, 4px));
+      left: calc(-1 * clamp(20px, 2cqw, 32px) + clamp(2px, 0.2cqw, 4px));
       top: calc(var(--spacing-3) + 6px);
-      width: clamp(8px, 0.7vw, 10px);
-      height: clamp(8px, 0.7vw, 10px);
+      width: clamp(8px, 0.7cqw, 10px);
+      height: clamp(8px, 0.7cqw, 10px);
       border-radius: 50%;
       background: var(--primary-fg-high);
       border: 2px solid #fff;
@@ -1019,13 +1020,13 @@
     .timeline-item:nth-child(4)::before { background: var(--support-green-fg-low); box-shadow: 0 0 0 2px var(--support-green-bg-lowest); }
 
     .timeline-item .tl-title {
-      font-size: clamp(12px, 1.2vw, 19px);
+      font-size: clamp(12px, 1.2cqw, 19px);
       font-weight: 700;
       color: var(--gray-fg-high);
     }
 
     .timeline-item .tl-desc {
-      font-size: clamp(10px, 0.95vw, 15px);
+      font-size: clamp(10px, 0.95cqw, 15px);
       color: var(--gray-fg-mid-on-white);
       margin-top: 2px;
     }
@@ -1038,7 +1039,7 @@
     }
 
     .cal-header span {
-      font-size: clamp(10px, 1vw, 15px);
+      font-size: clamp(10px, 1cqw, 15px);
       font-weight: 700;
       color: var(--gray-fg-low-on-white);
       padding: var(--spacing-2) 0;
@@ -1071,7 +1072,7 @@
     }
 
     .cal-dates span {
-      font-size: clamp(11px, 1.1vw, 17px);
+      font-size: clamp(11px, 1.1cqw, 17px);
       font-weight: 700;
       color: var(--gray-fg-mid-on-white);
       padding: 3px 0;
@@ -1095,7 +1096,7 @@
     .cal-bar {
       padding: 4px 8px;
       border-radius: var(--radius-sm);
-      font-size: clamp(9px, 0.85vw, 14px);
+      font-size: clamp(9px, 0.85cqw, 14px);
       font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
@@ -1129,8 +1130,8 @@
     .bar-holiday:hover { background: #B5421F; color: #fff; } /* contrast 5.6:1 */
 
     .legend-avatar {
-      width: clamp(36px, 3.5vw, 54px);
-      height: clamp(36px, 3.5vw, 54px);
+      width: clamp(36px, 3.5cqw, 54px);
+      height: clamp(36px, 3.5cqw, 54px);
       border-radius: 50%;
       border: 3.5px solid;
       display: flex;
@@ -1148,12 +1149,12 @@
 
     .legend-avatar span {
       font-weight: 800;
-      font-size: clamp(14px, 1.4vw, 22px);
+      font-size: clamp(14px, 1.4cqw, 22px);
     }
 
     .legend-name {
       font-weight: 700;
-      font-size: clamp(13px, 1.3vw, 20px);
+      font-size: clamp(13px, 1.3cqw, 20px);
     }
 
     /* ===== Thank You Finale Animations ===== */
@@ -1170,8 +1171,8 @@
       50% { opacity: 1; transform: scale(1) rotate(180deg); }
     }
     @keyframes confettiFall {
-      0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+      0% { transform: translateY(-10cqh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110cqh) rotate(720deg); opacity: 0; }
     }
     @keyframes pulseGlow {
       0%, 100% { filter: drop-shadow(0 0 8px rgba(236,89,157,0.3)); }
@@ -1239,7 +1240,7 @@
     }
 
     .finale-title {
-      font-size: clamp(48px, 6vw, 96px);
+      font-size: clamp(48px, 6cqw, 96px);
       font-weight: 900;
       background: linear-gradient(135deg, var(--primary-fg-high) 0%, var(--secondary-fg-high) 40%, var(--primary-fg-high) 60%, #f59bca 80%, var(--secondary-fg-high) 100%);
       background-size: 200% auto;
@@ -1280,13 +1281,13 @@
       background: rgba(255,255,255,0.8);
     }
     .screenshot-placeholder svg {
-      width: clamp(28px, 3vw, 48px);
-      height: clamp(28px, 3vw, 48px);
+      width: clamp(28px, 3cqw, 48px);
+      height: clamp(28px, 3cqw, 48px);
       color: var(--gray-fg-low-on-white);
       opacity: 0.5;
     }
     .screenshot-placeholder span {
-      font-size: clamp(10px, 0.9vw, 14px);
+      font-size: clamp(10px, 0.9cqw, 14px);
       color: var(--gray-fg-low-on-white);
       font-weight: 600;
     }
@@ -1322,13 +1323,13 @@
       z-index: 2;
     }
     .phone-mockup img {
-      max-height: 48vh;
+      max-height: 48cqh;
       width: auto;
       object-fit: contain;
       border-radius: 24px;
     }
     .screenshot-item .screenshot-label {
-      font-size: clamp(10px, 0.8vw, 13px);
+      font-size: clamp(10px, 0.8cqw, 13px);
       color: var(--gray-fg-mid-on-white);
       font-weight: 600;
       text-align: center;
@@ -1358,15 +1359,15 @@
       box-shadow: var(--shadow-md);
     }
     .planning-card .planning-icon {
-      font-size: clamp(24px, 2.5vw, 40px);
+      font-size: clamp(24px, 2.5cqw, 40px);
       line-height: 1;
     }
     .planning-card .planning-title {
-      font-size: clamp(14px, 1.4vw, 22px);
+      font-size: clamp(14px, 1.4cqw, 22px);
       font-weight: 700;
     }
     .planning-card .planning-desc {
-      font-size: clamp(11px, 0.95vw, 15px);
+      font-size: clamp(11px, 0.95cqw, 15px);
       color: var(--gray-fg-mid-on-white);
       line-height: 1.5;
     }
@@ -1426,9 +1427,9 @@
     .index-week-btn--secondary:hover { border-color: var(--secondary-fg-high); }
     .index-week-btn--sky { border-color: var(--support-sky-fg-low); }
     .index-week-btn--sky:hover { border-color: var(--info-bg-high); }
-    .index-week-btn .week-num { font-size: clamp(28px,3vw,42px); font-weight: 800; }
-    .index-week-btn .week-label { font-size: clamp(13px,1.2vw,18px); font-weight: 700; color: var(--gray-fg-high); }
-    .index-week-btn .week-date { font-size: clamp(10px,0.85vw,13px); color: var(--gray-fg-mid-on-white); }
+    .index-week-btn .week-num { font-size: clamp(28px,3cqw,42px); font-weight: 800; }
+    .index-week-btn .week-label { font-size: clamp(13px,1.2cqw,18px); font-weight: 700; color: var(--gray-fg-high); }
+    .index-week-btn .week-date { font-size: clamp(10px,0.85cqw,13px); color: var(--gray-fg-mid-on-white); }
 
     /* Service cards (W3 Micro Services) */
     .service-card {
@@ -1441,7 +1442,7 @@
       flex-direction: column;
     }
     .service-card-hero {
-      height: clamp(120px,14vw,200px);
+      height: clamp(120px,14cqw,200px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1455,12 +1456,12 @@
       flex-direction: column;
       gap: var(--spacing-2);
     }
-    .service-card-desc { font-size: clamp(11px,0.8vw,13px); color: var(--gray-fg-mid-on-white); }
-    .service-card-owner { font-size: clamp(9px,0.65vw,11px); color: var(--gray-fg-low-on-white); font-weight: 600; margin-top: var(--spacing-1); }
+    .service-card-desc { font-size: clamp(11px,0.8cqw,13px); color: var(--gray-fg-mid-on-white); }
+    .service-card-owner { font-size: clamp(9px,0.65cqw,11px); color: var(--gray-fg-low-on-white); font-weight: 600; margin-top: var(--spacing-1); }
 
     /* Micro tags in service cards */
     .micro-tag {
-      font-size: clamp(9px,0.65vw,11px);
+      font-size: clamp(9px,0.65cqw,11px);
       padding: 2px 8px;
       border-radius: var(--radius-full);
       font-weight: 600;
@@ -1482,24 +1483,24 @@
     }
     .progress-card-header { display: flex; align-items: center; gap: var(--spacing-3); }
     .progress-card-icon {
-      width: clamp(36px,3vw,48px);
-      height: clamp(36px,3vw,48px);
+      width: clamp(36px,3cqw,48px);
+      height: clamp(36px,3cqw,48px);
       border-radius: var(--radius-lg);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(16px,1.6vw,24px);
+      font-size: clamp(16px,1.6cqw,24px);
     }
     .progress-card-donut { display: flex; align-items: center; justify-content: center; }
-    .progress-card-donut svg { width: clamp(90px,8vw,120px); height: clamp(90px,8vw,120px); }
-    .progress-card-desc { font-size: clamp(11px,0.8vw,13px); color: var(--gray-fg-mid-on-white); text-align: center; line-height: 1.5; }
-    .progress-card-owner { font-size: clamp(10px,0.7vw,12px); color: var(--gray-fg-low-on-white); font-weight: 600; }
+    .progress-card-donut svg { width: clamp(90px,8cqw,120px); height: clamp(90px,8cqw,120px); }
+    .progress-card-desc { font-size: clamp(11px,0.8cqw,13px); color: var(--gray-fg-mid-on-white); text-align: center; line-height: 1.5; }
+    .progress-card-owner { font-size: clamp(10px,0.7cqw,12px); color: var(--gray-fg-low-on-white); font-weight: 600; }
 
     /* Stat counters */
     .stat-group { display: flex; align-items: center; gap: var(--spacing-5); }
     .stat-item { text-align: center; }
-    .stat-label { font-size: clamp(10px,0.8vw,12px); color: var(--gray-fg-mid-on-white); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-    .stat-value { font-size: clamp(24px,2.5vw,36px); font-weight: 800; line-height: 1.1; }
+    .stat-label { font-size: clamp(10px,0.8cqw,12px); color: var(--gray-fg-mid-on-white); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .stat-value { font-size: clamp(24px,2.5cqw,36px); font-weight: 800; line-height: 1.1; }
     .stat-divider { width: 1px; height: 32px; background: var(--gray-bg-midgray); }
 
     /* 3-col grid */
@@ -1513,7 +1514,7 @@
     .icon-external { width: 16px; height: 16px; flex-shrink: 0; }
 
     /* Screenshot placeholder icon */
-    .icon-screenshot-placeholder { width: clamp(28px,3vw,48px); height: clamp(28px,3vw,48px); color: var(--gray-fg-low-on-white); opacity: 0.5; }
+    .icon-screenshot-placeholder { width: clamp(28px,3cqw,48px); height: clamp(28px,3cqw,48px); color: var(--gray-fg-low-on-white); opacity: 0.5; }
 
     /* ===== Live Demo Phone (iframe) ===== */
     .live-demo-wrap {
@@ -1551,8 +1552,8 @@
       z-index: 2;
     }
     .live-demo-phone iframe {
-      width: 36vh;
-      height: 78vh;
+      width: 36cqh;
+      height: 78cqh;
       border: none;
       border-radius: 38px;
       background: #fff;
@@ -1565,7 +1566,7 @@
       border-radius: var(--radius-full);
       background: rgba(114,121,251,0.08);
       color: var(--secondary-fg-high);
-      font-size: clamp(10px, 0.85vw, 13px);
+      font-size: clamp(10px, 0.85cqw, 13px);
       font-weight: 600;
     }
     .live-demo-hint::before { content: '✦'; }
@@ -1720,7 +1721,7 @@
       </div>
 
       <div class="col-visual">
-        <img src="Images/DailyMu_Character_Search.png" alt="Search Character" style="max-height:50vh;">
+        <img src="Images/DailyMu_Character_Search.png" alt="Search Character" style="max-height:50cqh;">
       </div>
     </div>
   </div>
@@ -1758,7 +1759,7 @@
       </div>
 
       <div class="col-visual">
-        <img src="Images/DailyMu_Character_One-Time.png" alt="Planning" style="max-height:45vh;">
+        <img src="Images/DailyMu_Character_One-Time.png" alt="Planning" style="max-height:45cqh;">
       </div>
     </div>
   </div>
@@ -1852,7 +1853,7 @@
         <!-- Week 3: Feb 23–Mar 1 -->
         <div class="cal-week">
           <div class="cal-dates">
-            <span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span style="font-size:clamp(7px,0.65vw,10px);">Mar 1</span>
+            <span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span style="font-size:clamp(7px,0.65cqw,10px);">Mar 1</span>
           </div>
           <div class="cal-tasks">
             <div class="cal-bar bar-tan" style="grid-column:1/5;grid-row:1;">เซียมซี</div>
@@ -1965,7 +1966,7 @@
       </div>
 
       <div class="col-visual">
-        <img src="Images/UX Moodboard.png" alt="UX Moodboard" style="max-height:90vh;max-width:140%;">
+        <img src="Images/UX Moodboard.png" alt="UX Moodboard" style="max-height:90cqh;max-width:140%;">
       </div>
     </div>
   </div>
@@ -1994,36 +1995,36 @@
 
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--spacing-4);width:100%;max-width:800px;">
         <div style="background:rgba(255,255,255,0.08);border-radius:var(--radius-lg);padding:var(--spacing-5) var(--spacing-4);display:flex;flex-direction:column;gap:var(--spacing-3);align-items:center;">
-          <div style="display:flex;gap:5px;height:clamp(28px,2.5vw,40px);align-items:center;">
-            <div style="width:clamp(18px,1.8vw,28px);height:clamp(18px,1.8vw,28px);border-radius:var(--radius-sm);background:var(--primary-fg-high);"></div>
-            <div style="width:clamp(18px,1.8vw,28px);height:clamp(18px,1.8vw,28px);border-radius:var(--radius-sm);background:var(--secondary-fg-high);"></div>
-            <div style="width:clamp(18px,1.8vw,28px);height:clamp(18px,1.8vw,28px);border-radius:var(--radius-sm);background:var(--support-sky-fg-low);"></div>
+          <div style="display:flex;gap:5px;height:clamp(28px,2.5cqw,40px);align-items:center;">
+            <div style="width:clamp(18px,1.8cqw,28px);height:clamp(18px,1.8cqw,28px);border-radius:var(--radius-sm);background:var(--primary-fg-high);"></div>
+            <div style="width:clamp(18px,1.8cqw,28px);height:clamp(18px,1.8cqw,28px);border-radius:var(--radius-sm);background:var(--secondary-fg-high);"></div>
+            <div style="width:clamp(18px,1.8cqw,28px);height:clamp(18px,1.8cqw,28px);border-radius:var(--radius-sm);background:var(--support-sky-fg-low);"></div>
           </div>
-          <span style="color:rgba(255,255,255,0.7);font-size:clamp(9px,0.85vw,13px);font-weight:600;">Color Tokens</span>
-          <span style="color:rgba(255,255,255,0.65);font-size:clamp(8px,0.7vw,11px);">Primary, Secondary, Neutral</span>
+          <span style="color:rgba(255,255,255,0.7);font-size:clamp(9px,0.85cqw,13px);font-weight:600;">Color Tokens</span>
+          <span style="color:rgba(255,255,255,0.65);font-size:clamp(8px,0.7cqw,11px);">Primary, Secondary, Neutral</span>
         </div>
         <div style="background:rgba(255,255,255,0.08);border-radius:var(--radius-lg);padding:var(--spacing-5) var(--spacing-4);display:flex;flex-direction:column;gap:var(--spacing-3);align-items:center;">
-          <div style="height:clamp(28px,2.5vw,40px);display:flex;align-items:center;font-size:clamp(18px,2vw,28px);font-weight:800;color:rgba(255,255,255,0.9);">Aa</div>
-          <span style="color:rgba(255,255,255,0.7);font-size:clamp(9px,0.85vw,13px);font-weight:600;">Typography</span>
-          <span style="color:rgba(255,255,255,0.65);font-size:clamp(8px,0.7vw,11px);">LINE Seed Sans TH</span>
+          <div style="height:clamp(28px,2.5cqw,40px);display:flex;align-items:center;font-size:clamp(18px,2cqw,28px);font-weight:800;color:rgba(255,255,255,0.9);">Aa</div>
+          <span style="color:rgba(255,255,255,0.7);font-size:clamp(9px,0.85cqw,13px);font-weight:600;">Typography</span>
+          <span style="color:rgba(255,255,255,0.65);font-size:clamp(8px,0.7cqw,11px);">LINE Seed Sans TH</span>
         </div>
         <div style="background:rgba(255,255,255,0.08);border-radius:var(--radius-lg);padding:var(--spacing-5) var(--spacing-4);display:flex;flex-direction:column;gap:var(--spacing-3);align-items:center;">
-          <div style="display:flex;gap:4px;height:clamp(28px,2.5vw,40px);align-items:center;">
+          <div style="display:flex;gap:4px;height:clamp(28px,2.5cqw,40px);align-items:center;">
             <div style="width:14px;height:14px;border-radius:2px;background:rgba(255,255,255,0.3);"></div>
             <div style="width:14px;height:14px;border-radius:4px;background:rgba(255,255,255,0.3);"></div>
             <div style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.3);"></div>
           </div>
-          <span style="color:rgba(255,255,255,0.7);font-size:clamp(9px,0.85vw,13px);font-weight:600;">Radius</span>
-          <span style="color:rgba(255,255,255,0.65);font-size:clamp(8px,0.7vw,11px);">4px &ndash; 9999px</span>
+          <span style="color:rgba(255,255,255,0.7);font-size:clamp(9px,0.85cqw,13px);font-weight:600;">Radius</span>
+          <span style="color:rgba(255,255,255,0.65);font-size:clamp(8px,0.7cqw,11px);">4px &ndash; 9999px</span>
         </div>
         <div style="background:rgba(255,255,255,0.08);border-radius:var(--radius-lg);padding:var(--spacing-5) var(--spacing-4);display:flex;flex-direction:column;gap:var(--spacing-3);align-items:center;">
-          <div style="display:flex;gap:3px;align-items:flex-end;height:clamp(28px,2.5vw,40px);">
+          <div style="display:flex;gap:3px;align-items:flex-end;height:clamp(28px,2.5cqw,40px);">
             <div style="width:7px;height:12px;background:rgba(255,255,255,0.3);border-radius:1px;"></div>
             <div style="width:7px;height:20px;background:rgba(255,255,255,0.3);border-radius:1px;"></div>
             <div style="width:7px;height:28px;background:rgba(255,255,255,0.3);border-radius:1px;"></div>
           </div>
-          <span style="color:rgba(255,255,255,0.7);font-size:clamp(9px,0.85vw,13px);font-weight:600;">Spacing</span>
-          <span style="color:rgba(255,255,255,0.65);font-size:clamp(8px,0.7vw,11px);">4px base unit</span>
+          <span style="color:rgba(255,255,255,0.7);font-size:clamp(9px,0.85cqw,13px);font-weight:600;">Spacing</span>
+          <span style="color:rgba(255,255,255,0.65);font-size:clamp(8px,0.7cqw,11px);">4px base unit</span>
         </div>
       </div>
 
@@ -2053,26 +2054,26 @@
         <h2 class="title-lg">ทำไมต้องทำ<br>Design System?</h2>
 
         <div style="display:flex;flex-direction:column;gap:var(--spacing-4);">
-          <div style="display:flex;gap:var(--spacing-5);align-items:center;background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2vw,20px);">
-            <div style="width:clamp(40px,3.5vw,56px);height:clamp(40px,3.5vw,56px);border-radius:var(--radius-lg);background:var(--primary-bg-lowest);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:clamp(18px,1.8vw,28px);font-weight:800;color:var(--primary-fg-high);">1</div>
+          <div style="display:flex;gap:var(--spacing-5);align-items:center;background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2cqw,20px);">
+            <div style="width:clamp(40px,3.5cqw,56px);height:clamp(40px,3.5cqw,56px);border-radius:var(--radius-lg);background:var(--primary-bg-lowest);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:clamp(18px,1.8cqw,28px);font-weight:800;color:var(--primary-fg-high);">1</div>
             <div>
-              <div style="font-size:clamp(14px,1.4vw,22px);font-weight:700;margin-bottom:2px;">โปรเจกต์ใหม่ &mdash; เริ่มต้นให้ถูก</div>
+              <div style="font-size:clamp(14px,1.4cqw,22px);font-weight:700;margin-bottom:2px;">โปรเจกต์ใหม่ &mdash; เริ่มต้นให้ถูก</div>
               <div class="body-sm" style="color:var(--gray-fg-mid-on-white);">ภาพลักษณ์ใหม่ทั้งหมด ต้องวาง Foundation ให้แข็งแรงตั้งแต่ต้น</div>
             </div>
           </div>
 
-          <div style="display:flex;gap:var(--spacing-5);align-items:center;background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2vw,20px);">
-            <div style="width:clamp(40px,3.5vw,56px);height:clamp(40px,3.5vw,56px);border-radius:var(--radius-lg);background:var(--secondary-bg-lowest);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:clamp(18px,1.8vw,28px);font-weight:800;color:var(--secondary-fg-high);">2</div>
+          <div style="display:flex;gap:var(--spacing-5);align-items:center;background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2cqw,20px);">
+            <div style="width:clamp(40px,3.5cqw,56px);height:clamp(40px,3.5cqw,56px);border-radius:var(--radius-lg);background:var(--secondary-bg-lowest);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:clamp(18px,1.8cqw,28px);font-weight:800;color:var(--secondary-fg-high);">2</div>
             <div>
-              <div style="font-size:clamp(14px,1.4vw,22px);font-weight:700;margin-bottom:2px;">Designer หลายคน &mdash; ต้อง Align</div>
+              <div style="font-size:clamp(14px,1.4cqw,22px);font-weight:700;margin-bottom:2px;">Designer หลายคน &mdash; ต้อง Align</div>
               <div class="body-sm" style="color:var(--gray-fg-mid-on-white);">Set มาตรฐานให้ไม่ว่าจะเป็นใคร ทำงานออกมาได้เหมือนกัน</div>
             </div>
           </div>
 
-          <div style="display:flex;gap:var(--spacing-5);align-items:center;background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2vw,20px);">
-            <div style="width:clamp(40px,3.5vw,56px);height:clamp(40px,3.5vw,56px);border-radius:var(--radius-lg);background:var(--support-sky-bg-lowest);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:clamp(18px,1.8vw,28px);font-weight:800;color:var(--info-fg-high);">3</div>
+          <div style="display:flex;gap:var(--spacing-5);align-items:center;background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2cqw,20px);">
+            <div style="width:clamp(40px,3.5cqw,56px);height:clamp(40px,3.5cqw,56px);border-radius:var(--radius-lg);background:var(--support-sky-bg-lowest);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:clamp(18px,1.8cqw,28px);font-weight:800;color:var(--info-fg-high);">3</div>
             <div>
-              <div style="font-size:clamp(14px,1.4vw,22px);font-weight:700;margin-bottom:2px;">AI-Assisted Workflow &mdash; ต้องคุม AI</div>
+              <div style="font-size:clamp(14px,1.4cqw,22px);font-weight:700;margin-bottom:2px;">AI-Assisted Workflow &mdash; ต้องคุม AI</div>
               <div class="body-sm" style="color:var(--gray-fg-mid-on-white);">ใช้ AI ช่วย Draft งาน Design System จำเป็นต้องควบคุม AI ให้ตาม Standard</div>
             </div>
           </div>
@@ -2080,7 +2081,7 @@
       </div>
 
       <div class="col-visual" style="overflow:visible;">
-        <img src="Images/Semantic.png" alt="Semantic Colors" style="max-height:90vh;max-width:140%;object-fit:contain;">
+        <img src="Images/Semantic.png" alt="Semantic Colors" style="max-height:90cqh;max-width:140%;object-fit:contain;">
       </div>
     </div>
   </div>
@@ -2153,7 +2154,7 @@
     </div>
 
     <div class="slide-content" style="flex:1;display:flex;align-items:flex-start;justify-content:center;min-height:0;padding-top:1%;">
-      <img src="Images/image-mucard.png" alt="MuCard Visual Design" style="max-height:60vh;max-width:95%;object-fit:contain;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);">
+      <img src="Images/image-mucard.png" alt="MuCard Visual Design" style="max-height:60cqh;max-width:95%;object-fit:contain;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);">
     </div>
   </div>
 
@@ -2186,7 +2187,7 @@
       </div>
 
       <div class="col-visual">
-        <img src="Images/DailyMu_Character_Update.png" alt="AI Flow" style="max-height:50vh;">
+        <img src="Images/DailyMu_Character_Update.png" alt="AI Flow" style="max-height:50cqh;">
       </div>
     </div>
   </div>
@@ -2213,15 +2214,15 @@
         <div style="display:flex;gap:var(--spacing-4);">
           <div style="display:flex;align-items:center;gap:var(--spacing-2);background:var(--gray-bg-white);border-radius:var(--radius-full);padding:6px 14px;">
             <div style="width:10px;height:10px;border-radius:50%;background:var(--primary-fg-high);"></div>
-            <span style="font-size:clamp(10px,0.9vw,14px);font-weight:600;">ฟ้อนต์เป๊ะ</span>
+            <span style="font-size:clamp(10px,0.9cqw,14px);font-weight:600;">ฟ้อนต์เป๊ะ</span>
           </div>
           <div style="display:flex;align-items:center;gap:var(--spacing-2);background:var(--gray-bg-white);border-radius:var(--radius-full);padding:6px 14px;">
             <div style="width:10px;height:10px;border-radius:50%;background:var(--secondary-fg-high);"></div>
-            <span style="font-size:clamp(10px,0.9vw,14px);font-weight:600;">สีเป๊ะ</span>
+            <span style="font-size:clamp(10px,0.9cqw,14px);font-weight:600;">สีเป๊ะ</span>
           </div>
           <div style="display:flex;align-items:center;gap:var(--spacing-2);background:var(--gray-bg-white);border-radius:var(--radius-full);padding:6px 14px;">
             <div style="width:10px;height:10px;border-radius:50%;background:var(--support-green-fg-low);"></div>
-            <span style="font-size:clamp(10px,0.9vw,14px);font-weight:600;">State ครบ</span>
+            <span style="font-size:clamp(10px,0.9cqw,14px);font-weight:600;">State ครบ</span>
           </div>
         </div>
       </div>
@@ -2231,7 +2232,7 @@
           <svg id="fsIconExpand" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f414e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
           <svg id="fsIconShrink" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f414e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
         </button>
-        <iframe id="previewIframe" src="daily-mu-birth-profile-preview.html" style="width:100%;height:70vh;border:none;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);pointer-events:auto;"></iframe>
+        <iframe id="previewIframe" src="daily-mu-birth-profile-preview.html" style="width:100%;height:70cqh;border:none;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);pointer-events:auto;"></iframe>
       </div>
     </div>
   </div>
@@ -2326,41 +2327,41 @@
 
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:var(--spacing-4);flex:1;align-content:center;">
         <!-- Home -->
-        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.6vw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-left:4px solid var(--secondary-fg-high);">
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.6cqw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-left:4px solid var(--secondary-fg-high);">
           <div class="flex-between">
-            <span style="font-size:clamp(16px,1.6vw,26px);font-weight:700;">Home</span>
-            <span style="background:var(--secondary-bg-lowest);color:var(--secondary-fg-high);padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">TAN</span>
+            <span style="font-size:clamp(16px,1.6cqw,26px);font-weight:700;">Home</span>
+            <span style="background:var(--secondary-bg-lowest);color:var(--secondary-fg-high);padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(11px,1cqw,15px);font-weight:700;">TAN</span>
           </div>
           <span class="body-sm" style="color:var(--gray-fg-mid-on-white);">ออกแบบ Flow &amp; UI หน้าแรกของแอป</span>
         </div>
 
         <!-- Calendar -->
-        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.6vw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-left:4px solid var(--support-sky-fg-low);">
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.6cqw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-left:4px solid var(--support-sky-fg-low);">
           <div class="flex-between">
-            <span style="font-size:clamp(16px,1.6vw,26px);font-weight:700;">Calendar</span>
+            <span style="font-size:clamp(16px,1.6cqw,26px);font-weight:700;">Calendar</span>
             <div style="display:flex;gap:6px;">
-              <span style="background:var(--secondary-bg-lowest);color:var(--secondary-fg-high);padding:4px 10px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">TAN</span>
-              <span style="background:var(--support-orange-bg-lowest);color:var(--support-orange-fg-low);padding:4px 10px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">PIM</span>
-              <span style="background:var(--support-green-bg-lowest);color:var(--support-green-fg-low);padding:4px 10px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">JED</span>
+              <span style="background:var(--secondary-bg-lowest);color:var(--secondary-fg-high);padding:4px 10px;border-radius:var(--radius-full);font-size:clamp(11px,1cqw,15px);font-weight:700;">TAN</span>
+              <span style="background:var(--support-orange-bg-lowest);color:var(--support-orange-fg-low);padding:4px 10px;border-radius:var(--radius-full);font-size:clamp(11px,1cqw,15px);font-weight:700;">PIM</span>
+              <span style="background:var(--support-green-bg-lowest);color:var(--support-green-fg-low);padding:4px 10px;border-radius:var(--radius-full);font-size:clamp(11px,1cqw,15px);font-weight:700;">JED</span>
             </div>
           </div>
           <span class="body-sm" style="color:var(--gray-fg-mid-on-white);">ออกแบบ Calendar View &amp; Event Management</span>
         </div>
 
         <!-- Notification -->
-        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.6vw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-left:4px solid var(--support-green-fg-low);">
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.6cqw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-left:4px solid var(--support-green-fg-low);">
           <div class="flex-between">
-            <span style="font-size:clamp(16px,1.6vw,26px);font-weight:700;">Notification</span>
-            <span style="background:var(--support-green-bg-lowest);color:var(--support-green-fg-low);padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">JED</span>
+            <span style="font-size:clamp(16px,1.6cqw,26px);font-weight:700;">Notification</span>
+            <span style="background:var(--support-green-bg-lowest);color:var(--support-green-fg-low);padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(11px,1cqw,15px);font-weight:700;">JED</span>
           </div>
           <span class="body-sm" style="color:var(--gray-fg-mid-on-white);">ระบบแจ้งเตือน &amp; Notification Center</span>
         </div>
 
         <!-- Select Profile + Add Profile -->
-        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.6vw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-left:4px solid var(--secondary-fg-high);">
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(16px,1.6cqw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-left:4px solid var(--secondary-fg-high);">
           <div class="flex-between">
-            <span style="font-size:clamp(16px,1.6vw,26px);font-weight:700;">Select &amp; Add Profile</span>
-            <span style="background:var(--secondary-bg-lowest);color:var(--secondary-fg-high);padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">TAN</span>
+            <span style="font-size:clamp(16px,1.6cqw,26px);font-weight:700;">Select &amp; Add Profile</span>
+            <span style="background:var(--secondary-bg-lowest);color:var(--secondary-fg-high);padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(11px,1cqw,15px);font-weight:700;">TAN</span>
           </div>
           <span class="body-sm" style="color:var(--gray-fg-mid-on-white);">จัดการโปรไฟล์ &amp; เพิ่มโปรไฟล์ใหม่</span>
         </div>
@@ -2380,8 +2381,8 @@
     </div>
 
     <div class="slide-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:var(--spacing-6);position:relative;z-index:2;">
-      <h2 class="title-lg gradient-text" style="font-size:clamp(36px,4vw,64px);">Thank you!</h2>
-      <p class="body-md" style="color:var(--gray-fg-mid-on-white);font-size:clamp(16px,1.8vw,28px);">Questions &amp; Discussion</p>
+      <h2 class="title-lg gradient-text" style="font-size:clamp(36px,4cqw,64px);">Thank you!</h2>
+      <p class="body-md" style="color:var(--gray-fg-mid-on-white);font-size:clamp(16px,1.8cqw,28px);">Questions &amp; Discussion</p>
     </div>
   </div>
   <!-- ============================== -->
@@ -2393,7 +2394,7 @@
       <div style="width:50%;overflow:hidden;border-radius:var(--radius-xl);clip-path:inset(5px 0);">
         <video id="w2IntroVideo" src="Images/Week02/Asset/Logo_Mock.mp4" playsinline muted style="width:100%;height:auto;display:block;"></video>
       </div>
-      <button id="w2VideoSkip" onclick="skipW2IntroVideo()" aria-label="Skip video" style="padding:10px 28px;border-radius:var(--radius-full);background:rgba(27,29,34,0.08);border:1px solid var(--gray-border-midgray);color:var(--gray-fg-mid-on-white);font-size:clamp(12px,1vw,15px);font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s ease;letter-spacing:0.03em;" onmouseover="this.style.background='rgba(27,29,34,0.15)'" onmouseout="this.style.background='rgba(27,29,34,0.08)'">
+      <button id="w2VideoSkip" onclick="skipW2IntroVideo()" aria-label="Skip video" style="padding:10px 28px;border-radius:var(--radius-full);background:rgba(27,29,34,0.08);border:1px solid var(--gray-border-midgray);color:var(--gray-fg-mid-on-white);font-size:clamp(12px,1cqw,15px);font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s ease;letter-spacing:0.03em;" onmouseover="this.style.background='rgba(27,29,34,0.15)'" onmouseout="this.style.background='rgba(27,29,34,0.08)'">
         Skip &rarr;
       </button>
     </div>
@@ -2472,7 +2473,7 @@
       </div>
 
       <div class="col-visual">
-        <img src="Images/Week02/Asset/DailyMu_Character_01.png" alt="Thinking Character" style="max-height:50vh;">
+        <img src="Images/Week02/Asset/DailyMu_Character_01.png" alt="Thinking Character" style="max-height:50cqh;">
       </div>
     </div>
   </div>
@@ -2507,7 +2508,7 @@
       </div>
 
       <div class="col-visual">
-        <img src="Images/DailyMu_Character_One-Time.png" alt="Recap" style="max-height:45vh;">
+        <img src="Images/DailyMu_Character_One-Time.png" alt="Recap" style="max-height:45cqh;">
       </div>
     </div>
   </div>
@@ -2601,7 +2602,7 @@
         <!-- Week 3: Feb 23-Mar 1 -->
         <div class="cal-week">
           <div class="cal-dates">
-            <span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span style="font-size:clamp(7px,0.65vw,10px);">Mar 1</span>
+            <span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span style="font-size:clamp(7px,0.65cqw,10px);">Mar 1</span>
           </div>
           <div class="cal-tasks">
             <div class="cal-bar bar-tan" style="grid-column:1/5;grid-row:1;">เซียมซี</div>
@@ -2740,13 +2741,13 @@
         </ul>
 
         <div style="display:flex;gap:var(--spacing-2);margin-top:var(--spacing-3);">
-          <span style="background:var(--success-bg-lowest);color:var(--success-fg-high);padding:6px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">Complete</span>
-          <span style="background:var(--info-bg-lowest);color:var(--info-fg-high);padding:6px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">Hand-off Ready</span>
+          <span style="background:var(--success-bg-lowest);color:var(--success-fg-high);padding:6px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1cqw,15px);font-weight:700;">Complete</span>
+          <span style="background:var(--info-bg-lowest);color:var(--info-fg-high);padding:6px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1cqw,15px);font-weight:700;">Hand-off Ready</span>
         </div>
       </div>
 
       <div class="col-visual">
-        <img src="Images/Week02/Asset/DailyMu_Login_Character.png" alt="Auth Flow" style="max-height:50vh;">
+        <img src="Images/Week02/Asset/DailyMu_Login_Character.png" alt="Auth Flow" style="max-height:50cqh;">
       </div>
     </div>
   </div>
@@ -2766,7 +2767,7 @@
           <div class="dot" style="background:var(--success-fg-high);"></div>
           <span style="color:var(--success-fg-high);">Outcome A</span>
         </div>
-        <h2 class="title-lg" style="font-size:clamp(20px,2.5vw,36px);">Auth Flow — UI Screenshots</h2>
+        <h2 class="title-lg" style="font-size:clamp(20px,2.5cqw,36px);">Auth Flow — UI Screenshots</h2>
       </div>
       <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:100%;padding:0 var(--spacing-6);">
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--spacing-6);width:100%;max-width:92%;height:100%;">
@@ -2774,25 +2775,25 @@
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Auth Flow — UI Screenshots3.png" alt="Onboarding" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Onboarding</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">Onboarding</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Auth Flow — UI Screenshots4.png" alt="Register" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Register</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">Register</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Auth Flow — UI Screenshots1.png" alt="Profile Setup" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Profile Setup</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">Profile Setup</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Auth Flow — UI Screenshots2.png" alt="Email Reset Password" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Email Reset Password</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">Email Reset Password</span>
           </div>
         </div>
       </div>
@@ -2826,13 +2827,13 @@
         </ul>
 
         <div style="display:flex;gap:var(--spacing-2);margin-top:var(--spacing-3);">
-          <span style="background:var(--success-bg-lowest);color:var(--success-fg-high);padding:6px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">Design Done</span>
-          <span style="background:var(--warning-bg-lowest);color:var(--warning-fg-high);padding:6px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1vw,15px);font-weight:700;">Hand-off WIP</span>
+          <span style="background:var(--success-bg-lowest);color:var(--success-fg-high);padding:6px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1cqw,15px);font-weight:700;">Design Done</span>
+          <span style="background:var(--warning-bg-lowest);color:var(--warning-fg-high);padding:6px 14px;border-radius:var(--radius-full);font-size:clamp(11px,1cqw,15px);font-weight:700;">Hand-off WIP</span>
         </div>
       </div>
 
       <div class="col-visual">
-        <img src="Images/DailyMu_Character_Update.png" alt="Calendar" style="max-height:50vh;">
+        <img src="Images/DailyMu_Character_Update.png" alt="Calendar" style="max-height:50cqh;">
       </div>
     </div>
   </div>
@@ -2852,41 +2853,41 @@
           <div class="dot" style="background:var(--secondary-fg-high);"></div>
           <span class="text-secondary">Outcome B</span>
         </div>
-        <h2 class="title-lg" style="font-size:clamp(20px,2.5vw,36px);">Calendar — UI Screenshots</h2>
+        <h2 class="title-lg" style="font-size:clamp(20px,2.5cqw,36px);">Calendar — UI Screenshots</h2>
       </div>
       <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:100%;padding:0 var(--spacing-8);">
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--spacing-4);width:100%;max-width:92%;height:100%;">
           <!-- 1: สีเขียว — วันพลังงานเปล่งประกาย -->
           <div style="display:flex;flex-direction:column;gap:var(--spacing-2);align-items:center;min-height:0;">
-            <span style="background:rgba(85,150,82,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.15);flex-shrink:0;">วันพลังงานเปล่งประกาย</span>
+            <span style="background:rgba(85,150,82,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85cqw,13px);font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.15);flex-shrink:0;">วันพลังงานเปล่งประกาย</span>
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Calendar — UI Screenshots4.png" alt="Daily View Green" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--success-fg-high);flex-shrink:0;">Daily View</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--success-fg-high);flex-shrink:0;">Daily View</span>
           </div>
           <!-- 2: สีเหลือง — วันพลังงานอยู่ในจุดสมดุล -->
           <div style="display:flex;flex-direction:column;gap:var(--spacing-2);align-items:center;min-height:0;">
-            <span style="background:rgba(198,154,42,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.15);flex-shrink:0;">วันพลังงานอยู่ในจุดสมดุล</span>
+            <span style="background:rgba(198,154,42,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85cqw,13px);font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.15);flex-shrink:0;">วันพลังงานอยู่ในจุดสมดุล</span>
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Calendar — UI Screenshots1.png" alt="Daily View Yellow" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--warning-fg-high);flex-shrink:0;">Daily View</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--warning-fg-high);flex-shrink:0;">Daily View</span>
           </div>
           <!-- 3: สีแดง — วันพลังงานชวนคุณดูแลตัวเอง -->
           <div style="display:flex;flex-direction:column;gap:var(--spacing-2);align-items:center;min-height:0;">
-            <span style="background:rgba(234,36,79,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.15);flex-shrink:0;">วันพลังงานชวนคุณดูแลตัวเอง</span>
+            <span style="background:rgba(234,36,79,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85cqw,13px);font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.15);flex-shrink:0;">วันพลังงานชวนคุณดูแลตัวเอง</span>
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Calendar — UI Screenshots2.png" alt="Daily View Red" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--error-fg-high);flex-shrink:0;">Daily View</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--error-fg-high);flex-shrink:0;">Daily View</span>
           </div>
           <!-- 4: Monthly View -->
           <div style="display:flex;flex-direction:column;gap:var(--spacing-2);align-items:center;min-height:0;">
-            <span style="background:rgba(114,121,251,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.15);flex-shrink:0;">Monthly View</span>
+            <span style="background:rgba(114,121,251,0.9);color:#fff;padding:4px 14px;border-radius:var(--radius-full);font-size:clamp(9px,0.85cqw,13px);font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.15);flex-shrink:0;">Monthly View</span>
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Calendar — UI Screenshots3.png" alt="Monthly View" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--secondary-fg-high);flex-shrink:0;">Monthly View</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--secondary-fg-high);flex-shrink:0;">Monthly View</span>
           </div>
         </div>
       </div>
@@ -2915,10 +2916,10 @@
 
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:var(--spacing-6);">
         <!-- Profile Card -->
-        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(20px,2vw,32px);display:flex;flex-direction:column;gap:var(--spacing-4);border-left:4px solid var(--secondary-fg-high);">
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(20px,2cqw,32px);display:flex;flex-direction:column;gap:var(--spacing-4);border-left:4px solid var(--secondary-fg-high);">
           <div class="flex-between">
-            <span style="font-size:clamp(18px,1.8vw,28px);font-weight:700;">Profile</span>
-            <span style="background:var(--success-bg-lowest);color:var(--success-fg-high);padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(10px,0.9vw,14px);font-weight:700;">Done</span>
+            <span style="font-size:clamp(18px,1.8cqw,28px);font-weight:700;">Profile</span>
+            <span style="background:var(--success-bg-lowest);color:var(--success-fg-high);padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(10px,0.9cqw,14px);font-weight:700;">Done</span>
           </div>
           <ul class="bullet-list" style="margin:0;">
             <li>หน้าโปรไฟล์ผู้ใช้</li>
@@ -2928,10 +2929,10 @@
         </div>
 
         <!-- Notification Card -->
-        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(20px,2vw,32px);display:flex;flex-direction:column;gap:var(--spacing-4);border-left:4px solid var(--support-green-fg-low);">
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(20px,2cqw,32px);display:flex;flex-direction:column;gap:var(--spacing-4);border-left:4px solid var(--support-green-fg-low);">
           <div class="flex-between">
-            <span style="font-size:clamp(18px,1.8vw,28px);font-weight:700;">Notification</span>
-            <span style="background:var(--success-bg-lowest);color:var(--success-fg-high);padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(10px,0.9vw,14px);font-weight:700;">Done</span>
+            <span style="font-size:clamp(18px,1.8cqw,28px);font-weight:700;">Notification</span>
+            <span style="background:var(--success-bg-lowest);color:var(--success-fg-high);padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(10px,0.9cqw,14px);font-weight:700;">Done</span>
           </div>
           <ul class="bullet-list" style="margin:0;">
             <li>Notification Center</li>
@@ -2958,7 +2959,7 @@
           <div class="dot" style="background:var(--support-sky-fg-low);"></div>
           <span style="color:var(--info-fg-high);">Outcome C</span>
         </div>
-        <h2 class="title-lg" style="font-size:clamp(20px,2.5vw,36px);">Profile &amp; Notification — UI Screenshots</h2>
+        <h2 class="title-lg" style="font-size:clamp(20px,2.5cqw,36px);">Profile &amp; Notification — UI Screenshots</h2>
       </div>
       <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:100%;padding:0 var(--spacing-8);">
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-8);width:100%;max-width:72%;height:100%;">
@@ -2966,19 +2967,19 @@
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Profile & Notification — UI Screenshots1.png" alt="Profile Screenshot 1" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">My Profile</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">My Profile</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Profile & Notification — UI Screenshots2.png" alt="Profile Screenshot 2" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">เลือก Avatar (Default ระบบ)</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">เลือก Avatar (Default ระบบ)</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:28px;align-items:center;min-height:0;">
             <div style="width:100%;flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
               <img src="Images/Week02/Screenshots/Profile & Notification — UI Screenshots3.png" alt="Notification Screenshot" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Notification Center</span>
+            <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">Notification Center</span>
           </div>
         </div>
       </div>
@@ -3005,24 +3006,24 @@
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-6);width:100%;max-width:1100px;flex:1;align-content:center;">
-        <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius-xl);padding:clamp(20px,2.5vw,40px);display:flex;flex-direction:column;gap:var(--spacing-4);align-items:center;justify-content:center;">
-          <img src="Images/Week02/Asset/Card-Hand.png" alt="Tarot Cards Hand" style="width:clamp(160px,16vw,260px);height:clamp(200px,20vw,320px);object-fit:contain;">
-          <span style="color:rgba(255,255,255,0.95);font-size:clamp(20px,2.2vw,32px);font-weight:700;">ไพ่ทาโร่</span>
-          <span style="color:rgba(255,255,255,0.6);font-size:clamp(11px,1vw,15px);">ออกแบบ UI สำหรับฟีเจอร์ดูดวงไพ่ทาโร่ 22 ใบ</span>
+        <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius-xl);padding:clamp(20px,2.5cqw,40px);display:flex;flex-direction:column;gap:var(--spacing-4);align-items:center;justify-content:center;">
+          <img src="Images/Week02/Asset/Card-Hand.png" alt="Tarot Cards Hand" style="width:clamp(160px,16cqw,260px);height:clamp(200px,20cqw,320px);object-fit:contain;">
+          <span style="color:rgba(255,255,255,0.95);font-size:clamp(20px,2.2cqw,32px);font-weight:700;">ไพ่ทาโร่</span>
+          <span style="color:rgba(255,255,255,0.6);font-size:clamp(11px,1cqw,15px);">ออกแบบ UI สำหรับฟีเจอร์ดูดวงไพ่ทาโร่ 22 ใบ</span>
         </div>
-        <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius-xl);padding:clamp(20px,2.5vw,40px);display:flex;flex-direction:column;gap:var(--spacing-4);align-items:center;justify-content:center;">
-          <img src="Images/Week02/Asset/DailyMu_Character_FortuneSticks.png" alt="Fortune Character" style="width:clamp(160px,16vw,260px);height:clamp(200px,20vw,320px);object-fit:contain;">
-          <span style="color:rgba(255,255,255,0.95);font-size:clamp(20px,2.2vw,32px);font-weight:700;">เซียมซี</span>
-          <span style="color:rgba(255,255,255,0.6);font-size:clamp(11px,1vw,15px);">ออกแบบ UI + Mechanic สำหรับเขย่าเซียมซี</span>
+        <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius-xl);padding:clamp(20px,2.5cqw,40px);display:flex;flex-direction:column;gap:var(--spacing-4);align-items:center;justify-content:center;">
+          <img src="Images/Week02/Asset/DailyMu_Character_FortuneSticks.png" alt="Fortune Character" style="width:clamp(160px,16cqw,260px);height:clamp(200px,20cqw,320px);object-fit:contain;">
+          <span style="color:rgba(255,255,255,0.95);font-size:clamp(20px,2.2cqw,32px);font-weight:700;">เซียมซี</span>
+          <span style="color:rgba(255,255,255,0.6);font-size:clamp(11px,1cqw,15px);">ออกแบบ UI + Mechanic สำหรับเขย่าเซียมซี</span>
         </div>
-        <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius-xl);padding:clamp(20px,2.5vw,40px);display:flex;flex-direction:column;gap:var(--spacing-4);align-items:center;justify-content:center;">
-          <img src="Images/Week02/Asset/DailyMu_Character_Dream 2.png" alt="Dream Character" style="width:clamp(160px,16vw,260px);height:clamp(200px,20vw,320px);object-fit:contain;">
-          <span style="color:rgba(255,255,255,0.95);font-size:clamp(20px,2.2vw,32px);font-weight:700;">ทำนายฝัน</span>
-          <span style="color:rgba(255,255,255,0.6);font-size:clamp(11px,1vw,15px);">ออกแบบ UI สำหรับฟีเจอร์ทำนายฝัน + การ์ด</span>
+        <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius-xl);padding:clamp(20px,2.5cqw,40px);display:flex;flex-direction:column;gap:var(--spacing-4);align-items:center;justify-content:center;">
+          <img src="Images/Week02/Asset/DailyMu_Character_Dream 2.png" alt="Dream Character" style="width:clamp(160px,16cqw,260px);height:clamp(200px,20cqw,320px);object-fit:contain;">
+          <span style="color:rgba(255,255,255,0.95);font-size:clamp(20px,2.2cqw,32px);font-weight:700;">ทำนายฝัน</span>
+          <span style="color:rgba(255,255,255,0.6);font-size:clamp(11px,1cqw,15px);">ออกแบบ UI สำหรับฟีเจอร์ทำนายฝัน + การ์ด</span>
         </div>
       </div>
 
-      <span style="display:inline-block;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);padding:6px 16px;border-radius:var(--radius-full);font-size:clamp(10px,0.9vw,14px);font-weight:600;">พร้อมรับ Micro Service Development วีค 3</span>
+      <span style="display:inline-block;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);padding:6px 16px;border-radius:var(--radius-full);font-size:clamp(10px,0.9cqw,14px);font-weight:600;">พร้อมรับ Micro Service Development วีค 3</span>
     </div>
   </div>
 
@@ -3043,14 +3044,14 @@
           <div class="dot" style="background:var(--support-green-fg-low);"></div>
           <span style="color:var(--support-green-fg-low);">Outcome D</span>
         </div>
-        <h2 class="title-lg" style="font-size:clamp(20px,2.5vw,36px);margin-bottom:0;">Entry Points &rarr; Micro Service</h2>
+        <h2 class="title-lg" style="font-size:clamp(20px,2.5cqw,36px);margin-bottom:0;">Entry Points &rarr; Micro Service</h2>
       </div>
 
       <!-- Timeline badge row -->
       <div style="display:flex;align-items:center;justify-content:center;gap:var(--spacing-3);flex-shrink:0;">
-        <span style="background:var(--success-bg-lowest);color:var(--success-fg-high);padding:4px 16px;border-radius:var(--radius-full);font-size:clamp(10px,0.9vw,13px);font-weight:700;">Week 2 &mdash; Design Done</span>
+        <span style="background:var(--success-bg-lowest);color:var(--success-fg-high);padding:4px 16px;border-radius:var(--radius-full);font-size:clamp(10px,0.9cqw,13px);font-weight:700;">Week 2 &mdash; Design Done</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gray-fg-low-on-white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        <span style="background:linear-gradient(135deg,rgba(114,121,251,0.12),rgba(236,89,157,0.12));color:var(--gray-fg-high);padding:4px 16px;border-radius:var(--radius-full);font-size:clamp(10px,0.9vw,13px);font-weight:700;">Week 3 &mdash; Micro Service Dev</span>
+        <span style="background:linear-gradient(135deg,rgba(114,121,251,0.12),rgba(236,89,157,0.12));color:var(--gray-fg-high);padding:4px 16px;border-radius:var(--radius-full);font-size:clamp(10px,0.9cqw,13px);font-weight:700;">Week 3 &mdash; Micro Service Dev</span>
       </div>
 
       <!-- Main: 4-column grid (Entry Points + 3 Services) -->
@@ -3061,12 +3062,12 @@
           <div style="flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;background:var(--gray-bg-white);box-shadow:var(--shadow-sm);display:flex;">
             <img src="Images/Week02/Screenshots/Entry Points — UI Screenshots.png" alt="Entry Points UI" style="width:100%;height:100%;object-fit:contain;">
           </div>
-          <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Entry Points</span>
+          <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">Entry Points</span>
         </div>
 
         <!-- Arrow -->
-        <div style="display:flex;align-items:center;padding:0 clamp(8px,1vw,16px);">
-          <div style="width:clamp(24px,3vw,48px);height:3px;background:linear-gradient(90deg,var(--primary-fg-high),var(--secondary-fg-high));border-radius:2px;"></div>
+        <div style="display:flex;align-items:center;padding:0 clamp(8px,1cqw,16px);">
+          <div style="width:clamp(24px,3cqw,48px);height:3px;background:linear-gradient(90deg,var(--primary-fg-high),var(--secondary-fg-high));border-radius:2px;"></div>
           <div style="width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:8px solid var(--secondary-fg-high);"></div>
         </div>
 
@@ -3075,7 +3076,7 @@
           <div style="flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;">
             <img src="Images/Week02/Asset/Container.png" alt="เปิดไพ่ทาโร่" style="width:100%;height:100%;object-fit:contain;">
           </div>
-          <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Tarot API</span>
+          <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">Tarot API</span>
         </div>
 
         <!-- Col 3: เซียมซี -->
@@ -3083,7 +3084,7 @@
           <div style="flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;">
             <img src="Images/Week02/Asset/Container-1.png" alt="เซียมซี" style="width:100%;height:100%;object-fit:contain;">
           </div>
-          <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Siam Si API</span>
+          <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">Siam Si API</span>
         </div>
 
         <!-- Col 4: ทำนายฝัน -->
@@ -3091,7 +3092,7 @@
           <div style="flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;">
             <img src="Images/Week02/Asset/Container-2.png" alt="ทำนายฝัน" style="width:100%;height:100%;object-fit:contain;">
           </div>
-          <span style="font-weight:700;font-size:clamp(10px,1vw,14px);color:var(--gray-fg-high);flex-shrink:0;">Dream API</span>
+          <span style="font-weight:700;font-size:clamp(10px,1cqw,14px);color:var(--gray-fg-high);flex-shrink:0;">Dream API</span>
         </div>
 
       </div>
@@ -3099,7 +3100,7 @@
       <!-- Bottom status -->
       <div style="display:flex;align-items:center;gap:var(--spacing-2);justify-content:center;flex-shrink:0;">
         <div style="width:8px;height:8px;border-radius:50%;background:var(--success-fg-high);animation:pulseGlow 2s ease infinite;"></div>
-        <span style="font-size:clamp(10px,0.9vw,13px);color:var(--gray-fg-mid-on-white);">UI Design Done &mdash; พร้อม Handoff &amp; เริ่ม Dev อาทิตย์หน้า</span>
+        <span style="font-size:clamp(10px,0.9cqw,13px);color:var(--gray-fg-mid-on-white);">UI Design Done &mdash; พร้อม Handoff &amp; เริ่ม Dev อาทิตย์หน้า</span>
       </div>
     </div>
   </div>
@@ -3121,7 +3122,7 @@
           <div class="dot" style="background:var(--support-orange-fg-low);"></div>
           <span style="color:var(--support-orange-fg-low);">Outcome E</span>
         </div>
-        <h2 class="title-lg" style="font-size:clamp(28px,3.2vw,52px);margin-bottom:var(--spacing-3);">ประสาน<br>กราฟฟิก</h2>
+        <h2 class="title-lg" style="font-size:clamp(28px,3.2cqw,52px);margin-bottom:var(--spacing-3);">ประสาน<br>กราฟฟิก</h2>
         <p class="body-md" style="color:var(--gray-fg-mid-on-white);margin-bottom:var(--spacing-6);">ได้รูปไพ่ทั้งหมดใน Phase 1 (22 ใบ) มาครบแล้ว</p>
 
         <div style="display:flex;flex-direction:column;gap:var(--spacing-2);">
@@ -3130,44 +3131,44 @@
             <div style="width:24px;height:24px;border-radius:50%;background:var(--success-fg-high);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
-            <span style="font-size:clamp(11px,1vw,15px);color:var(--gray-fg-high);">ไพ่ทาโร่ 22 ใบ</span>
-            <span style="margin-left:auto;font-size:clamp(9px,0.8vw,12px);font-weight:700;color:var(--success-fg-high);background:rgba(85,150,82,0.12);padding:2px 8px;border-radius:var(--radius-full);">ครบแล้ว</span>
+            <span style="font-size:clamp(11px,1cqw,15px);color:var(--gray-fg-high);">ไพ่ทาโร่ 22 ใบ</span>
+            <span style="margin-left:auto;font-size:clamp(9px,0.8cqw,12px);font-weight:700;color:var(--success-fg-high);background:rgba(85,150,82,0.12);padding:2px 8px;border-radius:var(--radius-full);">ครบแล้ว</span>
           </div>
           <!-- Waiting items -->
           <div style="display:flex;align-items:center;gap:var(--spacing-3);padding:var(--spacing-2) var(--spacing-3);border-radius:var(--radius-md);background:var(--warning-bg-lowest);">
             <div style="width:24px;height:24px;border-radius:50%;background:var(--warning-fg-high);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
-            <span style="font-size:clamp(11px,1vw,15px);color:var(--gray-fg-high);">เซียมซี</span>
-            <span style="margin-left:auto;font-size:clamp(9px,0.8vw,12px);font-weight:700;color:var(--warning-fg-high);background:rgba(198,154,42,0.12);padding:2px 8px;border-radius:var(--radius-full);">รอกราฟฟิก</span>
+            <span style="font-size:clamp(11px,1cqw,15px);color:var(--gray-fg-high);">เซียมซี</span>
+            <span style="margin-left:auto;font-size:clamp(9px,0.8cqw,12px);font-weight:700;color:var(--warning-fg-high);background:rgba(198,154,42,0.12);padding:2px 8px;border-radius:var(--radius-full);">รอกราฟฟิก</span>
           </div>
           <div style="display:flex;align-items:center;gap:var(--spacing-3);padding:var(--spacing-2) var(--spacing-3);border-radius:var(--radius-md);background:var(--warning-bg-lowest);">
             <div style="width:24px;height:24px;border-radius:50%;background:var(--warning-fg-high);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
-            <span style="font-size:clamp(11px,1vw,15px);color:var(--gray-fg-high);">พระจันทร์ทำนายฝัน</span>
-            <span style="margin-left:auto;font-size:clamp(9px,0.8vw,12px);font-weight:700;color:var(--warning-fg-high);background:rgba(198,154,42,0.12);padding:2px 8px;border-radius:var(--radius-full);">รอกราฟฟิก</span>
+            <span style="font-size:clamp(11px,1cqw,15px);color:var(--gray-fg-high);">พระจันทร์ทำนายฝัน</span>
+            <span style="margin-left:auto;font-size:clamp(9px,0.8cqw,12px);font-weight:700;color:var(--warning-fg-high);background:rgba(198,154,42,0.12);padding:2px 8px;border-radius:var(--radius-full);">รอกราฟฟิก</span>
           </div>
           <div style="display:flex;align-items:center;gap:var(--spacing-3);padding:var(--spacing-2) var(--spacing-3);border-radius:var(--radius-md);background:var(--warning-bg-lowest);">
             <div style="width:24px;height:24px;border-radius:50%;background:var(--warning-fg-high);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
-            <span style="font-size:clamp(11px,1vw,15px);color:var(--gray-fg-high);">Animate: สมุด Loading</span>
-            <span style="margin-left:auto;font-size:clamp(9px,0.8vw,12px);font-weight:700;color:var(--warning-fg-high);background:rgba(198,154,42,0.12);padding:2px 8px;border-radius:var(--radius-full);">รอ</span>
+            <span style="font-size:clamp(11px,1cqw,15px);color:var(--gray-fg-high);">Animate: สมุด Loading</span>
+            <span style="margin-left:auto;font-size:clamp(9px,0.8cqw,12px);font-weight:700;color:var(--warning-fg-high);background:rgba(198,154,42,0.12);padding:2px 8px;border-radius:var(--radius-full);">รอ</span>
           </div>
           <div style="display:flex;align-items:center;gap:var(--spacing-3);padding:var(--spacing-2) var(--spacing-3);border-radius:var(--radius-md);background:var(--gray-bg-lightgray);">
             <div style="width:24px;height:24px;border-radius:50%;background:var(--gray-fg-low-on-white);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
             </div>
-            <span style="font-size:clamp(11px,1vw,15px);color:var(--gray-fg-mid-on-white);">Animate: Onboarding</span>
-            <span style="margin-left:auto;font-size:clamp(9px,0.8vw,12px);font-weight:700;color:var(--gray-fg-low-on-white);background:rgba(154,157,173,0.15);padding:2px 8px;border-radius:var(--radius-full);">ถ้าทัน</span>
+            <span style="font-size:clamp(11px,1cqw,15px);color:var(--gray-fg-mid-on-white);">Animate: Onboarding</span>
+            <span style="margin-left:auto;font-size:clamp(9px,0.8cqw,12px);font-weight:700;color:var(--gray-fg-low-on-white);background:rgba(154,157,173,0.15);padding:2px 8px;border-radius:var(--radius-full);">ถ้าทัน</span>
           </div>
           <div style="display:flex;align-items:center;gap:var(--spacing-3);padding:var(--spacing-2) var(--spacing-3);border-radius:var(--radius-md);background:var(--gray-bg-lightgray);">
             <div style="width:24px;height:24px;border-radius:50%;background:var(--gray-fg-low-on-white);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
             </div>
-            <span style="font-size:clamp(11px,1vw,15px);color:var(--gray-fg-mid-on-white);">ไอคอน</span>
-            <span style="margin-left:auto;font-size:clamp(9px,0.8vw,12px);font-weight:700;color:var(--gray-fg-low-on-white);background:rgba(154,157,173,0.15);padding:2px 8px;border-radius:var(--radius-full);">เรียงตาม Priority</span>
+            <span style="font-size:clamp(11px,1cqw,15px);color:var(--gray-fg-mid-on-white);">ไอคอน</span>
+            <span style="margin-left:auto;font-size:clamp(9px,0.8cqw,12px);font-weight:700;color:var(--gray-fg-low-on-white);background:rgba(154,157,173,0.15);padding:2px 8px;border-radius:var(--radius-full);">เรียงตาม Priority</span>
           </div>
         </div>
       </div>
@@ -3199,25 +3200,25 @@
         <p class="body-md">เตรียมงานสำหรับอาทิตย์หน้า</p>
 
         <div style="display:flex;flex-direction:column;gap:var(--spacing-4);margin-top:var(--spacing-4);">
-          <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2vw,20px);border-left:3px solid var(--secondary-fg-high);">
-            <div style="font-size:clamp(14px,1.4vw,22px);font-weight:700;margin-bottom:4px;">POC การ์ดทำนายฝัน</div>
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2cqw,20px);border-left:3px solid var(--secondary-fg-high);">
+            <div style="font-size:clamp(14px,1.4cqw,22px);font-weight:700;margin-bottom:4px;">POC การ์ดทำนายฝัน</div>
             <div class="body-sm" style="color:var(--gray-fg-mid-on-white);">ประสาน Dev ไป POC ตัวการ์ด สำหรับฟีเจอร์ทำนายฝัน</div>
           </div>
 
-          <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2vw,20px);border-left:3px solid var(--success-fg-high);">
-            <div style="font-size:clamp(14px,1.4vw,22px);font-weight:700;margin-bottom:4px;">Mechanic เซียมซี</div>
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2cqw,20px);border-left:3px solid var(--success-fg-high);">
+            <div style="font-size:clamp(14px,1.4cqw,22px);font-weight:700;margin-bottom:4px;">Mechanic เซียมซี</div>
             <div class="body-sm" style="color:var(--gray-fg-mid-on-white);">หา Mechanic เซียมซี &mdash; <strong style="color:var(--success-fg-high);">มาแล้ว</strong></div>
           </div>
 
-          <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2vw,20px);border-left:3px solid var(--primary-fg-high);">
-            <div style="font-size:clamp(14px,1.4vw,22px);font-weight:700;margin-bottom:4px;">Graphic Generation</div>
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:clamp(12px,1.2cqw,20px);border-left:3px solid var(--primary-fg-high);">
+            <div style="font-size:clamp(14px,1.4cqw,22px);font-weight:700;margin-bottom:4px;">Graphic Generation</div>
             <div class="body-sm" style="color:var(--gray-fg-mid-on-white);">เจนภาพด้วย AI &mdash; <strong style="color:var(--warning-fg-high);">กำลังทำ</strong></div>
           </div>
         </div>
       </div>
 
       <div class="col-visual">
-        <img src="Images/Week02/Asset/DailyMu_Process_Fortune.png" alt="Fortune Process Book" style="max-height:45vh;">
+        <img src="Images/Week02/Asset/DailyMu_Process_Fortune.png" alt="Fortune Process Book" style="max-height:45cqh;">
       </div>
     </div>
   </div>
@@ -3237,7 +3238,7 @@
           <div class="dot" style="background:var(--support-orange-fg-low);"></div>
           <span style="color:var(--support-orange-fg-low);">Outcome E</span>
         </div>
-        <h2 class="title-lg" style="font-size:clamp(20px,2.5vw,36px);">Graphic &amp; Dev — Demo Video</h2>
+        <h2 class="title-lg" style="font-size:clamp(20px,2.5cqw,36px);">Graphic &amp; Dev — Demo Video</h2>
       </div>
       <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:100%;padding:0 var(--spacing-10);">
         <div style="width:100%;max-width:72%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -3265,7 +3266,7 @@
           <div class="dot" style="background:var(--support-orange-fg-low);"></div>
           <span style="color:var(--support-orange-fg-low);">Outcome E</span>
         </div>
-        <h2 class="title-lg" style="font-size:clamp(20px,2.5vw,36px);">Logo Animation — Mock</h2>
+        <h2 class="title-lg" style="font-size:clamp(20px,2.5cqw,36px);">Logo Animation — Mock</h2>
       </div>
       <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:100%;padding:0 var(--spacing-10);">
         <div style="width:100%;max-width:60%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -3299,11 +3300,11 @@
         <div style="display:flex;gap:var(--spacing-4);">
           <div style="display:flex;align-items:center;gap:var(--spacing-2);background:var(--gray-bg-white);border-radius:var(--radius-full);padding:6px 14px;">
             <div style="width:10px;height:10px;border-radius:50%;background:var(--primary-fg-high);"></div>
-            <span style="font-size:clamp(10px,0.9vw,14px);font-weight:600;">Interactive</span>
+            <span style="font-size:clamp(10px,0.9cqw,14px);font-weight:600;">Interactive</span>
           </div>
           <div style="display:flex;align-items:center;gap:var(--spacing-2);background:var(--gray-bg-white);border-radius:var(--radius-full);padding:6px 14px;">
             <div style="width:10px;height:10px;border-radius:50%;background:var(--secondary-fg-high);"></div>
-            <span style="font-size:clamp(10px,0.9vw,14px);font-weight:600;">All States</span>
+            <span style="font-size:clamp(10px,0.9cqw,14px);font-weight:600;">All States</span>
           </div>
         </div>
       </div>
@@ -3312,7 +3313,7 @@
         <button onclick="toggleIframeFullscreen()" id="iframeFullscreenBtnW2" style="position:absolute;top:12px;right:12px;z-index:10;width:36px;height:36px;border-radius:var(--radius-md);background:rgba(255,255,255,0.9);border:1px solid var(--gray-bg-midgray);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background 0.2s ease,box-shadow 0.2s ease;" title="Fullscreen" aria-label="Fullscreen">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f414e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
         </button>
-        <iframe src="daily-mu-birth-profile-preview.html" style="width:100%;height:70vh;border:none;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);pointer-events:auto;"></iframe>
+        <iframe src="daily-mu-birth-profile-preview.html" style="width:100%;height:70cqh;border:none;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);pointer-events:auto;"></iframe>
       </div>
     </div>
   </div>
@@ -3339,15 +3340,15 @@
       <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-4);min-height:0;align-items:stretch;">
         <div style="position:relative;background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--spacing-3);">
           <img src="Images/Week02/Asset/OnBoarding_Status_All.png" alt="OnBoarding Status" style="width:100%;height:80%;object-fit:contain;">
-          <span style="font-size:clamp(10px,0.9vw,14px);font-weight:700;color:var(--gray-fg-mid-on-white);margin-top:var(--spacing-2);">Character Status</span>
+          <span style="font-size:clamp(10px,0.9cqw,14px);font-weight:700;color:var(--gray-fg-mid-on-white);margin-top:var(--spacing-2);">Character Status</span>
         </div>
         <div style="position:relative;background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--spacing-3);">
           <img src="Images/Week02/Asset/Process_All.png" alt="Process All" style="width:100%;height:80%;object-fit:contain;">
-          <span style="font-size:clamp(10px,0.9vw,14px);font-weight:700;color:var(--gray-fg-mid-on-white);margin-top:var(--spacing-2);">Login + Fortune Process</span>
+          <span style="font-size:clamp(10px,0.9cqw,14px);font-weight:700;color:var(--gray-fg-mid-on-white);margin-top:var(--spacing-2);">Login + Fortune Process</span>
         </div>
         <div style="position:relative;background:var(--gray-bg-lightgray);border-radius:var(--radius-lg);overflow:hidden;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--spacing-3);">
           <img src="Images/Week02/Card/DailyMu_App_CardTarot_All.png" alt="Tarot Cards Overview" style="width:100%;height:80%;object-fit:contain;">
-          <span style="font-size:clamp(10px,0.9vw,14px);font-weight:700;color:var(--gray-fg-mid-on-white);margin-top:var(--spacing-2);">Tarot Cards 22 ใบ</span>
+          <span style="font-size:clamp(10px,0.9cqw,14px);font-weight:700;color:var(--gray-fg-mid-on-white);margin-top:var(--spacing-2);">Tarot Cards 22 ใบ</span>
         </div>
       </div>
     </div>
@@ -3375,27 +3376,27 @@
             <div class="dot" style="background:var(--primary-fg-high);"></div>
             <span style="color:var(--primary-fg-high);">Sprint Overview</span>
           </div>
-          <h2 class="title-lg" style="font-size:clamp(24px,3vw,42px);background:linear-gradient(135deg,#EC599D,#7279FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Progress &mdash; Week 2</h2>
+          <h2 class="title-lg" style="font-size:clamp(24px,3cqw,42px);background:linear-gradient(135deg,#EC599D,#7279FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Progress &mdash; Week 2</h2>
         </div>
         <!-- Summary stat cards -->
         <div style="display:flex;gap:var(--spacing-3);">
-          <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(8px,0.8vw,14px) clamp(14px,1.4vw,24px);text-align:center;box-shadow:0 2px 12px rgba(236,89,157,0.1);border:1px solid rgba(236,89,157,0.15);">
-            <div style="font-size:clamp(22px,2.2vw,36px);font-weight:800;color:#EC599D;line-height:1.1;">4</div>
-            <div style="font-size:clamp(9px,0.8vw,12px);font-weight:600;color:var(--gray-fg-mid-on-white);">Done</div>
+          <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(8px,0.8cqw,14px) clamp(14px,1.4cqw,24px);text-align:center;box-shadow:0 2px 12px rgba(236,89,157,0.1);border:1px solid rgba(236,89,157,0.15);">
+            <div style="font-size:clamp(22px,2.2cqw,36px);font-weight:800;color:#EC599D;line-height:1.1;">4</div>
+            <div style="font-size:clamp(9px,0.8cqw,12px);font-weight:600;color:var(--gray-fg-mid-on-white);">Done</div>
           </div>
-          <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(8px,0.8vw,14px) clamp(14px,1.4vw,24px);text-align:center;box-shadow:0 2px 12px rgba(114,121,251,0.1);border:1px solid rgba(114,121,251,0.15);">
-            <div style="font-size:clamp(22px,2.2vw,36px);font-weight:800;color:#7279FB;line-height:1.1;">2</div>
-            <div style="font-size:clamp(9px,0.8vw,12px);font-weight:600;color:var(--gray-fg-mid-on-white);">WIP</div>
+          <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(8px,0.8cqw,14px) clamp(14px,1.4cqw,24px);text-align:center;box-shadow:0 2px 12px rgba(114,121,251,0.1);border:1px solid rgba(114,121,251,0.15);">
+            <div style="font-size:clamp(22px,2.2cqw,36px);font-weight:800;color:#7279FB;line-height:1.1;">2</div>
+            <div style="font-size:clamp(9px,0.8cqw,12px);font-weight:600;color:var(--gray-fg-mid-on-white);">WIP</div>
           </div>
         </div>
       </div>
 
       <!-- Main: Donut + Task Cards -->
-      <div style="flex:1;display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,3vw,48px);align-items:center;min-height:0;">
+      <div style="flex:1;display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,3cqw,48px);align-items:center;min-height:0;">
 
         <!-- LEFT: Animated Donut Chart -->
         <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-3);">
-          <div style="position:relative;width:clamp(180px,18vw,260px);height:clamp(180px,18vw,260px);">
+          <div style="position:relative;width:clamp(180px,18cqw,260px);height:clamp(180px,18cqw,260px);">
             <!-- SVG Donut -->
             <svg viewBox="0 0 120 120" style="width:100%;height:100%;transform:rotate(-90deg);">
               <!-- BG ring -->
@@ -3413,90 +3414,90 @@
             </svg>
             <!-- Center text -->
             <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-              <span style="font-size:clamp(36px,3.5vw,56px);font-weight:800;background:linear-gradient(135deg,#EC599D,#7279FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;">83%</span>
-              <span style="font-size:clamp(10px,0.9vw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">Overall</span>
+              <span style="font-size:clamp(36px,3.5cqw,56px);font-weight:800;background:linear-gradient(135deg,#EC599D,#7279FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;">83%</span>
+              <span style="font-size:clamp(10px,0.9cqw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">Overall</span>
             </div>
           </div>
           <!-- Legend -->
-          <div style="display:flex;gap:var(--spacing-4);font-size:clamp(10px,0.85vw,13px);font-weight:600;">
+          <div style="display:flex;gap:var(--spacing-4);font-size:clamp(10px,0.85cqw,13px);font-weight:600;">
             <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:50%;background:#EC599D;"></div><span>Done</span></div>
             <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:50%;background:#7279FB;"></div><span>WIP</span></div>
           </div>
         </div>
 
         <!-- RIGHT: Task Cards Grid -->
-        <div style="display:flex;flex-direction:column;gap:clamp(6px,0.7vw,10px);">
+        <div style="display:flex;flex-direction:column;gap:clamp(6px,0.7cqw,10px);">
 
           <!-- Auth Flow — 100% -->
-          <div style="display:flex;align-items:center;gap:clamp(10px,1vw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9vw,16px) clamp(14px,1.2vw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #EC599D;">
-            <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#EC599D,#d44a8a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:clamp(10px,1cqw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9cqw,16px) clamp(14px,1.2cqw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #EC599D;">
+            <div style="width:clamp(32px,3cqw,42px);height:clamp(32px,3cqw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#EC599D,#d44a8a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div style="flex:1;min-width:0;">
-              <div style="font-weight:700;font-size:clamp(12px,1.1vw,16px);color:var(--gray-fg-high);">Auth Flow</div>
+              <div style="font-weight:700;font-size:clamp(12px,1.1cqw,16px);color:var(--gray-fg-high);">Auth Flow</div>
               <div style="height:4px;background:var(--gray-bg-midgray);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="width:100%;height:100%;background:linear-gradient(90deg,#EC599D,#d44a8a);border-radius:2px;"></div></div>
             </div>
-            <span style="font-weight:800;font-size:clamp(14px,1.3vw,20px);color:#EC599D;flex-shrink:0;">100%</span>
+            <span style="font-weight:800;font-size:clamp(14px,1.3cqw,20px);color:#EC599D;flex-shrink:0;">100%</span>
           </div>
 
           <!-- Calendar — 90% -->
-          <div style="display:flex;align-items:center;gap:clamp(10px,1vw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9vw,16px) clamp(14px,1.2vw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #7279FB;">
-            <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#7279FB,#5a60e0);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:clamp(10px,1cqw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9cqw,16px) clamp(14px,1.2cqw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #7279FB;">
+            <div style="width:clamp(32px,3cqw,42px);height:clamp(32px,3cqw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#7279FB,#5a60e0);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             </div>
             <div style="flex:1;min-width:0;">
-              <div style="font-weight:700;font-size:clamp(12px,1.1vw,16px);color:var(--gray-fg-high);">Calendar</div>
+              <div style="font-weight:700;font-size:clamp(12px,1.1cqw,16px);color:var(--gray-fg-high);">Calendar</div>
               <div style="height:4px;background:var(--gray-bg-midgray);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="width:90%;height:100%;background:linear-gradient(90deg,#7279FB,#5a60e0);border-radius:2px;"></div></div>
             </div>
-            <span style="font-weight:800;font-size:clamp(14px,1.3vw,20px);color:#7279FB;flex-shrink:0;">90%</span>
+            <span style="font-weight:800;font-size:clamp(14px,1.3cqw,20px);color:#7279FB;flex-shrink:0;">90%</span>
           </div>
 
           <!-- Profile & Notification — 100% -->
-          <div style="display:flex;align-items:center;gap:clamp(10px,1vw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9vw,16px) clamp(14px,1.2vw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #EC599D;">
-            <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#EC599D,#d44a8a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:clamp(10px,1cqw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9cqw,16px) clamp(14px,1.2cqw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #EC599D;">
+            <div style="width:clamp(32px,3cqw,42px);height:clamp(32px,3cqw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#EC599D,#d44a8a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div style="flex:1;min-width:0;">
-              <div style="font-weight:700;font-size:clamp(12px,1.1vw,16px);color:var(--gray-fg-high);">Profile &amp; Notification</div>
+              <div style="font-weight:700;font-size:clamp(12px,1.1cqw,16px);color:var(--gray-fg-high);">Profile &amp; Notification</div>
               <div style="height:4px;background:var(--gray-bg-midgray);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="width:100%;height:100%;background:linear-gradient(90deg,#EC599D,#d44a8a);border-radius:2px;"></div></div>
             </div>
-            <span style="font-weight:800;font-size:clamp(14px,1.3vw,20px);color:#EC599D;flex-shrink:0;">100%</span>
+            <span style="font-weight:800;font-size:clamp(14px,1.3cqw,20px);color:#EC599D;flex-shrink:0;">100%</span>
           </div>
 
           <!-- Entry Points — 100% -->
-          <div style="display:flex;align-items:center;gap:clamp(10px,1vw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9vw,16px) clamp(14px,1.2vw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #EC599D;">
-            <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#EC599D,#d44a8a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:clamp(10px,1cqw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9cqw,16px) clamp(14px,1.2cqw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #EC599D;">
+            <div style="width:clamp(32px,3cqw,42px);height:clamp(32px,3cqw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#EC599D,#d44a8a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div style="flex:1;min-width:0;">
-              <div style="font-weight:700;font-size:clamp(12px,1.1vw,16px);color:var(--gray-fg-high);">Entry Points</div>
+              <div style="font-weight:700;font-size:clamp(12px,1.1cqw,16px);color:var(--gray-fg-high);">Entry Points</div>
               <div style="height:4px;background:var(--gray-bg-midgray);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="width:100%;height:100%;background:linear-gradient(90deg,#EC599D,#d44a8a);border-radius:2px;"></div></div>
             </div>
-            <span style="font-weight:800;font-size:clamp(14px,1.3vw,20px);color:#EC599D;flex-shrink:0;">100%</span>
+            <span style="font-weight:800;font-size:clamp(14px,1.3cqw,20px);color:#EC599D;flex-shrink:0;">100%</span>
           </div>
 
           <!-- Graphic Coordination — 60% -->
-          <div style="display:flex;align-items:center;gap:clamp(10px,1vw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9vw,16px) clamp(14px,1.2vw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #7279FB;">
-            <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#7279FB,#5a60e0);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:clamp(10px,1cqw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9cqw,16px) clamp(14px,1.2cqw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #7279FB;">
+            <div style="width:clamp(32px,3cqw,42px);height:clamp(32px,3cqw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#7279FB,#5a60e0);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div style="flex:1;min-width:0;">
-              <div style="font-weight:700;font-size:clamp(12px,1.1vw,16px);color:var(--gray-fg-high);">Graphic Coordination</div>
+              <div style="font-weight:700;font-size:clamp(12px,1.1cqw,16px);color:var(--gray-fg-high);">Graphic Coordination</div>
               <div style="height:4px;background:var(--gray-bg-midgray);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="width:60%;height:100%;background:linear-gradient(90deg,#7279FB,#5a60e0);border-radius:2px;"></div></div>
             </div>
-            <span style="font-weight:800;font-size:clamp(14px,1.3vw,20px);color:#7279FB;flex-shrink:0;">60%</span>
+            <span style="font-weight:800;font-size:clamp(14px,1.3cqw,20px);color:#7279FB;flex-shrink:0;">60%</span>
           </div>
 
           <!-- Dev Coordination — 50% -->
-          <div style="display:flex;align-items:center;gap:clamp(10px,1vw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9vw,16px) clamp(14px,1.2vw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #7279FB;">
-            <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#7279FB,#5a60e0);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:clamp(10px,1cqw,16px);background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);border-radius:var(--radius-lg);padding:clamp(10px,0.9cqw,16px) clamp(14px,1.2cqw,20px);box-shadow:0 1px 8px rgba(0,0,0,0.04);border-left:4px solid #7279FB;">
+            <div style="width:clamp(32px,3cqw,42px);height:clamp(32px,3cqw,42px);border-radius:var(--radius-md);background:linear-gradient(135deg,#7279FB,#5a60e0);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div style="flex:1;min-width:0;">
-              <div style="font-weight:700;font-size:clamp(12px,1.1vw,16px);color:var(--gray-fg-high);">Dev Coordination</div>
+              <div style="font-weight:700;font-size:clamp(12px,1.1cqw,16px);color:var(--gray-fg-high);">Dev Coordination</div>
               <div style="height:4px;background:var(--gray-bg-midgray);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="width:50%;height:100%;background:linear-gradient(90deg,#7279FB,#5a60e0);border-radius:2px;"></div></div>
             </div>
-            <span style="font-weight:800;font-size:clamp(14px,1.3vw,20px);color:#7279FB;flex-shrink:0;">50%</span>
+            <span style="font-weight:800;font-size:clamp(14px,1.3cqw,20px);color:#7279FB;flex-shrink:0;">50%</span>
           </div>
 
         </div>
@@ -3524,7 +3525,7 @@
           <div class="dot" style="background:var(--support-sky-fg-low);"></div>
           <span style="color:var(--info-fg-high);">Agenda 3</span>
         </div>
-        <h2 class="title-lg" style="font-size:clamp(20px,2.5vw,36px);margin:0;">Nextstep <span class="text-gray" style="font-weight:400;font-size:0.55em;">&mdash; Week 3 (Micro Service)</span></h2>
+        <h2 class="title-lg" style="font-size:clamp(20px,2.5cqw,36px);margin:0;">Nextstep <span class="text-gray" style="font-weight:400;font-size:0.55em;">&mdash; Week 3 (Micro Service)</span></h2>
       </div>
 
       <!-- 3 compact task cards — horizontal -->
@@ -3533,30 +3534,30 @@
         <div style="background:var(--gray-bg-white);border-radius:var(--radius-md);padding:var(--spacing-3) var(--spacing-4);display:flex;align-items:center;gap:var(--spacing-3);border-left:4px solid var(--primary-fg-high);">
           <img src="Images/Week02/Asset/Card-Hand.png" alt="Tarot" style="width:40px;height:48px;object-fit:cover;border-radius:var(--radius-sm);flex-shrink:0;">
           <div style="flex:1;min-width:0;">
-            <div style="font-size:clamp(14px,1.4vw,20px);font-weight:700;">ไพ่ทาโร่</div>
-            <div style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-mid-on-white);">UI ดูดวงไพ่ 22 ใบ</div>
+            <div style="font-size:clamp(14px,1.4cqw,20px);font-weight:700;">ไพ่ทาโร่</div>
+            <div style="font-size:clamp(10px,0.85cqw,13px);color:var(--gray-fg-mid-on-white);">UI ดูดวงไพ่ 22 ใบ</div>
           </div>
-          <span style="background:var(--primary-bg-lowest);color:var(--primary-fg-high);padding:2px 10px;border-radius:var(--radius-full);font-size:clamp(10px,0.85vw,13px);font-weight:700;flex-shrink:0;">TAN</span>
+          <span style="background:var(--primary-bg-lowest);color:var(--primary-fg-high);padding:2px 10px;border-radius:var(--radius-full);font-size:clamp(10px,0.85cqw,13px);font-weight:700;flex-shrink:0;">TAN</span>
         </div>
 
         <!-- เซียมซี — PIM -->
         <div style="background:var(--gray-bg-white);border-radius:var(--radius-md);padding:var(--spacing-3) var(--spacing-4);display:flex;align-items:center;gap:var(--spacing-3);border-left:4px solid var(--secondary-fg-high);">
           <img src="Images/Week02/Asset/DailyMu_Character_FortuneSticks.png" alt="Fortune" style="width:40px;height:48px;object-fit:contain;border-radius:var(--radius-sm);flex-shrink:0;">
           <div style="flex:1;min-width:0;">
-            <div style="font-size:clamp(14px,1.4vw,20px);font-weight:700;">เซียมซี</div>
-            <div style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-mid-on-white);">UI + Mechanic เขย่าเซียมซี</div>
+            <div style="font-size:clamp(14px,1.4cqw,20px);font-weight:700;">เซียมซี</div>
+            <div style="font-size:clamp(10px,0.85cqw,13px);color:var(--gray-fg-mid-on-white);">UI + Mechanic เขย่าเซียมซี</div>
           </div>
-          <span style="background:var(--secondary-bg-lowest);color:var(--secondary-fg-high);padding:2px 10px;border-radius:var(--radius-full);font-size:clamp(10px,0.85vw,13px);font-weight:700;flex-shrink:0;">PIM</span>
+          <span style="background:var(--secondary-bg-lowest);color:var(--secondary-fg-high);padding:2px 10px;border-radius:var(--radius-full);font-size:clamp(10px,0.85cqw,13px);font-weight:700;flex-shrink:0;">PIM</span>
         </div>
 
         <!-- ทำนายฝัน — JED -->
         <div style="background:var(--gray-bg-white);border-radius:var(--radius-md);padding:var(--spacing-3) var(--spacing-4);display:flex;align-items:center;gap:var(--spacing-3);border-left:4px solid var(--support-sky-fg-low);">
           <img src="Images/Week02/Asset/DailyMu_Process_Fortune.png" alt="Dream" style="width:40px;height:48px;object-fit:contain;border-radius:var(--radius-sm);flex-shrink:0;">
           <div style="flex:1;min-width:0;">
-            <div style="font-size:clamp(14px,1.4vw,20px);font-weight:700;">ทำนายฝัน</div>
-            <div style="font-size:clamp(10px,0.85vw,13px);color:var(--gray-fg-mid-on-white);">UI ทำนายฝัน + การ์ด</div>
+            <div style="font-size:clamp(14px,1.4cqw,20px);font-weight:700;">ทำนายฝัน</div>
+            <div style="font-size:clamp(10px,0.85cqw,13px);color:var(--gray-fg-mid-on-white);">UI ทำนายฝัน + การ์ด</div>
           </div>
-          <span style="background:var(--support-sky-bg-lowest);color:var(--info-fg-high);padding:2px 10px;border-radius:var(--radius-full);font-size:clamp(10px,0.85vw,13px);font-weight:700;flex-shrink:0;">JED</span>
+          <span style="background:var(--support-sky-bg-lowest);color:var(--info-fg-high);padding:2px 10px;border-radius:var(--radius-full);font-size:clamp(10px,0.85cqw,13px);font-weight:700;flex-shrink:0;">JED</span>
         </div>
       </div>
 
@@ -3564,15 +3565,15 @@
       <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-3);min-height:0;align-items:center;">
         <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);height:100%;min-height:0;">
           <div style="flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;width:100%;"><img src="Images/Week02/Asset/Tarotcard.png" alt="Tarot Card" style="width:100%;height:100%;object-fit:contain;"></div>
-          <span style="font-size:clamp(10px,0.9vw,13px);font-weight:700;color:var(--primary-fg-high);flex-shrink:0;">ไพ่ทาโร่</span>
+          <span style="font-size:clamp(10px,0.9cqw,13px);font-weight:700;color:var(--primary-fg-high);flex-shrink:0;">ไพ่ทาโร่</span>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);height:100%;min-height:0;">
           <div style="flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;width:100%;"><img src="Images/Week02/Asset/DailyMu_Character_FortuneSticks_02.png" alt="Fortune Stick Character" style="width:100%;height:100%;object-fit:contain;"></div>
-          <span style="font-size:clamp(10px,0.9vw,13px);font-weight:700;color:var(--secondary-fg-high);flex-shrink:0;">เซียมซี</span>
+          <span style="font-size:clamp(10px,0.9cqw,13px);font-weight:700;color:var(--secondary-fg-high);flex-shrink:0;">เซียมซี</span>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);height:100%;min-height:0;">
           <div style="flex:1;min-height:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;width:100%;"><img src="Images/Week02/Asset/DecodeDream.png" alt="Decode Dream" style="width:100%;height:100%;object-fit:contain;"></div>
-          <span style="font-size:clamp(10px,0.9vw,13px);font-weight:700;color:var(--info-fg-high);flex-shrink:0;">ทำนายฝัน</span>
+          <span style="font-size:clamp(10px,0.9cqw,13px);font-weight:700;color:var(--info-fg-high);flex-shrink:0;">ทำนายฝัน</span>
         </div>
       </div>
     </div>
@@ -3598,37 +3599,37 @@
           <div class="dot" style="background:var(--info-fg-high);"></div>
           <span style="color:var(--info-fg-high);">Big Picture</span>
         </div>
-        <h2 class="title-lg" style="font-size:clamp(24px,3vw,42px);background:linear-gradient(135deg,#EC599D,#7279FB,#01a9e0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ภาพรวม Design &mdash; 3 Weeks</h2>
+        <h2 class="title-lg" style="font-size:clamp(24px,3cqw,42px);background:linear-gradient(135deg,#EC599D,#7279FB,#01a9e0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ภาพรวม Design &mdash; 3 Weeks</h2>
       </div>
 
       <!-- 3-Week Grid -->
       <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-4);align-content:center;min-height:0;">
 
         <!-- Week 1 -->
-        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-xl);padding:clamp(16px,1.5vw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid #EC599D;">
+        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-xl);padding:clamp(16px,1.5cqw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid #EC599D;">
           <div class="flex-between">
-            <span style="font-size:clamp(18px,2vw,28px);font-weight:800;color:var(--gray-fg-high);">Week 1</span>
-            <span style="background:rgba(236,89,157,0.1);color:#EC599D;padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;">Done</span>
+            <span style="font-size:clamp(18px,2cqw,28px);font-weight:800;color:var(--gray-fg-high);">Week 1</span>
+            <span style="background:rgba(236,89,157,0.1);color:#EC599D;padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(9px,0.85cqw,13px);font-weight:700;">Done</span>
           </div>
-          <span style="font-size:clamp(10px,0.9vw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">9&ndash;13 Feb &middot; Foundation</span>
+          <span style="font-size:clamp(10px,0.9cqw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">9&ndash;13 Feb &middot; Foundation</span>
           <div style="display:flex;flex-direction:column;gap:var(--spacing-2);">
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
               <span>Login / Register Flow</span>
             </div>
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
               <span>Onboarding &amp; Splash</span>
             </div>
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
               <span>Design System &amp; Tokens</span>
             </div>
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
               <span>Visual Assets &amp; Characters</span>
             </div>
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
               <span>AI Workflow Setup</span>
             </div>
@@ -3636,35 +3637,35 @@
           <!-- Progress bar -->
           <div style="margin-top:auto;">
             <div style="height:6px;background:var(--gray-bg-midgray);border-radius:3px;overflow:hidden;"><div style="width:100%;height:100%;background:linear-gradient(90deg,#EC599D,#d44a8a);border-radius:3px;"></div></div>
-            <div style="text-align:right;font-size:clamp(11px,1vw,14px);font-weight:800;color:#EC599D;margin-top:4px;">100%</div>
+            <div style="text-align:right;font-size:clamp(11px,1cqw,14px);font-weight:800;color:#EC599D;margin-top:4px;">100%</div>
           </div>
         </div>
 
         <!-- Week 2 -->
-        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-xl);padding:clamp(16px,1.5vw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid #7279FB;">
+        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-xl);padding:clamp(16px,1.5cqw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid #7279FB;">
           <div class="flex-between">
-            <span style="font-size:clamp(18px,2vw,28px);font-weight:800;color:var(--gray-fg-high);">Week 2</span>
-            <span style="background:rgba(114,121,251,0.1);color:#7279FB;padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;">83%</span>
+            <span style="font-size:clamp(18px,2cqw,28px);font-weight:800;color:var(--gray-fg-high);">Week 2</span>
+            <span style="background:rgba(114,121,251,0.1);color:#7279FB;padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(9px,0.85cqw,13px);font-weight:700;">83%</span>
           </div>
-          <span style="font-size:clamp(10px,0.9vw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">16&ndash;20 Feb &middot; Core Screens</span>
+          <span style="font-size:clamp(10px,0.9cqw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">16&ndash;20 Feb &middot; Core Screens</span>
           <div style="display:flex;flex-direction:column;gap:var(--spacing-2);">
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
               <span>Auth Flow &mdash; 100%</span>
             </div>
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#7279FB;flex-shrink:0;"></div>
               <span>Calendar &mdash; 90%</span>
             </div>
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
               <span>Profile &amp; Notification &mdash; 100%</span>
             </div>
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#EC599D;flex-shrink:0;"></div>
               <span>Entry Points &mdash; 100%</span>
             </div>
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#7279FB;flex-shrink:0;"></div>
               <span>Graphic &amp; Dev Coord &mdash; WIP</span>
             </div>
@@ -3672,27 +3673,27 @@
           <!-- Progress bar -->
           <div style="margin-top:auto;">
             <div style="height:6px;background:var(--gray-bg-midgray);border-radius:3px;overflow:hidden;"><div style="width:83%;height:100%;background:linear-gradient(90deg,#7279FB,#5a60e0);border-radius:3px;"></div></div>
-            <div style="text-align:right;font-size:clamp(11px,1vw,14px);font-weight:800;color:#7279FB;margin-top:4px;">83%</div>
+            <div style="text-align:right;font-size:clamp(11px,1cqw,14px);font-weight:800;color:#7279FB;margin-top:4px;">83%</div>
           </div>
         </div>
 
         <!-- Week 3 -->
-        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-xl);padding:clamp(16px,1.5vw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid #01a9e0;">
+        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:var(--radius-xl);padding:clamp(16px,1.5cqw,28px);display:flex;flex-direction:column;gap:var(--spacing-3);border-top:4px solid #01a9e0;">
           <div class="flex-between">
-            <span style="font-size:clamp(18px,2vw,28px);font-weight:800;color:var(--gray-fg-high);">Week 3</span>
-            <span style="background:rgba(1,169,224,0.1);color:#01a9e0;padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(9px,0.85vw,13px);font-weight:700;">Preparing</span>
+            <span style="font-size:clamp(18px,2cqw,28px);font-weight:800;color:var(--gray-fg-high);">Week 3</span>
+            <span style="background:rgba(1,169,224,0.1);color:#01a9e0;padding:4px 12px;border-radius:var(--radius-full);font-size:clamp(9px,0.85cqw,13px);font-weight:700;">Preparing</span>
           </div>
-          <span style="font-size:clamp(10px,0.9vw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">23&ndash;27 Feb &middot; Micro Services</span>
+          <span style="font-size:clamp(10px,0.9cqw,14px);color:var(--gray-fg-mid-on-white);font-weight:600;">23&ndash;27 Feb &middot; Micro Services</span>
           <div style="display:flex;flex-direction:column;gap:var(--spacing-2);">
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#01a9e0;flex-shrink:0;"></div>
               <span>ไพ่ทาโร่ &mdash; Asset พร้อม</span>
             </div>
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#01a9e0;flex-shrink:0;"></div>
               <span>เซียมซี &mdash; Mechanic พร้อม</span>
             </div>
-            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1vw,15px);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);font-size:clamp(11px,1cqw,15px);">
               <div style="width:8px;height:8px;border-radius:50%;background:#01a9e0;flex-shrink:0;"></div>
               <span>ทำนายฝัน &mdash; Asset พร้อม</span>
             </div>
@@ -3700,7 +3701,7 @@
           <!-- Progress bar -->
           <div style="margin-top:auto;">
             <div style="height:6px;background:var(--gray-bg-midgray);border-radius:3px;overflow:hidden;"><div style="width:35%;height:100%;background:linear-gradient(90deg,#01a9e0,#0386B3);border-radius:3px;"></div></div>
-            <div style="text-align:right;font-size:clamp(11px,1vw,14px);font-weight:800;color:#01a9e0;margin-top:4px;">35%</div>
+            <div style="text-align:right;font-size:clamp(11px,1cqw,14px);font-weight:800;color:#01a9e0;margin-top:4px;">35%</div>
           </div>
         </div>
 
@@ -3749,41 +3750,41 @@
     <div class="slide-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:var(--spacing-2);position:relative;z-index:2;">
 
       <!-- Character Group — 3 characters side by side -->
-      <div style="display:flex;align-items:flex-end;justify-content:center;gap:clamp(12px,3vw,40px);margin-bottom:var(--spacing-2);">
-        <img src="Images/Week02/Asset/DailyMu_Character_03.png" alt="Character" style="height:clamp(120px,22vh,260px);object-fit:contain;animation:floatUp 3s ease-in-out infinite 0.3s;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.1));">
-        <img src="Images/Week02/Asset/OnBoarding_Status_Happy.png" alt="Happy Character" style="height:clamp(180px,34vh,380px);object-fit:contain;animation:pulseGlow 3s ease-in-out infinite;filter:drop-shadow(0 8px 24px rgba(236,89,157,0.25));">
-        <img src="Images/Week02/Asset/DailyMu_Character_04.png" alt="Character" style="height:clamp(120px,22vh,260px);object-fit:contain;animation:floatUp 3s ease-in-out infinite 0.6s;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.1));">
+      <div style="display:flex;align-items:flex-end;justify-content:center;gap:clamp(12px,3cqw,40px);margin-bottom:var(--spacing-2);">
+        <img src="Images/Week02/Asset/DailyMu_Character_03.png" alt="Character" style="height:clamp(120px,22cqh,260px);object-fit:contain;animation:floatUp 3s ease-in-out infinite 0.3s;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.1));">
+        <img src="Images/Week02/Asset/OnBoarding_Status_Happy.png" alt="Happy Character" style="height:clamp(180px,34cqh,380px);object-fit:contain;animation:pulseGlow 3s ease-in-out infinite;filter:drop-shadow(0 8px 24px rgba(236,89,157,0.25));">
+        <img src="Images/Week02/Asset/DailyMu_Character_04.png" alt="Character" style="height:clamp(120px,22cqh,260px);object-fit:contain;animation:floatUp 3s ease-in-out infinite 0.6s;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.1));">
       </div>
 
       <!-- Big Thank You Title -->
       <h2 class="finale-title">Thank you!</h2>
 
       <!-- Subtitle -->
-      <p style="color:var(--gray-fg-mid-on-white);font-size:clamp(18px,2.2vw,32px);font-weight:400;letter-spacing:0.02em;">
+      <p style="color:var(--gray-fg-mid-on-white);font-size:clamp(18px,2.2cqw,32px);font-weight:400;letter-spacing:0.02em;">
         Questions &amp; Discussion
       </p>
 
       <!-- Decorative Divider -->
       <div style="display:flex;align-items:center;gap:var(--spacing-3);margin:var(--spacing-2) 0;">
-        <div style="width:clamp(40px,5vw,80px);height:2px;background:linear-gradient(90deg,transparent,var(--primary-fg-high));border-radius:1px;"></div>
-        <svg viewBox="0 0 24 24" fill="var(--primary-fg-high)" style="width:clamp(16px,1.5vw,24px);height:clamp(16px,1.5vw,24px);opacity:0.6;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        <div style="width:clamp(40px,5vw,80px);height:2px;background:linear-gradient(90deg,var(--secondary-fg-high),transparent);border-radius:1px;"></div>
+        <div style="width:clamp(40px,5cqw,80px);height:2px;background:linear-gradient(90deg,transparent,var(--primary-fg-high));border-radius:1px;"></div>
+        <svg viewBox="0 0 24 24" fill="var(--primary-fg-high)" style="width:clamp(16px,1.5cqw,24px);height:clamp(16px,1.5cqw,24px);opacity:0.6;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <div style="width:clamp(40px,5cqw,80px);height:2px;background:linear-gradient(90deg,var(--secondary-fg-high),transparent);border-radius:1px;"></div>
       </div>
 
       <!-- Project Info -->
       <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-1);">
-        <p style="color:var(--gray-fg-low-on-white);font-size:clamp(12px,1.2vw,18px);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">
+        <p style="color:var(--gray-fg-low-on-white);font-size:clamp(12px,1.2cqw,18px);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">
           DailyMu Calendar &mdash; Sprint 2 Complete
         </p>
-        <p style="color:var(--gray-fg-low-on-white);font-size:clamp(10px,1vw,15px);opacity:0.7;">
+        <p style="color:var(--gray-fg-low-on-white);font-size:clamp(10px,1cqw,15px);opacity:0.7;">
           Muniverse Design Team &middot; Week 2 Update
         </p>
       </div>
     </div>
 
     <!-- Bottom Character Silhouettes -->
-    <img src="Images/Week02/Asset/Card-Hand.png" alt="" style="position:absolute;bottom:-2%;left:3%;height:clamp(60px,10vh,120px);opacity:0.15;pointer-events:none;animation:floatUpSlow 6s ease-in-out infinite 1s;">
-    <img src="Images/Week02/Asset/DailyMu_Character_06.png" alt="" style="position:absolute;bottom:-1%;right:3%;height:clamp(60px,10vh,120px);opacity:0.15;pointer-events:none;animation:floatUpSlow 5.5s ease-in-out infinite 0.8s;">
+    <img src="Images/Week02/Asset/Card-Hand.png" alt="" style="position:absolute;bottom:-2%;left:3%;height:clamp(60px,10cqh,120px);opacity:0.15;pointer-events:none;animation:floatUpSlow 6s ease-in-out infinite 1s;">
+    <img src="Images/Week02/Asset/DailyMu_Character_06.png" alt="" style="position:absolute;bottom:-1%;right:3%;height:clamp(60px,10cqh,120px);opacity:0.15;pointer-events:none;animation:floatUpSlow 5.5s ease-in-out infinite 0.8s;">
   </div>
 
   <!-- ============================== -->
@@ -3881,7 +3882,7 @@
       </div>
 
       <div class="col-visual">
-        <img src="Images/Week03/Asset/image 697.png" alt="Character" style="max-height:38vh;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.08));">
+        <img src="Images/Week03/Asset/image 697.png" alt="Character" style="max-height:38cqh;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.08));">
       </div>
     </div>
   </div>
@@ -3914,7 +3915,7 @@
       </div>
 
       <div class="col-visual">
-        <img src="Images/DailyMu_Character_One-Time.png" alt="Recap" style="max-height:45vh;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.08));">
+        <img src="Images/DailyMu_Character_One-Time.png" alt="Recap" style="max-height:45cqh;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.08));">
       </div>
     </div>
   </div>
@@ -4005,7 +4006,7 @@
         <!-- Week 3: Feb 23-Mar 1 (current) -->
         <div class="cal-week current-week">
           <div class="cal-dates">
-            <span>23</span><span>24</span><span>25</span><span>26</span><span class="today">27</span><span>28</span><span style="font-size:clamp(7px,0.65vw,10px);">Mar 1</span>
+            <span>23</span><span>24</span><span>25</span><span>26</span><span class="today">27</span><span>28</span><span style="font-size:clamp(7px,0.65cqw,10px);">Mar 1</span>
           </div>
           <div class="cal-tasks">
             <div class="cal-bar bar-tan" style="grid-column:1/5;grid-row:1;">เซียมซี (TAN)</div>
@@ -4052,7 +4053,7 @@
           <div class="service-card-body">
             <div class="flex-between">
               <span class="title-sm">ไพ่ทาโร่</span>
-              <span class="card-status wip" style="font-size:clamp(9px,0.7vw,11px);">90%</span>
+              <span class="card-status wip" style="font-size:clamp(9px,0.7cqw,11px);">90%</span>
             </div>
             <div class="service-card-desc">UI ดูดวงไพ่ 22 ใบ</div>
             <div class="flex-wrap-gap-4">
@@ -4072,7 +4073,7 @@
           <div class="service-card-body">
             <div class="flex-between">
               <span class="title-sm">เซียมซี</span>
-              <span class="card-status wip" style="font-size:clamp(9px,0.7vw,11px);">70%</span>
+              <span class="card-status wip" style="font-size:clamp(9px,0.7cqw,11px);">70%</span>
             </div>
             <div class="service-card-desc">UI + Mechanic เขย่าเซียมซี</div>
             <div class="flex-wrap-gap-4">
@@ -4092,7 +4093,7 @@
           <div class="service-card-body">
             <div class="flex-between">
               <span class="title-sm">ทำนายฝัน</span>
-              <span class="card-status wip" style="font-size:clamp(9px,0.7vw,11px);">85%</span>
+              <span class="card-status wip" style="font-size:clamp(9px,0.7cqw,11px);">85%</span>
             </div>
             <div class="service-card-desc">UI ทำนายฝัน + Dream Card</div>
             <div class="flex-wrap-gap-4">
@@ -4252,7 +4253,7 @@
       <div class="col-text">
         <div class="section-tag">
           <div class="dot" style="background:var(--support-green-fg-low);"></div>
-          <span style="color:var(--success-fg-high);font-size:clamp(10px,0.9vw,14px);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Outcome C</span>
+          <span style="color:var(--success-fg-high);font-size:clamp(10px,0.9cqw,14px);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Outcome C</span>
         </div>
         <h2 class="title-lg">ทำนายฝัน</h2>
         <p class="body-md">UI ทำนายความฝัน + Dream Card</p>
@@ -4271,7 +4272,7 @@
       </div>
 
       <div class="col-visual">
-        <img src="Images/Week03/Asset/image 698.png" alt="Dream Interpretation" style="max-height:38vh;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.08));">
+        <img src="Images/Week03/Asset/image 698.png" alt="Dream Interpretation" style="max-height:38cqh;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.08));">
       </div>
     </div>
   </div>
@@ -4360,7 +4361,7 @@
             </div>
           </div>
           <div class="progress-card-donut">
-            <svg viewBox="0 0 120 120" style="width:clamp(90px,8vw,120px);height:clamp(90px,8vw,120px);">
+            <svg viewBox="0 0 120 120" style="width:clamp(90px,8cqw,120px);height:clamp(90px,8cqw,120px);">
               <circle cx="60" cy="60" r="50" fill="none" stroke="#f0f0f3" stroke-width="10"/>
               <circle cx="60" cy="60" r="50" fill="none" stroke="url(#gradTarotW3)" stroke-width="10"
                 stroke-dasharray="282.74" stroke-dashoffset="28.27"
@@ -4383,7 +4384,7 @@
             </div>
           </div>
           <div class="progress-card-donut">
-            <svg viewBox="0 0 120 120" style="width:clamp(90px,8vw,120px);height:clamp(90px,8vw,120px);">
+            <svg viewBox="0 0 120 120" style="width:clamp(90px,8cqw,120px);height:clamp(90px,8cqw,120px);">
               <circle cx="60" cy="60" r="50" fill="none" stroke="#f0f0f3" stroke-width="10"/>
               <circle cx="60" cy="60" r="50" fill="none" stroke="url(#gradSiamW3)" stroke-width="10"
                 stroke-dasharray="219.91" stroke-dashoffset="28.27"
@@ -4406,7 +4407,7 @@
             </div>
           </div>
           <div class="progress-card-donut">
-            <svg viewBox="0 0 120 120" style="width:clamp(90px,8vw,120px);height:clamp(90px,8vw,120px);">
+            <svg viewBox="0 0 120 120" style="width:clamp(90px,8cqw,120px);height:clamp(90px,8cqw,120px);">
               <circle cx="60" cy="60" r="50" fill="none" stroke="#f0f0f3" stroke-width="10"/>
               <circle cx="60" cy="60" r="50" fill="none" stroke="url(#gradDreamW3)" stroke-width="10"
                 stroke-dasharray="267.04" stroke-dashoffset="28.27"
@@ -4440,7 +4441,7 @@
       <div>
         <div class="section-tag">
           <div class="dot" style="background:var(--support-green-fg-low);"></div>
-          <span style="color:var(--support-green-fg-low);font-size:clamp(10px,0.9vw,14px);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Agenda 4</span>
+          <span style="color:var(--support-green-fg-low);font-size:clamp(10px,0.9cqw,14px);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Agenda 4</span>
         </div>
         <h2 class="title-lg">Planning เก็บงาน</h2>
         <p class="body-md">สิ่งที่ต้องทำหลังจาก Transfer รอบแรก</p>
@@ -4484,7 +4485,7 @@
       <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-4);">
         <div class="section-tag">
           <div class="dot" style="background:var(--support-sky-fg-low);"></div>
-          <span style="color:var(--support-sky-fg-low);font-size:clamp(10px,0.9vw,14px);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Agenda 5</span>
+          <span style="color:var(--support-sky-fg-low);font-size:clamp(10px,0.9cqw,14px);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Agenda 5</span>
         </div>
         <h2 class="title-lg">Prototype Show</h2>
         <p class="body-md">Full App Preview &mdash; ทั้งแอปใน Figma</p>
@@ -4520,12 +4521,12 @@
       <p class="body-lg" style="color:var(--gray-fg-mid-on-white);max-width:400px;text-align:center;">
         Questions &amp; Discussion
       </p>
-      <p style="color:var(--gray-fg-low-on-white);font-size:clamp(10px,1vw,15px);opacity:0.7;">
+      <p style="color:var(--gray-fg-low-on-white);font-size:clamp(10px,1cqw,15px);opacity:0.7;">
         Muniverse Design Team &middot; Week 3 Update
       </p>
 
       <!-- Logo -->
-      <svg style="width:clamp(36px,4vw,56px);margin-top:var(--spacing-4);animation:pulseGlow 3s ease-in-out infinite;" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <svg style="width:clamp(36px,4cqw,56px);margin-top:var(--spacing-4);animation:pulseGlow 3s ease-in-out infinite;" aria-hidden="true"><use href="#mu-logo"/></svg>
     </div>
   </div>
 
@@ -4565,6 +4566,19 @@
 </div>
 
 <script>
+  // ===== Fixed-canvas scaling (1920×1080 → fit any screen) =====
+  function scaleViewport() {
+    const vp = document.getElementById('slideViewport');
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 1920, h / 1080);
+    const tx = (w - 1920 * scale) / 2;
+    const ty = (h - 1080 * scale) / 2;
+    vp.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+  }
+  window.addEventListener('resize', scaleViewport);
+  scaleViewport();
+
   const slides = document.querySelectorAll('.slide');
   const totalSlides = slides.length;
   let currentSlide = 0;
@@ -4746,7 +4760,7 @@
       if (btnShrink) btnShrink.style.display = 'block';
     } else {
       container.style.cssText = 'flex:1;display:flex;align-items:flex-start;justify-content:center;min-height:0;padding-top:var(--spacing-2);position:relative;';
-      iframe.style.cssText = 'width:100%;height:70vh;border:none;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);pointer-events:auto;';
+      iframe.style.cssText = 'width:100%;height:70cqh;border:none;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);pointer-events:auto;';
       if (btnExpand) btnExpand.style.display = 'block';
       if (btnShrink) btnShrink.style.display = 'none';
       activeIframeContainer = null;
@@ -4807,7 +4821,8 @@
   }
 
   document.addEventListener('fullscreenchange', () => {
-    // Hide Present button in fullscreen (already presenting)
+    // Rescale viewport for new screen size + update nav
+    scaleViewport();
     updateNavBar();
   });
 
