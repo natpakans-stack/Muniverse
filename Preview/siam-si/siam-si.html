@@ -326,7 +326,7 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
     radial-gradient(ellipse 60% 40% at 50% 15%,rgba(114,121,251,.10) 0%,transparent 100%),
     linear-gradient(180deg,#F1F2FF 0%,#FDEFF5 25%,#F8F0FF 50%,#FFFFFF 75%,#FDEFF5 100%);
 }
-.result-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.result-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;min-height:0}
 
 /* Landscape bg layers */
 .result-body .rb-hill{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
@@ -400,6 +400,99 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
 .result-ring-2::before{top:20%;right:-3px;width:5px;height:5px;background:var(--primary);opacity:.6;box-shadow:0 0 6px rgba(236,89,157,.4)}
 .result-ring-2::after{bottom:20%;left:-2px;width:3px;height:3px;background:var(--secondary);opacity:.5;box-shadow:0 0 4px rgba(114,121,251,.4)}
 
+/* ── Fortune stick reveal (Result screen) ── */
+.result-stick-reveal{
+  position:absolute;z-index:4;pointer-events:none;
+  opacity:0;
+  transform:rotate(-5deg) scale(.5);
+  transition:all .8s cubic-bezier(.34,1.56,.64,1);
+}
+/* ไม้ 1 — เต็มแท่ง ลอยขึ้นมา */
+.result-stick-reveal.phase1{
+  opacity:1;
+  transform:rotate(-3deg) scale(1);
+}
+/* ไม้ 2 — ซูมเข้า + เรืองแสง */
+.result-stick-reveal.phase2{
+  opacity:1;
+  transform:rotate(0deg) scale(1.5);
+  transition:all 1s cubic-bezier(.4,0,.2,1);
+}
+.result-stick-reveal.phase2 img{
+  filter:
+    drop-shadow(0 0 25px rgba(236,89,157,.6))
+    drop-shadow(0 0 50px rgba(114,121,251,.4))
+    drop-shadow(0 0 80px rgba(236,89,157,.3))
+    brightness(1.15);
+}
+/* ไม้ 3 — ซูมเหลือครึ่งบน เน้นหัวไม้ */
+.result-stick-reveal.phase3{
+  opacity:1;
+  transform:rotate(0deg) scale(3) translateY(35%);
+  transition:all 1s cubic-bezier(.4,0,.2,1);
+}
+.result-stick-reveal.phase3 img{
+  filter:
+    drop-shadow(0 0 30px rgba(236,89,157,.7))
+    drop-shadow(0 0 60px rgba(114,121,251,.5))
+    brightness(1.2);
+}
+.result-stick-reveal img{
+  height:320px;width:auto;
+  filter:drop-shadow(0 0 12px rgba(114,121,251,.35));
+  transition:filter .8s ease;
+}
+/* Aura ring */
+.result-stick-aura{
+  position:absolute;top:50%;left:50%;
+  width:200px;height:200px;
+  transform:translate(-50%,-50%) scale(0);
+  border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(236,89,157,.15) 0%,rgba(114,121,251,.10) 40%,transparent 70%);
+  opacity:0;transition:all .6s ease;
+}
+.result-stick-reveal.phase2 .result-stick-aura,
+.result-stick-reveal.phase3 .result-stick-aura{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+  animation:stick-aura-pulse 1.2s ease-in-out infinite;
+}
+@keyframes stick-aura-pulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6}
+  50%{transform:translate(-50%,-50%) scale(1.3);opacity:1}
+}
+
+/* ── Number bubble (appears at tip in phase 3) ── */
+.result-num-bubble{
+  position:absolute;z-index:7;pointer-events:none;
+  top:calc(38% - 12px);left:50%;
+  transform:translate(-50%,-50%) scale(0);
+  width:110px;height:110px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  box-shadow:0 0 30px rgba(236,89,157,.4),0 0 60px rgba(114,121,251,.25);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;
+  transition:opacity 0s,transform 0s; /* instant hide */
+}
+.result-num-bubble.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+  transition:all .6s cubic-bezier(.34,1.56,.64,1);
+}
+/* Glossy highlight */
+.result-num-bubble::after{
+  content:'';position:absolute;
+  top:10%;left:15%;width:45%;height:35%;
+  background:radial-gradient(ellipse at 40% 30%,rgba(255,255,255,.3) 0%,transparent 70%);
+  border-radius:50%;
+}
+.result-num-bubble-val{
+  font-size:48px;font-weight:700;color:#fff;
+  font-family:var(--font);
+  text-shadow:0 2px 15px rgba(0,0,0,.15);
+  position:relative;z-index:1;
+}
+
 /* ── Central orb (blob) ── */
 .result-blob{
   position:relative;width:220px;height:220px;
@@ -443,10 +536,12 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
 
 /* ── Subtitle below blob ── */
 .result-subtitle{
-  margin-top:var(--sp-6);text-align:center;z-index:2;
-  opacity:0;transform:translateY(10px);transition:all .5s ease .4s;
+  position:absolute;top:36px;left:0;right:0;
+  text-align:center;z-index:10;
+  opacity:0;transform:translateY(10px);
+  transition:opacity 0s,transform 0s;
 }
-.result-subtitle.show{opacity:1;transform:translateY(0)}
+.result-subtitle.show{opacity:1;transform:translateY(0);transition:all .5s ease .4s}
 .result-subtitle-text{
   font-size:20px;line-height:28px;font-weight:700;
   background:linear-gradient(90deg,var(--primary),var(--secondary));
@@ -470,16 +565,20 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
 .result-star:nth-child(6){bottom:20%;right:25%;font-size:18px;color:var(--secondary);animation:star-float 3.8s ease-in-out infinite .8s}
 @keyframes star-float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(15deg)}}
 
-/* ── CTA button ── */
-.result-footer{padding:var(--sp-4) var(--sp-6) var(--sp-8);width:100%;position:relative;z-index:3}
+/* ── CTA button (floating) ── */
+.result-footer{
+  position:absolute;bottom:0;left:0;right:0;z-index:10;
+  padding:var(--sp-4) var(--sp-6) var(--sp-8);
+}
 .btn-read{
   width:100%;height:52px;border-radius:var(--r-full);
   background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;border:none;cursor:pointer;
   font-size:16px;line-height:24px;font-weight:700;font-family:var(--font);
   box-shadow:0 4px 16px rgba(236,89,157,.3);
-  transform:translateY(40px);opacity:0;transition:all .5s cubic-bezier(.4,0,.2,1);
+  transform:translateY(40px);opacity:0;
+  transition:opacity 0s,transform 0s; /* instant hide */
 }
-.btn-read.show{transform:translateY(0);opacity:1}
+.btn-read.show{transform:translateY(0);opacity:1;transition:all .5s cubic-bezier(.4,0,.2,1)}
 .btn-read:active{transform:scale(.97)}
 
 /* ═══════════════════════════════════════
@@ -491,7 +590,7 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
     radial-gradient(ellipse 60% 40% at 50% 15%,rgba(114,121,251,.10) 0%,transparent 100%),
     linear-gradient(180deg,#F1F2FF 0%,#FDEFF5 25%,#F8F0FF 50%,#FFFFFF 75%,#FDEFF5 100%);
 }
-.fortune-body{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.fortune-body{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
 
 /* Reuse landscape layers */
 .fortune-body .fb-hill{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
@@ -519,9 +618,9 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
 .fortune-body .fb-sparkle:nth-child(8){bottom:25%;right:12%;animation-delay:.8s;box-shadow:0 0 4px rgba(236,89,157,.4)}
 
 /* ── Scroll card ── */
-.fortune-card-wrap{flex:1;padding:0 var(--sp-5);display:flex;flex-direction:column;position:relative;z-index:1}
+.fortune-card-wrap{flex:1;min-height:0;padding:0 var(--sp-5);display:flex;flex-direction:column;position:relative;z-index:1}
 .fortune-card{
-  flex:1;display:flex;flex-direction:column;position:relative;
+  flex:1;min-height:0;display:flex;flex-direction:column;position:relative;
   background:linear-gradient(170deg,rgba(255,255,255,.92) 0%,rgba(253,239,245,.6) 50%,rgba(241,242,255,.5) 100%);
   border-radius:var(--r-lg);
   box-shadow:0 4px 30px rgba(0,0,0,.06);
@@ -551,7 +650,7 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
 
 /* Card content */
 .fortune-card-content{
-  flex:1;padding:var(--sp-8) var(--sp-6) var(--sp-5);
+  flex:1;min-height:0;padding:var(--sp-8) var(--sp-6) var(--sp-5);
   display:flex;flex-direction:column;align-items:center;
   overflow-y:auto;-webkit-overflow-scrolling:touch;
   position:relative;z-index:1;
@@ -577,6 +676,18 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
   text-align:center;max-width:280px;
 }
 .fortune-text p{margin-bottom:var(--sp-1)}
+/* Share button inside card — pill gradient */
+.btn-share-card{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  margin:var(--sp-5) auto 0;padding:10px 28px;
+  border-radius:var(--r-full);border:none;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;font-size:14px;line-height:22px;font-weight:700;font-family:var(--font);
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 14px rgba(236,89,157,.2);
+}
+.btn-share-card:active{transform:scale(.95);box-shadow:0 2px 8px rgba(236,89,157,.15)}
+.btn-share-card svg{opacity:.9}
 /* Footer inside card */
 .fortune-card-footer{
   margin-top:auto;padding-top:var(--sp-5);
@@ -585,15 +696,85 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
 .fortune-card-footer-label{color:var(--text-tertiary);font-size:12px;line-height:20px}
 .fortune-card-footer-num{color:var(--text-tertiary);font-size:14px;line-height:22px;font-weight:700}
 
-/* ── Action buttons (stacked) ── */
+/* ── Fortune level badge ── */
+.fortune-level-badge{
+  display:inline-flex;align-items:center;gap:var(--sp-1);
+  padding:var(--sp-1) var(--sp-3);border-radius:var(--r-full);
+  font-size:12px;line-height:20px;font-weight:700;
+  margin-bottom:var(--sp-4);
+}
+.fortune-level-badge::before{content:'';width:6px;height:6px;border-radius:50%}
+.fortune-level-badge[data-level="excellent"]{background:var(--success-bg);color:var(--success)}
+.fortune-level-badge[data-level="excellent"]::before{background:var(--success)}
+.fortune-level-badge[data-level="good"]{background:var(--primary-light);color:var(--primary)}
+.fortune-level-badge[data-level="good"]::before{background:var(--primary)}
+.fortune-level-badge[data-level="fair"]{background:var(--warning-bg);color:var(--warning)}
+.fortune-level-badge[data-level="fair"]::before{background:var(--warning)}
+.fortune-level-badge[data-level="caution"]{background:var(--error-bg);color:var(--error)}
+.fortune-level-badge[data-level="caution"]::before{background:var(--error)}
+
+/* ── Fortune title ── */
+.fortune-title{
+  font-size:18px;line-height:26px;font-weight:700;color:var(--text-primary);
+  text-align:center;margin-bottom:var(--sp-5);
+}
+
+/* ── Section label ── */
+.fortune-section-label{
+  display:flex;align-items:center;gap:var(--sp-2);width:100%;margin-bottom:var(--sp-3);
+}
+.fortune-section-label::before,.fortune-section-label::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.fortune-section-label span{
+  font-size:12px;line-height:20px;font-weight:700;color:var(--text-tertiary);
+  letter-spacing:1px;white-space:nowrap;
+}
+
+/* ── Poem section ── */
+.fortune-poem{
+  width:100%;padding:var(--sp-4);
+  background:linear-gradient(135deg,rgba(241,242,255,.4),rgba(253,239,245,.4));
+  border-radius:var(--r-md);border:1px solid rgba(114,121,251,.1);
+  margin-bottom:var(--sp-5);
+}
+.fortune-poem p{
+  font-size:14px;line-height:24px;color:var(--text-secondary);
+  text-align:center;margin:0;
+}
+.fortune-poem p.poem-indent{
+  text-indent:1.5em;text-align:left;
+}
+
+/* ── Payakorn / Advice text ── */
+.fortune-payakorn,.fortune-advice{
+  width:100%;text-align:left;margin-bottom:var(--sp-5);
+}
+.fortune-payakorn p,.fortune-advice p{
+  font-size:15px;line-height:26px;color:var(--text-secondary);margin:0;
+}
+
+/* ── Lucky numbers ── */
+.fortune-lucky-wrap{
+  display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-4);flex-wrap:wrap;justify-content:center;
+}
+.fortune-lucky-num{
+  width:44px;height:44px;border-radius:var(--r-full);
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;font-size:16px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(236,89,157,.25);
+}
+
+/* ── Action buttons (side by side) ── */
 .fortune-actions{
-  display:flex;flex-direction:column;gap:var(--sp-3);
+  display:flex;flex-direction:row;gap:var(--sp-3);
   padding:var(--sp-4) var(--sp-5) var(--sp-6);position:relative;z-index:1;
 }
 /* Label.3: 16px/24px Bold */
 .btn-retry,.btn-share{
-  width:100%;height:50px;border-radius:var(--r-full);border:none;cursor:pointer;
-  font-size:16px;line-height:24px;font-weight:700;font-family:var(--font);
+  flex:1;min-width:0;height:50px;border-radius:var(--r-full);border:none;cursor:pointer;
+  font-size:14px;line-height:22px;font-weight:700;font-family:var(--font);
   display:flex;align-items:center;justify-content:center;gap:var(--sp-2);
   transition:transform .15s;
 }
@@ -657,34 +838,146 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
    FORTUNE DATA — 28 ใบเซียมซี
    ═══════════════════════════════════════ */
 const FORTUNES=[
-{num:1,title:'ใบที่ 1',level:'excellent',text:'ชีวิตกำลังเข้าสู่ช่วงรุ่งเรือง\nการงานจะได้รับการสนับสนุนจากผู้ใหญ่\nการเงินไหลเข้ามาอย่างต่อเนื่อง\nความรักหวานชื่นมีคนคอยดูแล\nสุขภาพแข็งแรงไร้กังวล'},
-{num:2,title:'ใบที่ 2',level:'good',text:'สิ่งที่ตั้งใจไว้กำลังจะสำเร็จ\nอดทนอีกนิด ผลตอบแทนใกล้มาถึง\nมีเกณฑ์ได้รับข่าวดีเรื่องงาน\nความรักมีคนแอบชอบอยู่ใกล้ๆ\nดูแลสุขภาพเรื่องการนอนให้ดี'},
-{num:3,title:'ใบที่ 3',level:'good',text:'การงานก้าวหน้า มีโอกาสใหม่เข้ามา\nการเงินมีรายได้เสริมที่ไม่คาดคิด\nคนรอบข้างจะเป็นกำลังสำคัญ\nความรักราบรื่น อบอุ่นใจ\nหมั่นออกกำลังกายจะดีมาก'},
-{num:4,title:'ใบที่ 4',level:'fair',text:'ระยะนี้ต้องอดทนหน่อย\nอุปสรรคเป็นบทเรียนที่มีค่า\nการเงินยังไม่ควรลงทุนใหญ่\nความรักต้องใช้เวลาทำความเข้าใจ\nพักผ่อนให้เพียงพอ อย่าหักโหม'},
-{num:5,title:'ใบที่ 5',level:'excellent',text:'โชคลาภกำลังมาหา\nมีเกณฑ์ได้รับสิ่งดีๆ แบบไม่คาดฝัน\nการงานราบรื่น เป็นที่รักของเพื่อนร่วมงาน\nความรักสดใส มีเรื่องเซอร์ไพรส์\nสุขภาพดีเยี่ยม พลังเต็มเปี่ยม'},
-{num:6,title:'ใบที่ 6',level:'good',text:'การงานมีความเปลี่ยนแปลงที่ดี\nอาจได้รับข้อเสนอใหม่ที่น่าสนใจ\nการเงินค่อยๆ ดีขึ้นตามลำดับ\nความรักมีเรื่องให้ยิ้มได้ทุกวัน\nระวังเรื่องอาหารการกินสักหน่อย'},
-{num:7,title:'ใบที่ 7',level:'fair',text:'ช่วงนี้ให้ใจเย็นๆ อย่าเร่งรีบ\nสิ่งดีๆ กำลังจะมาถึงในเวลาที่เหมาะสม\nหลีกเลี่ยงการทะเลาะเบาะแว้ง\nเก็บเงินไว้สักพัก อย่าใช้จ่ายเกินตัว\nทำสมาธิจะช่วยให้ใจสงบ'},
-{num:8,title:'ใบที่ 8',level:'good',text:'มีผู้ใหญ่คอยช่วยเหลือเกื้อกูล\nการงานจะได้รับมอบหมายสิ่งสำคัญ\nการเงินมีโชคเรื่องตัวเลข\nความรักอาจมีคนมาจีบ\nสุขภาพดี แต่อย่าลืมพักผ่อน'},
-{num:9,title:'ใบที่ 9',level:'excellent',text:'ดวงเปิดรับสิ่งดีๆ ทุกทิศทาง\nการงานจะได้เลื่อนขั้นหรือได้รับการยอมรับ\nการเงินรุ่งเรือง มีรายได้เพิ่ม\nความรักเป็นช่วงเวลาแห่งความสุข\nร่างกายแข็งแรง จิตใจเบิกบาน'},
-{num:10,title:'ใบที่ 10',level:'fair',text:'อย่าไว้วางใจคนง่ายเกินไป\nตรวจสอบรายละเอียดให้ดีก่อนตัดสินใจ\nการเงินระวังรายจ่ายที่ไม่จำเป็น\nความรักต้องสื่อสารกันให้มากขึ้น\nดูแลเรื่องสายตาและการนอน'},
-{num:11,title:'ใบที่ 11',level:'good',text:'ความพยายามที่ผ่านมาจะเริ่มเห็นผล\nคนรอบข้างชื่นชมในตัวคุณ\nการเงินจะได้คืนจากสิ่งที่ลงทุนไป\nความรักเข้าใจกันดี มีความสุข\nสุขภาพดี ควรออกกำลังกายต่อเนื่อง'},
-{num:12,title:'ใบที่ 12',level:'fair',text:'ช่วงนี้อาจรู้สึกสับสนบ้าง\nให้ใช้เวลาทบทวนเป้าหมายชีวิต\nการเงินยังไม่ควรเสี่ยง\nความรักต้องให้เวลากับคนที่รัก\nพักผ่อนเยอะๆ จะช่วยได้'},
-{num:13,title:'ใบที่ 13',level:'good',text:'โชคดีมีลาภลอย\nอาจได้รับข่าวดีจากต่างถิ่น\nการงานราบรื่น มีคนช่วยเหลือ\nความรักหวานชื่น เหมือนเพิ่งเริ่มต้น\nสุขภาพแข็งแรง สดชื่น'},
-{num:14,title:'ใบที่ 14',level:'excellent',text:'มีผู้ใหญ่คอยสนับสนุนทั้ง\nเรื่องการงานและการเรียน\nการเงินค่อนข้างดีถึงดีมาก\nความรักดี มีแฟนเข้ามา\nคอยให้กำลังใจและเป็นที่\nปรึกษาที่ดีทั้งในเรื่องงาน\nและการวางแผนชีวิต\nสุขภาพ ควรหาเวลาไป\nฟิตเนสบ้างนะ'},
-{num:15,title:'ใบที่ 15',level:'fair',text:'ให้ระวังเรื่องคำพูด\nคิดก่อนพูดจะช่วยหลีกเลี่ยงปัญหา\nการเงินควรวางแผนให้ดี\nความรักมีเรื่องให้ต้องปรับตัว\nดูแลเรื่องกระเพาะอาหาร'},
-{num:16,title:'ใบที่ 16',level:'good',text:'การเดินทางจะนำโชคดีมาให้\nอาจได้พบคนสำคัญระหว่างทาง\nการเงินมีโอกาสได้ลาภจากต่างที่\nความรักอาจพบเจอคนพิเศษ\nสุขภาพดี เหมาะกับการทำกิจกรรม'},
-{num:17,title:'ใบที่ 17',level:'fair',text:'สิ่งที่หวังอาจต้องรอเวลา\nอย่าท้อ ทุกอย่างมีเหตุผลของมัน\nการเงินพอกินพอใช้\nความรักต้องใจเย็น อย่าเร่งรัด\nหมั่นทำบุญจะเสริมดวง'},
-{num:18,title:'ใบที่ 18',level:'good',text:'มีคนคอยช่วยเหลือไม่ขาดสาย\nการงานจะได้รับโอกาสใหม่\nการเงินค่อยๆ ดีขึ้น มีเงินเก็บ\nความรักมั่นคง ไว้ใจกันได้\nดูแลร่างกายด้วยการทานผักผลไม้'},
-{num:19,title:'ใบที่ 19',level:'excellent',text:'ดวงขึ้นสุดๆ ช่วงนี้\nทำอะไรก็ราบรื่นไปหมด\nการเงินเฮง มีโชคลาภก้อนใหญ่\nความรักสมหวังดังใจ\nสุขภาพเป็นเลิศ ชีวิตมีความสุข'},
-{num:20,title:'ใบที่ 20',level:'fair',text:'ระวังการตัดสินใจที่เร่งรีบ\nปรึกษาคนที่ไว้ใจก่อนลงมือ\nการเงินอย่าให้คนยืม\nความรักมีเรื่องเข้าใจผิดเล็กน้อย\nดูแลเรื่องหลังและไหล่'},
-{num:21,title:'ใบที่ 21',level:'good',text:'ความฝันกำลังจะเป็นจริง\nอย่าหยุดพยายาม เกือบถึงเป้าแล้ว\nการเงินมีแนวโน้มที่ดีมาก\nความรักราบรื่น เต็มไปด้วยความสุข\nสุขภาพดี มีพลังในการทำงาน'},
-{num:22,title:'ใบที่ 22',level:'caution',text:'ช่วงนี้ให้ระมัดระวังเป็นพิเศษ\nอย่าเชื่อคนง่ายๆ ตรวจสอบให้ดี\nการเงินเก็บไว้ อย่าเสี่ยง\nความรักมีเรื่องให้ต้องพิสูจน์\nดูแลสุขภาพให้ดี อย่าหักโหม'},
-{num:23,title:'ใบที่ 23',level:'good',text:'มีเกณฑ์ได้ย้ายที่อยู่หรือเปลี่ยนงาน\nการเปลี่ยนแปลงครั้งนี้จะดีขึ้น\nการเงินจะดีขึ้นหลังการเปลี่ยนแปลง\nความรักมีคนใหม่เข้ามาในชีวิต\nสุขภาพดี แต่ดูแลเรื่องภูมิแพ้'},
-{num:24,title:'ใบที่ 24',level:'fair',text:'ต้องใช้ความอดทนเป็นพิเศษ\nผลของความพยายามจะมาช้าแต่ชัวร์\nการเงินค่อยๆ สะสม\nความรักต้องให้เวลากัน\nทำสมาธิหรือโยคะจะช่วยได้มาก'},
-{num:25,title:'ใบที่ 25',level:'excellent',text:'โชคดีรอบด้าน ดวงเปิด\nการงานจะมีข่าวดีที่รอคอย\nการเงินเฮงมาก มีลาภลอย\nความรักสุดหวาน มีเซอร์ไพรส์\nสุขภาพเป็นเลิศ สดใสร่าเริง'},
-{num:26,title:'ใบที่ 26',level:'good',text:'ความตั้งใจดีจะนำพาสิ่งดีมา\nมีคนเห็นความพยายามของคุณ\nการเงินมีรายได้พิเศษ\nความรักเข้าใจกัน ผูกพันแน่นแฟ้น\nดูแลร่างกายด้วยการพักผ่อนให้เต็มที่'},
-{num:27,title:'ใบที่ 27',level:'fair',text:'ให้ระวังเรื่องเอกสารสำคัญ\nตรวจทานให้ดีก่อนเซ็นอะไร\nการเงินระวังการใช้จ่ายเกินตัว\nความรักมีเรื่องเล็กน้อยให้แก้ไข\nดูแลเรื่องกระดูกและข้อต่อ'},
-{num:28,title:'ใบที่ 28',level:'good',text:'การรอคอยจะได้ผลคุ้มค่า\nมีโชคจากการทำบุญ\nการเงินจะมีคนมาช่วยเรื่องเงิน\nความรักงอกงาม เติบโตไปด้วยกัน\nสุขภาพดี หมั่นดื่มน้ำเยอะๆ'}
+{num:1,title:'ใบปฐม สมหวัง ดังตั้งจิต',level:'excellent',
+poem:'\tใบปฐม สมหวัง ดังตั้งจิต\nจะมีมิตร อุปถัมภ์ สำราญยิ่ง\nงานที่ตรึก นึกในใจ สำเร็จจริง\nแต่ทุกสิ่ง ต้องช้าๆ พร้าเล่มงาม\n\tด้วยเดชแห่ง ความจริง อิงคำสัตย์\nภัยพิบัติ ปราศป้อง ไม่ต้องขาม\nมีโชคชัย สมสุข ทุกโมงยาม\nญาติติดตาม และพวกพร้อง ก็ต้องกัน\n\tหากถามถึง โรคภัย ในกายท่าน\nไม่นานวัน ค่อยยังชั่ว อย่าโศกศัลย์\nถามพี่น้อง เจ้าของหนี้ ที่ค้างกัน\nไม่นานวัน จะเห็นหน้า มาทักทาย\n\tเจตนา ถามหาลาภ ก็ทราบแน่\nอย่าท้อแท้ นานๆ ไม่หนีหาย\nถามเนื้อคู่ ดูเหมาะสม คำทำนาย\nความสุดท้าย ท่านจงสุข ทุกเวลาฯ',
+payakorn:'ในช่วงนี้ท่านจะได้รับความสำเร็จตามที่ตั้งใจไว้อย่างแน่นอน โดยมีมิตรสหายและผู้ช่วยเหลือคอยสนับสนุนให้เดินหน้าทำงานอย่างราบรื่น แต่ควรใช้ความอดทนและรอบคอบในการทำสิ่งต่าง ๆ จะทำให้ผลลัพธ์นั้นออกมาดีและงดงามยิ่งขึ้น ด้านสุขภาพจะค่อย ๆ ดีขึ้นในเวลาไม่นาน ไม่ต้องวิตกกังวล ส่วนเรื่องการเงินและความรัก แม้จะมีอุปสรรคบ้าง แต่จะมีโอกาสที่ดีเข้ามาในชีวิต ควรเปิดใจรอรับความสุขที่จะเกิดขึ้นในทุก ๆ วันอย่างมั่นใจ',
+advice:'ในช่วงนี้คุณจะมีโอกาสดีจากความตั้งใจและความพยายามของตนเอง ควรใช้เวลาในการวางแผนและทำสิ่งต่าง ๆ อย่างรอบคอบ อย่าลืมให้ความสำคัญกับความสัมพันธ์กับคนรอบข้าง เพราะจะนำโชคลาภและความสุขมาให้คุณในอนาคต',
+lucky:[21,32]},
+{num:2,title:'ใบที่ 2',level:'good',
+poem:'',
+payakorn:'สิ่งที่ตั้งใจไว้กำลังจะสำเร็จ อดทนอีกนิด ผลตอบแทนใกล้มาถึง มีเกณฑ์ได้รับข่าวดีเรื่องงาน ความรักมีคนแอบชอบอยู่ใกล้ๆ ดูแลสุขภาพเรื่องการนอนให้ดี',
+advice:'ควรตั้งใจทำสิ่งที่รักและอดทนรอคอย ผลดีกำลังจะมาถึง',
+lucky:[8,15]},
+{num:3,title:'ใบที่ 3',level:'good',
+poem:'',
+payakorn:'การงานก้าวหน้า มีโอกาสใหม่เข้ามา การเงินมีรายได้เสริมที่ไม่คาดคิด คนรอบข้างจะเป็นกำลังสำคัญ ความรักราบรื่น อบอุ่นใจ',
+advice:'หมั่นออกกำลังกายและรักษาสุขภาพ โอกาสดีกำลังมา',
+lucky:[3,19]},
+{num:4,title:'ใบที่ 4',level:'fair',
+poem:'',
+payakorn:'ระยะนี้ต้องอดทนหน่อย อุปสรรคเป็นบทเรียนที่มีค่า การเงินยังไม่ควรลงทุนใหญ่ ความรักต้องใช้เวลาทำความเข้าใจ',
+advice:'พักผ่อนให้เพียงพอ อย่าหักโหม ใช้เวลาทบทวนสิ่งที่ผ่านมา',
+lucky:[4,12]},
+{num:5,title:'ใบที่ 5',level:'excellent',
+poem:'',
+payakorn:'โชคลาภกำลังมาหา มีเกณฑ์ได้รับสิ่งดีๆ แบบไม่คาดฝัน การงานราบรื่น เป็นที่รักของเพื่อนร่วมงาน ความรักสดใส มีเรื่องเซอร์ไพรส์',
+advice:'เปิดใจรับสิ่งใหม่ๆ โชคดีรอคุณอยู่',
+lucky:[5,25]},
+{num:6,title:'ใบที่ 6',level:'good',
+poem:'',
+payakorn:'การงานมีความเปลี่ยนแปลงที่ดี อาจได้รับข้อเสนอใหม่ที่น่าสนใจ การเงินค่อยๆ ดีขึ้นตามลำดับ ความรักมีเรื่องให้ยิ้มได้ทุกวัน',
+advice:'ระวังเรื่องอาหารการกินสักหน่อย ดูแลสุขภาพ',
+lucky:[6,18]},
+{num:7,title:'ใบที่ 7',level:'fair',
+poem:'',
+payakorn:'ช่วงนี้ให้ใจเย็นๆ อย่าเร่งรีบ สิ่งดีๆ กำลังจะมาถึงในเวลาที่เหมาะสม หลีกเลี่ยงการทะเลาะเบาะแว้ง',
+advice:'เก็บเงินไว้สักพัก อย่าใช้จ่ายเกินตัว ทำสมาธิจะช่วยให้ใจสงบ',
+lucky:[7,14]},
+{num:8,title:'ใบที่ 8',level:'good',
+poem:'',
+payakorn:'มีผู้ใหญ่คอยช่วยเหลือเกื้อกูล การงานจะได้รับมอบหมายสิ่งสำคัญ การเงินมีโชคเรื่องตัวเลข',
+advice:'ความรักอาจมีคนมาจีบ สุขภาพดี แต่อย่าลืมพักผ่อน',
+lucky:[8,28]},
+{num:9,title:'ใบที่ 9',level:'excellent',
+poem:'',
+payakorn:'ดวงเปิดรับสิ่งดีๆ ทุกทิศทาง การงานจะได้เลื่อนขั้นหรือได้รับการยอมรับ การเงินรุ่งเรือง มีรายได้เพิ่ม',
+advice:'ความรักเป็นช่วงเวลาแห่งความสุข ร่างกายแข็งแรง จิตใจเบิกบาน',
+lucky:[9,27]},
+{num:10,title:'ใบที่ 10',level:'fair',
+poem:'',
+payakorn:'อย่าไว้วางใจคนง่ายเกินไป ตรวจสอบรายละเอียดให้ดีก่อนตัดสินใจ การเงินระวังรายจ่ายที่ไม่จำเป็น',
+advice:'ความรักต้องสื่อสารกันให้มากขึ้น ดูแลเรื่องสายตาและการนอน',
+lucky:[10,20]},
+{num:11,title:'ใบที่ 11',level:'good',
+poem:'',
+payakorn:'ความพยายามที่ผ่านมาจะเริ่มเห็นผล คนรอบข้างชื่นชมในตัวคุณ การเงินจะได้คืนจากสิ่งที่ลงทุนไป',
+advice:'ความรักเข้าใจกันดี มีความสุข ควรออกกำลังกายต่อเนื่อง',
+lucky:[11,22]},
+{num:12,title:'ใบที่ 12',level:'fair',
+poem:'',
+payakorn:'ช่วงนี้อาจรู้สึกสับสนบ้าง ให้ใช้เวลาทบทวนเป้าหมายชีวิต การเงินยังไม่ควรเสี่ยง',
+advice:'ความรักต้องให้เวลากับคนที่รัก พักผ่อนเยอะๆ จะช่วยได้',
+lucky:[12,24]},
+{num:13,title:'ใบที่ 13',level:'good',
+poem:'',
+payakorn:'โชคดีมีลาภลอย อาจได้รับข่าวดีจากต่างถิ่น การงานราบรื่น มีคนช่วยเหลือ',
+advice:'ความรักหวานชื่น เหมือนเพิ่งเริ่มต้น สุขภาพแข็งแรง สดชื่น',
+lucky:[13,26]},
+{num:14,title:'ใบที่ 14',level:'excellent',
+poem:'',
+payakorn:'มีผู้ใหญ่คอยสนับสนุนทั้งเรื่องการงานและการเรียน การเงินค่อนข้างดีถึงดีมาก ความรักดี มีแฟนเข้ามา',
+advice:'คอยให้กำลังใจและเป็นที่ปรึกษาที่ดี ควรหาเวลาไปฟิตเนสบ้าง',
+lucky:[14,7]},
+{num:15,title:'ใบที่ 15',level:'fair',
+poem:'',
+payakorn:'ให้ระวังเรื่องคำพูด คิดก่อนพูดจะช่วยหลีกเลี่ยงปัญหา การเงินควรวางแผนให้ดี',
+advice:'ความรักมีเรื่องให้ต้องปรับตัว ดูแลเรื่องกระเพาะอาหาร',
+lucky:[15,3]},
+{num:16,title:'ใบที่ 16',level:'good',
+poem:'',
+payakorn:'การเดินทางจะนำโชคดีมาให้ อาจได้พบคนสำคัญระหว่างทาง การเงินมีโอกาสได้ลาภจากต่างที่',
+advice:'ความรักอาจพบเจอคนพิเศษ สุขภาพดี เหมาะกับการทำกิจกรรม',
+lucky:[16,8]},
+{num:17,title:'ใบที่ 17',level:'fair',
+poem:'',
+payakorn:'สิ่งที่หวังอาจต้องรอเวลา อย่าท้อ ทุกอย่างมีเหตุผลของมัน การเงินพอกินพอใช้',
+advice:'ความรักต้องใจเย็น อย่าเร่งรัด หมั่นทำบุญจะเสริมดวง',
+lucky:[17,9]},
+{num:18,title:'ใบที่ 18',level:'good',
+poem:'',
+payakorn:'มีคนคอยช่วยเหลือไม่ขาดสาย การงานจะได้รับโอกาสใหม่ การเงินค่อยๆ ดีขึ้น มีเงินเก็บ',
+advice:'ความรักมั่นคง ไว้ใจกันได้ ดูแลร่างกายด้วยการทานผักผลไม้',
+lucky:[18,6]},
+{num:19,title:'ใบที่ 19',level:'excellent',
+poem:'',
+payakorn:'ดวงขึ้นสุดๆ ช่วงนี้ ทำอะไรก็ราบรื่นไปหมด การเงินเฮง มีโชคลาภก้อนใหญ่',
+advice:'ความรักสมหวังดังใจ สุขภาพเป็นเลิศ ชีวิตมีความสุข',
+lucky:[19,1]},
+{num:20,title:'ใบที่ 20',level:'fair',
+poem:'',
+payakorn:'ระวังการตัดสินใจที่เร่งรีบ ปรึกษาคนที่ไว้ใจก่อนลงมือ การเงินอย่าให้คนยืม',
+advice:'ความรักมีเรื่องเข้าใจผิดเล็กน้อย ดูแลเรื่องหลังและไหล่',
+lucky:[20,10]},
+{num:21,title:'ใบที่ 21',level:'good',
+poem:'',
+payakorn:'ความฝันกำลังจะเป็นจริง อย่าหยุดพยายาม เกือบถึงเป้าแล้ว การเงินมีแนวโน้มที่ดีมาก',
+advice:'ความรักราบรื่น เต็มไปด้วยความสุข สุขภาพดี มีพลังในการทำงาน',
+lucky:[21,2]},
+{num:22,title:'ใบที่ 22',level:'caution',
+poem:'',
+payakorn:'ช่วงนี้ให้ระมัดระวังเป็นพิเศษ อย่าเชื่อคนง่ายๆ ตรวจสอบให้ดี การเงินเก็บไว้ อย่าเสี่ยง',
+advice:'ความรักมีเรื่องให้ต้องพิสูจน์ ดูแลสุขภาพให้ดี อย่าหักโหม',
+lucky:[22,11]},
+{num:23,title:'ใบที่ 23',level:'good',
+poem:'',
+payakorn:'มีเกณฑ์ได้ย้ายที่อยู่หรือเปลี่ยนงาน การเปลี่ยนแปลงครั้งนี้จะดีขึ้น การเงินจะดีขึ้นหลังการเปลี่ยนแปลง',
+advice:'ความรักมีคนใหม่เข้ามาในชีวิต สุขภาพดี แต่ดูแลเรื่องภูมิแพ้',
+lucky:[23,5]},
+{num:24,title:'ใบที่ 24',level:'fair',
+poem:'',
+payakorn:'ต้องใช้ความอดทนเป็นพิเศษ ผลของความพยายามจะมาช้าแต่ชัวร์ การเงินค่อยๆ สะสม',
+advice:'ความรักต้องให้เวลากัน ทำสมาธิหรือโยคะจะช่วยได้มาก',
+lucky:[24,16]},
+{num:25,title:'ใบที่ 25',level:'excellent',
+poem:'',
+payakorn:'โชคดีรอบด้าน ดวงเปิด การงานจะมีข่าวดีที่รอคอย การเงินเฮงมาก มีลาภลอย',
+advice:'ความรักสุดหวาน มีเซอร์ไพรส์ สุขภาพเป็นเลิศ สดใสร่าเริง',
+lucky:[25,5]},
+{num:26,title:'ใบที่ 26',level:'good',
+poem:'',
+payakorn:'ความตั้งใจดีจะนำพาสิ่งดีมา มีคนเห็นความพยายามของคุณ การเงินมีรายได้พิเศษ',
+advice:'ความรักเข้าใจกัน ผูกพันแน่นแฟ้น ดูแลร่างกายด้วยการพักผ่อนให้เต็มที่',
+lucky:[26,13]},
+{num:27,title:'ใบที่ 27',level:'fair',
+poem:'',
+payakorn:'ให้ระวังเรื่องเอกสารสำคัญ ตรวจทานให้ดีก่อนเซ็นอะไร การเงินระวังการใช้จ่ายเกินตัว',
+advice:'ความรักมีเรื่องเล็กน้อยให้แก้ไข ดูแลเรื่องกระดูกและข้อต่อ',
+lucky:[27,9]},
+{num:28,title:'ใบที่ 28',level:'good',
+poem:'',
+payakorn:'การรอคอยจะได้ผลคุ้มค่า มีโชคจากการทำบุญ การเงินจะมีคนมาช่วยเรื่องเงิน',
+advice:'ความรักงอกงาม เติบโตไปด้วยกัน สุขภาพดี หมั่นดื่มน้ำเยอะๆ',
+lucky:[28,14]}
 ];
 
 /* ═══════════════════════════════════════
@@ -733,12 +1026,20 @@ function getAudioCtx(){
 }
 
 /* เสียงกระทบไม้ — สั้น คม เหมือนไม้เซียมซีกระทบกัน */
+/* เสียงกระทบไม้ — ดังขึ้นตาม energy (0-100) + pitch สูงขึ้น */
 function playSfxShake(){
   const ctx=getAudioCtx();
   const t=ctx.currentTime;
+  const pct=Math.min(energy,100)/100; /* 0→1 */
 
-  /* Noise burst → bandpass filter = เสียงไม้ */
-  const len=Math.floor(ctx.sampleRate*0.04);
+  /* Volume: 0.1 (เริ่ม) → 0.7 (เต็ม) */
+  const vol=0.1+pct*0.6;
+  /* Pitch: 800 (เริ่ม) → 1800 (เต็ม) */
+  const freq=800+pct*1000+Math.random()*300;
+  /* Duration: ยาวขึ้นเมื่อใกล้เต็ม */
+  const dur=0.03+pct*0.03;
+
+  const len=Math.floor(ctx.sampleRate*dur);
   const buf=ctx.createBuffer(1,len,ctx.sampleRate);
   const d=buf.getChannelData(0);
   for(let i=0;i<len;i++)d[i]=(Math.random()*2-1);
@@ -748,20 +1049,19 @@ function playSfxShake(){
 
   const bp=ctx.createBiquadFilter();
   bp.type='bandpass';
-  bp.frequency.value=900+Math.random()*600;
-  bp.Q.value=6;
+  bp.frequency.value=freq;
+  bp.Q.value=4+pct*6;
 
-  /* ใส่ resonance ให้เหมือนไม้กลวง */
   const hp=ctx.createBiquadFilter();
   hp.type='highpass';
-  hp.frequency.value=400;
+  hp.frequency.value=300+pct*300;
 
   const gain=ctx.createGain();
-  gain.gain.setValueAtTime(0.35,t);
-  gain.gain.exponentialRampToValueAtTime(0.001,t+0.045);
+  gain.gain.setValueAtTime(vol,t);
+  gain.gain.exponentialRampToValueAtTime(0.001,t+dur+0.01);
 
   src.connect(bp);bp.connect(hp);hp.connect(gain);gain.connect(ctx.destination);
-  src.start(t);src.stop(t+0.05);
+  src.start(t);src.stop(t+dur+0.02);
 }
 
 /* เสียงไม้ลอยขึ้น — ascending shimmer */
@@ -924,26 +1224,29 @@ function renderApp(){
         <div class="result-star">☆</div>
         <div class="result-star">✧</div>
         <div class="result-star">✦</div>
+        <!-- Fortune stick reveal -->
+        <div class="result-stick-reveal" id="result-stick">
+          <div class="result-stick-aura"></div>
+          <img src="stick.png" alt="" draggable="false">
+        </div>
         <!-- Light burst -->
         <div class="result-burst" id="result-burst"></div>
         <!-- Glowing rings -->
         <div class="result-ring result-ring-3" id="result-ring-3"></div>
         <div class="result-ring result-ring-2" id="result-ring-2"></div>
         <div class="result-ring result-ring-1" id="result-ring-1"></div>
-        <!-- Central orb -->
-        <div class="result-blob">
-          <div class="result-blob-bg" id="result-blob"></div>
-          <div class="result-label" id="result-label">เลขนำโชค</div>
-          <div class="result-number" id="result-number">0</div>
+        <!-- Number bubble (appears at tip) -->
+        <div class="result-num-bubble" id="result-num-bubble">
+          <span class="result-num-bubble-val" id="result-num-val">0</span>
         </div>
         <!-- Subtitle -->
         <div class="result-subtitle" id="result-subtitle">
-          <div class="result-subtitle-text">ดวงของคุณกำลังเปิด</div>
-          <div class="result-subtitle-hint">แตะเพื่ออ่านคำทำนาย</div>
+          <div class="result-subtitle-text">ได้ใบเซียมซีแล้ว!</div>
+          <div class="result-subtitle-hint">กดดูคำทำนายของคุณ</div>
         </div>
       </div>
       <div class="result-footer">
-        <button class="btn-read" id="btn-read">อ่านคำทำนาย ✦</button>
+        <button class="btn-read" id="btn-read">ดูผลเซียมซี ✦</button>
       </div>
       <canvas id="confetti"></canvas>
     </div>
@@ -972,10 +1275,27 @@ function renderApp(){
             <div class="fc-ornament fc-ornament-bl">❧</div>
             <div class="fc-ornament fc-ornament-br">❧</div>
             <div class="fortune-card-content">
-              <div class="fortune-brand">DailyMu</div>
+              <div class="fortune-brand">DAILYMU</div>
               <div class="fortune-num-big" id="fortune-num-big">0</div>
+              <div class="fortune-level-badge" id="fortune-level" data-level="good"></div>
+              <div class="fortune-title" id="fortune-title"></div>
               <div class="fortune-divider"></div>
-              <div class="fortune-text" id="fortune-text"></div>
+              <!-- คำกลอน -->
+              <div class="fortune-poem" id="fortune-poem" style="display:none"></div>
+              <!-- คำทำนาย -->
+              <div class="fortune-section-label"><span>คำทำนาย</span></div>
+              <div class="fortune-payakorn" id="fortune-payakorn"></div>
+              <!-- คำแนะนำ -->
+              <div class="fortune-section-label"><span>คำแนะนำ</span></div>
+              <div class="fortune-advice" id="fortune-advice"></div>
+              <!-- เลขนำโชค -->
+              <div class="fortune-section-label"><span>เลขนำโชค</span></div>
+              <div class="fortune-lucky-wrap" id="fortune-lucky"></div>
+              <!-- ปุ่มแชร์ -->
+              <button class="btn-share-card" id="btn-share-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                แชร์ผลเซียมซี
+              </button>
               <div class="fortune-card-footer">
                 <span class="fortune-card-footer-label">เสียงกระซิบแห่งความโชคดี</span>
                 <span class="fortune-card-footer-num" id="fortune-footer-num">0</span>
@@ -983,12 +1303,12 @@ function renderApp(){
             </div>
           </div>
         </div>
-        <!-- Stacked buttons -->
+        <!-- Side-by-side buttons -->
         <div class="fortune-actions">
-          <button class="btn-retry" id="btn-retry">
-            <span class="btn-icon">↻</span> เสี่ยงเซียมซีอีกครั้ง
-          </button>
           <button class="btn-share" id="btn-share">กลับหน้าหลัก</button>
+          <button class="btn-retry" id="btn-retry">
+            <span class="btn-icon">↻</span> เสี่ยงอีกครั้ง
+          </button>
         </div>
       </div>
     </div>
@@ -1018,14 +1338,10 @@ function goTo(screenId,direction='forward'){
 }
 
 async function transitionTo(screenId){
-  const flash=$('#flash');
   if(screenId==='s-result'){
-    flash.classList.add('show');
-    await wait(300);
+    /* Seamless — ไม่ flash ให้ต่อเนื่องจากไม้ที่ดึงขึ้นมา */
     goTo(screenId);
-    await wait(100);
-    flash.classList.remove('show');
-    await wait(400);
+    await wait(50);
     playResultAnimation();
   }else{
     goTo(screenId);
@@ -1066,10 +1382,13 @@ function bindEvents(){
     clearTimeout(rapidTapTimer);
     rapidTapTimer=setTimeout(()=>{tapCount=0},600);
     /* Hold to continuously add energy */
+    let holdTick=0;
     holdInterval=setInterval(()=>{
       if(energy>=100){clearInterval(holdInterval);return}
       addEnergy(2);
       haptic(10);
+      holdTick++;
+      if(holdTick%3===0)playSfxShake(); /* เล่นเสียงทุก 3 tick (~180ms) */
     },60);
   });
   const stopHold=()=>{clearInterval(holdInterval);holdInterval=null};
@@ -1102,7 +1421,7 @@ function bindEvents(){
 
   /* Retry */
   $('#btn-retry').addEventListener('click',()=>{
-    resetShakeState();
+    resetAll();
     goTo('s-shake');
   });
 
@@ -1220,6 +1539,17 @@ function resetAll(){
   fortuneNum=0;
   particles=[];
   cancelAnimationFrame(animFrame);
+  /* Reset result screen */
+  const stk=$('#result-stick');
+  if(stk)stk.classList.remove('phase1','phase2','phase3');
+  const nb=$('#result-num-bubble');
+  if(nb)nb.classList.remove('show');
+  const burst=$('#result-burst');
+  if(burst)burst.classList.remove('show');
+  ['#result-ring-1','#result-ring-2','#result-ring-3','#result-subtitle','#btn-read'].forEach(s=>{
+    const el=$(s);if(el)el.classList.remove('show');
+  });
+  $$('.result-star').forEach(s=>s.classList.remove('show'));
 }
 
 /* ═══════════════════════════════════════
@@ -1256,8 +1586,8 @@ if(!document.getElementById('dynamic-styles')){
    TRIGGER REVEAL
    ═══════════════════════════════════════ */
 async function triggerReveal(){
-  /* Pick random fortune */
-  fortuneNum=Math.floor(Math.random()*28)+1;
+  /* Pick fortune — fixed to 1 for testing max content */
+  fortuneNum=1;
 
   /* Animate rising stick */
   const fi=$('#fi-shake');
@@ -1283,63 +1613,58 @@ async function triggerReveal(){
    RESULT ANIMATION
    ═══════════════════════════════════════ */
 async function playResultAnimation(){
-  const blob=$('#result-blob');
-  const numEl=$('#result-number');
-  const labelEl=$('#result-label');
+  const stickEl=$('#result-stick');
   const burst=$('#result-burst');
   const ring1=$('#result-ring-1');
   const ring2=$('#result-ring-2');
   const ring3=$('#result-ring-3');
+  const numBubble=$('#result-num-bubble');
+  const numVal=$('#result-num-val');
   const subtitle=$('#result-subtitle');
   const stars=$$('.result-star');
   const btnRead=$('#btn-read');
 
   /* Reset all */
-  [blob,burst,ring1,ring2,ring3,subtitle,btnRead].forEach(el=>{if(el)el.classList.remove('show')});
-  if(numEl){numEl.classList.remove('show');numEl.textContent='0'}
-  if(labelEl)labelEl.classList.remove('show');
+  [burst,ring1,ring2,ring3,subtitle,btnRead].forEach(el=>{if(el)el.classList.remove('show')});
+  if(numBubble)numBubble.classList.remove('show');
+  if(numVal)numVal.textContent='0';
   stars.forEach(s=>s.classList.remove('show'));
+  if(stickEl)stickEl.classList.remove('phase1','phase2','phase3');
 
-  await wait(200);
+  /* ── ไม้ 1: เต็มแท่ง — ปรากฏทันที ต่อเนื่องจากฉากดึงไม้ ── */
+  requestAnimationFrame(()=>{
+    if(stickEl)stickEl.classList.add('phase1');
+  });
+  await wait(1200);
 
-  /* 1. Light burst fades in */
+  /* ── ไม้ 2: ซูมเข้า + เรืองแสง ── */
+  if(stickEl){stickEl.classList.remove('phase1');stickEl.classList.add('phase2')}
   if(burst)burst.classList.add('show');
-  await wait(300);
+  haptic(40);
+  await wait(1200);
 
-  /* 2. Rings expand outward */
+  /* ── ไม้ 3: ซูมเหลือครึ่งบน เน้นหัวไม้ ── */
+  if(stickEl){stickEl.classList.remove('phase2');stickEl.classList.add('phase3')}
+  await wait(800);
+
+  /* ── เฉลยเลข: bubble ปรากฏที่หัวไม้ ── */
+  if(numBubble)numBubble.classList.add('show');
+  if(numVal)await animateCounter(numVal,fortuneNum);
+
+  /* ── ทุกอย่างมาพร้อมกันตอนเลขเฉลย ── */
+  haptic(80);
+  playSfxReveal();
+  launchConfetti();
+  if(subtitle)subtitle.classList.add('show');
   if(ring1)ring1.classList.add('show');
-  await wait(150);
+  stars.forEach((s,i)=>setTimeout(()=>s.classList.add('show'),i*80));
+  await wait(200);
   if(ring2)ring2.classList.add('show');
-  await wait(150);
+  await wait(200);
   if(ring3)ring3.classList.add('show');
-  await wait(300);
-
-  /* 3. Orb scales in */
-  blob.classList.add('show');
   await wait(500);
 
-  /* 4. Label + Number counter */
-  if(labelEl)labelEl.classList.add('show');
-  await wait(200);
-  numEl.classList.add('show');
-  await animateCounter(numEl,fortuneNum);
-  haptic(50);
-  playSfxReveal();
-  await wait(200);
-
-  /* 5. Confetti burst */
-  launchConfetti();
-  await wait(200);
-
-  /* 6. Stars appear staggered */
-  stars.forEach((s,i)=>setTimeout(()=>s.classList.add('show'),i*120));
-  await wait(400);
-
-  /* 7. Subtitle */
-  if(subtitle)subtitle.classList.add('show');
-  await wait(300);
-
-  /* 8. Button slides up */
+  /* ── Button ── */
   btnRead.classList.add('show');
 }
 
@@ -1437,34 +1762,83 @@ function launchConfetti(){
 /* ═══════════════════════════════════════
    FORTUNE DISPLAY
    ═══════════════════════════════════════ */
+const LEVEL_LABELS={excellent:'ดวงดีมาก',good:'ดวงดี',fair:'ดวงกลาง',caution:'ระวัง'};
+
 function showFortune(){
   const fortune=FORTUNES.find(f=>f.num===fortuneNum)||FORTUNES[0];
+
+  /* Number */
   const numBig=$('#fortune-num-big');
   const footerNum=$('#fortune-footer-num');
-  const text=$('#fortune-text');
   if(numBig)numBig.textContent=fortune.num;
   if(footerNum)footerNum.textContent=fortune.num;
-  if(text){
-    text.innerHTML='';
-    /* Typewriter effect */
-    const lines=fortune.text.split('\n');
-    let i=0;
-    function addLine(){
-      if(i>=lines.length)return;
-      const p=document.createElement('p');
-      p.style.cssText='opacity:0;transform:translateY(8px);transition:all .4s ease';
-      p.textContent=lines[i];
-      text.appendChild(p);
-      requestAnimationFrame(()=>{
-        requestAnimationFrame(()=>{
-          p.style.opacity='1';
-          p.style.transform='translateY(0)';
-        });
+
+  /* Title */
+  const titleEl=$('#fortune-title');
+  if(titleEl)titleEl.textContent=fortune.title;
+
+  /* Level badge */
+  const levelEl=$('#fortune-level');
+  if(levelEl){
+    levelEl.dataset.level=fortune.level;
+    levelEl.textContent=LEVEL_LABELS[fortune.level]||fortune.level;
+  }
+
+  /* Poem (กลอน) — show only if available */
+  const poemEl=$('#fortune-poem');
+  if(poemEl){
+    if(fortune.poem){
+      poemEl.style.display='';
+      poemEl.innerHTML='';
+      const lines=fortune.poem.split('\n');
+      lines.forEach(line=>{
+        const p=document.createElement('p');
+        const isIndent=line.startsWith('\t');
+        p.textContent=isIndent?line.replace(/^\t/,''):line;
+        if(isIndent)p.classList.add('poem-indent');
+        poemEl.appendChild(p);
       });
-      i++;
-      if(i<lines.length)setTimeout(addLine,150);
+    }else{
+      poemEl.style.display='none';
     }
-    setTimeout(addLine,300);
+  }
+
+  /* Payakorn (คำทำนาย) — typewriter effect */
+  const payakornEl=$('#fortune-payakorn');
+  if(payakornEl){
+    payakornEl.innerHTML='';
+    const p=document.createElement('p');
+    p.style.cssText='opacity:0;transform:translateY(8px);transition:all .5s ease';
+    p.textContent=fortune.payakorn;
+    payakornEl.appendChild(p);
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        p.style.opacity='1';
+        p.style.transform='translateY(0)';
+      });
+    });
+  }
+
+  /* Advice (คำแนะนำ) */
+  const adviceEl=$('#fortune-advice');
+  if(adviceEl){
+    adviceEl.innerHTML='';
+    const p=document.createElement('p');
+    p.style.cssText='opacity:0;transform:translateY(8px);transition:all .5s ease .2s';
+    p.textContent=fortune.advice;
+    adviceEl.appendChild(p);
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        p.style.opacity='1';
+        p.style.transform='translateY(0)';
+      });
+    });
+  }
+
+  /* Lucky numbers */
+  const luckyEl=$('#fortune-lucky');
+  if(luckyEl&&fortune.lucky){
+    luckyEl.innerHTML=fortune.lucky.map(n=>`<div class="fortune-lucky-num">${n}</div>`).join('');
   }
 }
 
