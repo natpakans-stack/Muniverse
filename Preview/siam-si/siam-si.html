@@ -101,71 +101,35 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
   pointer-events:none;z-index:0;
 }
 
-/* ── Mountain / hill silhouettes ── */
-.wb-hill{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
-/* Far hills - very subtle */
-.wb-hill-1{
-  bottom:22%;left:-40px;width:200px;height:260px;
-  background:radial-gradient(ellipse at 50% 100%,rgba(114,121,251,.07) 0%,transparent 70%);
+/* ── Floating Clouds (PNG image) ── */
+.wb-cloud{
+  position:absolute;pointer-events:none;z-index:1;
+  will-change:transform;
 }
-.wb-hill-2{
-  bottom:18%;right:-50px;width:220px;height:300px;
-  background:radial-gradient(ellipse at 50% 100%,rgba(236,89,157,.06) 0%,transparent 70%);
-}
-/* Mid hills - slightly more visible */
-.wb-hill-3{
-  bottom:12%;left:-20px;width:160px;height:180px;
-  background:radial-gradient(ellipse at 50% 100%,rgba(114,121,251,.10) 0%,transparent 65%);
-}
-.wb-hill-4{
-  bottom:10%;right:-10px;width:140px;height:160px;
-  background:radial-gradient(ellipse at 50% 100%,rgba(236,89,157,.08) 0%,transparent 65%);
-}
+.wb-cloud img{width:100%;height:auto;display:block}
+.wb-cloud-1{top:0%;left:-20%;width:280px;opacity:.4;animation:cloud-drift-1 22s ease-in-out infinite}
+.wb-cloud-2{top:10%;right:-25%;width:240px;opacity:.3;animation:cloud-drift-2 28s ease-in-out infinite}
+.wb-cloud-3{top:32%;left:-10%;width:200px;opacity:.25;animation:cloud-drift-3 19s ease-in-out infinite}
+.wb-cloud-4{bottom:25%;right:-15%;width:260px;opacity:.35;animation:cloud-drift-4 24s ease-in-out infinite}
+.wb-cloud-5{top:5%;left:20%;width:160px;opacity:.18;animation:cloud-drift-5 32s ease-in-out infinite}
+.wb-cloud-6{bottom:35%;left:-15%;width:220px;opacity:.22;animation:cloud-drift-6 20s ease-in-out infinite}
+.wb-cloud-7{bottom:12%;right:5%;width:180px;opacity:.28;animation:cloud-drift-7 26s ease-in-out infinite}
 
-/* ── Tree silhouettes (CSS triangles) ── */
-.wb-tree{position:absolute;pointer-events:none;z-index:0;opacity:.06}
-.wb-tree::before,.wb-tree::after{content:'';position:absolute;left:50%;transform:translateX(-50%)}
-.wb-tree::before{bottom:0;width:4px;height:20px;background:var(--secondary);border-radius:2px}
-.wb-tree::after{bottom:14px;width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-bottom:30px solid var(--secondary)}
-.wb-tree-1{bottom:28%;left:8%;transform:scale(1.2)}
-.wb-tree-2{bottom:26%;left:2%;transform:scale(.8);opacity:.04}
-.wb-tree-3{bottom:30%;right:5%;transform:scale(1)}
-.wb-tree-4{bottom:27%;right:12%;transform:scale(.7);opacity:.04}
-.wb-tree-5{bottom:25%;left:18%;transform:scale(.6);opacity:.03}
-.wb-tree-6{bottom:24%;right:20%;transform:scale(.5);opacity:.03}
+@keyframes cloud-drift-1{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(50px) translateY(12px)}}
+@keyframes cloud-drift-2{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(-45px) translateY(-8px)}}
+@keyframes cloud-drift-3{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(35px) translateY(6px)}}
+@keyframes cloud-drift-4{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(-50px) translateY(-12px)}}
+@keyframes cloud-drift-5{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(25px) translateY(10px)}}
+@keyframes cloud-drift-6{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(30px) translateY(-6px)}}
+@keyframes cloud-drift-7{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(-35px) translateY(8px)}}
 
-/* ── Cloud / mist layers ── */
-.wb-mist{position:absolute;left:0;right:0;pointer-events:none;z-index:1}
-.wb-mist-1{
-  bottom:16%;height:80px;
-  background:radial-gradient(ellipse 120% 100% at 50% 100%,rgba(255,255,255,.9) 0%,transparent 70%);
-}
-.wb-mist-2{
-  bottom:8%;height:100px;
-  background:radial-gradient(ellipse 140% 100% at 30% 100%,rgba(253,239,245,.8) 0%,transparent 60%);
-  animation:mist-drift 12s ease-in-out infinite;
-}
-.wb-mist-3{
-  bottom:0;height:120px;
+/* ── Bottom mist fade (keep for depth) ── */
+.wb-mist-bottom{
+  position:absolute;left:0;right:0;bottom:0;height:120px;pointer-events:none;z-index:2;
   background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.6) 30%,rgba(241,242,255,.8) 60%,#FDEFF5 100%);
 }
-@keyframes mist-drift{0%,100%{transform:translateX(0)}50%{transform:translateX(15px)}}
 
-/* ── Floating petals ── */
-.wb-petal{
-  position:absolute;pointer-events:none;z-index:2;
-  width:8px;height:5px;border-radius:50% 50% 50% 0;
-  opacity:0;
-  animation:petal-fall linear infinite;
-}
-.wb-petal:nth-child(1){left:10%;animation-duration:8s;animation-delay:0s;background:rgba(236,89,157,.25);width:7px;height:4px}
-.wb-petal:nth-child(2){left:85%;animation-duration:10s;animation-delay:2s;background:rgba(114,121,251,.2);width:6px;height:4px}
-.wb-petal:nth-child(3){left:30%;animation-duration:9s;animation-delay:4s;background:rgba(236,89,157,.2);width:9px;height:5px}
-.wb-petal:nth-child(4){left:65%;animation-duration:11s;animation-delay:1s;background:rgba(114,121,251,.25);width:5px;height:3px}
-.wb-petal:nth-child(5){left:50%;animation-duration:8.5s;animation-delay:3s;background:rgba(236,89,157,.18);width:7px;height:4px}
-.wb-petal:nth-child(6){left:20%;animation-duration:12s;animation-delay:5s;background:rgba(114,121,251,.15);width:6px;height:3px}
-.wb-petal:nth-child(7){left:75%;animation-duration:9.5s;animation-delay:0.5s;background:rgba(236,89,157,.22);width:8px;height:5px}
-.wb-petal:nth-child(8){left:45%;animation-duration:10.5s;animation-delay:6s;background:rgba(114,121,251,.18);width:5px;height:3px}
+/* ── Kept keyframes for result/fortune screens ── */
 @keyframes petal-fall{
   0%{transform:translateY(-20px) rotate(0deg) translateX(0);opacity:0}
   10%{opacity:.6}
@@ -173,38 +137,10 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
   80%{opacity:.3}
   100%{transform:translateY(100vh) rotate(360deg) translateX(-10px);opacity:0}
 }
-
-/* ── Sparkle dots ── */
-.wb-sparkle{
-  position:absolute;pointer-events:none;z-index:2;border-radius:50%;
-  background:#fff;box-shadow:0 0 4px rgba(114,121,251,.5);
-  opacity:0;animation:sparkle-twinkle 3s ease-in-out infinite;
-}
-.wb-sparkle:nth-child(1){top:10%;left:12%;width:4px;height:4px;animation-delay:0s;box-shadow:0 0 4px rgba(236,89,157,.5)}
-.wb-sparkle:nth-child(2){top:25%;right:10%;width:3px;height:3px;animation-delay:.8s}
-.wb-sparkle:nth-child(3){top:15%;right:30%;width:5px;height:5px;animation-delay:1.5s;box-shadow:0 0 6px rgba(236,89,157,.4)}
-.wb-sparkle:nth-child(4){bottom:40%;left:8%;width:3px;height:3px;animation-delay:2s}
-.wb-sparkle:nth-child(5){top:35%;left:25%;width:4px;height:4px;animation-delay:.4s;box-shadow:0 0 4px rgba(236,89,157,.5)}
-.wb-sparkle:nth-child(6){bottom:32%;right:15%;width:3px;height:3px;animation-delay:1.2s}
-.wb-sparkle:nth-child(7){top:8%;left:40%;width:3px;height:3px;animation-delay:2.5s;box-shadow:0 0 4px rgba(236,89,157,.4)}
 @keyframes sparkle-twinkle{
   0%,100%{opacity:0;transform:scale(.3)}
   50%{opacity:.9;transform:scale(1)}
 }
-
-/* ── Corner decorations ── */
-.wb-corner{
-  position:absolute;width:20px;height:20px;border-radius:50%;
-  border:1.5px solid rgba(114,121,251,.15);pointer-events:none;z-index:2;
-}
-.wb-corner::after{
-  content:'';position:absolute;inset:4px;border-radius:50%;
-  background:rgba(114,121,251,.06);
-}
-.wb-corner-tl{top:100px;left:16px}
-.wb-corner-tr{top:100px;right:16px}
-.wb-corner-bl{bottom:90px;left:16px}
-.wb-corner-br{bottom:90px;right:16px}
 
 /* ── Illustration with glow aura ── */
 .welcome-illust{flex:1;display:flex;align-items:center;justify-content:center;position:relative;width:100%;z-index:3}
@@ -287,7 +223,7 @@ body{font-family:var(--font);background:#1B1D22;display:flex;justify-content:cen
   background:var(--bg-mid);overflow:hidden;
 }
 .shake-energy-fill{
-  height:100%;width:0%;border-radius:var(--r-full);
+  height:100%;width:5%;border-radius:var(--r-full);
   background:linear-gradient(90deg,var(--primary),var(--secondary));
   transition:width .15s ease;
 }
@@ -1140,33 +1076,16 @@ function renderApp(){
         <span class="hdr-title">เซียมซี</span>
       </div>
       <div class="welcome-body">
-        <!-- Fantasy landscape background -->
+        <!-- Floating clouds background -->
         <div class="wb-light"></div>
-        <div class="wb-hill wb-hill-1"></div>
-        <div class="wb-hill wb-hill-2"></div>
-        <div class="wb-hill wb-hill-3"></div>
-        <div class="wb-hill wb-hill-4"></div>
-        <div class="wb-tree wb-tree-1"></div>
-        <div class="wb-tree wb-tree-2"></div>
-        <div class="wb-tree wb-tree-3"></div>
-        <div class="wb-tree wb-tree-4"></div>
-        <div class="wb-tree wb-tree-5"></div>
-        <div class="wb-tree wb-tree-6"></div>
-        <div class="wb-mist wb-mist-1"></div>
-        <div class="wb-mist wb-mist-2"></div>
-        <div class="wb-mist wb-mist-3"></div>
-        <div class="wb-petal"></div><div class="wb-petal"></div>
-        <div class="wb-petal"></div><div class="wb-petal"></div>
-        <div class="wb-petal"></div><div class="wb-petal"></div>
-        <div class="wb-petal"></div><div class="wb-petal"></div>
-        <div class="wb-sparkle"></div><div class="wb-sparkle"></div>
-        <div class="wb-sparkle"></div><div class="wb-sparkle"></div>
-        <div class="wb-sparkle"></div><div class="wb-sparkle"></div>
-        <div class="wb-sparkle"></div>
-        <div class="wb-corner wb-corner-tl"></div>
-        <div class="wb-corner wb-corner-tr"></div>
-        <div class="wb-corner wb-corner-bl"></div>
-        <div class="wb-corner wb-corner-br"></div>
+        <div class="wb-cloud wb-cloud-1"><img src="16769034_v952-bb-032-aa 1.png" alt=""></div>
+        <div class="wb-cloud wb-cloud-2"><img src="16769034_v952-bb-032-aa 1.png" alt=""></div>
+        <div class="wb-cloud wb-cloud-3"><img src="16769034_v952-bb-032-aa 1.png" alt=""></div>
+        <div class="wb-cloud wb-cloud-4"><img src="16769034_v952-bb-032-aa 1.png" alt=""></div>
+        <div class="wb-cloud wb-cloud-5"><img src="16769034_v952-bb-032-aa 1.png" alt=""></div>
+        <div class="wb-cloud wb-cloud-6"><img src="16769034_v952-bb-032-aa 1.png" alt=""></div>
+        <div class="wb-cloud wb-cloud-7"><img src="16769034_v952-bb-032-aa 1.png" alt=""></div>
+        <div class="wb-mist-bottom"></div>
         <div class="welcome-info">
           <div class="welcome-heading">เสี่ยง<em>เซียมซี</em>ออนไลน์</div>
           <div class="welcome-sub">ตั้งสมาธิ เขย่า แล้วดูดวงของคุณ</div>
@@ -1508,7 +1427,7 @@ function decayEnergy(){
 
 function updateEnergyUI(){
   const fill=$('#energy-fill');
-  if(fill)fill.style.width=energy+'%';
+  if(fill)fill.style.width=Math.max(5,energy)+'%';
 }
 
 function setShaking(on){
