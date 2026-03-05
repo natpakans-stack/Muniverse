@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily MU — Phase 1 Feature Showcase</title>
 
-  <!-- LINE Seed Sans TH — Official LINE CDN -->
-  <style>
-    @font-face { font-family: 'LINE Seed Sans TH'; font-style: normal; font-weight: 400; font-display: swap; src: url('https://db.onlinewebfonts.com/t/1c939b8ee41e88e1adc05e87f5e7ce44.woff2') format('woff2'), url('https://db.onlinewebfonts.com/t/1c939b8ee41e88e1adc05e87f5e7ce44.woff') format('woff'); }
-    @font-face { font-family: 'LINE Seed Sans TH'; font-style: normal; font-weight: 700; font-display: swap; src: url('https://db.onlinewebfonts.com/t/4010e3ef63f6a89cfd87e12ae3613add.woff2') format('woff2'), url('https://db.onlinewebfonts.com/t/4010e3ef63f6a89cfd87e12ae3613add.woff') format('woff'); }
-  </style>
+  <!-- LINE Seed Sans TH — Multiple CDN fallbacks -->
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
+  <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
   <link href="https://fonts.cdnfonts.com/css/line-seed-sans-th" rel="stylesheet">
+  <link href="https://db.onlinewebfonts.com/c/0a54bd29f535bbdd5c69fdd2976d7b66?family=LINE+Seed+Sans+TH" rel="stylesheet">
 
   <style>
     /* ============================================================
@@ -1074,10 +1073,13 @@
 
     /* Tarot section responsive */
     @media (max-width: 768px) {
-      .card-3d { width: 100px; height: 160px; margin-left: -18px; }
+      .card-3d { width: 120px; height: 214px; margin-left: -16px; border-radius: 12px; }
+      .card-face { border-radius: 12px; }
+      .card-stack-area { padding: 24px 16px 40px; }
     }
     @media (max-width: 480px) {
-      .card-3d { width: 80px; height: 128px; margin-left: -14px; }
+      .card-3d { width: 100px; height: 178px; margin-left: -12px; border-radius: 10px; }
+      .card-face { border-radius: 10px; }
       .card-back-logo { font-size: 20px; }
     }
 
@@ -1146,9 +1148,10 @@
     @media (max-width: 768px) {
       .what-grid {
         grid-template-columns: 1fr;
-        gap: 48px;
+        gap: 24px;
       }
-      .what-visual { width: 240px; height: 240px; }
+      .what-visual { width: 200px; height: 200px; margin-bottom: -40px; }
+      .what-visual img { height: 280px; }
     }
 
     /* ============================================================
