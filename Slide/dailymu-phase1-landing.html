@@ -1551,11 +1551,11 @@
        ============================================================ */
     @media (max-width: 1024px) {
       .highlight-row { grid-template-columns: 1fr; }
-      .highlight-visual { height: auto; aspect-ratio: 3/2; }
+      .highlight-visual { height: auto; min-height: 0; }
       .highlight-visual video,
-      .highlight-visual img { width: 100%; height: 100%; object-fit: contain; }
+      .highlight-visual img { width: 100%; height: auto; max-width: 100%; object-fit: contain; }
       .card-siam .highlight-visual video,
-      .card-siam .highlight-visual img { height: 100%; transform: none; }
+      .card-siam .highlight-visual img { transform: none; }
       .features-grid { grid-template-columns: repeat(2, 1fr); }
       .system-grid { grid-template-columns: repeat(2, 1fr); }
     }
