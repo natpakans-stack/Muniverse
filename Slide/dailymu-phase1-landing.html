@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily MU — Phase 1 Feature Showcase</title>
+
+  <!-- LINE Seed Sans TH -->
+  <link href="https://fonts.cdnfonts.com/css/line-seed-sans-th" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+       ============================================================ */
+    :root {
+      --primary: #EC599D;
+      --primary-light: #FDEFF5;
+      --primary-dark: #C93D7E;
+      --secondary: #7279FB;
+      --secondary-light: #F1F2FF;
+      --secondary-dark: #5258D6;
+      --text-primary: #1B1D22;
+      --text-secondary: #6A6E83;
+      --text-tertiary: #9A9DAD;
+      --bg-white: #FFFFFF;
+      --bg-light: #F8F8F9;
+      --bg-mid: #EBECEF;
+      --border: #EBECEF;
+      --error: #EA244F;
+      --warning: #C69A2A;
+      --success: #559652;
+      --info: #026486;
+      --sky: #36B9E6;
+      --orange: #EC6F45;
+      --yellow: #F5C542;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+      --shadow-xl: 0 20px 50px rgba(0,0,0,0.12);
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-2xl: 24px;
+      --radius-full: 9999px;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'LINE Seed Sans TH', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-primary);
+      background: var(--bg-white);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    section { padding: 80px 0; }
+
+    /* ============================================================
+       NAV — Light
+       ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+    .nav.scrolled {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(235,236,239,0.5);
+      box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+    }
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-logo .mu {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-version {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      background: var(--secondary-light);
+      border: 1px solid rgba(114,121,251,0.2);
+      color: var(--secondary);
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+    .nav-links a:hover {
+      color: var(--text-primary);
+      transition: color 0.2s;
+    }
+
+    /* ============================================================
+       HERO — Animated mesh gradient, dramatic
+       ============================================================ */
+    .hero {
+      min-height: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-top: 100px;
+      padding-bottom: 0;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 25%, #e0e7ff 50%, #f0f9ff 75%, #fdf2f8 100%);
+    }
+
+    /* Animated mesh blobs */
+    .hero-mesh {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+    }
+    .hero-blob-1 {
+      width: 500px; height: 500px;
+      background: rgba(236,89,157,0.35);
+      top: -15%; left: -5%;
+      animation: blob-move-1 12s ease-in-out infinite;
+    }
+    .hero-blob-2 {
+      width: 450px; height: 450px;
+      background: rgba(114,121,251,0.3);
+      top: -10%; right: -8%;
+      animation: blob-move-2 14s ease-in-out infinite;
+    }
+    .hero-blob-3 {
+      width: 600px; height: 400px;
+      background: rgba(54,185,230,0.2);
+      bottom: 10%; left: 20%;
+      animation: blob-move-3 16s ease-in-out infinite;
+    }
+    .hero-blob-4 {
+      width: 350px; height: 350px;
+      background: rgba(236,89,157,0.25);
+      bottom: -5%; right: 15%;
+      animation: blob-move-1 10s ease-in-out infinite 3s;
+    }
+    @keyframes blob-move-1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(60px, 30px) scale(1.1); }
+      66% { transform: translate(-30px, -20px) scale(0.95); }
+    }
+    @keyframes blob-move-2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(-50px, 40px) scale(1.08); }
+      66% { transform: translate(40px, -30px) scale(0.92); }
+    }
+    @keyframes blob-move-3 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, -40px) scale(1.12); }
+    }
+
+    /* Sparkle stars scattered */
+    .hero-sparkles {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    .hero-star {
+      position: absolute;
+      color: rgba(255,255,255,0.9);
+      filter: drop-shadow(0 0 3px rgba(236,89,157,0.5));
+    }
+    .hero-star:nth-child(1) { top: 12%; left: 10%; font-size: 14px; animation: star-twinkle 3s ease-in-out infinite; }
+    .hero-star:nth-child(2) { top: 8%; right: 12%; font-size: 20px; animation: star-twinkle 4s ease-in-out infinite 1s; }
+    .hero-star:nth-child(3) { top: 35%; left: 6%; font-size: 10px; animation: star-twinkle 3.5s ease-in-out infinite 0.5s; }
+    .hero-star:nth-child(4) { top: 20%; right: 8%; font-size: 12px; animation: star-twinkle 5s ease-in-out infinite 2s; }
+    .hero-star:nth-child(5) { top: 45%; right: 5%; font-size: 16px; animation: star-twinkle 4.5s ease-in-out infinite 1.5s; }
+    .hero-star:nth-child(6) { top: 28%; left: 20%; font-size: 8px; animation: star-twinkle 3s ease-in-out infinite 3s; }
+    .hero-star:nth-child(7) { top: 55%; left: 15%; font-size: 11px; animation: star-twinkle 5s ease-in-out infinite 0.8s; }
+    .hero-star:nth-child(8) { top: 15%; left: 40%; font-size: 9px; animation: star-twinkle 4s ease-in-out infinite 2.5s; }
+    @keyframes star-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(20deg); }
+    }
+
+    /* Orbit ring around center */
+    .hero-orbit {
+      position: absolute;
+      width: 650px; height: 650px;
+      border: 1px solid rgba(114,121,251,0.08);
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: orbit-spin 40s linear infinite;
+    }
+    .hero-orbit::before {
+      content: '✦';
+      position: absolute; top: -6px; left: 50%;
+      transform: translateX(-50%);
+      color: rgba(114,121,251,0.3); font-size: 10px;
+    }
+    .hero-orbit-2 {
+      position: absolute;
+      width: 850px; height: 850px;
+      border: 1px dashed rgba(236,89,157,0.06);
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: orbit-spin 60s linear infinite reverse;
+    }
+
+    /* Phone glow — big radial behind phones */
+    .hero-phone-glow {
+      position: absolute;
+      bottom: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse,
+        rgba(236,89,157,0.25) 0%,
+        rgba(114,121,251,0.2) 30%,
+        rgba(54,185,230,0.1) 60%,
+        transparent 80%
+      );
+      pointer-events: none;
+      animation: phone-glow-pulse 5s ease-in-out infinite;
+    }
+    @keyframes phone-glow-pulse {
+      0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+    }
+
+    /* Floating gradient rings */
+    .hero-ring {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      border: 2px solid transparent;
+    }
+    .hero-ring-1 {
+      width: 400px; height: 400px;
+      top: 5%; left: -5%;
+      border-color: rgba(236,89,157,0.12);
+      animation: ring-float 8s ease-in-out infinite;
+    }
+    .hero-ring-2 {
+      width: 300px; height: 300px;
+      top: 10%; right: -3%;
+      border-color: rgba(114,121,251,0.1);
+      border-style: dashed;
+      animation: ring-float 10s ease-in-out infinite reverse;
+    }
+    .hero-ring-3 {
+      width: 200px; height: 200px;
+      bottom: 25%; left: 8%;
+      border-color: rgba(54,185,230,0.12);
+      animation: ring-float 7s ease-in-out infinite 2s;
+    }
+    @keyframes ring-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(15deg); }
+    }
+
+    /* Glowing orbs */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(1px);
+    }
+    .hero-orb-1 {
+      width: 8px; height: 8px;
+      background: rgba(236,89,157,0.5);
+      top: 18%; left: 12%;
+      box-shadow: 0 0 20px 6px rgba(236,89,157,0.3);
+      animation: orb-pulse 3s ease-in-out infinite;
+    }
+    .hero-orb-2 {
+      width: 6px; height: 6px;
+      background: rgba(114,121,251,0.5);
+      top: 25%; right: 15%;
+      box-shadow: 0 0 16px 5px rgba(114,121,251,0.3);
+      animation: orb-pulse 4s ease-in-out infinite 1s;
+    }
+    .hero-orb-3 {
+      width: 10px; height: 10px;
+      background: rgba(54,185,230,0.4);
+      bottom: 35%; left: 18%;
+      box-shadow: 0 0 24px 8px rgba(54,185,230,0.25);
+      animation: orb-pulse 5s ease-in-out infinite 0.5s;
+    }
+    .hero-orb-4 {
+      width: 5px; height: 5px;
+      background: rgba(236,89,157,0.4);
+      bottom: 30%; right: 10%;
+      box-shadow: 0 0 14px 4px rgba(236,89,157,0.25);
+      animation: orb-pulse 3.5s ease-in-out infinite 2s;
+    }
+    .hero-orb-5 {
+      width: 7px; height: 7px;
+      background: rgba(114,121,251,0.45);
+      top: 40%; left: 5%;
+      box-shadow: 0 0 18px 6px rgba(114,121,251,0.25);
+      animation: orb-pulse 4.5s ease-in-out infinite 1.5s;
+    }
+    @keyframes orb-pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    /* Constellation lines */
+    .hero-constellation {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.12;
+    }
+    .hero-constellation svg { width: 100%; height: 100%; }
+    .hero-constellation-1 {
+      width: 200px; height: 150px;
+      top: 12%; right: 8%;
+      animation: constellation-fade 6s ease-in-out infinite;
+    }
+    .hero-constellation-2 {
+      width: 180px; height: 120px;
+      bottom: 30%; left: 5%;
+      animation: constellation-fade 8s ease-in-out infinite 3s;
+    }
+    @keyframes constellation-fade {
+      0%, 100% { opacity: 0.06; }
+      50% { opacity: 0.18; }
+    }
+
+    /* Floating zodiac icons */
+    .hero-zodiac {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.35;
+      z-index: 1;
+    }
+    .hero-zodiac img {
+      width: 100%; height: 100%; object-fit: contain;
+      animation: zodiac-shimmer 3s ease-in-out infinite;
+    }
+    .hero-zodiac-2 img { animation-delay: 0.4s; }
+    .hero-zodiac-3 img { animation-delay: 0.8s; }
+    .hero-zodiac-4 img { animation-delay: 1.2s; }
+    .hero-zodiac-5 img { animation-delay: 1.6s; }
+    .hero-zodiac-6 img { animation-delay: 2s; }
+    .hero-zodiac-7 img { animation-delay: 0.3s; }
+    .hero-zodiac-8 img { animation-delay: 0.7s; }
+    .hero-zodiac-9 img { animation-delay: 1.1s; }
+    .hero-zodiac-10 img { animation-delay: 1.5s; }
+    .hero-zodiac-11 img { animation-delay: 1.9s; }
+    .hero-zodiac-12 img { animation-delay: 2.3s; }
+    @keyframes zodiac-shimmer {
+      0%, 100% { opacity: 1; filter: brightness(1) drop-shadow(0 0 0px transparent); }
+      50% { opacity: 0.6; filter: brightness(1.3) drop-shadow(0 0 12px rgba(114,121,251,0.4)); }
+    }
+    .hero-zodiac-1 { width: 150px; height: 150px; top: 2%; left: 1%; animation: zodiac-float-a 14s ease-in-out infinite; }
+    .hero-zodiac-2 { width: 95px; height: 95px; top: 8%; left: 28%; animation: zodiac-float-b 9s ease-in-out infinite 0.7s; }
+    .hero-zodiac-3 { width: 130px; height: 130px; top: 4%; right: 22%; animation: zodiac-float-c 11s ease-in-out infinite 3.2s; }
+    .hero-zodiac-4 { width: 80px; height: 80px; top: 1%; right: 2%; animation: zodiac-float-a 8s ease-in-out infinite 1.8s; }
+    .hero-zodiac-5 { width: 110px; height: 110px; top: 38%; left: 0%; animation: zodiac-float-b 13s ease-in-out infinite 4.1s; }
+    .hero-zodiac-6 { width: 70px; height: 70px; top: 22%; right: 6%; animation: zodiac-float-c 7s ease-in-out infinite 0.3s; }
+    .hero-zodiac-7 { width: 140px; height: 140px; bottom: 20%; left: 4%; animation: zodiac-float-a 12s ease-in-out infinite 2.6s; }
+    .hero-zodiac-8 { width: 85px; height: 85px; bottom: 45%; right: 1%; animation: zodiac-float-b 10s ease-in-out infinite 5s; }
+    .hero-zodiac-9 { width: 120px; height: 120px; top: 15%; left: 14%; animation: zodiac-float-c 15s ease-in-out infinite 1.2s; }
+    .hero-zodiac-10 { width: 75px; height: 75px; bottom: 35%; left: 22%; animation: zodiac-float-a 9s ease-in-out infinite 3.7s; }
+    .hero-zodiac-11 { width: 105px; height: 105px; bottom: 15%; right: 12%; animation: zodiac-float-b 11s ease-in-out infinite 0.9s; }
+    .hero-zodiac-12 { width: 60px; height: 60px; top: 42%; right: 18%; animation: zodiac-float-c 8s ease-in-out infinite 4.5s; }
+    @keyframes zodiac-float-a {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-18px) rotate(8deg); }
+      50% { transform: translateY(5px) rotate(-4deg); }
+      75% { transform: translateY(-10px) rotate(2deg); }
+    }
+    @keyframes zodiac-float-b {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      30% { transform: translateX(12px) rotate(-6deg); }
+      60% { transform: translateX(-8px) rotate(10deg); }
+    }
+    @keyframes zodiac-float-c {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(10px, -14px) rotate(5deg); }
+      50% { transform: translate(-6px, 8px) rotate(-7deg); }
+      80% { transform: translate(4px, -6px) rotate(3deg); }
+    }
+
+    .hero-title {
+      font-size: clamp(56px, 8vw, 88px);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 8px;
+      letter-spacing: -2px;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-title .gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, #c946a0 20%, var(--secondary) 50%, var(--sky) 80%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 300% 300%;
+      animation: gradient-shift 6s ease-in-out infinite;
+    }
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .hero-subtitle {
+      font-size: clamp(15px, 1.8vw, 19px);
+      color: var(--text-secondary);
+      max-width: 500px;
+      line-height: 1.6;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 2;
+    }
+    .scroll-indicator {
+      position: relative;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-tertiary);
+      font-size: 12px;
+      animation: float 3s ease-in-out infinite;
+      padding-bottom: 24px;
+    }
+    .scroll-indicator .arrow {
+      width: 16px; height: 16px;
+      border-right: 2px solid var(--text-tertiary);
+      border-bottom: 2px solid var(--text-tertiary);
+      transform: rotate(45deg);
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    /* ============================================================
+       PHONE MOCKUPS — 3 devices staggered
+       ============================================================ */
+    .phone-showcase {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 92px auto 0;
+      height: 560px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      overflow: hidden;
+      mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    }
+    .phone-device {
+      position: absolute;
+      border-radius: 44px;
+      background: #ffffff;
+      padding: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.05);
+    }
+    .phone-center {
+      width: 280px; height: 600px;
+      z-index: 3;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+    }
+    .phone-left {
+      width: 250px; height: 540px;
+      z-index: 2;
+      top: 40px; left: 50%;
+      transform: translateX(calc(-50% - 240px));
+    }
+    .phone-right {
+      width: 250px; height: 540px;
+      z-index: 2;
+      top: 40px; left: 50%;
+      transform: translateX(calc(-50% + 240px));
+    }
+    .phone-screen {
+      width: 100%; height: 100%;
+      border-radius: 34px;
+      overflow: hidden;
+      position: relative;
+      background: var(--bg-white);
+    }
+    .phone-notch {
+      position: absolute;
+      top: 10px; left: 50%;
+      transform: translateX(-50%);
+      width: 120px; height: 34px;
+      background: #ffffff;
+      border-radius: 20px;
+      z-index: 10;
+    }
+    .phone-status {
+      position: absolute;
+      top: 14px; left: 24px; right: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 5;
+      font-size: 13px; font-weight: 700;
+      color: var(--text-primary);
+    }
+    .phone-status-right {
+      display: flex; gap: 4px; align-items: center;
+    }
+    .phone-content {
+      position: absolute;
+      top: 54px; left: 0; right: 0; bottom: 0;
+      overflow: hidden;
+      padding: 16px;
+    }
+
+    /* Screen: Home Dashboard (center) */
+    .screen-home {
+      background: linear-gradient(180deg, #FDEFF5 0%, var(--bg-white) 30%);
+    }
+    .sh-greeting { font-size: 14px; color: var(--text-secondary); margin-bottom: 4px; }
+    .sh-name { font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; }
+    .sh-ai-card {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 16px; padding: 20px; color: white; margin-bottom: 16px;
+    }
+    .sh-ai-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: 0.8; margin-bottom: 8px; }
+    .sh-ai-text { font-size: 14px; line-height: 1.5; }
+    .sh-color-rec { display: flex; gap: 8px; margin-top: 12px; }
+    .sh-color-dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); }
+    .sh-section-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+    .sh-fortune-cards { display: flex; gap: 10px; }
+    .sh-fortune-card {
+      flex: 1; background: var(--bg-light); border-radius: 12px;
+      padding: 14px 10px; text-align: center; border: 1px solid var(--border);
+    }
+    .sh-fc-icon { font-size: 28px; margin-bottom: 6px; }
+    .sh-fc-name { font-size: 11px; font-weight: 700; color: var(--text-primary); }
+
+    /* Screen: Tarot (left) */
+    .screen-tarot { background: linear-gradient(180deg, #1a1540 0%, #2d1f6e 100%); }
+    .screen-tarot .phone-status { color: rgba(255,255,255,0.8); }
+    .screen-tarot .phone-content { color: white; }
+    .st-header { text-align: center; margin-bottom: 16px; }
+    .st-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .st-subtitle { font-size: 12px; color: rgba(255,255,255,0.5); }
+    .st-card-display { display: flex; justify-content: center; margin: 20px 0; }
+    .st-tarot-card {
+      width: 120px; height: 190px; border-radius: 10px;
+      background: linear-gradient(145deg, #1a1540, #0f0e2a);
+      border: 1.5px solid rgba(180,160,120,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700; color: rgba(180,160,120,0.25);
+      letter-spacing: 3px; box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      position: relative;
+    }
+    .st-tarot-card::before {
+      content: ''; position: absolute; inset: 6px;
+      border: 1px solid rgba(180,160,120,0.15); border-radius: 6px;
+    }
+    .st-instruction { text-align: center; font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 16px; }
+
+    /* Screen: Horoscope (right) */
+    .screen-horoscope { background: var(--bg-white); }
+    .sho-tabs { display: flex; margin-bottom: 16px; border-bottom: 2px solid var(--bg-mid); }
+    .sho-tab { flex: 1; text-align: center; font-size: 13px; font-weight: 700; padding: 8px 0; color: var(--text-tertiary); }
+    .sho-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); margin-bottom: -2px; }
+    .sho-zodiac { text-align: center; margin-bottom: 16px; }
+    .sho-zodiac-icon { font-size: 40px; margin-bottom: 6px; }
+    .sho-zodiac-name { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+    .sho-zodiac-date { font-size: 12px; color: var(--text-tertiary); }
+    .sho-fortune-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--bg-mid); }
+    .sho-fortune-dot { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .sho-fortune-info { flex: 1; }
+    .sho-fortune-label { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .sho-fortune-value { font-size: 12px; color: var(--text-secondary); }
+    .sho-fortune-bar { width: 60px; height: 6px; border-radius: 3px; background: var(--bg-mid); overflow: hidden; }
+    .sho-fortune-fill { height: 100%; border-radius: 3px; }
+
+    /* Phone responsive */
+    @media (max-width: 900px) {
+      .phone-showcase { height: 420px; }
+      .phone-center { width: 240px; height: 520px; }
+      .phone-left { width: 210px; height: 460px; transform: translateX(calc(-50% - 190px)); }
+      .phone-right { width: 210px; height: 460px; transform: translateX(calc(-50% + 190px)); }
+    }
+    @media (max-width: 700px) {
+      .phone-showcase { height: 380px; }
+      .phone-center { width: 220px; height: 480px; }
+      .phone-left { width: 180px; height: 420px; transform: translateX(calc(-50% - 160px)); top: 50px; }
+      .phone-right { width: 180px; height: 420px; transform: translateX(calc(-50% + 160px)); top: 50px; }
+    }
+    @media (max-width: 520px) {
+      .phone-left, .phone-right { display: none; }
+      .phone-showcase { height: 350px; }
+      .phone-center { width: 260px; height: 560px; }
+    }
+
+    /* ============================================================
+       SECTION HEADERS — Light
+       ============================================================ */
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .section-tag {
+      display: inline-block;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    .section-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       TAROT SHOWCASE — Dark immersive section (only dark part)
+       ============================================================ */
+    .tarot-showcase {
+      position: relative;
+      padding: 120px 0 100px;
+      overflow: hidden;
+      background: linear-gradient(180deg,
+        #1a1245 0%, #2d1f6e 15%, #3d2a8a 30%,
+        #5438a2 50%, #6342b0 65%, #4e35a0 80%,
+        #2d1f6e 95%, #1a1245 100%
+      );
+    }
+    .tarot-showcase::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 120% 80% at 50% 0%, rgba(114,121,251,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 60% at 80% 100%, rgba(236,89,157,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .tarot-showcase-inner { position: relative; z-index: 1; }
+
+    .tarot-header { text-align: center; margin-bottom: 48px; position: relative; }
+    .tarot-title {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 700; color: #FFFFFF;
+      margin-bottom: 16px; line-height: 1.2;
+    }
+    .tarot-title .diamond {
+      display: inline-block; color: rgba(255,255,255,0.7);
+      margin: 0 12px; font-size: 0.6em; vertical-align: middle;
+    }
+    .tarot-subtitle {
+      font-size: clamp(14px, 1.8vw, 18px);
+      color: rgba(255,255,255,0.55);
+      line-height: 1.8; max-width: 600px; margin: 0 auto;
+    }
+
+    /* Sparkles */
+    .sparkle { position: absolute; pointer-events: none; z-index: 2; }
+    .sparkle-1 { top: 35%; left: 8%; animation: sparkle-float 5s ease-in-out infinite; }
+    .sparkle-2 { top: 20%; right: 6%; animation: sparkle-float 4s ease-in-out infinite 1s; }
+    .sparkle-3 { top: 55%; left: 45%; animation: sparkle-float 6s ease-in-out infinite 0.5s; }
+    .sparkle-4 { top: 15%; left: 30%; animation: sparkle-float 5.5s ease-in-out infinite 2s; }
+    .sparkle-5 { bottom: 20%; right: 15%; animation: sparkle-float 4.5s ease-in-out infinite 1.5s; }
+    @keyframes sparkle-float {
+      0%, 100% { opacity: 0.4; transform: scale(1) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(15deg); }
+    }
+
+    /* Card Row — horizontal overlapping row, full width with side fade */
+    .card-stack-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 40px 60px 60px;
+      perspective: 1200px;
+      overflow: hidden;
+      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    }
+
+    /* Individual 3D card */
+    .card-3d {
+      width: 140px;
+      height: 250px;
+      flex-shrink: 0;
+      margin-left: -20px;
+      border-radius: 16px;
+      perspective: 1200px;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+    }
+    .card-3d:first-child { margin-left: 0; }
+
+    /* Hover: lift up + scale + flip */
+    .card-3d:hover {
+      transform: translateY(-28px) scale(1.1);
+      z-index: 20;
+    }
+    .card-3d:hover .card-3d-inner {
+      transform: rotateY(180deg);
+    }
+
+    /* Wave flip animation — slow & smooth */
+    .card-3d.wave-open {
+      animation: wave-lift-up 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .card-3d.wave-open .card-3d-inner {
+      animation: wave-flip-open 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .card-3d.wave-close {
+      animation: wave-lift-down 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .card-3d.wave-close .card-3d-inner {
+      animation: wave-flip-close 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes wave-lift-up {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-22px) scale(1.06); }
+    }
+    @keyframes wave-lift-down {
+      0% { transform: translateY(-22px) scale(1.06); }
+      100% { transform: translateY(0) scale(1); }
+    }
+    @keyframes wave-flip-open {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(180deg); }
+    }
+    @keyframes wave-flip-close {
+      0% { transform: rotateY(180deg); }
+      100% { transform: rotateY(0deg); }
+    }
+
+    /* 3D flip inner */
+    .card-3d-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-3d-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* Card faces */
+    .card-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow: hidden;
+      background: #1a1540;
+    }
+    .card-face.back {
+      transform: rotateY(0deg);
+    }
+    .card-face.front {
+      transform: rotateY(180deg);
+    }
+
+    /* Card back design — ornate art deco */
+    .card-back-design {
+      width: 100%; height: 100%;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #1a1540 0%, #0f0e2a 100%);
+      border: 2px solid rgba(180,160,120,0.3);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+
+    /* Outer ornate border */
+    .card-back-design::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border: 1.5px solid rgba(180,160,120,0.2);
+      border-radius: 12px;
+    }
+
+    /* Inner ornate border */
+    .card-back-design::after {
+      content: '';
+      position: absolute;
+      inset: 16px;
+      border: 1px solid rgba(180,160,120,0.12);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(180,160,120,0.12) 0%, transparent 20%),
+        radial-gradient(circle at 100% 0%, rgba(180,160,120,0.12) 0%, transparent 20%),
+        radial-gradient(circle at 0% 100%, rgba(180,160,120,0.12) 0%, transparent 20%),
+        radial-gradient(circle at 100% 100%, rgba(180,160,120,0.12) 0%, transparent 20%);
+    }
+
+    /* Conic rays pattern */
+    .card-back-rays {
+      position: absolute;
+      inset: 20px;
+      z-index: 0;
+      overflow: hidden;
+      border-radius: 6px;
+    }
+    .card-back-rays::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 400%; height: 400%;
+      transform: translate(-50%, -50%);
+      background: repeating-conic-gradient(
+        from 0deg,
+        rgba(180,160,120,0.04) 0deg 8deg,
+        transparent 8deg 16deg
+      );
+    }
+
+    /* MU logo centered */
+    .card-back-logo {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      font-size: 36px;
+      font-weight: 700;
+      color: rgba(180,160,120,0.18);
+      letter-spacing: 6px;
+      text-transform: lowercase;
+    }
+
+    /* Decorative lines top/bottom */
+    .card-back-line-top,
+    .card-back-line-bottom {
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      width: 50px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(180,160,120,0.25), transparent);
+      z-index: 2;
+    }
+    .card-back-line-top { top: 24px; }
+    .card-back-line-bottom { bottom: 24px; }
+
+    /* Diamond decorations */
+    .card-back-diamond {
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      z-index: 2;
+      color: rgba(180,160,120,0.15);
+      font-size: 8px;
+    }
+    .card-back-diamond.top { top: 30px; }
+    .card-back-diamond.bottom { bottom: 30px; }
+
+    /* Card front design — revealed card */
+    .card-front-design {
+      width: 100%; height: 100%;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #1a1848 0%, #12103a 100%);
+      border: 2px solid rgba(200,180,130,0.5);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(114,121,251,0.3), 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Gloss overlay */
+    .card-gloss {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.12) 0%,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0.06) 100%
+      );
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Iridescent holographic overlay */
+    .card-iridescent {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      background:
+        linear-gradient(
+          115deg,
+          rgba(236,89,157,0) 0%,
+          rgba(236,89,157,0.08) 25%,
+          rgba(114,121,251,0.1) 40%,
+          rgba(54,185,230,0.08) 55%,
+          rgba(236,89,157,0.06) 70%,
+          rgba(114,121,251,0) 100%
+        );
+      z-index: 9;
+      pointer-events: none;
+      animation: iridescent-shift 6s ease-in-out infinite alternate;
+    }
+    @keyframes iridescent-shift {
+      0% { opacity: 0.5; background-position: 0% 0%; }
+      100% { opacity: 1; background-position: 100% 100%; }
+    }
+
+    /* Star particles on front card */
+    .card-stars {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+    .card-star {
+      position: absolute;
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: white;
+      animation: star-twinkle 3s ease-in-out infinite;
+    }
+    .card-star:nth-child(1) { top: 12%; left: 20%; animation-delay: 0s; }
+    .card-star:nth-child(2) { top: 28%; left: 75%; animation-delay: 0.5s; width: 2px; height: 2px; }
+    .card-star:nth-child(3) { top: 45%; left: 15%; animation-delay: 1s; }
+    .card-star:nth-child(4) { top: 60%; left: 85%; animation-delay: 1.5s; width: 2px; height: 2px; }
+    .card-star:nth-child(5) { top: 75%; left: 40%; animation-delay: 2s; }
+    .card-star:nth-child(6) { top: 18%; left: 55%; animation-delay: 0.8s; width: 2px; height: 2px; }
+    .card-star:nth-child(7) { top: 88%; left: 65%; animation-delay: 1.2s; }
+    .card-star:nth-child(8) { top: 35%; left: 90%; animation-delay: 2.2s; width: 2px; height: 2px; }
+    @keyframes star-twinkle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Front card illustration area */
+    .card-front-art {
+      position: absolute;
+      inset: 32px 14px 50px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(200,180,130,0.2);
+    }
+
+    /* Night sky scene */
+    .card-art-sky {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #0d0d3a 0%, #1a1a5e 30%, #2a3a6a 60%, #3a5a4a 100%);
+    }
+    .card-art-moon {
+      position: absolute;
+      top: 10%; right: 15%;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fffde8, #e8d99a);
+      box-shadow: 0 0 30px rgba(255,253,232,0.5), 0 0 60px rgba(255,253,232,0.2);
+    }
+    .card-art-mountains {
+      position: absolute;
+      top: 25%; left: 0; right: 0; height: 35%;
+      background: linear-gradient(180deg, #2a3060 0%, #3a5a4a 100%);
+      clip-path: polygon(0% 100%, 10% 40%, 25% 65%, 40% 20%, 55% 55%, 70% 30%, 85% 50%, 100% 100%);
+    }
+    .card-art-garden {
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 50%;
+      background: linear-gradient(180deg, #2a5a3a 0%, #3a6a40 40%, #4a7a50 100%);
+    }
+    .card-art-garden::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(10px 10px at 10% 30%, #e06080, transparent),
+        radial-gradient(8px 8px at 25% 45%, #f0a040, transparent),
+        radial-gradient(9px 9px at 40% 25%, #e87090, transparent),
+        radial-gradient(8px 8px at 55% 40%, #f0d040, transparent),
+        radial-gradient(10px 10px at 70% 30%, #d060a0, transparent),
+        radial-gradient(7px 7px at 85% 45%, #e06070, transparent),
+        radial-gradient(6px 6px at 30% 60%, #80c0e0, transparent),
+        radial-gradient(8px 8px at 50% 65%, #f0a070, transparent),
+        radial-gradient(9px 9px at 15% 70%, #e0d080, transparent),
+        radial-gradient(7px 7px at 75% 60%, #90d090, transparent),
+        radial-gradient(6px 6px at 60% 75%, #c080d0, transparent),
+        radial-gradient(8px 8px at 90% 65%, #e0a060, transparent);
+    }
+    .card-art-stars {
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 40%;
+      background:
+        radial-gradient(1.5px 1.5px at 15% 15%, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 35% 25%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 55% 10%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 75% 30%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 90% 15%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 45% 35%, rgba(255,255,255,0.5), transparent);
+    }
+
+    /* Card number & name */
+    .card-front-number {
+      position: absolute; top: 12px; right: 16px;
+      font-size: 16px; font-weight: 700;
+      color: rgba(200,180,130,0.7); z-index: 11; letter-spacing: 1px;
+    }
+    .card-front-numeral {
+      position: absolute; top: 12px; left: 16px;
+      font-size: 16px; font-weight: 700;
+      color: rgba(200,180,130,0.7); z-index: 11;
+    }
+    .card-front-name {
+      position: absolute; bottom: 12px; left: 0; right: 0;
+      text-align: center; font-size: 13px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(200,180,130,0.85); z-index: 11;
+    }
+    .card-front-name .card-diamond {
+      display: block; font-size: 7px; margin-bottom: 3px;
+      color: rgba(200,180,130,0.5);
+    }
+
+    /* Tarot section responsive */
+    @media (max-width: 768px) {
+      .card-3d { width: 100px; height: 160px; margin-left: -18px; }
+    }
+    @media (max-width: 480px) {
+      .card-3d { width: 80px; height: 128px; margin-left: -14px; }
+      .card-back-logo { font-size: 20px; }
+    }
+
+    /* ============================================================
+       WHAT IS THIS — Dark section, 3 columns
+       ============================================================ */
+    .what-section {
+      background: linear-gradient(135deg, #1B1D22 0%, #282160 50%, #1B1D22 100%);
+      padding: 100px 0;
+    }
+    .what-section .section-tag {
+      color: rgba(255,255,255,0.5);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .what-section .section-title {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 64px;
+      opacity: 0.7;
+    }
+    .what-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      text-align: center;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    .what-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .what-visual {
+      width: 100%;
+      height: 320px;
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: visible;
+      position: relative;
+      margin-bottom: -100px;
+    }
+    .what-visual img {
+      height: 480px;
+      width: auto;
+      object-fit: contain;
+    }
+    .what-visual .placeholder-icon {
+      font-size: 48px;
+      opacity: 0.3;
+    }
+    .what-text {
+      color: rgba(255,255,255,0.7);
+      font-size: 16px;
+      line-height: 26px;
+      max-width: 340px;
+    }
+    @media (max-width: 768px) {
+      .what-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .what-visual { width: 240px; height: 240px; }
+    }
+
+    /* ============================================================
+       FEATURE HIGHLIGHTS — Light cards
+       ============================================================ */
+    .highlights { display: grid; gap: 24px; }
+    .highlight-card {
+      position: relative; border-radius: var(--radius-xl);
+      padding: 48px; overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-white);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .highlight-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .highlight-card .card-glow {
+      position: absolute; width: 300px; height: 300px;
+      border-radius: 50%; filter: blur(100px); opacity: 0.08; pointer-events: none;
+    }
+    .highlight-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    }
+    .highlight-icon {
+      width: 56px; height: 56px; border-radius: var(--radius-lg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin-bottom: 20px;
+    }
+    .highlight-name {
+      font-size: 14px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 8px;
+    }
+    .highlight-title {
+      font-size: clamp(24px, 3vw, 32px); font-weight: 700;
+      line-height: 1.3; margin-bottom: 16px; color: var(--text-primary);
+    }
+    .highlight-desc {
+      font-size: 16px; color: var(--text-secondary); line-height: 1.7; max-width: 480px;
+    }
+    .highlight-visual {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 280px; border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+      border: 1px dashed rgba(114,121,251,0.2);
+      font-size: 14px; color: var(--secondary);
+      position: relative; overflow: hidden;
+    }
+    .highlight-visual .placeholder-text {
+      z-index: 1; text-align: center; padding: 20px;
+      font-weight: 700; letter-spacing: 1px; opacity: 0.6;
+    }
+    /* Horoscope — animated zodiac ring background */
+    .card-horoscope .highlight-visual {
+      background: linear-gradient(135deg, #1a1245, #3d2a8a, #5438a2);
+      border: none;
+    }
+    .card-horoscope .highlight-visual::before {
+      content: '♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓';
+      position: absolute;
+      width: 320px; height: 320px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid rgba(255,255,255,0.08);
+      border-radius: 50%;
+      font-size: 18px; letter-spacing: 8px;
+      color: rgba(255,255,255,0.25);
+      animation: zodiac-spin 60s linear infinite;
+    }
+    .card-horoscope .highlight-visual::after {
+      content: '';
+      position: absolute;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(114,121,251,0.3), rgba(236,89,157,0.15), transparent 70%);
+      animation: zodiac-pulse 4s ease-in-out infinite alternate;
+    }
+    .card-horoscope .placeholder-text {
+      color: rgba(255,255,255,0.6);
+    }
+    @keyframes zodiac-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes zodiac-pulse { from { transform: scale(0.8); opacity: 0.5; } to { transform: scale(1.2); opacity: 1; } }
+    /* Siam Si — warm bg */
+    .card-siam .highlight-visual {
+      background: linear-gradient(135deg, #FFF5F0, #FDEFF5, #FEF9EB);
+      border: 1px dashed rgba(236,89,157,0.15);
+    }
+    /* Dream — dreamy gradient */
+    .card-dream .highlight-visual {
+      background: linear-gradient(135deg, #F1F2FF, #E6F6FC, #F0F8F0);
+      border: 1px dashed rgba(114,121,251,0.15);
+    }
+    /* Alternate left-right layout */
+    .highlight-card:nth-child(even) .highlight-row {
+      direction: rtl;
+    }
+    .highlight-card:nth-child(even) .highlight-row > * {
+      direction: ltr;
+    }
+    .highlight-visual .placeholder-text .icon {
+      font-size: 48px; margin-bottom: 12px; display: block;
+    }
+    .card-siam .card-glow { background: var(--primary); bottom: -50px; left: -50px; }
+    .card-horoscope .card-glow { background: var(--sky); top: -50px; left: -50px; }
+
+    /* ============================================================
+       FEATURE GRID — Light cards
+       ============================================================ */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .feature-card {
+      position: relative; padding: 0;
+      border-radius: var(--radius-xl);
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .feature-card-body {
+      padding: 20px 24px 24px;
+      display: flex; flex-direction: column; flex: 1;
+    }
+    .feature-card:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .feature-card-icon {
+      width: 48px; height: 48px; border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 20px;
+    }
+    .feature-card-title {
+      font-size: 18px; font-weight: 700; margin-bottom: 8px;
+      line-height: 1.4; color: var(--text-primary);
+    }
+    .feature-card-desc {
+      font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .feature-card-tag {
+      position: absolute; top: 12px; right: 12px; z-index: 1;
+      display: inline-block;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 4px 10px; border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.85); color: var(--text-tertiary); border: 1px solid var(--border);
+      backdrop-filter: blur(4px);
+    }
+    .feature-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto; padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .feature-card-pic {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--text-tertiary);
+    }
+    .feature-card-pic .pic-avatar {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .pic-tan { background: linear-gradient(135deg, var(--secondary), #4E55C8); }
+    .pic-pim { background: linear-gradient(135deg, var(--orange), #B5421F); }
+    .pic-jed { background: linear-gradient(135deg, var(--success), #3D7B3A); }
+    .feature-card-figma {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700; color: var(--secondary);
+      padding: 4px 10px; border-radius: var(--radius-full);
+      border: 1px solid rgba(114,121,251,0.2);
+      background: var(--secondary-light);
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .feature-card-figma:hover {
+      background: rgba(114,121,251,0.15);
+      border-color: rgba(114,121,251,0.4);
+    }
+
+    .feature-card-preview {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 0;
+      background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+      border-bottom: 1px dashed rgba(114,121,251,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      flex-shrink: 0;
+    }
+    .feature-card-preview img {
+      width: 100%; height: 100%; object-fit: cover;
+      border-radius: var(--radius-md);
+    }
+    .feature-card-preview .preview-placeholder {
+      font-size: 12px; color: var(--secondary);
+      text-align: center; line-height: 1.5;
+      font-weight: 700;
+      letter-spacing: 1px;
+      opacity: 0.6;
+    }
+
+    /* Icon backgrounds */
+    .icon-pink { background: rgba(236,89,157,0.1); }
+    .icon-violet { background: rgba(114,121,251,0.1); }
+    .icon-sky { background: rgba(54,185,230,0.1); }
+    .icon-orange { background: rgba(236,111,69,0.1); }
+    .icon-green { background: rgba(85,150,82,0.1); }
+    .icon-yellow { background: rgba(245,197,66,0.1); }
+
+    /* ============================================================
+       TIMELINE — Light
+       ============================================================ */
+    .timeline {
+      position: relative; max-width: 700px; margin: 0 auto;
+    }
+    .timeline::before {
+      content: ''; position: absolute; left: 24px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--primary), var(--secondary), var(--border));
+    }
+    .timeline-item { position: relative; padding-left: 64px; margin-bottom: 40px; }
+    .timeline-dot {
+      position: absolute; left: 16px; top: 4px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid var(--bg-white);
+      box-shadow: 0 0 0 3px rgba(236,89,157,0.2);
+    }
+    .timeline-dot.secondary { background: var(--secondary); box-shadow: 0 0 0 3px rgba(114,121,251,0.2); }
+    .timeline-dot.sky { background: var(--sky); box-shadow: 0 0 0 3px rgba(54,185,230,0.2); }
+    .timeline-dot.current { animation: pulse-dot 2s ease-in-out infinite; }
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(236,89,157,0.2); }
+      50% { box-shadow: 0 0 0 8px rgba(236,89,157,0.08); }
+    }
+    .timeline-date {
+      font-size: 12px; font-weight: 700; color: var(--text-tertiary);
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;
+    }
+    .timeline-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+    .timeline-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ============================================================
+       CTA / FOOTER — Light
+       ============================================================ */
+    .cta-section {
+      text-align: center;
+      padding: 100px 0 120px;
+      background: linear-gradient(135deg, #1B1D22 0%, #282160 50%, #1B1D22 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    @keyframes holo-shift {
+      0%, 100% { background-position: 0% 50%; }
+      25% { background-position: 100% 0%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 25% 30%, rgba(255,255,255,0.4) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 75% 70%, rgba(255,255,255,0.3) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(180,160,240,0.2) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    /* Decorative orbit ring */
+    .cta-orbit {
+      position: absolute;
+      width: 400px; height: 400px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      top: 50%; right: -80px;
+      transform: translateY(-50%);
+      animation: orbit-spin 30s linear infinite;
+    }
+    .cta-orbit::before {
+      content: '✦';
+      position: absolute;
+      top: -6px; left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.7);
+      font-size: 12px;
+    }
+    .cta-orbit-2 {
+      position: absolute;
+      width: 250px; height: 250px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
+      top: 50%; right: -5px;
+      transform: translateY(-50%);
+      animation: orbit-spin 20s linear infinite reverse;
+    }
+    .cta-orbit-2::before {
+      content: '✧';
+      position: absolute;
+      bottom: -6px; left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.5);
+      font-size: 10px;
+    }
+    @keyframes orbit-spin {
+      from { transform: translateY(-50%) rotate(0deg); }
+      to { transform: translateY(-50%) rotate(360deg); }
+    }
+    /* Floating sparkle stars */
+    .cta-star {
+      position: absolute;
+      color: rgba(255,255,255,0.6);
+      pointer-events: none;
+    }
+    .cta-star:nth-child(1) { top: 15%; left: 8%; font-size: 16px; animation: star-twinkle 3s ease-in-out infinite; }
+    .cta-star:nth-child(2) { top: 25%; right: 30%; font-size: 12px; animation: star-twinkle 4s ease-in-out infinite 1s; }
+    .cta-star:nth-child(3) { bottom: 20%; left: 20%; font-size: 10px; animation: star-twinkle 5s ease-in-out infinite 2s; }
+    .cta-star:nth-child(4) { top: 40%; left: 30%; font-size: 8px; animation: star-twinkle 3.5s ease-in-out infinite 0.5s; }
+
+    .cta-title {
+      font-size: clamp(32px, 5vw, 48px); font-weight: 700; margin-bottom: 16px;
+      position: relative; z-index: 2;
+    }
+    .cta-title .gradient {
+      color: #fff;
+      -webkit-text-fill-color: #fff;
+      text-shadow: 0 2px 20px rgba(114,121,251,0.3);
+    }
+    .cta-desc { font-size: 16px; color: rgba(255,255,255,0.5); margin-bottom: 32px; position: relative; z-index: 2; }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(236,89,157,0.3);
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(236,89,157,0.4);
+    }
+    .cta-btn svg { width: 18px; height: 18px; }
+    .cta-section .cta-btn {
+      position: relative; z-index: 2;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(114,121,251,0.3);
+    }
+    .cta-section .cta-btn:hover {
+      box-shadow: 0 8px 30px rgba(114,121,251,0.5);
+    }
+    .divider {
+      width: 60px; height: 3px; border-radius: 2px;
+      background: rgba(255,255,255,0.3);
+      margin: 0 auto 48px;
+    }
+    .footer {
+      background: linear-gradient(135deg, #1B1D22 0%, #282160 50%, #1B1D22 100%);
+      border-top: 1px solid rgba(114,121,251,0.15);
+      padding: 32px 0; text-align: center;
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      position: relative;
+      overflow: visible;
+      margin-top: 0;
+    }
+    .footer-character {
+      display: block;
+      width: 320px;
+      height: auto;
+      margin: -160px auto 16px;
+      position: relative;
+      z-index: 5;
+    }
+    .footer-brand { font-weight: 700; margin-bottom: 4px; color: rgba(255,255,255,0.85); }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 1024px) {
+      .highlight-row { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .system-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      section { padding: 60px 0; }
+      .nav-links { display: none; }
+      .hero-stats { gap: 24px; flex-wrap: wrap; justify-content: center; }
+      .features-grid { grid-template-columns: 1fr; }
+      .highlight-card { padding: 32px 24px; }
+      .system-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ============================================================
+       SCROLL REVEAL
+       ============================================================ */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0) scale(1) translateX(0); }
+
+    /* Stagger children inside grids */
+    .reveal-stagger > .reveal:nth-child(1) { transition-delay: 0s; }
+    .reveal-stagger > .reveal:nth-child(2) { transition-delay: 0.08s; }
+    .reveal-stagger > .reveal:nth-child(3) { transition-delay: 0.16s; }
+    .reveal-stagger > .reveal:nth-child(4) { transition-delay: 0.24s; }
+    .reveal-stagger > .reveal:nth-child(5) { transition-delay: 0.32s; }
+    .reveal-stagger > .reveal:nth-child(6) { transition-delay: 0.4s; }
+    .reveal-stagger > .reveal:nth-child(7) { transition-delay: 0.48s; }
+    .reveal-stagger > .reveal:nth-child(8) { transition-delay: 0.56s; }
+    .reveal-stagger > .reveal:nth-child(9) { transition-delay: 0.64s; }
+    .reveal-stagger > .reveal:nth-child(10) { transition-delay: 0.72s; }
+    .reveal-stagger > .reveal:nth-child(11) { transition-delay: 0.8s; }
+    .reveal-stagger > .reveal:nth-child(12) { transition-delay: 0.88s; }
+
+    /* Variants */
+    .reveal-left { transform: translateX(-40px); }
+    .reveal-right { transform: translateX(40px); }
+    .reveal-scale { transform: scale(0.9); }
+
+    /* Parallax-like subtle depth on scroll */
+    .section-header {
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======= NAV ======= -->
+  <nav class="nav">
+    <div class="nav-logo">
+      <img src="Images/Asset 6.svg" alt="Daily MU" style="height:36px;width:auto;">
+      <span class="nav-version">v1.0 Phase 1</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#tarot">Tarot</a></li>
+      <li><a href="#features">Features</a></li>
+
+      <li><a href="#timeline">Timeline</a></li>
+    </ul>
+  </nav>
+
+  <!-- ======= HERO ======= -->
+  <section class="hero">
+    <!-- Animated mesh blobs -->
+    <div class="hero-mesh">
+      <div class="hero-blob hero-blob-1"></div>
+      <div class="hero-blob hero-blob-2"></div>
+      <div class="hero-blob hero-blob-3"></div>
+      <div class="hero-blob hero-blob-4"></div>
+    </div>
+    <!-- Sparkle stars -->
+    <div class="hero-sparkles">
+      <div class="hero-star">✦</div>
+      <div class="hero-star">✦</div>
+      <div class="hero-star">✦</div>
+      <div class="hero-star">✧</div>
+      <div class="hero-star">✦</div>
+      <div class="hero-star">✧</div>
+      <div class="hero-star">✦</div>
+      <div class="hero-star">✧</div>
+    </div>
+    <!-- Orbit rings -->
+    <div class="hero-orbit"></div>
+    <div class="hero-orbit-2"></div>
+    <!-- Floating zodiac signs -->
+    <div class="hero-zodiac hero-zodiac-1"><img src="Images/elements/Placeholder-1.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-2"><img src="Images/elements/Placeholder-2.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-3"><img src="Images/elements/Placeholder-3.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-4"><img src="Images/elements/Placeholder-4.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-5"><img src="Images/elements/Placeholder-5.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-6"><img src="Images/elements/Placeholder-6.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-7"><img src="Images/elements/Placeholder-7.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-8"><img src="Images/elements/Placeholder-8.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-9"><img src="Images/elements/Placeholder-9.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-10"><img src="Images/elements/Placeholder-10.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-11"><img src="Images/elements/Placeholder-11.svg" alt=""></div>
+    <div class="hero-zodiac hero-zodiac-12"><img src="Images/elements/Placeholder.svg" alt=""></div>
+    <!-- Floating rings -->
+    <div class="hero-ring hero-ring-1"></div>
+    <div class="hero-ring hero-ring-2"></div>
+    <div class="hero-ring hero-ring-3"></div>
+    <!-- Glowing orbs -->
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div class="hero-orb hero-orb-4"></div>
+    <div class="hero-orb hero-orb-5"></div>
+    <!-- Constellation patterns -->
+    <div class="hero-constellation hero-constellation-1">
+      <svg viewBox="0 0 200 150" fill="none" stroke="rgba(114,121,251,0.5)" stroke-width="1">
+        <circle cx="30" cy="40" r="3" fill="rgba(114,121,251,0.6)"/><circle cx="80" cy="20" r="2" fill="rgba(114,121,251,0.5)"/><circle cx="140" cy="55" r="3" fill="rgba(114,121,251,0.6)"/><circle cx="170" cy="30" r="2" fill="rgba(114,121,251,0.4)"/><circle cx="100" cy="90" r="2.5" fill="rgba(114,121,251,0.5)"/><circle cx="160" cy="110" r="2" fill="rgba(114,121,251,0.4)"/>
+        <line x1="30" y1="40" x2="80" y2="20"/><line x1="80" y1="20" x2="140" y2="55"/><line x1="140" y1="55" x2="170" y2="30"/><line x1="140" y1="55" x2="100" y2="90"/><line x1="100" y1="90" x2="160" y2="110"/>
+      </svg>
+    </div>
+    <div class="hero-constellation hero-constellation-2">
+      <svg viewBox="0 0 180 120" fill="none" stroke="rgba(236,89,157,0.5)" stroke-width="1">
+        <circle cx="20" cy="60" r="2.5" fill="rgba(236,89,157,0.5)"/><circle cx="70" cy="30" r="2" fill="rgba(236,89,157,0.4)"/><circle cx="120" cy="50" r="3" fill="rgba(236,89,157,0.6)"/><circle cx="90" cy="90" r="2" fill="rgba(236,89,157,0.4)"/><circle cx="150" cy="80" r="2.5" fill="rgba(236,89,157,0.5)"/>
+        <line x1="20" y1="60" x2="70" y2="30"/><line x1="70" y1="30" x2="120" y2="50"/><line x1="120" y1="50" x2="90" y2="90"/><line x1="120" y1="50" x2="150" y2="80"/>
+      </svg>
+    </div>
+    <!-- Glow behind phones -->
+    <div class="hero-phone-glow"></div>
+    <div class="container" style="display:flex;flex-direction:column;align-items:center;position:relative;z-index:2;">
+      <h1 class="hero-title">
+        <img src="Images/Asset 7.svg" alt="Daily MU" style="height:48px;width:auto;margin-bottom:24px;">
+      </h1>
+      <p class="hero-subtitle">
+        แอปดูดวงที่เข้าใจคุณ — รวมศาสตร์โบราณและ AI ไว้ในที่เดียว
+      </p>
+      <a href="dailymu-slide.html" class="cta-btn" style="margin-top: 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        ดู Weekly Update Slides
+      </a>
+    </div>
+
+    <!-- Phone Mockups -->
+    <div class="phone-showcase">
+      <!-- LEFT: My Profile -->
+      <div class="phone-device phone-left">
+        <div class="phone-screen" style="padding:0;overflow:hidden;">
+          <img src="Images/phone-showcase/1.My Profile.png" alt="My Profile" style="width:100%;height:100%;object-fit:cover;border-radius:34px;">
+        </div>
+      </div>
+
+      <!-- CENTER: Home (Video) -->
+      <div class="phone-device phone-center">
+        <div class="phone-screen" style="padding:0;overflow:hidden;">
+          <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:34px;">
+            <source src="Images/phone-showcase/home-demo.mp4" type="video/mp4">
+            <source src="Images/phone-showcase/Screen Recording 2569-03-05 at 11.29.23.mov" type="video/quicktime">
+          </video>
+        </div>
+      </div>
+
+      <!-- RIGHT: Card Result -->
+      <div class="phone-device phone-right">
+        <div class="phone-screen" style="padding:0;overflow:hidden;">
+          <img src="Images/phone-showcase/3.Card Result.png" alt="Card Result" style="width:100%;height:100%;object-fit:cover;border-radius:34px;">
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ======= WHAT IS DAILY MU ======= -->
+  <section class="what-section">
+    <div class="container" style="max-width:1600px;">
+      <h2 class="section-title reveal">WHAT IS DAILY MU</h2>
+      <div class="what-grid">
+        <!-- 1 — AI-Powered Fortune -->
+        <div class="what-item reveal">
+          <div class="what-visual">
+            <img src="Images/Asset/01-OnBoadinging/Comp 1.gif" alt="Daily MU Onboarding Animation">
+          </div>
+          <p class="what-text">ศาสตร์การดูดวงที่แม่นยำเคยจำกัดอยู่เฉพาะผู้ที่เข้าถึงหมอดูส่วนตัว — ตอนนี้ทุกคนเข้าถึงได้ผ่าน Daily MU</p>
+        </div>
+        <!-- 2 — Data + Tradition -->
+        <div class="what-item reveal">
+          <div class="what-visual">
+            <img src="Images/Asset/01-OnBoadinging/Comp 2.gif" alt="Daily MU Data + Tradition">
+          </div>
+          <p class="what-text">เราผสานศาสตร์โบราณเข้ากับเทคโนโลยี AI — วิเคราะห์ดวงชะตาแบบเฉพาะบุคคล ทั้งไพ่ทาโร่ เซียมซี และดวงรายวัน</p>
+        </div>
+        <!-- 3 — Everyday Guidance -->
+        <div class="what-item reveal">
+          <div class="what-visual">
+            <img src="Images/Asset/01-OnBoadinging/Comp 3.gif" alt="Daily MU Everyday Guidance">
+          </div>
+          <p class="what-text">การดูดวงช่วยให้เราเข้าใจตัวเอง หยุดคิด และเปิดรับความเป็นไปได้ใหม่ๆ ในทุกวัน — Daily MU อยู่กับคุณทุกเช้า</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= TAROT SHOWCASE — Dark immersive ======= -->
+  <section class="tarot-showcase" id="tarot">
+    <div class="tarot-showcase-inner">
+      <div class="sparkle sparkle-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255,255,255,0.5)"/></svg></div>
+      <div class="sparkle sparkle-2"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255,255,255,0.6)"/></svg></div>
+      <div class="sparkle sparkle-3"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255,255,255,0.4)"/></svg></div>
+      <div class="sparkle sparkle-4"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255,255,255,0.35)"/></svg></div>
+      <div class="sparkle sparkle-5"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255,255,255,0.45)"/></svg></div>
+
+      <div class="tarot-header reveal">
+        <h2 class="tarot-title">ไพ่ทาโร่ <span class="diamond">✦</span> โฉมใหม่</h2>
+        <p class="tarot-subtitle">
+          ศาสตร์โบราณที่เราตีความใหม่ให้ทันสมัย ร่วมยุค AI<br>
+          สนุกไปกับคาแรกเตอร์สุดน่ารักที่ออกแบบโดยทีมของเรา
+        </p>
+      </div>
+
+      <div class="card-stack-area reveal" id="tarot-cards"></div>
+      <script>
+        // Generate 22 Major Arcana cards dynamically with real images
+        (function(){
+          const cardImages = [
+            '01_TheFool.png','02_TheMagician.png','03_TheHighPriestess.png','04_TheEmpress.png',
+            '05_TheEmperor.png','06_TheHierophant.png','07_TheLovers.png','08_TheChariot.png',
+            '09_Strength.png','10_TheHermit.png','11_TheHermit.png','12_Justice.png',
+            '13_TheHangedMan.png','14_Death.png','15_Temperance.png','16_TheDevil.png',
+            '17_TheTower.png','18_TheStar.png','19_TheMoon.png','20_TheSun.png',
+            '21_Judgement.png','22_TheWorld.png'
+          ];
+          const backImage = 'Images/Week02/Card/00_Card.png';
+          const area = document.getElementById('tarot-cards');
+          cardImages.forEach((img, i) => {
+            const card = document.createElement('div');
+            card.className = 'card-3d';
+            card.innerHTML = `<div class="card-3d-inner"><div class="card-face back" style="box-shadow:0 8px 24px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);border-radius:16px;"><img src="${backImage}" alt="Card Back" style="width:100%;height:100%;object-fit:contain;border-radius:16px;"></div><div class="card-face front" style="box-shadow:0 8px 24px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);border-radius:16px;"><img src="Images/Week02/Card/${img}" alt="${img.replace(/^\d+_/,'').replace('.png','')}" style="width:100%;height:100%;object-fit:contain;border-radius:16px;"><div class="card-gloss"></div><div class="card-iridescent"></div></div></div>`;
+            area.appendChild(card);
+          });
+        })();
+      </script>
+    </div>
+  </section>
+
+  <!-- ======= FEATURE HIGHLIGHTS ======= -->
+  <section id="highlights" style="background: linear-gradient(135deg, #F1F2FF 0%, #FDEFF5 50%, #E6F6FC 100%);">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-tag">Highlights</div>
+        <h2 class="section-title">ฟีเจอร์เด่นประจำ Phase 1</h2>
+        <p class="section-desc">ฟีเจอร์หลักที่เป็นหัวใจของ Daily MU — ศาสตร์แห่งการดูดวงที่ผสานเทคโนโลยี</p>
+      </div>
+
+      <div class="highlights">
+        <!-- 1: Siam Si — text left, visual right -->
+        <div class="highlight-card card-siam reveal reveal-left">
+          <div class="card-glow"></div>
+          <div class="highlight-row">
+            <div>
+              <div class="highlight-name">Fortune Sticks</div>
+              <h3 class="highlight-title">เซียมซี<br>สั่นกระบอกรับเซียน</h3>
+              <p class="highlight-desc">เขย่ากระบอกเซียมซีเพื่อรับคำทำนาย — พร้อม animation เขย่าไม้, ผลลัพธ์ใบเซียมซีที่ออกแบบเป็นการ์ดสวยงาม รองรับ gesture interaction แบบ native app</p>
+            </div>
+            <div class="highlight-visual">
+              <div class="placeholder-text"><!-- TODO: Figma export -->Figma Export</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2: Horoscope — visual left, text right (auto via nth-child even) -->
+        <div class="highlight-card card-horoscope reveal reveal-right">
+          <div class="card-glow"></div>
+          <div class="highlight-row">
+            <div>
+              <div class="highlight-name">Horoscope</div>
+              <h3 class="highlight-title">ดูดวงรายวัน<br>พร้อม AI Summary</h3>
+              <p class="highlight-desc">ดูดวงตามราศี วันเกิด เวลาเกิด — ระบบ AI วิเคราะห์สรุปผลให้อ่านง่าย แนะนำสีมงคลประจำวัน พร้อมการ์ดสรุปที่แชร์ไปโซเชียลได้</p>
+            </div>
+            <div class="highlight-visual">
+              <div class="placeholder-text"><!-- TODO: Figma export -->Figma Export</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3: ทำนายฝัน — text left, visual right -->
+        <div class="highlight-card card-dream reveal reveal-left">
+          <div class="card-glow"></div>
+          <div class="highlight-row">
+            <div>
+              <div class="highlight-name">Dream Interpretation</div>
+              <h3 class="highlight-title">ทำนายฝัน<br>ค้นหาความหมาย</h3>
+              <p class="highlight-desc">พิมพ์เล่าความฝัน หรือค้นหาสัญลักษณ์ — ระบบวิเคราะห์ความหมายของฝัน พร้อมคำแนะนำตัวเลขมงคลและแนวทางปฏิบัติ</p>
+            </div>
+            <div class="highlight-visual">
+              <div class="placeholder-text"><!-- TODO: Figma export -->Figma Export</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= ALL FEATURES GRID ======= -->
+  <section id="features" style="background: linear-gradient(135deg, #FDEFF5 0%, #FEF9EB 50%, #F1F2FF 100%);">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-tag">All Features</div>
+        <h2 class="section-title">ทุกฟีเจอร์ใน Phase 1</h2>
+        <p class="section-desc">ครบทุกองค์ประกอบ ตั้งแต่ Onboarding ไปจนถึง Settings — พร้อมใช้งาน</p>
+      </div>
+
+      <div class="features-grid reveal-stagger">
+        <!-- 1. Authentication — TAN -->
+        <div class="feature-card reveal">
+          <div class="feature-card-preview"><span class="feature-card-tag">Auth Flow</span><div class="preview-placeholder">Figma Export</div></div>
+          <div class="feature-card-body">
+            <div class="feature-card-title">Authentication</div>
+            <div class="feature-card-desc">เข้าสู่ระบบด้วย Social Login, สมัครสมาชิก Email/Password, ตั้งค่ารหัสผ่าน และกู้คืนรหัสผ่านผ่าน OTP</div>
+            <div class="feature-card-footer">
+              <div class="feature-card-pic"><div class="pic-avatar pic-tan">T</div>TAN</div>
+            </div>
+          </div>
+        </div>
+        <!-- 2. Onboarding — PIM -->
+        <div class="feature-card reveal">
+          <div class="feature-card-preview"><span class="feature-card-tag">Multi-step</span><div class="preview-placeholder">Figma Export</div></div>
+          <div class="feature-card-body">
+            <div class="feature-card-title">Onboarding</div>
+            <div class="feature-card-desc">กรอกข้อมูลวันเกิด เวลาเกิด สถานที่เกิด และราศี — สร้าง Birth Profile ส่วนตัว</div>
+            <div class="feature-card-footer">
+              <div class="feature-card-pic"><div class="pic-avatar pic-pim">P</div>PIM</div>
+            </div>
+          </div>
+        </div>
+        <!-- 3. Home Dashboard — TAN -->
+        <div class="feature-card reveal">
+          <div class="feature-card-preview"><span class="feature-card-tag">Main Screen</span><div class="preview-placeholder">Figma Export</div></div>
+          <div class="feature-card-body">
+            <div class="feature-card-title">Home Dashboard</div>
+            <div class="feature-card-desc">หน้าหลักพร้อม AI Summary Card, การ์ดดวงรายวัน, แนะนำสีมงคล และทักทายตามช่วงเวลา</div>
+            <div class="feature-card-footer">
+              <div class="feature-card-pic"><div class="pic-avatar pic-tan">T</div>TAN</div>
+            </div>
+          </div>
+        </div>
+        <!-- 4. ดูดวงรายวัน — PIM -->
+        <div class="feature-card reveal">
+          <div class="feature-card-preview"><span class="feature-card-tag">AI Powered</span><div class="preview-placeholder">Figma Export</div></div>
+          <div class="feature-card-body">
+            <div class="feature-card-title">ดูดวงรายวัน</div>
+            <div class="feature-card-desc">ดวงรายวันตามราศี ดวงตามวันเกิด AI วิเคราะห์สรุป พร้อมแนะนำสีมงคลประจำวัน</div>
+            <div class="feature-card-footer">
+              <div class="feature-card-pic"><div class="pic-avatar pic-pim">P</div>PIM</div>
+            </div>
+          </div>
+        </div>
+        <!-- 5. ไพ่ทาโร่ — PIM -->
+        <div class="feature-card reveal">
+          <div class="feature-card-preview"><span class="feature-card-tag">22 Cards</span><div class="preview-placeholder">Figma Export</div></div>
+          <div class="feature-card-body">
+            <div class="feature-card-title">ไพ่ทาโร่</div>
+            <div class="feature-card-desc">ไพ่ Major Arcana 22 ใบ พร้อมคำทำนาย ภาพประกอบ และหน้า Detail ความหมายเชิงลึก</div>
+            <div class="feature-card-footer">
+              <div class="feature-card-pic"><div class="pic-avatar pic-pim">P</div>PIM</div>
+            </div>
+          </div>
+        </div>
+        <!-- 6. เซียมซี — TAN -->
+        <div class="feature-card reveal">
+          <div class="feature-card-preview"><span class="feature-card-tag">Interactive</span><div class="preview-placeholder">Figma Export</div></div>
+          <div class="feature-card-body">
+            <div class="feature-card-title">เซียมซี</div>
+            <div class="feature-card-desc">เขย่ากระบอกเซียมซี animation ไม้เซียมซี, แสดงผลเป็นการ์ดคำทำนายพร้อม gesture support</div>
+            <div class="feature-card-footer">
+              <div class="feature-card-pic"><div class="pic-avatar pic-tan">T</div>TAN</div>
+            </div>
+          </div>
+        </div>
+        <!-- 7. ทำนายฝัน — JED -->
+        <div class="feature-card reveal">
+          <div class="feature-card-preview"><span class="feature-card-tag">AI Dream</span><div class="preview-placeholder">Figma Export</div></div>
+          <div class="feature-card-body">
+            <div class="feature-card-title">ทำนายฝัน</div>
+            <div class="feature-card-desc">เล่าความฝันของคุณ ให้ AI วิเคราะห์ความหมายและตีความเชิงลึก พร้อมคำแนะนำประจำวัน</div>
+            <div class="feature-card-footer">
+              <div class="feature-card-pic"><div class="pic-avatar pic-jed">J</div>JED</div>
+            </div>
+          </div>
+        </div>
+        <!-- 8. โปรไฟล์ผู้ใช้/ตั้งค่า — JED -->
+        <div class="feature-card reveal">
+          <div class="feature-card-preview"><span class="feature-card-tag">Profile & Settings</span><div class="preview-placeholder">Figma Export</div></div>
+          <div class="feature-card-body">
+            <div class="feature-card-title">โปรไฟล์ผู้ใช้ / ตั้งค่า</div>
+            <div class="feature-card-desc">จัดการโปรไฟล์ แก้ไขข้อมูลส่วนตัว, ศูนย์ช่วยเหลือ, ติดต่อเรา และการตั้งค่าแอป</div>
+            <div class="feature-card-footer">
+              <div class="feature-card-pic"><div class="pic-avatar pic-jed">J</div>JED</div>
+            </div>
+          </div>
+        </div>
+        <!-- 9. การแจ้งเตือน — JED -->
+        <div class="feature-card reveal">
+          <div class="feature-card-preview"><span class="feature-card-tag">Push Notify</span><div class="preview-placeholder">Figma Export</div></div>
+          <div class="feature-card-body">
+            <div class="feature-card-title">การแจ้งเตือน</div>
+            <div class="feature-card-desc">ระบบแจ้งเตือนดวงรายวัน วันมงคล และกิจกรรมสำคัญ พร้อมหน้ารายการ notification</div>
+            <div class="feature-card-footer">
+              <div class="feature-card-pic"><div class="pic-avatar pic-jed">J</div>JED</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= TIMELINE ======= -->
+  <section id="timeline" style="background: linear-gradient(135deg, #E6F6FC 0%, #F1F2FF 50%, #FDEFF5 100%);">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-tag">Timeline</div>
+        <h2 class="section-title">Phase 1 Journey</h2>
+        <p class="section-desc">เส้นทางการพัฒนาตั้งแต่วันแรก ไปจนถึง Feature Complete</p>
+      </div>
+
+      <div class="timeline reveal">
+        <div class="timeline-item">
+          <div class="timeline-dot secondary"></div>
+          <div class="timeline-date">Week 1 — Feb 2026</div>
+          <div class="timeline-title">Planning & Design System</div>
+          <div class="timeline-desc">วางแผน Sprint, สร้าง Moodboard, Design Tokens, Color Palette, Typography System และ Component Library</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">Week 2 — Feb 2026</div>
+          <div class="timeline-title">Core Screens & Authentication</div>
+          <div class="timeline-desc">ออกแบบ Auth Flow (Login/Register/OTP), Home Dashboard, Calendar, Profile — พร้อม Responsive 3 breakpoints</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot sky"></div>
+          <div class="timeline-date">Week 3 — Feb-Mar 2026</div>
+          <div class="timeline-title">Fortune Features</div>
+          <div class="timeline-desc">ไพ่ทาโร่ 22 ใบ, เซียมซีพร้อม Animation, ดูดวงรายวัน + AI Summary, Error States ครบทุกสถานะ</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot current"></div>
+          <div class="timeline-date">Mar 2026 — Now</div>
+          <div class="timeline-title">Phase 1 Complete</div>
+          <div class="timeline-desc">Feature Complete — รวมทุกฟีเจอร์, QA ทุกหน้าจอ, Responsive ครบ, พร้อมส่ง Dev</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= CTA / FOOTER ======= -->
+  <section class="cta-section">
+    <div class="cta-orbit"></div>
+    <div class="cta-orbit-2"></div>
+    <div class="cta-star">✦</div>
+    <div class="cta-star">✦</div>
+    <div class="cta-star">✧</div>
+    <div class="cta-star">✧</div>
+    <div class="container reveal" style="position:relative;z-index:2;">
+      <h2 class="cta-title">
+        <span class="gradient">Phase 1 Complete</span>
+      </h2>
+      <p class="cta-desc">พร้อมแล้วสำหรับ Development — ก้าวสู่ Phase 2</p>
+
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;">
+        <a href="dailymu-slide.html" class="cta-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          ดู Weekly Update Slides
+        </a>
+      </div>
+
+      <div class="divider"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <img src="Images/Week02/Asset/DailyMu_Login_Character.png" alt="MU Character" class="footer-character">
+    <div class="container">
+      <div class="footer-brand" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <img src="Images/Asset 6.svg" alt="MU" style="height:24px;width:auto;filter:brightness(2);">
+        Daily MU — ดวงดี by Real Factory
+      </div>
+      <div>Phase 1 Feature Record &middot; Version 1.0 &middot; March 2026</div>
+    </div>
+  </footer>
+
+  <!-- ======= NAV GLASS ON SCROLL ======= -->
+  <script>
+    const nav = document.querySelector('.nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+  </script>
+
+  <!-- ======= SCROLL REVEAL ======= -->
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+    reveals.forEach(el => observer.observe(el));
+
+    // Stagger containers — observe parent, reveal children
+    document.querySelectorAll('.reveal-stagger').forEach(container => {
+      const staggerObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll('.reveal').forEach(child => {
+              child.classList.add('visible');
+            });
+          }
+        });
+      }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+      staggerObs.observe(container);
+    });
+
+    // Tarot wave flip — smooth cascade with SFX
+    (function() {
+      const tarotSection = document.getElementById('tarot');
+      if (!tarotSection) return;
+      let waveTimeout = null;
+      let isVisible = false;
+      let isAnimating = false;
+
+      // --- Web Audio SFX — Card dealing sound ---
+      let audioCtx = null;
+      function getAudioCtx() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        return audioCtx;
+      }
+
+      // เสียงแจกไพ่ — noise burst สั้นๆ เหมือนกระดาษปัดนิ้ว
+      function playCardDeal(variation) {
+        try {
+          const ctx = getAudioCtx();
+          const t = ctx.currentTime;
+          const dur = 0.04 + (variation || 0) * 0.005;
+
+          // Noise burst = เสียงกระดาษ
+          const bufLen = Math.floor(ctx.sampleRate * dur);
+          const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+          const d = buf.getChannelData(0);
+          for (let i = 0; i < bufLen; i++) {
+            d[i] = (Math.random() * 2 - 1) * (1 - i / bufLen); // decay
+          }
+          const src = ctx.createBufferSource();
+          src.buffer = buf;
+
+          // Highpass — เก็บเฉพาะเสียงแหลมคม
+          const hp = ctx.createBiquadFilter();
+          hp.type = 'highpass';
+          hp.frequency.value = 2000 + (variation || 0) * 100;
+
+          // Gain — เบาๆ
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime(0.12, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+          src.connect(hp);
+          hp.connect(gain);
+          gain.connect(ctx.destination);
+          src.start(t);
+          src.stop(t + dur);
+        } catch(e) {}
+      }
+
+      // --- Wave animation ---
+      const STAGGER = 150;  // ms between each card
+
+      function runWave() {
+        if (isAnimating || !isVisible) return;
+        isAnimating = true;
+        const cards = tarotSection.querySelectorAll('.card-3d');
+        if (!cards.length) { isAnimating = false; return; }
+
+        // Clean previous
+        cards.forEach(c => { c.classList.remove('wave-open', 'wave-close'); });
+
+        const mid = Math.floor(cards.length / 2);
+        const maxDist = Math.max(mid, cards.length - 1 - mid);
+
+        // Phase 1: CASCADE OPEN from center outward
+        cards.forEach((card, i) => {
+          const dist = Math.abs(i - mid);
+          const delay = dist * STAGGER;
+          setTimeout(() => {
+            if (!isVisible) return;
+            card.classList.add('wave-open');
+            playCardDeal(dist);
+          }, delay);
+        });
+
+        // Hold open for 2 seconds, then Phase 2: CLOSE all together
+        const openDuration = maxDist * STAGGER + 2000;
+        const holdTime = 3000;
+
+        setTimeout(() => {
+          if (!isVisible) { isAnimating = false; return; }
+          cards.forEach((card, i) => {
+            const dist = Math.abs(i - mid);
+            const reverseDelay = (maxDist - dist) * 100;
+            setTimeout(() => {
+              card.classList.remove('wave-open');
+              card.classList.add('wave-close');
+              playCardDeal(maxDist - dist);
+            }, reverseDelay);
+          });
+
+          // Cleanup after close animation
+          const closeDuration = maxDist * 100 + 1800;
+          setTimeout(() => {
+            cards.forEach(c => { c.classList.remove('wave-open', 'wave-close'); });
+            isAnimating = false;
+            // Schedule next wave
+            if (isVisible) waveTimeout = setTimeout(runWave, 3000);
+          }, closeDuration + 200);
+        }, openDuration + holdTime);
+      }
+
+      const tarotObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !isVisible) {
+            isVisible = true;
+            waveTimeout = setTimeout(runWave, 800);
+          } else if (!entry.isIntersecting && isVisible) {
+            isVisible = false;
+            if (waveTimeout) { clearTimeout(waveTimeout); waveTimeout = null; }
+          }
+        });
+      }, { threshold: 0.3 });
+      tarotObserver.observe(tarotSection);
+    })();
+  </script>
+
+</body>
+</html>
