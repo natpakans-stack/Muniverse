@@ -1209,11 +1209,16 @@
     }
     .highlight-visual {
       display: flex; align-items: center; justify-content: center;
-      min-height: 280px; border-radius: var(--radius-lg);
+      height: 340px; border-radius: var(--radius-lg);
       background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
       border: 1px dashed rgba(114,121,251,0.2);
       font-size: 14px; color: var(--secondary);
       position: relative; overflow: hidden;
+    }
+    .highlight-visual video,
+    .highlight-visual img {
+      width: auto; height: 100%; max-width: 100%;
+      object-fit: contain; border-radius: 12px;
     }
     .highlight-visual .placeholder-text {
       z-index: 1; text-align: center; padding: 20px;
@@ -1234,18 +1239,16 @@
       background: linear-gradient(135deg, #FFF5F0, #FDEFF5, #FEF9EB);
       border: 1px dashed rgba(236,89,157,0.15);
     }
+    .card-siam .highlight-visual video,
+    .card-siam .highlight-visual img {
+      height: 120%; transform: scale(1.2);
+    }
     /* Dream — dreamy gradient */
     .card-dream .highlight-visual {
       background: linear-gradient(135deg, #F1F2FF, #E6F6FC, #F0F8F0);
       border: 1px dashed rgba(114,121,251,0.15);
     }
-    /* Alternate left-right layout */
-    .highlight-card:nth-child(even) .highlight-row {
-      direction: rtl;
-    }
-    .highlight-card:nth-child(even) .highlight-row > * {
-      direction: ltr;
-    }
+    /* All cards: text left, visual right (no alternating) */
     .highlight-visual .placeholder-text .icon {
       font-size: 48px; margin-bottom: 12px; display: block;
     }
@@ -1548,6 +1551,11 @@
        ============================================================ */
     @media (max-width: 1024px) {
       .highlight-row { grid-template-columns: 1fr; }
+      .highlight-visual { height: auto; aspect-ratio: 3/2; }
+      .highlight-visual video,
+      .highlight-visual img { width: 100%; height: 100%; object-fit: contain; }
+      .card-siam .highlight-visual video,
+      .card-siam .highlight-visual img { height: 100%; transform: none; }
       .features-grid { grid-template-columns: repeat(2, 1fr); }
       .system-grid { grid-template-columns: repeat(2, 1fr); }
     }
@@ -1556,7 +1564,8 @@
       .nav-links { display: none; }
       .hero-stats { gap: 24px; flex-wrap: wrap; justify-content: center; }
       .features-grid { grid-template-columns: 1fr; }
-      .highlight-card { padding: 32px 24px; }
+      .highlight-card { padding: 24px 20px; }
+      .highlight-row { gap: 16px; }
       .system-grid { grid-template-columns: 1fr 1fr; }
     }
 
@@ -1805,9 +1814,9 @@
               <p class="highlight-desc">เขย่า จับไม้ อ่านคำทำนาย — ครบทุกขั้นตอนเหมือนเซียมซีของจริง ดีไซน์ใหม่ในแบบดิจิทัลที่สวยงามและสนุก</p>
             </div>
             <div class="highlight-visual">
-              <video autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;border-radius:12px;">
+              <video autoplay loop muted playsinline>
                 <source src="mu-3d-assets/out/siamsi-animation.webm" type="video/webm">
-                <img src="Images/elements/Interactive.png" alt="เซียมซี Preview" style="width:100%;height:auto;object-fit:contain;border-radius:12px;">
+                <img src="Images/elements/Interactive.png" alt="เซียมซี Preview">
               </video>
             </div>
           </div>
@@ -1823,9 +1832,9 @@
               <p class="highlight-desc">ดูดวงจากวันเกิดและเวลาเกิดของคุณ — AI สรุปผลให้อ่านง่าย แนะนำสีมงคลประจำวัน พร้อมการ์ดสรุปที่แชร์ไปโซเชียลได้</p>
             </div>
             <div class="highlight-visual">
-              <video autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;border-radius:12px;">
+              <video autoplay loop muted playsinline>
                 <source src="mu-3d-assets/out/horoscope-animation.webm" type="video/webm">
-                <img src="Images/elements/AI Powered.png" alt="ดูดวงรายวัน Preview" style="width:100%;height:auto;object-fit:contain;border-radius:12px;">
+                <img src="Images/elements/AI Powered.png" alt="ดูดวงรายวัน Preview">
               </video>
             </div>
           </div>
@@ -1841,9 +1850,9 @@
               <p class="highlight-desc">พิมพ์หรือเล่าความฝัน — ระบบวิเคราะห์ความหมายของฝัน พร้อมคำแนะนำตัวเลขมงคลและแนวทางปฏิบัติ</p>
             </div>
             <div class="highlight-visual">
-              <video autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;border-radius:12px;">
+              <video autoplay loop muted playsinline>
                 <source src="mu-3d-assets/out/dream-animation.webm" type="video/webm">
-                <img src="mu-3d-assets/out/dream-animation-375.apng" alt="ทำนายฝัน Preview" style="width:100%;height:auto;object-fit:contain;border-radius:12px;">
+                <img src="mu-3d-assets/out/dream-animation-375.apng" alt="ทำนายฝัน Preview">
               </video>
             </div>
           </div>
