@@ -2152,8 +2152,16 @@
         setTimeout(() => screen.classList.add('hidden'), 300);
       }
 
-      window.addEventListener('load', () => setTimeout(dismiss, 400));
-      setTimeout(dismiss, 8000); // Safety timeout
+      // Minimum display time 2.5s so animation plays nicely
+      const minTime = 2500;
+      const startTime = Date.now();
+
+      window.addEventListener('load', () => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(minTime - elapsed, 0);
+        setTimeout(dismiss, remaining);
+      });
+      setTimeout(dismiss, 10000); // Safety timeout
     })();
   </script>
 
