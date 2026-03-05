@@ -1617,9 +1617,49 @@
       }
       .highlight-visual video { animation: none; }
     }
+    /* ============================================================
+       LOADING SCREEN
+       ============================================================ */
+    .loading-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #1B1D22 0%, #282160 50%, #1B1D22 100%);
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    .loading-screen.hidden {
+      opacity: 0; visibility: hidden; pointer-events: none;
+    }
+    .loading-video {
+      width: 200px; height: 200px; object-fit: contain;
+    }
+    .loading-text {
+      margin-top: 16px;
+      font-size: 14px; font-weight: 700; letter-spacing: 2px;
+      color: rgba(255,255,255,0.5); text-transform: uppercase;
+    }
+    .loading-bar {
+      width: 160px; height: 3px; margin-top: 16px;
+      background: rgba(255,255,255,0.1); border-radius: 2px;
+      overflow: hidden;
+    }
+    .loading-bar-fill {
+      width: 0%; height: 100%; border-radius: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: width 0.3s ease;
+    }
   </style>
 </head>
 <body>
+
+  <!-- ======= LOADING SCREEN ======= -->
+  <div class="loading-screen" id="loadingScreen">
+    <video autoplay loop muted playsinline class="loading-video" width="200" height="200">
+      <source src="mu-3d-assets/out/loading-animation.webm" type="video/webm">
+    </video>
+    <div class="loading-text">Loading</div>
+    <div class="loading-bar"><div class="loading-bar-fill" id="loadingBarFill"></div></div>
+  </div>
 
   <!-- ======= NAV ======= -->
   <nav class="nav" aria-label="Main navigation">
@@ -2071,6 +2111,51 @@
       <div>Phase 1 Feature Record &middot; Version 1.0 &middot; March 2026</div>
     </div>
   </footer>
+
+  <!-- ======= LOADING SCREEN DISMISS ======= -->
+  <script>
+    (function() {
+      const screen = document.getElementById('loadingScreen');
+      const bar = document.getElementById('loadingBarFill');
+      if (!screen) return;
+
+      // Track image/video loading progress
+      const resources = document.querySelectorAll('img[src], video source[src]');
+      let loaded = 0;
+      const total = resources.length || 1;
+
+      function updateBar() {
+        loaded++;
+        const pct = Math.min((loaded / total) * 100, 100);
+        if (bar) bar.style.width = pct + '%';
+      }
+
+      resources.forEach(el => {
+        if (el.tagName === 'IMG') {
+          if (el.complete) { updateBar(); return; }
+          el.addEventListener('load', updateBar, { once: true });
+          el.addEventListener('error', updateBar, { once: true });
+        } else {
+          // <source> — listen on parent <video>
+          const video = el.parentElement;
+          if (video && video.readyState >= 2) { updateBar(); return; }
+          if (video) {
+            video.addEventListener('canplay', updateBar, { once: true });
+            video.addEventListener('error', updateBar, { once: true });
+          }
+        }
+      });
+
+      // Dismiss loading screen when page fully loaded (or max 8s timeout)
+      function dismiss() {
+        if (bar) bar.style.width = '100%';
+        setTimeout(() => screen.classList.add('hidden'), 300);
+      }
+
+      window.addEventListener('load', () => setTimeout(dismiss, 400));
+      setTimeout(dismiss, 8000); // Safety timeout
+    })();
+  </script>
 
   <!-- ======= HIGHLIGHT VIDEO AUTOPLAY + FALLBACK ======= -->
   <script>
