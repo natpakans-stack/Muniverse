@@ -1200,27 +1200,8 @@
     }
     /* Horoscope — animated zodiac ring background */
     .card-horoscope .highlight-visual {
-      background: linear-gradient(135deg, #1a1245, #3d2a8a, #5438a2);
-      border: none;
-    }
-    .card-horoscope .highlight-visual::before {
-      content: '♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓';
-      position: absolute;
-      width: 320px; height: 320px;
-      display: flex; align-items: center; justify-content: center;
-      border: 2px solid rgba(255,255,255,0.08);
-      border-radius: 50%;
-      font-size: 18px; letter-spacing: 8px;
-      color: rgba(255,255,255,0.25);
-      animation: zodiac-spin 60s linear infinite;
-    }
-    .card-horoscope .highlight-visual::after {
-      content: '';
-      position: absolute;
-      width: 180px; height: 180px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(114,121,251,0.3), rgba(236,89,157,0.15), transparent 70%);
-      animation: zodiac-pulse 4s ease-in-out infinite alternate;
+      background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+      border: 1px dashed rgba(114,121,251,0.2);
     }
     .card-horoscope .placeholder-text {
       color: rgba(255,255,255,0.6);
@@ -1263,16 +1244,22 @@
       border: 1px solid var(--border);
       box-shadow: var(--shadow-sm);
       transition: all 0.3s ease; overflow: hidden;
-      display: flex; flex-direction: column;
+      display: flex; flex-direction: column; cursor: pointer;
     }
     .feature-card-body {
       padding: 20px 24px 24px;
       display: flex; flex-direction: column; flex: 1;
     }
     .feature-card:hover {
-      border-color: var(--primary-light);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      border-color: rgba(114,121,251,0.3);
+      transform: translateY(-6px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .feature-card:hover .feature-card-preview img {
+      transform: scale(1.05);
+    }
+    .feature-card-preview img {
+      transition: transform 0.4s ease;
     }
     .feature-card-icon {
       width: 48px; height: 48px; border-radius: var(--radius-md);
@@ -1789,22 +1776,22 @@
       <div class="highlights">
         <!-- 1: Siam Si — text left, visual right -->
         <div class="highlight-card card-siam reveal reveal-left">
-          <div class="card-glow"></div>
+
           <div class="highlight-row">
             <div>
               <div class="highlight-name">Fortune Sticks</div>
-              <h3 class="highlight-title">เซียมซี<br>สั่นกระบอกรับเซียน</h3>
-              <p class="highlight-desc">เขย่ากระบอกเซียมซีเพื่อรับคำทำนาย — พร้อม animation เขย่าไม้, ผลลัพธ์ใบเซียมซีที่ออกแบบเป็นการ์ดสวยงาม รองรับ gesture interaction แบบ native app</p>
+              <h3 class="highlight-title">เซียมซี<br>เสี่ยงทายรับคำทำนาย</h3>
+              <p class="highlight-desc">เขย่ากระบอก เลือกไม้เซียมซี รับใบเซียมซีคำทำนาย — พร้อม animation สมจริง ผลลัพธ์เป็นการ์ดสวยงาม รองรับ gesture แบบ native</p>
             </div>
             <div class="highlight-visual">
-              <div class="placeholder-text"><!-- TODO: Figma export -->Figma Export</div>
+              <img src="Images/elements/Interactive.png" alt="เซียมซี Preview" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
             </div>
           </div>
         </div>
 
         <!-- 2: Horoscope — visual left, text right (auto via nth-child even) -->
         <div class="highlight-card card-horoscope reveal reveal-right">
-          <div class="card-glow"></div>
+
           <div class="highlight-row">
             <div>
               <div class="highlight-name">Horoscope</div>
@@ -1812,22 +1799,22 @@
               <p class="highlight-desc">ดูดวงตามราศี วันเกิด เวลาเกิด — ระบบ AI วิเคราะห์สรุปผลให้อ่านง่าย แนะนำสีมงคลประจำวัน พร้อมการ์ดสรุปที่แชร์ไปโซเชียลได้</p>
             </div>
             <div class="highlight-visual">
-              <div class="placeholder-text"><!-- TODO: Figma export -->Figma Export</div>
+              <img src="Images/elements/AI Powered.png" alt="ดูดวงรายวัน Preview" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
             </div>
           </div>
         </div>
 
         <!-- 3: ทำนายฝัน — text left, visual right -->
         <div class="highlight-card card-dream reveal reveal-left">
-          <div class="card-glow"></div>
+
           <div class="highlight-row">
             <div>
               <div class="highlight-name">Dream Interpretation</div>
               <h3 class="highlight-title">ทำนายฝัน<br>ค้นหาความหมาย</h3>
-              <p class="highlight-desc">พิมพ์เล่าความฝัน หรือค้นหาสัญลักษณ์ — ระบบวิเคราะห์ความหมายของฝัน พร้อมคำแนะนำตัวเลขมงคลและแนวทางปฏิบัติ</p>
+              <p class="highlight-desc">พิมพ์หรือเล่าความฝัน — ระบบวิเคราะห์ความหมายของฝัน พร้อมคำแนะนำตัวเลขมงคลและแนวทางปฏิบัติ</p>
             </div>
             <div class="highlight-visual">
-              <div class="placeholder-text"><!-- TODO: Figma export -->Figma Export</div>
+              <img src="Images/elements/AI Dream.png" alt="ทำนายฝัน Preview" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
             </div>
           </div>
         </div>
@@ -1847,7 +1834,7 @@
       <div class="features-grid reveal-stagger">
         <!-- 1. Authentication — TAN -->
         <div class="feature-card reveal">
-          <div class="feature-card-preview"><span class="feature-card-tag">Auth Flow</span><img src="Images/elements/Auth Flow.png" alt="Auth Flow Preview"></div>
+          <div class="feature-card-preview"><img src="Images/elements/Auth Flow.png" alt="Auth Flow Preview"></div>
           <div class="feature-card-body">
             <div class="feature-card-title">Authentication</div>
             <div class="feature-card-desc">เข้าสู่ระบบด้วย Social Login, สมัครสมาชิก Email/Password, ตั้งค่ารหัสผ่าน และกู้คืนรหัสผ่านผ่าน OTP</div>
@@ -1859,7 +1846,7 @@
         </div>
         <!-- 2. Onboarding — PIM -->
         <div class="feature-card reveal">
-          <div class="feature-card-preview"><span class="feature-card-tag">Multi-step</span><img src="Images/elements/Multi-step.png" alt="Onboarding Preview"></div>
+          <div class="feature-card-preview"><img src="Images/elements/Multi-step.png" alt="Onboarding Preview"></div>
           <div class="feature-card-body">
             <div class="feature-card-title">Onboarding</div>
             <div class="feature-card-desc">กรอกข้อมูลวันเกิด เวลาเกิด สถานที่เกิด และราศี — สร้าง Birth Profile ส่วนตัว</div>
@@ -1871,7 +1858,7 @@
         </div>
         <!-- 3. Home Dashboard — TAN -->
         <div class="feature-card reveal">
-          <div class="feature-card-preview"><span class="feature-card-tag">Main Screen</span><img src="Images/elements/Main Screen.png" alt="Home Dashboard Preview"></div>
+          <div class="feature-card-preview"><img src="Images/elements/Main Screen.png" alt="Home Dashboard Preview"></div>
           <div class="feature-card-body">
             <div class="feature-card-title">Home Dashboard</div>
             <div class="feature-card-desc">หน้าหลักพร้อม AI Summary Card, การ์ดดวงรายวัน, แนะนำสีมงคล และทักทายตามช่วงเวลา</div>
@@ -1883,7 +1870,7 @@
         </div>
         <!-- 4. ดูดวงรายวัน — PIM -->
         <div class="feature-card reveal">
-          <div class="feature-card-preview"><span class="feature-card-tag">AI Powered</span><img src="Images/elements/AI Powered.png" alt="ดูดวงรายวัน Preview"></div>
+          <div class="feature-card-preview"><img src="Images/elements/AI Powered.png" alt="ดูดวงรายวัน Preview"></div>
           <div class="feature-card-body">
             <div class="feature-card-title">ดูดวงรายวัน</div>
             <div class="feature-card-desc">ดวงรายวันตามราศี ดวงตามวันเกิด AI วิเคราะห์สรุป พร้อมแนะนำสีมงคลประจำวัน</div>
@@ -1895,7 +1882,7 @@
         </div>
         <!-- 5. ไพ่ทาโร่ — PIM -->
         <div class="feature-card reveal">
-          <div class="feature-card-preview"><span class="feature-card-tag">22 Cards</span><img src="Images/elements/22 Cards.png" alt="ไพ่ทาโร่ Preview"></div>
+          <div class="feature-card-preview"><img src="Images/elements/22 Cards.png" alt="ไพ่ทาโร่ Preview"></div>
           <div class="feature-card-body">
             <div class="feature-card-title">ไพ่ทาโร่</div>
             <div class="feature-card-desc">ไพ่ Major Arcana 22 ใบ พร้อมคำทำนาย ภาพประกอบ และหน้า Detail ความหมายเชิงลึก</div>
@@ -1907,7 +1894,7 @@
         </div>
         <!-- 6. เซียมซี — TAN -->
         <div class="feature-card reveal">
-          <div class="feature-card-preview"><span class="feature-card-tag">Interactive</span><img src="Images/elements/Interactive.png" alt="เซียมซี Preview"></div>
+          <div class="feature-card-preview"><img src="Images/elements/Interactive.png" alt="เซียมซี Preview"></div>
           <div class="feature-card-body">
             <div class="feature-card-title">เซียมซี</div>
             <div class="feature-card-desc">เขย่ากระบอกเซียมซี animation ไม้เซียมซี, แสดงผลเป็นการ์ดคำทำนายพร้อม gesture support</div>
@@ -1919,7 +1906,7 @@
         </div>
         <!-- 7. ทำนายฝัน — JED -->
         <div class="feature-card reveal">
-          <div class="feature-card-preview"><span class="feature-card-tag">AI Dream</span><img src="Images/elements/AI Dream.png" alt="ทำนายฝัน Preview"></div>
+          <div class="feature-card-preview"><img src="Images/elements/AI Dream.png" alt="ทำนายฝัน Preview"></div>
           <div class="feature-card-body">
             <div class="feature-card-title">ทำนายฝัน</div>
             <div class="feature-card-desc">เล่าความฝันของคุณ ให้ AI วิเคราะห์ความหมายและตีความเชิงลึก พร้อมคำแนะนำประจำวัน</div>
@@ -1931,7 +1918,7 @@
         </div>
         <!-- 8. โปรไฟล์ผู้ใช้/ตั้งค่า — JED -->
         <div class="feature-card reveal">
-          <div class="feature-card-preview"><span class="feature-card-tag">Profile & Settings</span><img src="Images/elements/Profile & Settings.png" alt="โปรไฟล์ Preview"></div>
+          <div class="feature-card-preview"><img src="Images/elements/Profile & Settings.png" alt="โปรไฟล์ Preview"></div>
           <div class="feature-card-body">
             <div class="feature-card-title">โปรไฟล์ผู้ใช้ / ตั้งค่า</div>
             <div class="feature-card-desc">จัดการโปรไฟล์ แก้ไขข้อมูลส่วนตัว, ศูนย์ช่วยเหลือ, ติดต่อเรา และการตั้งค่าแอป</div>
@@ -1943,7 +1930,7 @@
         </div>
         <!-- 9. การแจ้งเตือน — JED -->
         <div class="feature-card reveal">
-          <div class="feature-card-preview"><span class="feature-card-tag">Push Notify</span><img src="Images/elements/Push Notify.png" alt="การแจ้งเตือน Preview"></div>
+          <div class="feature-card-preview"><img src="Images/elements/Push Notify.png" alt="การแจ้งเตือน Preview"></div>
           <div class="feature-card-body">
             <div class="feature-card-title">การแจ้งเตือน</div>
             <div class="feature-card-desc">ระบบแจ้งเตือนดวงรายวัน วันมงคล และกิจกรรมสำคัญ พร้อมหน้ารายการ notification</div>
