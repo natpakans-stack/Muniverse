@@ -5,11 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily MU — Phase 1 Feature Showcase</title>
 
-  <!-- LINE Seed Sans TH — Multiple CDN fallbacks -->
-  <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
-  <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
-  <link href="https://fonts.cdnfonts.com/css/line-seed-sans-th" rel="stylesheet">
-  <link href="https://db.onlinewebfonts.com/c/0a54bd29f535bbdd5c69fdd2976d7b66?family=LINE+Seed+Sans+TH" rel="stylesheet">
+  <!-- LINE Seed Sans TH — Self-hosted (official v1.003) -->
+  <style>
+    @font-face {
+      font-family: 'LINE Seed Sans TH';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('fonts/LINESeedSansTH_W_Rg.woff2') format('woff2'),
+           url('fonts/LINESeedSansTH_W_Rg.woff') format('woff');
+    }
+    @font-face {
+      font-family: 'LINE Seed Sans TH';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('fonts/LINESeedSansTH_W_Bd.woff2') format('woff2'),
+           url('fonts/LINESeedSansTH_W_Bd.woff') format('woff');
+    }
+  </style>
 
   <style>
     /* ============================================================
