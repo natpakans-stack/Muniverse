@@ -1830,10 +1830,10 @@
               <p class="highlight-desc">เขย่า จับไม้ อ่านคำทำนาย — ครบทุกขั้นตอนเหมือนเซียมซีของจริง ดีไซน์ใหม่ในแบบดิจิทัลที่สวยงามและสนุก</p>
             </div>
             <div class="highlight-visual">
-              <video autoplay loop muted playsinline width="500" height="500">
+              <video autoplay loop muted playsinline width="500" height="500" class="highlight-video">
                 <source src="mu-3d-assets/out/siamsi-animation.webm" type="video/webm">
-                <img src="Images/elements/Interactive.png" alt="เซียมซี Preview" width="500" height="500">
               </video>
+              <img src="Images/elements/Interactive.png" alt="เซียมซี Preview" width="500" height="500" class="highlight-fallback" style="display:none;">
             </div>
           </div>
         </div>
@@ -1848,10 +1848,10 @@
               <p class="highlight-desc">ดูดวงจากวันเกิดและเวลาเกิดของคุณ — AI สรุปผลให้อ่านง่าย แนะนำสีมงคลประจำวัน พร้อมการ์ดสรุปที่แชร์ไปโซเชียลได้</p>
             </div>
             <div class="highlight-visual">
-              <video autoplay loop muted playsinline width="750" height="500">
+              <video autoplay loop muted playsinline width="750" height="500" class="highlight-video">
                 <source src="mu-3d-assets/out/horoscope-animation.webm" type="video/webm">
-                <img src="Images/elements/AI Powered.png" alt="ดูดวงรายวัน Preview" width="750" height="500">
               </video>
+              <img src="Images/elements/AI Powered.png" alt="ดูดวงรายวัน Preview" width="750" height="500" class="highlight-fallback" style="display:none;">
             </div>
           </div>
         </div>
@@ -1866,10 +1866,10 @@
               <p class="highlight-desc">พิมพ์หรือเล่าความฝัน — ระบบวิเคราะห์ความหมายของฝัน พร้อมคำแนะนำตัวเลขมงคลและแนวทางปฏิบัติ</p>
             </div>
             <div class="highlight-visual">
-              <video autoplay loop muted playsinline width="750" height="500">
+              <video autoplay loop muted playsinline width="750" height="500" class="highlight-video">
                 <source src="mu-3d-assets/out/dream-animation.webm" type="video/webm">
-                <img src="mu-3d-assets/out/dream-animation-375.apng" alt="ทำนายฝัน Preview" width="750" height="500">
               </video>
+              <img src="mu-3d-assets/out/dream-animation-375.apng" alt="ทำนายฝัน Preview" width="750" height="500" class="highlight-fallback" style="display:none;">
             </div>
           </div>
         </div>
@@ -2071,6 +2071,45 @@
       <div>Phase 1 Feature Record &middot; Version 1.0 &middot; March 2026</div>
     </div>
   </footer>
+
+  <!-- ======= HIGHLIGHT VIDEO AUTOPLAY + FALLBACK ======= -->
+  <script>
+    // Play highlight videos when scrolled into view; show fallback if unsupported
+    (function() {
+      const videos = document.querySelectorAll('.highlight-video');
+      if (!videos.length) return;
+
+      const videoObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const video = entry.target;
+          if (entry.isIntersecting) {
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+              playPromise.catch(() => {
+                // Autoplay failed — show fallback image
+                video.style.display = 'none';
+                const fallback = video.parentElement.querySelector('.highlight-fallback');
+                if (fallback) fallback.style.display = '';
+              });
+            }
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.2 });
+
+      videos.forEach(video => {
+        // Check if browser can play WebM at all
+        if (!video.canPlayType('video/webm')) {
+          video.style.display = 'none';
+          const fallback = video.parentElement.querySelector('.highlight-fallback');
+          if (fallback) fallback.style.display = '';
+          return;
+        }
+        videoObs.observe(video);
+      });
+    })();
+  </script>
 
   <!-- ======= NAV GLASS ON SCROLL ======= -->
   <script>
