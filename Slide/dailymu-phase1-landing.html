@@ -2117,51 +2117,86 @@
     (function() {
       const screen = document.getElementById('loadingScreen');
       const bar = document.getElementById('loadingBarFill');
+      const loadingText = document.querySelector('.loading-text');
       if (!screen) return;
 
-      // Track image/video loading progress
-      const resources = document.querySelectorAll('img[src], video source[src]');
-      let loaded = 0;
+      // Collect ALL unique resource URLs (images + videos)
+      const urls = new Set();
+      document.querySelectorAll('img[src]').forEach(img => {
+        if (img.src) urls.add({ type: 'image', url: img.src, el: img });
+      });
+      document.querySelectorAll('video source[src]').forEach(source => {
+        if (source.src) urls.add({ type: 'video', url: source.src, el: source.parentElement });
+      });
+
+      const resources = Array.from(urls);
       const total = resources.length || 1;
+      let loaded = 0;
+      let allDone = false;
 
       function updateBar() {
         loaded++;
-        const pct = Math.min((loaded / total) * 100, 100);
+        const pct = Math.min(Math.round((loaded / total) * 100), 100);
         if (bar) bar.style.width = pct + '%';
+        if (loadingText) loadingText.textContent = 'Loading ' + pct + '%';
+
+        if (loaded >= total && !allDone) {
+          allDone = true;
+          onAllLoaded();
+        }
       }
 
-      resources.forEach(el => {
-        if (el.tagName === 'IMG') {
-          if (el.complete) { updateBar(); return; }
-          el.addEventListener('load', updateBar, { once: true });
-          el.addEventListener('error', updateBar, { once: true });
+      // Preload each resource and track real progress
+      resources.forEach(res => {
+        if (res.type === 'image') {
+          const img = res.el;
+          // Force eager loading (override lazy)
+          img.loading = 'eager';
+          if (img.complete && img.naturalWidth > 0) { updateBar(); return; }
+          img.addEventListener('load', updateBar, { once: true });
+          img.addEventListener('error', updateBar, { once: true });
+          // Trigger load if src was deferred
+          if (!img.complete) img.src = img.src;
         } else {
-          // <source> — listen on parent <video>
-          const video = el.parentElement;
-          if (video && video.readyState >= 2) { updateBar(); return; }
-          if (video) {
-            video.addEventListener('canplay', updateBar, { once: true });
-            video.addEventListener('error', updateBar, { once: true });
-          }
+          // Video — fetch to preload since <video> may not auto-load
+          fetch(res.url, { mode: 'cors' })
+            .then(r => r.blob())
+            .then(() => {
+              const video = res.el;
+              if (video) video.load();
+              updateBar();
+            })
+            .catch(() => updateBar());
         }
       });
 
-      // Dismiss loading screen when page fully loaded (or max 8s timeout)
+      // Dismiss loading screen
       function dismiss() {
         if (bar) bar.style.width = '100%';
-        setTimeout(() => screen.classList.add('hidden'), 300);
+        if (loadingText) loadingText.textContent = 'Loading 100%';
+        setTimeout(() => screen.classList.add('hidden'), 400);
       }
 
-      // Minimum display time 2.5s so animation plays nicely
-      const minTime = 2500;
+      // When all resources are loaded — respect minimum display time
+      const minTime = 1500;
       const startTime = Date.now();
 
-      window.addEventListener('load', () => {
+      function onAllLoaded() {
         const elapsed = Date.now() - startTime;
         const remaining = Math.max(minTime - elapsed, 0);
         setTimeout(dismiss, remaining);
+      }
+
+      // Fallback: if window.load fires and progress is stuck, force check
+      window.addEventListener('load', () => {
+        if (!allDone) {
+          // Give lazy resources 2s more after window load
+          setTimeout(() => { if (!allDone) { allDone = true; dismiss(); } }, 2000);
+        }
       });
-      setTimeout(dismiss, 10000); // Safety timeout
+
+      // Safety timeout — never block more than 15s
+      setTimeout(() => { if (!allDone) { allDone = true; dismiss(); } }, 15000);
     })();
   </script>
 
