@@ -6,7 +6,7 @@
 <title>Social Listening Cropper — ครอปโพสต์อัตโนมัติ</title>
 <meta name="description" content="ครอปรูป screenshot จาก Social Listening tool ให้เป็นโพสต์แยกอัตโนมัติ ไม่ต้องลงโปรแกรม เปิดในเบราว์เซอร์ได้เลย">
 <meta name="theme-color" content="#1B1D22">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23EC599D'/><stop offset='100%25' stop-color='%237279FB'/></linearGradient></defs><rect width='100' height='100' rx='20' fill='url(%23g)'/><text x='50' y='68' text-anchor='middle' font-size='52'>✂</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='75' text-anchor='middle' font-size='80'>✂️</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap');
@@ -29,15 +29,9 @@
   }
 
   .header-icon {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, #EC599D, #7279FB);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
+    font-size: 32px;
     flex-shrink: 0;
+    line-height: 1;
   }
 
   .header h1 {
@@ -416,19 +410,65 @@
   }
 
   /* Footer */
-  .footer {
+  .site-footer {
     text-align: center;
-    padding: 24px;
-    color: #9A9DAD;
-    font-size: 13px;
+    padding: 48px 24px 0;
+    background: #F0F1F4;
+    overflow: hidden;
+    position: relative;
   }
 
-  .footer a {
-    color: #7279FB;
-    text-decoration: none;
+  .mascot-half {
+    width: 180px;
+    height: 120px;
+    overflow: hidden;
+    margin: 0 auto;
   }
 
-  .footer a:hover { text-decoration: underline; }
+  .mascot-half img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .closing {
+    text-align: center;
+    padding: 48px 24px 64px;
+    border-top: 1px solid #CBCDD6;
+    background: #F0F1F4;
+  }
+
+  .closing h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .closing p {
+    color: #6A6E83;
+    font-size: 0.95rem;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .closing .stack-icons {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .closing .stack-icon {
+    background: #fff;
+    border: 1px solid #EBECEF;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #6A6E83;
+  }
 </style>
 </head>
 <body>
@@ -447,7 +487,7 @@
     <div class="dropzone-icon">🖼️</div>
     <h2>ลากรูป screenshot มาวางตรงนี้</h2>
     <p>หรือคลิกเพื่อเลือกไฟล์ — รองรับ PNG, JPG</p>
-    <div class="dropzone-hint">รองรับ Mandala, Zanroo, Wisesight และ Social Listening tools อื่นๆ</div>
+
     <input type="file" id="fileInput" accept="image/*" style="display:none">
   </div>
 
@@ -854,8 +894,22 @@ function sleep(ms) {
 }
 </script>
 
-<div class="footer">
-  ทำงานในเบราว์เซอร์ — ไม่มีการอัปโหลดรูปไปที่ server ใดๆ &middot; Muniverse Team
+<div class="site-footer">
+  <div class="mascot-half">
+    <img src="https://natpakans-stack.github.io/talk-to-figma-mcp/assets/aw-mascot.avif" alt="Aw mascot">
+  </div>
+</div>
+
+<div class="closing">
+  <h2>✂️ Built for the team</h2>
+  <p>เครื่องมือนี้สร้างขึ้นเพื่อให้ทีมกราฟิกครอปรูป Social Listening ได้ง่ายๆ ไม่ต้องลงโปรแกรม ไม่ต้องเปิด Terminal ทำงานในเบราว์เซอร์ ไม่อัปโหลดรูปไปที่ server ใดๆ</p>
+  <div class="stack-icons">
+    <span class="stack-icon">HTML</span>
+    <span class="stack-icon">CSS</span>
+    <span class="stack-icon">JavaScript</span>
+    <span class="stack-icon">Canvas API</span>
+    <span class="stack-icon">JSZip</span>
+  </div>
 </div>
 
 </body>
