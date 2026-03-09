@@ -266,6 +266,97 @@ html { scroll-behavior: smooth; }
   .fl-story-chefs .grid_4 { width: 100% !important; max-width: 360px; }
 }
 
+/* ========== RESPONSIVE ========== */
+
+/* Tablet (≤1024px) */
+@media (max-width: 1024px) {
+  /* Founder story — stack columns */
+  .fl-founder-wrap { flex-direction: column !important; }
+  .fl-founder-wrap > div { flex: 1 1 100% !important; max-width: 100% !important; padding-right: 0 !important; }
+  .fl-founder-collage { min-height: 500px !important; margin-top: 40px; }
+
+  /* Chef section — stack 3 columns */
+  .fl-chef-wrap { flex-direction: column !important; gap: 40px !important; }
+  .fl-chef-wrap > div { flex: 1 1 100% !important; max-width: 100% !important; padding: 0 !important; }
+
+  /* Menu header — stack */
+  .fl-menu-header-wrap { flex-direction: column !important; }
+  .fl-menu-header-wrap > div { flex: 1 1 100% !important; max-width: 100% !important; padding-right: 0 !important; }
+
+  /* Reserve section — stack */
+  .fl-reserve-wrap { flex-direction: column !important; }
+  .fl-reserve-wrap > div { flex: 1 1 100% !important; max-width: 100% !important; }
+  .fl-reserve-text { padding: 60px 40px !important; }
+  .fl-reserve-img { min-height: 400px !important; }
+  .fl-reserve-img img { aspect-ratio: 16/9 !important; }
+
+  /* Testimonial cards — 2 per view on tablet */
+  .fl-testimonial-card { flex: 0 0 calc(50% - 12px) !important; }
+
+  /* Gallery rows — keep flex but allow wrapping */
+  .fl-gallery-row { flex-wrap: wrap !important; }
+  .fl-gallery-row > div { flex: 1 1 calc(50% - 6px) !important; min-width: calc(50% - 6px) !important; max-width: none !important; }
+}
+
+/* Mobile (≤767px) */
+@media (max-width: 767px) {
+  /* Hero — show mobile version */
+  .fl-hero-mobile { display: block !important; }
+  .nicdark_height_570 { height: 300px !important; }
+
+  /* Section headings — smaller */
+  .fl-section-heading { font-size: 32px !important; }
+
+  /* Founder collage — reduce height, adjust images */
+  .fl-founder-collage { min-height: 360px !important; }
+  .fl-founder-collage img:nth-child(1) { width: 65% !important; left: 20% !important; }
+  .fl-founder-collage img:nth-child(2) { width: 40% !important; top: 20% !important; }
+  .fl-founder-collage img:nth-child(3) { width: 50% !important; left: 15% !important; }
+
+  /* Testimonial — 1 card on mobile */
+  .fl-testimonial-card { flex: 0 0 100% !important; }
+  #fl-testimonial-track { gap: 16px !important; }
+
+  /* Menu carousel — smaller cards */
+  #menuCarousel > div { flex: 0 0 85% !important; min-width: 260px !important; }
+
+  /* Menu carousel arrows — hide on mobile (use swipe) */
+  .fl-menu-carousel-wrap > button { display: none !important; }
+
+  /* Gallery rows — stack */
+  .fl-gallery-row > div { flex: 1 1 100% !important; min-width: 100% !important; }
+
+  /* Visit us — stack label + content */
+  .fl-visit-row { flex-direction: column !important; gap: 12px !important; }
+  .fl-visit-label { flex: none !important; }
+
+  /* Footer nav — wrap */
+  .fl-footer-nav { flex-wrap: wrap !important; justify-content: center !important; gap: 12px 20px !important; }
+  .fl-footer-nav a { margin: 0 !important; }
+
+  /* Footer address — stack */
+  .fl-footer-address span.fl-footer-sep { display: none !important; }
+  .fl-footer-address { display: flex !important; flex-direction: column !important; gap: 4px !important; }
+
+  /* Sections — less padding */
+  .fl-section-pad { padding: 60px 20px !important; }
+  .fl-section-pad-sm { padding: 40px 20px !important; }
+
+  /* Reserve text */
+  .fl-reserve-text { padding: 40px 20px !important; }
+
+  /* Menu stat boxes — stack */
+  .fl-menu-stats { flex-direction: column !important; }
+}
+
+/* Small mobile (≤479px) */
+@media (max-width: 479px) {
+  .fl-founder-collage { min-height: 280px !important; }
+  .fl-section-heading { font-size: 28px !important; }
+  .fl-hero-heading { font-size: 32px !important; }
+  .fl-hero-subheading { font-size: 24px !important; }
+}
+
 /* Footer on dark bg — make text & icons visible */
 .nicdark_bg_greydark .nicdark_navigation_copyright a { color: rgba(255,255,255,0.8) !important; }
 .nicdark_bg_greydark .nicdark_navigation_copyright a:hover { color: #C9A96E !important; }
@@ -748,6 +839,7 @@ html { scroll-behavior: smooth; }
         <div class="nicdark_section nicdark_height_570"></div>
 
         <!--start nicdark_container-->
+        <!-- Desktop hero text -->
         <div class="nicdark_container nicdark_clearfix nicdark_display_none_all_iphone">
 
 
@@ -755,13 +847,13 @@ html { scroll-behavior: smooth; }
 
 
 
-                <strong class="nicdark_color_white nicdark_second_font" style="font-size:52px;line-height:1.15;display:block;">ศิลปะแห่งรสชาติ ที่เปลี่ยนมื้ออาหารเป็นความทรงจำ</strong>
+                <strong class="nicdark_color_white nicdark_second_font fl-hero-heading" style="font-size:52px;line-height:1.15;display:block;">ศิลปะแห่งรสชาติ ที่เปลี่ยนมื้ออาหารเป็นความทรงจำ</strong>
 
                 <!--START typed words-->
                 <div class="nicdark_section ">
 
 
-                    <span class="nicdark_color_white nicdark_first_font" style="font-size:40px;font-weight:300;">Foodlab — </span>
+                    <span class="nicdark_color_white nicdark_first_font fl-hero-subheading" style="font-size:40px;font-weight:300;">Foodlab — </span>
 
                     <div class="nicdark_typed_strings">
 
@@ -771,7 +863,7 @@ html { scroll-behavior: smooth; }
 
                     </div>
                     <span class="nicdark_typed nicdark_padding_botttom_5" style="white-space:pre;"></span>
-                
+
                 </div>
                 <!--END typed words-->
 
@@ -780,6 +872,13 @@ html { scroll-behavior: smooth; }
         </div>
         <!--end container-->
 
+        <!-- Mobile hero text -->
+        <div class="nicdark_container nicdark_clearfix fl-hero-mobile" style="display:none;padding:0 20px;text-align:center;">
+            <strong class="nicdark_color_white nicdark_second_font" style="font-size:32px;line-height:1.2;display:block;">ศิลปะแห่งรสชาติ<br>ที่เปลี่ยนมื้ออาหาร<br>เป็นความทรงจำ</strong>
+            <div style="margin-top:16px;">
+                <span class="nicdark_color_white nicdark_first_font" style="font-size:18px;font-weight:300;opacity:0.8;">Foodlab — ทุกจานคืองานสร้างสรรค์</span>
+            </div>
+        </div>
 
         <div class="nicdark_section nicdark_height_150"></div>
 
@@ -871,7 +970,7 @@ html { scroll-behavior: smooth; }
             <div class="fl-reveal">
                 <p class="nicdark_first_font" style="color:#C9A96E;font-size:13px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;font-weight:600;">01 ── OUR STORY</p>
                 <div class="fl-divider" style="margin:0 auto 28px;"></div>
-                <h2 class="nicdark_color_white nicdark_second_font" style="font-size:48px;line-height:1.15;margin-bottom:28px;max-width:700px;margin-left:auto;margin-right:auto;font-weight:600;">จากเปลวไฟดวงแรก สู่ดาวมิชลินที่ส่องสว่าง</h2>
+                <h2 class="nicdark_color_white nicdark_second_font" style="font-size:48px;line-height:1.15;margin-bottom:28px;max-width:700px;margin-left:auto;margin-right:auto;font-weight:600;" class="fl-section-heading">จากเปลวไฟดวงแรก สู่ดาวมิชลินที่ส่องสว่าง</h2>
                 <p class="nicdark_color_white" style="opacity:0.7;line-height:1.7;max-width:640px;margin:0 auto;font-size:16px;">Foodlab ถือกำเนิดจากความเชื่อเรียบง่าย — อาหารที่ดีที่สุดเกิดจากหัวใจที่จริงจัง กว่า 15 ปีบนเส้นทางรสชาติ เราหลอมรวมภูมิปัญญาท้องถิ่นเข้ากับเทคนิคระดับโลก สร้างสรรค์ทุกจานด้วยวัตถุดิบที่คัดสรรอย่างพิถีพิถัน เพื่อมอบประสบการณ์ที่เหนือกว่าคำว่า "มื้ออาหาร"</p>
             </div>
         </div>
@@ -882,7 +981,7 @@ html { scroll-behavior: smooth; }
         <div class="nicdark_container nicdark_clearfix fl-story-founder" style="padding:80px 0;">
 
             <!-- Left: Text Content -->
-            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0;">
+            <div class="fl-founder-wrap" style="display:flex;flex-wrap:wrap;align-items:center;gap:0;">
 
                 <div class="fl-reveal-left" style="flex:0 0 50%;max-width:50%;box-sizing:border-box;padding-right:60px;">
 
@@ -931,7 +1030,7 @@ html { scroll-behavior: smooth; }
                 </div>
 
                 <!-- Right: 3-Image Collage (reference layout) -->
-                <div style="flex:0 0 50%;max-width:50%;box-sizing:border-box;position:relative;min-height:680px;">
+                <div class="fl-founder-collage" style="flex:0 0 50%;max-width:50%;box-sizing:border-box;position:relative;min-height:680px;">
 
                     <!-- Main large image (top-center/right, largest) — Chef plating -->
                     <img loading="lazy" class="fl-collage-img" src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=600&h=700&fit=crop&crop=top" alt="Chef plating a dish" style="position:absolute;top:0;left:15%;width:70%;aspect-ratio:5/6;object-fit:cover;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.15);z-index:1;">
@@ -950,8 +1049,8 @@ html { scroll-behavior: smooth; }
     </div>
 
     <!-- Sub-section C: Testimonials — Auto-rotating with effects -->
-    <div class="nicdark_section" style="background:#FAF7F2;overflow:hidden;">
-        <div style="max-width:1200px;margin:0 auto;padding:80px 40px;">
+    <div class="nicdark_section" style="background:#FAF7F2;overflow:hidden;overflow-x:hidden;">
+        <div class="fl-section-pad" style="max-width:1200px;margin:0 auto;padding:80px 40px;">
 
             <!-- Header -->
             <div class="fl-reveal" style="text-align:center;margin-bottom:48px;">
@@ -1065,10 +1164,10 @@ html { scroll-behavior: smooth; }
 
     <!-- Sub-section D: Chef — "Where innovation meets tradition" (Webflow reference layout) -->
     <div class="nicdark_section" style="background:#FAF7F2;">
-        <div style="max-width:1200px;margin:0 auto;padding:80px 40px;">
+        <div class="fl-section-pad" style="max-width:1200px;margin:0 auto;padding:80px 40px;">
 
             <!-- Main horizontal wrap: 3 columns -->
-            <div style="display:flex;align-items:flex-start;gap:0;">
+            <div class="fl-chef-wrap" style="display:flex;align-items:flex-start;gap:0;">
 
                 <!-- Column 1: about-01 (text + small image) — 35% -->
                 <div style="flex:0 0 35%;max-width:35%;display:flex;flex-direction:column;">
@@ -1117,7 +1216,7 @@ html { scroll-behavior: smooth; }
     <div class="nicdark_container nicdark_clearfix" style="padding:80px 0;">
 
         <!-- Top Row: Text Left + 2 Stat Boxes Right -->
-        <div style="display:flex;flex-wrap:wrap;align-items:flex-start;margin-bottom:48px;">
+        <div class="fl-menu-header-wrap" style="display:flex;flex-wrap:wrap;align-items:flex-start;margin-bottom:48px;">
 
             <!-- Left: Section header -->
             <div class="fl-reveal-left" style="flex:0 0 55%;max-width:55%;box-sizing:border-box;padding-right:40px;">
@@ -1131,7 +1230,7 @@ html { scroll-behavior: smooth; }
             </div>
 
             <!-- Right: 2 Stat Boxes -->
-            <div class="fl-reveal-right" style="flex:0 0 45%;max-width:45%;display:flex;gap:16px;">
+            <div class="fl-reveal-right fl-menu-stats" style="flex:0 0 45%;max-width:45%;display:flex;gap:16px;">
                 <div style="flex:1;background:#FFFFFF;border-radius:12px;padding:32px 28px;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
                     <p class="nicdark_second_font" style="font-size:48px;color:#1A1A2E;line-height:1;margin-bottom:16px;">04</p>
                     <p style="color:#6A6E83;font-size:14px;line-height:1.6;">จานซิกเนเจอร์<br>คัดสรรพิเศษ</p>
@@ -1145,7 +1244,7 @@ html { scroll-behavior: smooth; }
         </div>
 
         <!-- Menu Carousel -->
-        <div class="fl-reveal" style="position:relative;">
+        <div class="fl-reveal fl-menu-carousel-wrap" style="position:relative;">
 
             <!-- Carousel Navigation Arrows -->
             <button onclick="document.getElementById('menuCarousel').scrollBy({left:-380,behavior:'smooth'})" style="position:absolute;top:50%;left:-24px;transform:translateY(-80%);z-index:10;width:48px;height:48px;border-radius:50%;background:#FFFFFF;border:1px solid #EBECEF;box-shadow:0 2px 8px rgba(0,0,0,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s;" aria-label="Previous">
@@ -1262,10 +1361,10 @@ html { scroll-behavior: smooth; }
 
 <!-- SECTION: Reserve Your Table -->
 <div class="nicdark_section" style="background:#FAF7F2;">
-    <div style="display:flex;flex-wrap:wrap;align-items:stretch;min-height:700px;">
+    <div class="fl-reserve-wrap" style="display:flex;flex-wrap:wrap;align-items:stretch;min-height:700px;">
 
         <!-- Left: Text Content -->
-        <div class="fl-reveal-left" style="flex:0 0 50%;max-width:50%;box-sizing:border-box;padding:80px 60px 80px 0;display:flex;align-items:center;">
+        <div class="fl-reveal-left fl-reserve-text" style="flex:0 0 50%;max-width:50%;box-sizing:border-box;padding:80px 60px 80px 0;display:flex;align-items:center;">
             <div class="nicdark_container" style="max-width:600px;margin-left:auto;padding-left:40px;">
 
                 <!-- Section Label -->
@@ -1305,7 +1404,7 @@ html { scroll-behavior: smooth; }
         </div>
 
         <!-- Right: Full Image -->
-        <div class="fl-reveal-right" style="flex:0 0 50%;max-width:50%;position:relative;">
+        <div class="fl-reveal-right fl-reserve-img" style="flex:0 0 50%;max-width:50%;position:relative;">
             <img loading="lazy" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&h=1100&fit=crop" alt="Restaurant Interior" style="width:100%;height:100%;object-fit:cover;display:block;">
             <!-- Michelin badge on image -->
             <div style="position:absolute;bottom:32px;left:32px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);padding:12px 20px;border-radius:12px;display:flex;align-items:center;gap:10px;">
@@ -1560,7 +1659,7 @@ html { scroll-behavior: smooth; }
     <div style="max-width:1200px;margin:48px auto 0;padding:0 40px;">
 
         <!-- Row 1: 2 large images (55/45 split) -->
-        <div class="fl-reveal-stagger" style="display:flex;gap:12px;margin-bottom:12px;">
+        <div class="fl-reveal-stagger fl-gallery-row" style="display:flex;gap:12px;margin-bottom:12px;">
             <div class="fl-reveal" style="flex:0 0 calc(55% - 6px);overflow:hidden;">
                 <img loading="lazy" src="img/gallery/68fdd96ae6a825faf5683bfa_gallery-image-1.webp" alt="Main Dining Room" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform 0.6s ease;">
                 <div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 0;">
@@ -1578,7 +1677,7 @@ html { scroll-behavior: smooth; }
         </div>
 
         <!-- Row 2: 3 medium images (equal) -->
-        <div class="fl-reveal-stagger" style="display:flex;gap:12px;margin-bottom:12px;">
+        <div class="fl-reveal-stagger fl-gallery-row" style="display:flex;gap:12px;margin-bottom:12px;">
             <div class="fl-reveal" style="flex:1;overflow:hidden;">
                 <img loading="lazy" src="img/gallery/68fdd969bed4c1b682c66826_gallery-image-3.webp" alt="Chef at Work" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;transition:transform 0.6s ease;">
                 <div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 0;">
@@ -1603,7 +1702,7 @@ html { scroll-behavior: smooth; }
         </div>
 
         <!-- Row 3: 2 bottom images (45/55 split) -->
-        <div class="fl-reveal-stagger" style="display:flex;gap:12px;">
+        <div class="fl-reveal-stagger fl-gallery-row" style="display:flex;gap:12px;">
             <div class="fl-reveal" style="flex:0 0 calc(45% - 6px);overflow:hidden;">
                 <img loading="lazy" src="img/gallery/68fdd96ae11ca53c0c93e8c0_gallery-image-6.webp" alt="Table Setting" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform 0.6s ease;">
                 <div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 0;">
@@ -1627,7 +1726,7 @@ html { scroll-behavior: smooth; }
 <!-- 09 ── VISIT US: Plan Your Visit -->
 <div class="nicdark_section" style="background:#FAF7F2;padding:80px 0;">
 
-    <div style="max-width:900px;margin:0 auto;padding:0 40px;">
+    <div class="fl-section-pad-sm" style="max-width:900px;margin:0 auto;padding:0 40px;">
 
         <!-- Header (centered) -->
         <div class="fl-reveal" style="text-align:center;margin-bottom:48px;">
@@ -1640,8 +1739,8 @@ html { scroll-behavior: smooth; }
         <div style="border-top:1px solid #EBECEF;margin-bottom:40px;"></div>
 
         <!-- Location -->
-        <div class="fl-reveal" style="display:flex;gap:40px;margin-bottom:40px;align-items:flex-start;">
-            <div style="flex:0 0 200px;display:flex;align-items:center;gap:10px;">
+        <div class="fl-reveal fl-visit-row" style="display:flex;gap:40px;margin-bottom:40px;align-items:flex-start;">
+            <div class="fl-visit-label" style="flex:0 0 200px;display:flex;align-items:center;gap:10px;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 <h3 class="nicdark_first_font" style="font-size:20px;color:#1A1A2E;font-weight:700;">ที่ตั้ง</h3>
             </div>
@@ -1655,8 +1754,8 @@ html { scroll-behavior: smooth; }
         <div style="border-top:1px solid #EBECEF;margin-bottom:40px;"></div>
 
         <!-- Hours -->
-        <div class="fl-reveal" style="display:flex;gap:40px;margin-bottom:40px;align-items:flex-start;">
-            <div style="flex:0 0 200px;display:flex;align-items:center;gap:10px;">
+        <div class="fl-reveal fl-visit-row" style="display:flex;gap:40px;margin-bottom:40px;align-items:flex-start;">
+            <div class="fl-visit-label" style="flex:0 0 200px;display:flex;align-items:center;gap:10px;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 <h3 class="nicdark_first_font" style="font-size:20px;color:#1A1A2E;font-weight:700;">เวลาเปิด</h3>
             </div>
@@ -1681,8 +1780,8 @@ html { scroll-behavior: smooth; }
         <div style="border-top:1px solid #EBECEF;margin-bottom:40px;"></div>
 
         <!-- Contact -->
-        <div class="fl-reveal" style="display:flex;gap:40px;margin-bottom:48px;align-items:flex-start;">
-            <div style="flex:0 0 200px;display:flex;align-items:center;gap:10px;">
+        <div class="fl-reveal fl-visit-row" style="display:flex;gap:40px;margin-bottom:48px;align-items:flex-start;">
+            <div class="fl-visit-label" style="flex:0 0 200px;display:flex;align-items:center;gap:10px;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
                 <h3 class="nicdark_first_font" style="font-size:20px;color:#1A1A2E;font-weight:700;">ติดต่อ</h3>
             </div>
@@ -1716,7 +1815,7 @@ html { scroll-behavior: smooth; }
     <div class="nicdark_container nicdark_clearfix" style="padding:60px 0 40px;">
 
         <!-- Nav Links -->
-        <div style="text-align:center;margin-bottom:32px;">
+        <div class="fl-footer-nav" style="text-align:center;margin-bottom:32px;display:flex;justify-content:center;flex-wrap:wrap;gap:8px 0;">
             <a href="index.html" class="nicdark_first_font" style="color:#1A1A2E;font-size:13px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;margin:0 16px;transition:color 0.3s;">HOME</a>
             <a href="about-us.html" class="nicdark_first_font" style="color:#1A1A2E;font-size:13px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;margin:0 16px;transition:color 0.3s;">ABOUT</a>
             <a href="courses.html" class="nicdark_first_font" style="color:#1A1A2E;font-size:13px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;margin:0 16px;transition:color 0.3s;">MENU</a>
@@ -1741,12 +1840,12 @@ html { scroll-behavior: smooth; }
 
         <!-- Address + Contact -->
         <div style="text-align:center;margin-bottom:40px;">
-            <p style="color:#6A6E83;font-size:14px;">
-                125 Madison Avenue, New York, NY 10016
-                <span style="margin:0 12px;color:#EBECEF;">•</span>
-                +1 (212) 555-1234
-                <span style="margin:0 12px;color:#EBECEF;">•</span>
-                hello@foodlab.co.th
+            <p class="fl-footer-address" style="color:#6A6E83;font-size:14px;">
+                <span>125 Madison Avenue, New York, NY 10016</span>
+                <span class="fl-footer-sep" style="margin:0 12px;color:#EBECEF;">•</span>
+                <span>+1 (212) 555-1234</span>
+                <span class="fl-footer-sep" style="margin:0 12px;color:#EBECEF;">•</span>
+                <span>hello@foodlab.co.th</span>
             </p>
         </div>
 
@@ -1856,15 +1955,23 @@ html { scroll-behavior: smooth; }
   else init();
 })();
 
-/* Testimonial Carousel */
+/* Testimonial Carousel — responsive */
 var flTIdx = 0, flTAutoTimer;
+function flGetVisibleCards() {
+  var w = window.innerWidth;
+  if (w <= 767) return 1;
+  if (w <= 1024) return 2;
+  return 3;
+}
 function flTestimonialNav(dir) {
   var track = document.getElementById('fl-testimonial-track');
   if (!track) return;
   var cards = track.querySelectorAll('.fl-testimonial-card');
-  var maxIdx = cards.length - 3;
+  var visible = flGetVisibleCards();
+  var maxIdx = Math.max(0, cards.length - visible);
   flTIdx = Math.max(0, Math.min(flTIdx + dir, maxIdx));
-  var cardW = cards[0].offsetWidth + 24;
+  var gap = visible === 1 ? 16 : 24;
+  var cardW = cards[0].offsetWidth + gap;
   track.style.transform = 'translateX(-' + (flTIdx * cardW) + 'px)';
   flUpdateDots();
   flResetAuto();
@@ -1873,7 +1980,9 @@ function flUpdateDots() {
   var dots = document.getElementById('fl-testimonial-dots');
   if (!dots) return;
   var track = document.getElementById('fl-testimonial-track');
-  var total = track.querySelectorAll('.fl-testimonial-card').length - 2;
+  var cards = track.querySelectorAll('.fl-testimonial-card');
+  var visible = flGetVisibleCards();
+  var total = Math.max(1, cards.length - visible + 1);
   dots.innerHTML = '';
   for (var i = 0; i < total; i++) {
     var d = document.createElement('button');
@@ -1888,12 +1997,23 @@ function flResetAuto() {
   flTAutoTimer = setInterval(function(){
     var track = document.getElementById('fl-testimonial-track');
     if (!track) return;
-    var maxIdx = track.querySelectorAll('.fl-testimonial-card').length - 3;
+    var visible = flGetVisibleCards();
+    var maxIdx = Math.max(0, track.querySelectorAll('.fl-testimonial-card').length - visible);
     flTIdx = flTIdx >= maxIdx ? 0 : flTIdx + 1;
     flTestimonialNav(0);
   }, 5000);
 }
 document.addEventListener('DOMContentLoaded', function(){ flUpdateDots(); flResetAuto(); });
+window.addEventListener('resize', function(){ flTIdx = 0; flTestimonialNav(0); });
+/* Touch swipe for testimonial carousel */
+(function(){
+  var track = document.getElementById('fl-testimonial-track');
+  if (!track) return;
+  var startX = 0, startY = 0, isSwipe = false;
+  track.addEventListener('touchstart', function(e){ startX = e.touches[0].clientX; startY = e.touches[0].clientY; isSwipe = true; }, {passive:true});
+  track.addEventListener('touchmove', function(e){ if (!isSwipe) return; var dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY; if (Math.abs(dy) > Math.abs(dx)) isSwipe = false; }, {passive:true});
+  track.addEventListener('touchend', function(e){ if (!isSwipe) return; var dx = e.changedTouches[0].clientX - startX; if (Math.abs(dx) > 50) { flTestimonialNav(dx < 0 ? 1 : -1); } isSwipe = false; }, {passive:true});
+})();
 </script>
 
     </body>
