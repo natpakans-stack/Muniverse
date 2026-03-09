@@ -1570,8 +1570,11 @@ async function processImageForSource(img, fileName, fileIdx, totalFiles) {
   const cropCtx = cropCanvas.getContext('2d');
   let idx = 0;
 
-  // Build a stable name prefix from the source file
-  const nameBase = fileName.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30);
+  // Build a clean name prefix from the source file (keep Thai chars)
+  const nameBase = fileName.replace(/\.[^.]+$/, '').substring(0, 50);
+  const now = new Date();
+  const dateStamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+  let fileNum = 0;
 
   for (let ri = 0; ri < rows.length; ri++) {
     for (let ci = 0; ci < rows[ri].length; ci++) {
@@ -1581,7 +1584,8 @@ async function processImageForSource(img, fileName, fileIdx, totalFiles) {
       cropCanvas.height = ch;
       cropCtx.drawImage(img, crop.x1, crop.y1, cw, ch, 0, 0, cw, ch);
 
-      const name = `${nameBase}_${String(ri+1).padStart(2,'0')}_${String(ci+1).padStart(2,'0')}.png`;
+      fileNum++;
+      const name = `${String(fileNum).padStart(2,'0')}-${nameBase}-${dateStamp}.png`;
       const blob = await canvasToBlob(cropCanvas);
       blobs.push(blob);
       names.push(name);
@@ -1906,7 +1910,7 @@ async function downloadAll() {
 
   for (const r of resultsToZip) {
     // Create folder per source file
-    const folderName = r.fileName.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_\-\u0E00-\u0E7F ]/g, '_').substring(0, 50);
+    const folderName = r.fileName.replace(/\.[^.]+$/, '').substring(0, 50);
     const folder = resultsToZip.length > 1 ? zip.folder(folderName) : zip;
 
     for (let i = 0; i < r.blobs.length; i++) {
