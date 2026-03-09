@@ -477,6 +477,68 @@
     font-weight: 500;
     color: #6A6E83;
   }
+
+  /* QA Validation badges */
+  .qa-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    z-index: 2;
+    line-height: 1.3;
+  }
+
+  .qa-pass {
+    background: #E8F5E9;
+    color: #2E7D32;
+    border: 1px solid #A5D6A7;
+  }
+
+  .qa-warn {
+    background: #FFF8E1;
+    color: #F57F17;
+    border: 1px solid #FFE082;
+  }
+
+  .qa-fail {
+    background: #FFEBEE;
+    color: #C62828;
+    border: 1px solid #EF9A9A;
+  }
+
+  .qa-details {
+    font-size: 11px;
+    color: #9A9DAD;
+    padding: 4px 12px 6px;
+    line-height: 1.4;
+  }
+
+  .qa-check { color: #2E7D32; }
+  .qa-cross { color: #C62828; }
+  .qa-triangle { color: #F57F17; }
+
+  /* QA Summary bar */
+  .qa-summary {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding: 16px 24px;
+    margin-bottom: 16px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #EBECEF;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .qa-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 </style>
 </head>
 <body>
@@ -484,7 +546,7 @@
 <div class="header">
   <div class="header-icon">✂️</div>
   <div>
-    <h1>Social Listening Cropper</h1>
+    <h1>Social Listening Cropper <span style="font-size:14px;font-weight:400;color:#9A9DAD">v1.5</span></h1>
     <p>ลากรูป screenshot จาก Social Listening มาวาง — ครอปแยกเป็นโพสต์อัตโนมัติ</p>
   </div>
 </div>
@@ -541,20 +603,48 @@
 
 <script>
 // ─── Config ─────────────────────────────────────────────
-const BG_MIN = 225;
-const BG_MAX = 253;
-const BG_ROW_THRESH = 0.85;
-const MIN_SEP_H = 8;
-const MIN_CARD_H = 100;
-const ROW_GROUP_TOL = 100;
+// Column detection
 const MIN_COL_SEP_WIDTH = 5;
 const MIN_COL_WIDTH = 50;
+
+// Gray SEPARATOR detection (the gap between posts — NOT card backgrounds)
+// Separator is darker gray (~230-242), card bg is lighter (~248-255)
+const GRAY_SEP_MIN = 225;      // separator brightness min (exclude very dark content)
+const GRAY_SEP_MAX = 248;      // separator brightness max (exclude white card backgrounds)
+const GRAY_MAX_DIFF = 8;       // R,G,B must be close to each other (gray, not colored)
+const GRAY_ROW_THRESH = 0.85;  // 85%+ of row pixels must match
+// "White" row detection — card backgrounds are very bright
+const WHITE_ROW_MIN = 248;     // brightness above this = white/card background
+const WHITE_ROW_THRESH = 0.70; // 70%+ of row pixels must be white
+
+// Blue bar detection ("การมีส่วนร่วม" anchor)
+// Real bar signature: row-average RGB(233,237,241) br:237 B-R:8 h:15-17px
+const BLUE_BAR_BR_MIN = 228;        // row-average brightness min
+const BLUE_BAR_BR_MAX = 244;        // row-average brightness max
+const BLUE_BAR_BMR_MIN = 5;         // row-average (B - R) min
+const BLUE_BAR_BMR_MAX = 14;        // row-average (B - R) max
+const BLUE_BAR_MIN_H = 12;          // min consecutive matching rows
+const BLUE_BAR_MAX_H = 25;          // max height (filter tall image blocks)
+
+// Post detection
+const MIN_CARD_H = 100;
+const MAX_MANDALA_HEIGHT = 280;     // max px Mandala section can extend below blue bar
+const MANDALA_SCAN_BELOW = 280;     // last post fallback scan limit
+const GRAY_RUN_FOR_POST_END = 5;    // consecutive gray rows = end of Mandala section
+const CARD_ABOVE_ESTIMATE = 110;    // typical card-above-bar height (fallback)
+
+// Structure validation thresholds
+const QA_MIN_CARD_ABOVE_BAR = 60;   // min px of content above blue bar
+const QA_MIN_MANDALA_BELOW_BAR = 40; // min px of Mandala section below blue bar
+const QA_MANDALA_EXPECTED_MIN = 60;  // expected Mandala section height range
+const QA_MANDALA_EXPECTED_MAX = 280;
 
 // ─── State ──────────────────────────────────────────────
 let croppedBlobs = [];
 let croppedNames = [];
 let fullDataUrls = [];  // full-res data URLs for lightbox
 let lightboxIdx = -1;
+let postValidations = []; // QA results per post
 
 // ─── Drop Zone ──────────────────────────────────────────
 const dropzone = document.getElementById('dropzone');
@@ -645,95 +735,384 @@ async function processImage(img, fileName) {
     if (ce - cs > MIN_COL_WIDTH) columns.push([cs, ce]);
   }
 
-  setProgress(25, `พบ ${columns.length} คอลัมน์ — กำลังหาโพสต์...`);
-  await sleep(50);
+  setProgress(20, `พบ ${columns.length} คอลัมน์ — เริ่มวิเคราะห์ทีละคอลัมน์...`);
+  await sleep(100);
 
-  // ─── Find cards per column ─────────────────────────
+  // ─── Find posts per column using Blue Bar Anchor ─────
   const allCrops = [];
   const colCounts = [];
+  const colPctEach = 50 / columns.length;
 
   for (let ci = 0; ci < columns.length; ci++) {
     const [cx1, cx2] = columns[ci];
     const colW = cx2 - cx1;
+    const colBase = 20 + ci * colPctEach;
 
-    // Check each row if it's a separator
-    const isSep = new Uint8Array(h);
+    setProgress(colBase, `คอลัมน์ ${ci+1}/${columns.length}: กำลังอ่านพิกเซล...`);
+    await sleep(0);
+
+    // Get entire column pixel data at once
+    const colData = ctx.getImageData(cx1, 0, colW, h).data;
+    const stride = colW * 4;
+
+    // ── Step 1: Classify each row ──────────────────────
+    setProgress(colBase + colPctEach * 0.15, `คอลัมน์ ${ci+1}/${columns.length}: กำลังวิเคราะห์แถว...`);
+    await sleep(0);
+
+    const isGray = new Uint8Array(h);   // gray separator rows
+    const isWhite = new Uint8Array(h);  // white/card background rows
+    const isBlue = new Uint8Array(h);
+    const rowBrightness = new Float32Array(h); // average brightness per row
+    const darkRatio = new Float32Array(h);     // fraction of dark pixels (text/image signal)
+    const DARK_PIXEL_THRESH = 180; // pixels below this brightness are "dark" (excludes card borders ~200+)
+
     for (let y = 0; y < h; y++) {
-      const rowData = ctx.getImageData(cx1, y, colW, 1).data;
-      let bgCount = 0;
+      const rowOff = y * stride;
+      let grayCount = 0, whiteCount = 0, darkCount = 0;
+      let sumR = 0, sumG = 0, sumB = 0;
+
       for (let x = 0; x < colW; x++) {
-        const idx = x * 4;
-        const br = (rowData[idx] + rowData[idx+1] + rowData[idx+2]) / 3;
-        if (br > BG_MIN && br < BG_MAX) bgCount++;
+        const idx = rowOff + x * 4;
+        const r = colData[idx], g = colData[idx+1], b = colData[idx+2];
+        sumR += r; sumG += g; sumB += b;
+
+        const br = (r + g + b) / 3;
+        const maxDiff = Math.max(Math.abs(r - br), Math.abs(g - br), Math.abs(b - br));
+
+        // Gray separator: medium brightness + neutral color
+        if (br >= GRAY_SEP_MIN && br <= GRAY_SEP_MAX && maxDiff < GRAY_MAX_DIFF) {
+          grayCount++;
+        }
+        // White/card background: very bright
+        if (br >= WHITE_ROW_MIN) {
+          whiteCount++;
+        }
+        // Dark pixel: text characters, image content
+        if (br < DARK_PIXEL_THRESH) {
+          darkCount++;
+        }
       }
-      isSep[y] = (bgCount / colW) > BG_ROW_THRESH ? 1 : 0;
+      isGray[y] = (grayCount / colW) > GRAY_ROW_THRESH ? 1 : 0;
+      isWhite[y] = (whiteCount / colW) > WHITE_ROW_THRESH ? 1 : 0;
+      darkRatio[y] = darkCount / colW;
+      rowBrightness[y] = (sumR + sumG + sumB) / (3 * colW);
+
+      // Blue check: row-AVERAGE signature (much more precise than per-pixel)
+      const avgR = sumR / colW, avgB = sumB / colW;
+      const avgBr = rowBrightness[y];
+      const avgBmR = avgB - avgR;
+      isBlue[y] = (avgBr >= BLUE_BAR_BR_MIN && avgBr <= BLUE_BAR_BR_MAX
+                   && avgBmR >= BLUE_BAR_BMR_MIN && avgBmR <= BLUE_BAR_BMR_MAX) ? 1 : 0;
     }
 
-    // Smooth
-    const smoothed = new Uint8Array(h);
-    let run = 0;
+    // ── Step 2: Find blue bar positions (anchor per post) ──
+    setProgress(colBase + colPctEach * 0.4, `คอลัมน์ ${ci+1}/${columns.length}: กำลังหา Blue Bar...`);
+    await sleep(0);
+
+    const blueBarsRaw = [];
+    let blueRun = 0;
     for (let y = 0; y < h; y++) {
-      if (isSep[y]) { run++; }
+      if (isBlue[y]) { blueRun++; }
       else {
-        if (run >= MIN_SEP_H) for (let j = y - run; j < y; j++) smoothed[j] = 1;
-        run = 0;
+        if (blueRun >= BLUE_BAR_MIN_H && blueRun <= BLUE_BAR_MAX_H) {
+          blueBarsRaw.push({ top: y - blueRun, bottom: y, height: blueRun });
+        }
+        blueRun = 0;
       }
     }
-    if (run >= MIN_SEP_H) for (let j = h - run; j < h; j++) smoothed[j] = 1;
+    if (blueRun >= BLUE_BAR_MIN_H && blueRun <= BLUE_BAR_MAX_H) {
+      blueBarsRaw.push({ top: h - blueRun, bottom: h, height: blueRun });
+    }
 
-    // Extract regions
-    let inContent = false, start = 0, count = 0;
-    for (let y = 0; y < h; y++) {
-      if (!smoothed[y] && !inContent) { start = y; inContent = true; }
-      else if (smoothed[y] && inContent) {
-        if (y - start > MIN_CARD_H) { allCrops.push([cx1, start, cx2, y]); count++; }
-        inContent = false;
+    // Filter: remove bars too close together (within 300px, keep tallest)
+    const blueBars = [];
+    for (const bar of blueBarsRaw) {
+      const prev = blueBars[blueBars.length - 1];
+      if (prev && bar.top - prev.bottom < 300) {
+        if (bar.height > prev.height) blueBars[blueBars.length - 1] = bar;
+      } else {
+        blueBars.push(bar);
       }
     }
-    if (inContent && h - start > MIN_CARD_H) { allCrops.push([cx1, start, cx2, h]); count++; }
-    colCounts.push(count);
 
-    setProgress(25 + (ci + 1) / columns.length * 40,
-      `Col ${ci+1}: ${count} โพสต์`);
-    await sleep(10);
+    console.log(`[Col ${ci+1}] ${blueBarsRaw.length} raw → ${blueBars.length} blue bars`);
+
+    // ── Step 3: Find post boundaries using blue bars + min-darkRatio ──
+    // Between consecutive blue bars, the separator (gray gap) has the
+    // lowest darkRatio. Use smoothed 5-row window to find it.
+    setProgress(colBase + colPctEach * 0.6, `คอลัมน์ ${ci+1}/${columns.length}: กำลังหาขอบเขตโพสต์...`);
+    await sleep(0);
+
+    // Helper: find the separator Y between two blue bars
+    // The Mandala stats section is ~60-100px below the blue bar.
+    // The separator/card-gap is right after that (~80-150px from bar bottom).
+    // Search ONLY in +70 to +160 to avoid false positives from stats content
+    // (too early) or next post content (too late).
+    function findSepBetween(fromY, toY, debugLabel) {
+      const range = toY - fromY;
+      if (range < 80) return Math.floor((fromY + toY) / 2);
+
+      // Tight search in +65..+110 from blue bar bottom
+      // The Mandala section (stats + "ดูอัตรา" link + card padding) is ~65-90px.
+      // The card edge (white padding → dark gap) is right at the end.
+      // Keep range very tight to avoid cutting into next post.
+      const nsStart = fromY + 65;
+      const nsEnd = Math.min(fromY + 110, toY - 10);
+
+      if (nsStart + 10 >= nsEnd) {
+        const fallback = Math.min(fromY + 82, Math.floor((fromY + toY) / 2));
+        if (debugLabel) console.log(`[${debugLabel}] short range, fallback Y:${fallback} (offset +${fallback - fromY})`);
+        return fallback;
+      }
+
+      // Strategy 1: Maximum row brightness in the range (card bottom padding = whitest area)
+      let maxBr = 0, maxBrY = fromY + 82;
+      for (let y = nsStart; y < nsEnd; y++) {
+        if (rowBrightness[y] > maxBr) { maxBr = rowBrightness[y]; maxBrY = y; }
+      }
+
+      // Strategy 2: Also check minimum darkRatio
+      let bestAvg = 1, bestDrY = fromY + 82;
+      for (let y = nsStart + 2; y < nsEnd - 2; y++) {
+        const avg = (darkRatio[y-2] + darkRatio[y-1] + darkRatio[y] + darkRatio[y+1] + darkRatio[y+2]) / 5;
+        if (avg < bestAvg) { bestAvg = avg; bestDrY = y; }
+      }
+
+      // Use brightness-based if it found a bright area (card padding, br > 170)
+      // Otherwise fall back to darkRatio minimum
+      let bestY;
+      if (maxBr > 170) {
+        bestY = maxBrY;
+        if (debugLabel) console.log(`[${debugLabel}] maxBr=${Math.round(maxBr)} at Y:${bestY} (offset +${bestY - fromY})`);
+      } else {
+        bestY = bestDrY;
+        if (debugLabel) console.log(`[${debugLabel}] minDR=${bestAvg.toFixed(4)} at Y:${bestY} (offset +${bestY - fromY})`);
+      }
+      return bestY;
+    }
+
+    const posts = [];
+
+    for (let bi = 0; bi < blueBars.length; bi++) {
+      const bar = blueBars[bi];
+
+      // ── Post TOP ──
+      let postTop;
+      if (bi === 0) {
+        // First post: scan up from bar to find gray separator or column top
+        postTop = 0;
+        for (let y = bar.top - 1; y >= 0; y--) {
+          if (isGray[y]) {
+            let gRun = 1;
+            for (let gy = y - 1; gy >= 0 && isGray[gy]; gy--) gRun++;
+            if (gRun >= 3) { postTop = y + 1; break; }
+          }
+        }
+      } else {
+        // Separator between previous bar and this bar
+        postTop = findSepBetween(blueBars[bi - 1].bottom, bar.top, bi < 3 ? `Col${ci+1} top${bi+1}` : null);
+      }
+
+      // ── Post BOTTOM ──
+      let postBottom;
+      if (bi === blueBars.length - 1) {
+        // Last post: scan down from bar to find gray separator or column bottom
+        postBottom = h;
+        for (let y = bar.bottom + 30; y < h; y++) {
+          if (isGray[y]) {
+            let gRun = 1;
+            for (let gy = y + 1; gy < h && isGray[gy]; gy++) gRun++;
+            if (gRun >= 3) { postBottom = y; break; }
+          }
+        }
+      } else {
+        // Separator between this bar and next bar
+        postBottom = findSepBetween(bar.bottom, blueBars[bi + 1].top, bi < 3 ? `Col${ci+1} bot${bi+1}` : null);
+      }
+
+      // Debug: dump darkRatio profile below first bar of first column (chunked to avoid truncation)
+      if (ci === 0 && bi === 0) {
+        const dbgEnd = Math.min(bar.bottom + 300, h);
+        const chunkSize = 50;
+        for (let chunk = 0; chunk * chunkSize < dbgEnd - bar.bottom; chunk++) {
+          const lines = [];
+          const cStart = bar.bottom + chunk * chunkSize;
+          const cEnd = Math.min(cStart + chunkSize, dbgEnd);
+          for (let y = cStart; y < cEnd; y++) {
+            const off = y - bar.bottom;
+            const dr = darkRatio[y].toFixed(4);
+            const br = Math.round(rowBrightness[y]);
+            const g = isGray[y] ? 'G' : ' ';
+            const w = isWhite[y] ? 'W' : ' ';
+            const visual = '#'.repeat(Math.min(Math.round(darkRatio[y] * 200), 40));
+            lines.push(`+${String(off).padStart(3)}: dr=${dr} br=${br} ${g}${w} |${visual}`);
+          }
+          console.log(`[DEBUG] Col1 Bar1 bottom=${bar.bottom}, chunk ${chunk} (+${chunk*chunkSize} to +${Math.min((chunk+1)*chunkSize, dbgEnd - bar.bottom) - 1}):\n${lines.join('\n')}`);
+        }
+      }
+
+      if (postBottom - postTop >= MIN_CARD_H) {
+        posts.push({ top: postTop, bottom: postBottom });
+        if (bi < 3) console.log(`[Col ${ci+1}] Post ${bi+1}: ${postTop}-${postBottom} (${postBottom-postTop}px)`);
+      }
+    }
+
+    console.log(`[Col ${ci+1}] ${posts.length} posts, heights: [${posts.map(p => p.bottom - p.top).join(', ')}]`);
+
+    for (const p of posts) {
+      allCrops.push({ x1: cx1, y1: p.top, x2: cx2, y2: p.bottom });
+    }
+    colCounts.push(posts.length);
+
+    setProgress(colBase + colPctEach,
+      `คอลัมน์ ${ci+1}/${columns.length}: พบ ${posts.length} โพสต์ ✓`);
+    await sleep(150);
   }
 
+  // ─── Safety check ───────────────────────────────
+  if (allCrops.length === 0) {
+    setProgress(100, 'ไม่พบโพสต์ — ลองตรวจสอบรูปอีกครั้ง');
+    await sleep(1000);
+    resetAll();
+    return;
+  }
+
+  // ─── QA Validation ─────────────────────────────────
+  // Analyze each crop for completeness:
+  // 1. Has blue bar (การมีส่วนร่วม) inside the crop
+  // 2. Blue bar is in the lower portion (not at top = previous post's stats leaking)
+  // 3. Has content at top (not starting with dark separator)
+  // 4. Reasonable height (not too short = missing content)
+  setProgress(72, `กำลังตรวจสอบ ${allCrops.length} โพสต์...`);
+  await sleep(50);
+
+  postValidations = [];
+  for (const crop of allCrops) {
+    const cx1 = crop.x1, cy1 = crop.y1, cx2 = crop.x2, cy2 = crop.y2;
+    const cw = cx2 - cx1, ch = cy2 - cy1;
+    const checks = { postHeight: ch, issues: [] };
+
+    // Sample the crop area from the original image
+    const cropData = ctx.getImageData(cx1, cy1, cw, ch).data;
+    const cStride = cw * 4;
+
+    // ── Check 1: Find blue bar position within crop ──
+    let blueBarY = -1, blueBarCount = 0;
+    for (let y = 0; y < ch; y++) {
+      const rowOff = y * cStride;
+      let sumR = 0, sumB = 0, sumBr = 0;
+      for (let x = 0; x < cw; x++) {
+        const idx = rowOff + x * 4;
+        sumR += cropData[idx];
+        sumB += cropData[idx + 2];
+        sumBr += (cropData[idx] + cropData[idx + 1] + cropData[idx + 2]) / 3;
+      }
+      const avgR = sumR / cw, avgB = sumB / cw, avgBr = sumBr / cw;
+      const bmr = avgB - avgR;
+      if (avgBr >= BLUE_BAR_BR_MIN && avgBr <= BLUE_BAR_BR_MAX
+          && bmr >= BLUE_BAR_BMR_MIN && bmr <= BLUE_BAR_BMR_MAX) {
+        if (blueBarY < 0) blueBarY = y;
+        blueBarCount++;
+      }
+    }
+    checks.hasBlueBar = blueBarCount >= BLUE_BAR_MIN_H;
+    checks.blueBarY = blueBarY;
+    checks.blueBarRatio = blueBarY >= 0 ? blueBarY / ch : -1; // position ratio (0=top, 1=bottom)
+
+    // ── Check 2: Blue bar in lower half (should be > 0.4 from top) ──
+    checks.blueBarInLowerHalf = checks.blueBarRatio > 0.35;
+
+    // ── Check 3: Top content check — first 30px shouldn't be mostly dark ──
+    let topDarkCount = 0, topTotalPx = 0;
+    const topCheckH = Math.min(30, ch);
+    for (let y = 0; y < topCheckH; y++) {
+      const rowOff = y * cStride;
+      for (let x = 0; x < cw; x++) {
+        const idx = rowOff + x * 4;
+        const br = (cropData[idx] + cropData[idx + 1] + cropData[idx + 2]) / 3;
+        if (br < 80) topDarkCount++;
+        topTotalPx++;
+      }
+    }
+    checks.topNotDark = (topDarkCount / topTotalPx) < 0.9;
+
+    // ── Check 4: Bottom has stats (last 80px should have content, not just dark/separator) ──
+    let botBrightCount = 0, botTotalPx = 0;
+    const botCheckH = Math.min(80, ch);
+    for (let y = ch - botCheckH; y < ch; y++) {
+      const rowOff = y * cStride;
+      for (let x = 0; x < cw; x++) {
+        const idx = rowOff + x * 4;
+        const br = (cropData[idx] + cropData[idx + 1] + cropData[idx + 2]) / 3;
+        if (br > 150) botBrightCount++;
+        botTotalPx++;
+      }
+    }
+    checks.bottomHasContent = (botBrightCount / botTotalPx) > 0.3;
+
+    // ── Check 5: Height range ──
+    checks.heightOk = ch >= 300 && ch <= 1800;
+
+    // ── Compute overall score ──
+    if (!checks.hasBlueBar) checks.issues.push('ไม่พบ Blue Bar');
+    if (!checks.blueBarInLowerHalf && checks.hasBlueBar) checks.issues.push('Blue Bar อยู่สูงเกินไป');
+    if (!checks.topNotDark) checks.issues.push('ด้านบนมืดผิดปกติ');
+    if (!checks.bottomHasContent) checks.issues.push('ด้านล่างไม่มีเนื้อหา');
+    if (!checks.heightOk) checks.issues.push(ch < 300 ? 'สั้นเกินไป' : 'ยาวเกินไป');
+
+    const passCount = [checks.hasBlueBar, checks.blueBarInLowerHalf, checks.topNotDark,
+                       checks.bottomHasContent, checks.heightOk].filter(Boolean).length;
+    checks.score = passCount;
+    checks.status = passCount === 5 ? 'pass' : passCount >= 3 ? 'warn' : 'fail';
+
+    postValidations.push(checks);
+  }
+
+  const qaPass = postValidations.filter(v => v.status === 'pass').length;
+  const qaWarn = postValidations.filter(v => v.status === 'warn').length;
+  const qaFail = postValidations.filter(v => v.status === 'fail').length;
+  setProgress(75, `${allCrops.length} โพสต์ — ✅${qaPass} ⚠️${qaWarn} ❌${qaFail} — กำลังครอป...`);
+  await sleep(200);
+
   // ─── Group into rows ──────────────────────────────
-  allCrops.sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+  allCrops.sort((a, b) => a.y1 - b.y1 || a.x1 - b.x1);
 
   const rows = [];
   let curRow = [allCrops[0]];
   for (let i = 1; i < allCrops.length; i++) {
-    if (Math.abs(allCrops[i][1] - curRow[0][1]) < ROW_GROUP_TOL) {
+    if (Math.abs(allCrops[i].y1 - curRow[0].y1) < 100) {
       curRow.push(allCrops[i]);
     } else {
-      curRow.sort((a, b) => a[0] - b[0]);
+      curRow.sort((a, b) => a.x1 - b.x1);
       rows.push(curRow);
       curRow = [allCrops[i]];
     }
   }
-  curRow.sort((a, b) => a[0] - b[0]);
+  curRow.sort((a, b) => a.x1 - b.x1);
   rows.push(curRow);
-
-  setProgress(75, `กำลังครอป ${allCrops.length} โพสต์...`);
-  await sleep(50);
 
   // ─── Crop & generate blobs ────────────────────────
   croppedBlobs = [];
   croppedNames = [];
+  fullDataUrls = [];
   const thumbs = [];
 
   const cropCanvas = document.createElement('canvas');
   const cropCtx = cropCanvas.getContext('2d');
+  const cropStart = performance.now();
 
   let idx = 0;
+  const totalCrops = allCrops.length;
+  // Re-sort postValidations to match the row-grouped order
+  const sortedValidations = [];
+
   for (let ri = 0; ri < rows.length; ri++) {
     for (let ci = 0; ci < rows[ri].length; ci++) {
-      const [x1, y1, x2, y2] = rows[ri][ci];
-      const cw = x2 - x1, ch = y2 - y1;
+      const crop = rows[ri][ci];
+      const cw = crop.x2 - crop.x1, ch = crop.y2 - crop.y1;
       cropCanvas.width = cw;
       cropCanvas.height = ch;
-      cropCtx.drawImage(img, x1, y1, cw, ch, 0, 0, cw, ch);
+      cropCtx.drawImage(img, crop.x1, crop.y1, cw, ch, 0, 0, cw, ch);
 
       const name = `post_${String(ri+1).padStart(2,'0')}_${String(ci+1).padStart(2,'0')}.png`;
       const blob = await canvasToBlob(cropCanvas);
@@ -742,14 +1121,21 @@ async function processImage(img, fileName) {
       fullDataUrls.push(cropCanvas.toDataURL('image/png'));
       thumbs.push(cropCanvas.toDataURL('image/jpeg', 0.6));
 
+      // Find matching validation
+      const vi = allCrops.indexOf(crop);
+      sortedValidations.push(postValidations[vi]);
+
       idx++;
-      if (idx % 5 === 0) {
-        setProgress(75 + (idx / allCrops.length) * 20,
-          `ครอป ${idx}/${allCrops.length}...`);
-        await sleep(5);
-      }
+      const pct = 75 + (idx / totalCrops) * 20;
+      const elapsed = ((performance.now() - cropStart) / 1000).toFixed(1);
+      const perItem = (performance.now() - cropStart) / idx;
+      const remaining = ((totalCrops - idx) * perItem / 1000).toFixed(0);
+      setProgress(pct,
+        `ครอป ${idx}/${totalCrops} — ${elapsed}s ผ่านไป, ~${remaining}s เหลือ`);
+      await sleep(0);
     }
   }
+  postValidations = sortedValidations;
 
   setProgress(100, 'เสร็จสิ้น!');
   await sleep(300);
@@ -764,6 +1150,9 @@ function showResults(thumbs, numCols, colCounts, numRows, fileName) {
   section.style.display = 'block';
 
   // Stats
+  const qaPass = postValidations.filter(v => v.status === 'pass').length;
+  const qaWarn = postValidations.filter(v => v.status === 'warn').length;
+  const qaFail = postValidations.filter(v => v.status === 'fail').length;
   const statsBar = document.getElementById('statsBar');
   statsBar.innerHTML = `
     <div class="stat-item">
@@ -772,28 +1161,52 @@ function showResults(thumbs, numCols, colCounts, numRows, fileName) {
       <div class="stat-label">โพสต์ทั้งหมด</div>
     </div>
     <div class="stat-item">
-      <div class="stat-icon">📊</div>
-      <div class="stat-value">${numCols}</div>
-      <div class="stat-label">คอลัมน์</div>
+      <div class="stat-icon" style="color:#2E7D32">✓</div>
+      <div class="stat-value" style="color:#2E7D32">${qaPass}</div>
+      <div class="stat-label">ผ่าน QA</div>
     </div>
     <div class="stat-item">
-      <div class="stat-icon">↕️</div>
-      <div class="stat-value">${numRows}</div>
-      <div class="stat-label">แถว</div>
+      <div class="stat-icon" style="color:#F57F17">⚠</div>
+      <div class="stat-value" style="color:#F57F17">${qaWarn}</div>
+      <div class="stat-label">ตรวจสอบ</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon" style="color:#C62828">✗</div>
+      <div class="stat-value" style="color:#C62828">${qaFail}</div>
+      <div class="stat-label">ไม่ผ่าน</div>
     </div>
   `;
 
   document.getElementById('resultsTitle').textContent =
     `ผลลัพธ์จาก "${fileName}"`;
 
-  // Grid
+  // Grid — sort: pass first, then warn, then fail
   const grid = document.getElementById('postsGrid');
   grid.innerHTML = '';
-  for (let i = 0; i < thumbs.length; i++) {
+
+  const statusOrder = { pass: 0, warn: 1, fail: 2 };
+  const sortedIndices = Array.from({ length: thumbs.length }, (_, i) => i)
+    .sort((a, b) => {
+      const va = postValidations[a] || {}, vb = postValidations[b] || {};
+      const sa = statusOrder[va.status] ?? 1, sb = statusOrder[vb.status] ?? 1;
+      if (sa !== sb) return sa - sb;
+      return (vb.score || 0) - (va.score || 0);
+    });
+
+  for (const i of sortedIndices) {
+    const v = postValidations[i] || {};
     const card = document.createElement('div');
     card.className = 'post-card';
+    card.dataset.origIdx = i;
     card.onclick = () => openLightbox(i);
+
+    const badgeClass = v.status === 'pass' ? 'qa-pass' : v.status === 'warn' ? 'qa-warn' : 'qa-fail';
+    const badgeIcon = v.status === 'pass' ? '✓' : v.status === 'warn' ? '⚠' : '✗';
+    const badgeLabel = v.status === 'pass' ? 'ผ่าน' : v.status === 'warn' ? 'ตรวจสอบ' : 'ไม่ผ่าน';
+    const issueText = v.issues && v.issues.length > 0 ? v.issues.join(' · ') : '';
+
     card.innerHTML = `
+      <span class="qa-badge ${badgeClass}">${badgeIcon} ${badgeLabel}</span>
       <img src="${thumbs[i]}" loading="lazy" alt="${croppedNames[i]}">
       <div class="post-overlay">
         <span class="post-overlay-text">คลิกเพื่อดูรูปใหญ่</span>
@@ -801,6 +1214,10 @@ function showResults(thumbs, numCols, colCounts, numRows, fileName) {
       <div class="post-label">
         <span>${croppedNames[i]}</span>
         <span class="dl-icon">⬇</span>
+      </div>
+      <div class="qa-details">
+        ${v.postHeight || 0}px · ${v.score || 0}/5
+        ${issueText ? `<br><span style="color:${v.status === 'fail' ? '#C62828' : '#F57F17'}">${issueText}</span>` : ''}
       </div>
     `;
     grid.appendChild(card);
@@ -885,6 +1302,7 @@ function resetAll() {
   croppedBlobs = [];
   croppedNames = [];
   fullDataUrls = [];
+  postValidations = [];
   lightboxIdx = -1;
   document.getElementById('resultsSection').style.display = 'none';
   document.getElementById('progressSection').style.display = 'none';
