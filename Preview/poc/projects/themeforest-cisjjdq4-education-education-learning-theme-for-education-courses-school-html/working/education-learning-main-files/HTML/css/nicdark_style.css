@@ -171,7 +171,7 @@ input,label,textarea{ font-size: 15px; }
 /* 2.4 text font */
 h1,h2,h3,h4,h5,h6,.nicdark_first_font,.nicdark_datepicker .ui-datepicker-title{ font-family: 'IBM Plex Sans Thai', sans-serif; }
 p,a,input,label,.nicdark_datepicker,textarea{ font-family: 'IBM Plex Sans Thai Looped', 'IBM Plex Sans Thai', sans-serif; }
-.nicdark_second_font{ font-family: 'Cormorant Garamond', 'Noto Serif Thai', serif !important; }
+.nicdark_second_font{ font-family: 'IBM Plex Sans Thai', sans-serif !important; }
 .nicdark_third_font{ font-family: 'IBM Plex Sans Thai Looped', 'IBM Plex Sans Thai', sans-serif; }
 
 
