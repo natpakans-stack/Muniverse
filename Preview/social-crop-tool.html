@@ -109,6 +109,145 @@
     color: #9A9DAD;
   }
 
+  /* Queue section */
+  .queue-section {
+    display: none;
+    margin-top: 24px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px;
+  }
+
+  .queue-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .queue-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .queue-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 24px;
+  }
+
+  .queue-file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #F8F8F9;
+    border-radius: 12px;
+    font-size: 14px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+  }
+
+  .queue-file-item.processing {
+    background: #F1F2FF;
+    border-color: #7279FB40;
+  }
+
+  .queue-file-item.done {
+    background: #F0F8F0;
+    border-color: #A5D6A740;
+  }
+
+  .queue-file-item.error {
+    background: #FFEBEE;
+    border-color: #EF9A9A40;
+  }
+
+  .queue-file-num {
+    font-size: 13px;
+    font-weight: 700;
+    color: #7279FB;
+    flex-shrink: 0;
+    min-width: 28px;
+  }
+
+  .queue-file-name {
+    flex: 1;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .queue-file-size {
+    color: #9A9DAD;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .queue-file-status {
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+    min-width: 80px;
+    text-align: right;
+  }
+
+  .queue-file-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9A9DAD;
+    font-size: 18px;
+    padding: 0 4px;
+    transition: color 0.15s;
+  }
+
+  .queue-file-remove:hover { color: #C62828; }
+
+  .queue-file-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #EC599D, #7279FB);
+    border-radius: 0 0 12px 12px;
+    transition: width 0.3s;
+    width: 0%;
+  }
+
+  .queue-file-item.done .queue-file-progress {
+    background: #2E7D32;
+    width: 100%;
+  }
+
+  .queue-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .queue-add-more {
+    font-size: 14px;
+    color: #7279FB;
+    cursor: pointer;
+    font-weight: 600;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+
+  .queue-add-more:hover { text-decoration: underline; }
+
   /* Progress */
   .progress-section {
     display: none;
@@ -148,6 +287,12 @@
     font-size: 14px;
     color: #6A6E83;
     margin-top: 12px;
+  }
+
+  .progress-sub {
+    font-size: 13px;
+    color: #9A9DAD;
+    margin-top: 6px;
   }
 
   /* Results */
@@ -204,11 +349,51 @@
     gap: 8px;
   }
 
-  /* Grid */
-  .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Filter dropdown */
+  .filter-bar {
+    display: flex;
     gap: 12px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-size: 14px;
+    color: #6A6E83;
+    font-weight: 600;
+  }
+
+  .filter-select {
+    padding: 8px 36px 8px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid #EBECEF;
+    background: #fff;
+    color: #1B1D22;
+    font-family: inherit;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%236A6E83' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    min-width: 200px;
+    transition: all 0.15s;
+  }
+
+  .filter-select:hover {
+    border-color: #EC599D;
+  }
+
+  .filter-select:focus {
+    outline: none;
+    border-color: #EC599D;
+    box-shadow: 0 0 0 3px #EC599D20;
   }
 
   .post-card {
@@ -520,62 +705,77 @@
   .qa-cross { color: #C62828; }
   .qa-triangle { color: #F57F17; }
 
-  /* QA Summary bar */
-  .qa-summary {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    padding: 16px 24px;
-    margin-bottom: 16px;
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid #EBECEF;
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  .qa-summary-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  /* Row section dividers */
-  .row-section-header {
+  /* Column section — collapsible */
+  .col-section {
     grid-column: 1 / -1;
-    padding: 16px 0 8px;
-    border-top: 2px solid #EBECEF;
     margin-top: 8px;
   }
 
-  .row-section-header:first-child {
-    border-top: none;
+  .col-section:first-child {
     margin-top: 0;
   }
 
-  .row-section-title {
+  .col-section-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 4px;
+    padding: 14px 16px;
+    background: #fff;
+    border: 1px solid #EBECEF;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s;
   }
 
-  .row-section-num {
+  .col-section-header:hover {
+    background: #F8F8F9;
+    border-color: #CBCDD6;
+  }
+
+  .col-section-toggle {
+    font-size: 12px;
+    color: #9A9DAD;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+  }
+
+  .col-section.collapsed .col-section-toggle {
+    transform: rotate(-90deg);
+  }
+
+  .col-section-num {
     font-size: 15px;
     font-weight: 700;
     color: #1B1D22;
   }
 
-  .row-section-count {
+  .col-section-count {
     font-size: 13px;
     color: #6A6E83;
     font-weight: 500;
   }
 
-  .row-section-cols {
-    font-size: 12px;
-    color: #9A9DAD;
-    line-height: 1.5;
+  .col-section-qa {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .col-section-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    padding-top: 12px;
+    transition: all 0.2s;
+  }
+
+  .col-section.collapsed .col-section-body {
+    display: none;
   }
 
   /* Column source badge */
@@ -592,6 +792,36 @@
     color: #fff;
     backdrop-filter: blur(4px);
   }
+
+  /* Source file section header */
+  .source-section-header {
+    grid-column: 1 / -1;
+    padding: 20px 0 12px;
+    border-top: 3px solid #7279FB30;
+    margin-top: 12px;
+  }
+
+  .source-section-header:first-child {
+    border-top: none;
+    margin-top: 0;
+  }
+
+  .source-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1B1D22;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .source-section-meta {
+    font-size: 13px;
+    color: #6A6E83;
+    display: flex;
+    gap: 16px;
+  }
 </style>
 </head>
 <body>
@@ -599,8 +829,8 @@
 <div class="header">
   <div class="header-icon">✂️</div>
   <div>
-    <h1>Social Listening Cropper <span style="font-size:14px;font-weight:400;color:#9A9DAD">v2.0</span></h1>
-    <p>ลากรูป screenshot จาก Social Listening มาวาง — ครอปแยกเป็นโพสต์อัตโนมัติ</p>
+    <h1>Social Listening Cropper <span style="font-size:14px;font-weight:400;color:#9A9DAD">v3.1</span></h1>
+    <p>ลากรูป screenshot จาก Social Listening มาวาง — ครอปแยกเป็นโพสต์อัตโนมัติ รองรับหลายไฟล์</p>
   </div>
 </div>
 
@@ -609,18 +839,38 @@
   <div class="dropzone" id="dropzone">
     <div class="dropzone-icon">🖼️</div>
     <h2>ลากรูป screenshot มาวางตรงนี้</h2>
-    <p>หรือคลิกเพื่อเลือกไฟล์ — รองรับ PNG, JPG</p>
+    <p>หรือคลิกเพื่อเลือกไฟล์ — รองรับ PNG, JPG สูงสุด 50 ไฟล์</p>
+    <div class="dropzone-hint">รองรับหลายไฟล์พร้อมกัน</div>
+    <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
+  </div>
 
-    <input type="file" id="fileInput" accept="image/*" style="display:none">
+  <!-- Queue Section -->
+  <div class="queue-section" id="queueSection">
+    <div class="queue-header">
+      <h2 id="queueTitle">ไฟล์ที่เลือก</h2>
+      <div class="btn-group">
+        <button class="queue-add-more" id="addMoreBtn">+ เพิ่มไฟล์</button>
+        <button class="btn btn-secondary" onclick="clearQueue()">ล้างทั้งหมด</button>
+      </div>
+    </div>
+    <div class="queue-file-list" id="queueFileList"></div>
+    <div class="queue-actions">
+      <span id="queueSummary" style="font-size:13px;color:#9A9DAD"></span>
+      <button class="btn btn-primary" id="startProcessBtn" onclick="startProcessing()">
+        ✂️ เริ่มครอป
+      </button>
+    </div>
+    <input type="file" id="addMoreInput" accept="image/*" multiple style="display:none">
   </div>
 
   <!-- Progress -->
   <div class="progress-section" id="progressSection">
-    <div class="progress-title">กำลังวิเคราะห์รูป...</div>
+    <div class="progress-title" id="progressTitle">กำลังวิเคราะห์รูป...</div>
     <div class="progress-bar-track">
       <div class="progress-bar-fill" id="progressBar"></div>
     </div>
     <div class="progress-text" id="progressText">เตรียมพร้อม...</div>
+    <div class="progress-sub" id="progressSub"></div>
   </div>
 
   <!-- Results -->
@@ -637,7 +887,10 @@
       </div>
     </div>
 
-    <div class="posts-grid" id="postsGrid"></div>
+    <!-- Filter dropdown -->
+    <div class="filter-bar" id="filterBar"></div>
+
+    <div id="postsGrid"></div>
   </div>
 </div>
 
@@ -656,55 +909,46 @@
 
 <script>
 // ─── Config ─────────────────────────────────────────────
+const MAX_FILES = 50;
+
 // Column detection
 const MIN_COL_SEP_WIDTH = 5;
 const MIN_COL_WIDTH = 50;
 
-// Gray SEPARATOR detection (the gap between posts — NOT card backgrounds)
-// Separator is darker gray (~230-242), card bg is lighter (~248-255)
-const GRAY_SEP_MIN = 225;      // separator brightness min (exclude very dark content)
-const GRAY_SEP_MAX = 248;      // separator brightness max (exclude white card backgrounds)
-const GRAY_MAX_DIFF = 8;       // R,G,B must be close to each other (gray, not colored)
-const GRAY_ROW_THRESH = 0.85;  // 85%+ of row pixels must match
-// "White" row detection — card backgrounds are very bright
-const WHITE_ROW_MIN = 248;     // brightness above this = white/card background
-const WHITE_ROW_THRESH = 0.70; // 70%+ of row pixels must be white
+// Gray SEPARATOR detection
+const GRAY_SEP_MIN = 225;
+const GRAY_SEP_MAX = 248;
+const GRAY_MAX_DIFF = 8;
+const GRAY_ROW_THRESH = 0.85;
+const WHITE_ROW_MIN = 248;
+const WHITE_ROW_THRESH = 0.70;
 
-// Blue bar detection ("การมีส่วนร่วม" anchor)
-// Real bar signature: row-average RGB(233,237,241) br:237 B-R:8 h:15-17px
-const BLUE_BAR_BR_MIN = 228;        // row-average brightness min
-const BLUE_BAR_BR_MAX = 244;        // row-average brightness max
-const BLUE_BAR_BMR_MIN = 5;         // row-average (B - R) min
-const BLUE_BAR_BMR_MAX = 14;        // row-average (B - R) max
-const BLUE_BAR_MIN_H = 12;          // min consecutive matching rows
-const BLUE_BAR_MAX_H = 25;          // max height (filter tall image blocks)
+// Blue bar detection
+const BLUE_BAR_BR_MIN = 228;
+const BLUE_BAR_BR_MAX = 244;
+const BLUE_BAR_BMR_MIN = 5;
+const BLUE_BAR_BMR_MAX = 14;
+const BLUE_BAR_MIN_H = 12;
+const BLUE_BAR_MAX_H = 25;
 
 // Post detection
 const MIN_CARD_H = 100;
-const MAX_MANDALA_HEIGHT = 280;     // max px Mandala section can extend below blue bar
-const MANDALA_SCAN_BELOW = 280;     // last post fallback scan limit
-const GRAY_RUN_FOR_POST_END = 5;    // consecutive gray rows = end of Mandala section
-const CARD_ABOVE_ESTIMATE = 110;    // typical card-above-bar height (fallback)
-
-// Structure validation thresholds
-const QA_MIN_CARD_ABOVE_BAR = 60;   // min px of content above blue bar
-const QA_MIN_MANDALA_BELOW_BAR = 40; // min px of Mandala section below blue bar
-const QA_MANDALA_EXPECTED_MIN = 60;  // expected Mandala section height range
-const QA_MANDALA_EXPECTED_MAX = 280;
 
 // ─── State ──────────────────────────────────────────────
-let croppedBlobs = [];
-let croppedNames = [];
-let fullDataUrls = [];  // full-res data URLs for lightbox
+let sourceFiles = [];      // { file, name, size, status: 'queued'|'processing'|'done'|'error' }
+let sourceResults = [];    // { fileName, blobs[], names[], thumbs[], fullUrls[], validations[], cropMeta[], colCounts[], numCols }
+let activeFilter = 'all';  // 'all' or index into sourceResults
 let lightboxIdx = -1;
-let postValidations = []; // QA results per post
+let filteredIndices = [];   // indices into the flattened view for lightbox nav
+let isProcessing = false;
 
 // ─── Drop Zone ──────────────────────────────────────────
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
+const addMoreInput = document.getElementById('addMoreInput');
 
 dropzone.addEventListener('click', () => fileInput.click());
-fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
 
 dropzone.addEventListener('dragover', e => {
   e.preventDefault();
@@ -716,24 +960,194 @@ dropzone.addEventListener('dragleave', () => {
 dropzone.addEventListener('drop', e => {
   e.preventDefault();
   dropzone.classList.remove('drag-over');
-  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
 });
 
-// ─── Main ───────────────────────────────────────────────
-function handleFile(file) {
-  if (!file || !file.type.startsWith('image/')) return;
+document.getElementById('addMoreBtn').addEventListener('click', () => addMoreInput.click());
+addMoreInput.addEventListener('change', e => {
+  handleFiles(e.target.files);
+  addMoreInput.value = '';
+});
 
+// ─── File Queue ─────────────────────────────────────────
+function handleFiles(fileList) {
+  const newFiles = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+  if (newFiles.length === 0) return;
+
+  const remaining = MAX_FILES - sourceFiles.length;
+  if (remaining <= 0) {
+    alert(`สูงสุด ${MAX_FILES} ไฟล์`);
+    return;
+  }
+
+  const toAdd = newFiles.slice(0, remaining);
+  for (const file of toAdd) {
+    sourceFiles.push({ file, name: file.name, size: file.size, status: 'queued' });
+  }
+
+  if (toAdd.length < newFiles.length) {
+    alert(`เพิ่มได้แค่ ${toAdd.length} ไฟล์ (ครบ ${MAX_FILES} ไฟล์แล้ว)`);
+  }
+
+  showQueue();
+}
+
+function showQueue() {
   dropzone.style.display = 'none';
-  const progressSection = document.getElementById('progressSection');
-  progressSection.style.display = 'block';
+  document.getElementById('queueSection').style.display = 'block';
+  document.getElementById('queueTitle').textContent = `ไฟล์ที่เลือก (${sourceFiles.length})`;
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
+  const list = document.getElementById('queueFileList');
+  list.innerHTML = '';
+
+  for (let i = 0; i < sourceFiles.length; i++) {
+    const sf = sourceFiles[i];
+    const item = document.createElement('div');
+    item.className = `queue-file-item ${sf.status !== 'queued' ? sf.status : ''}`;
+    item.id = `queue-item-${i}`;
+
+    const sizeStr = sf.size > 1048576
+      ? (sf.size / 1048576).toFixed(1) + ' MB'
+      : (sf.size / 1024).toFixed(0) + ' KB';
+
+    let statusText = '';
+    if (sf.status === 'queued') statusText = '<span style="color:#9A9DAD">รอคิว</span>';
+    else if (sf.status === 'processing') statusText = '<span style="color:#7279FB">กำลังทำ...</span>';
+    else if (sf.status === 'done') statusText = '<span style="color:#2E7D32">เสร็จ ✓</span>';
+    else if (sf.status === 'error') statusText = '<span style="color:#C62828">ผิดพลาด</span>';
+
+    const removeBtn = sf.status === 'queued' && !isProcessing
+      ? `<button class="queue-file-remove" onclick="removeFromQueue(${i})" title="ลบ">&times;</button>`
+      : '';
+
+    const progressPct = sf.progress || 0;
+
+    item.innerHTML = `
+      <span class="queue-file-num">#${i + 1}</span>
+      <span class="queue-file-name">${sf.name}</span>
+      <span class="queue-file-size">${sizeStr}</span>
+      <span class="queue-file-status">${statusText}</span>
+      ${removeBtn}
+      <div class="queue-file-progress" id="queue-progress-${i}" style="width:${progressPct}%"></div>
+    `;
+    list.appendChild(item);
+  }
+
+  const totalSize = sourceFiles.reduce((s, f) => s + f.size, 0);
+  const totalStr = totalSize > 1048576
+    ? (totalSize / 1048576).toFixed(1) + ' MB'
+    : (totalSize / 1024).toFixed(0) + ' KB';
+  document.getElementById('queueSummary').textContent = `${sourceFiles.length} ไฟล์ · ${totalStr}`;
+
+  document.getElementById('startProcessBtn').disabled = isProcessing || sourceFiles.length === 0;
+  document.getElementById('addMoreBtn').style.display = isProcessing ? 'none' : '';
+}
+
+function removeFromQueue(idx) {
+  sourceFiles.splice(idx, 1);
+  if (sourceFiles.length === 0) {
+    clearQueue();
+  } else {
+    showQueue();
+  }
+}
+
+function clearQueue() {
+  sourceFiles = [];
+  sourceResults = [];
+  document.getElementById('queueSection').style.display = 'none';
+  dropzone.style.display = '';
+  fileInput.value = '';
+}
+
+// ─── Processing ─────────────────────────────────────────
+let currentFileIdx = -1; // track which file is being processed for progress updates
+
+async function startProcessing() {
+  if (isProcessing || sourceFiles.length === 0) return;
+  isProcessing = true;
+  sourceResults = [];
+
+  document.getElementById('startProcessBtn').disabled = true;
+  document.getElementById('addMoreBtn').style.display = 'none';
+  document.getElementById('progressSection').style.display = 'block';
+
+  // Remove all remove buttons
+  document.querySelectorAll('.queue-file-remove').forEach(b => b.remove());
+
+  const total = sourceFiles.length;
+
+  for (let fi = 0; fi < total; fi++) {
+    const sf = sourceFiles[fi];
+    sf.status = 'processing';
+    sf.progress = 0;
+    currentFileIdx = fi;
+    updateQueueItem(fi);
+
+    document.getElementById('progressTitle').textContent =
+      `#${fi + 1}/${total}: ${sf.name}`;
+    document.getElementById('progressSub').textContent =
+      `ภาพรวม: ${fi}/${total} เสร็จ`;
+
+    try {
+      const img = await loadImage(sf.file);
+      const result = await processImageForSource(img, sf.name, fi, total);
+      sourceResults.push(result);
+      sf.status = 'done';
+      sf.progress = 100;
+    } catch (err) {
+      console.error(`Error processing ${sf.name}:`, err);
+      sf.status = 'error';
+    }
+
+    updateQueueItem(fi);
+  }
+
+  currentFileIdx = -1;
+  isProcessing = false;
+
+  setProgress(100, 'เสร็จสิ้น!');
+  document.getElementById('progressSub').textContent =
+    `${sourceResults.length}/${total} ไฟล์สำเร็จ`;
+  await sleep(400);
+
+  showResults();
+}
+
+function updateQueueItem(idx) {
+  const sf = sourceFiles[idx];
+  const item = document.getElementById(`queue-item-${idx}`);
+  if (!item) return;
+  item.className = `queue-file-item ${sf.status}`;
+  const statusEl = item.querySelector('.queue-file-status');
+  if (statusEl) {
+    if (sf.status === 'processing') statusEl.innerHTML = '<span style="color:#7279FB">กำลังทำ...</span>';
+    else if (sf.status === 'done') statusEl.innerHTML = '<span style="color:#2E7D32">เสร็จ ✓</span>';
+    else if (sf.status === 'error') statusEl.innerHTML = '<span style="color:#C62828">ผิดพลาด</span>';
+  }
+  // Update progress bar
+  const progressEl = document.getElementById(`queue-progress-${idx}`);
+  if (progressEl) {
+    progressEl.style.width = (sf.progress || 0) + '%';
+  }
+}
+
+function updateFileProgress(pct) {
+  if (currentFileIdx < 0) return;
+  const sf = sourceFiles[currentFileIdx];
+  if (sf) sf.progress = pct;
+  const progressEl = document.getElementById(`queue-progress-${currentFileIdx}`);
+  if (progressEl) progressEl.style.width = pct + '%';
+}
+
+function loadImage(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
     const img = new Image();
-    img.onload = () => processImage(img, file.name);
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Failed to load image')); };
+    img.src = url;
+  });
 }
 
 function setProgress(pct, text) {
@@ -741,7 +1155,8 @@ function setProgress(pct, text) {
   document.getElementById('progressText').textContent = text;
 }
 
-async function processImage(img, fileName) {
+// ─── Core Processing (per source file) ─────────────────
+async function processImageForSource(img, fileName, fileIdx, totalFiles) {
   const canvas = document.createElement('canvas');
   canvas.width = img.width;
   canvas.height = img.height;
@@ -750,11 +1165,20 @@ async function processImage(img, fileName) {
 
   const w = img.width;
   const h = img.height;
-  setProgress(10, `รูปขนาด ${w} x ${h} px — กำลังวิเคราะห์คอลัมน์...`);
-  await sleep(50);
+
+  // Progress helper — maps per-file progress (0-100) to overall progress
+  const fileBase = (fileIdx / totalFiles) * 100;
+  const fileSpan = (1 / totalFiles) * 100;
+  const fp = (pct, text) => {
+    const overall = fileBase + (pct / 100) * fileSpan;
+    setProgress(overall, text);
+    updateFileProgress(pct);
+  };
+
+  fp(10, `${w} x ${h} px — กำลังวิเคราะห์คอลัมน์...`);
+  await sleep(30);
 
   // ─── Detect columns ────────────────────────────────
-  // Sample rows to get average column brightness
   const sampleRows = 50;
   const colBrightness = new Float32Array(w);
   for (let sy = 0; sy < sampleRows; sy++) {
@@ -768,8 +1192,6 @@ async function processImage(img, fileName) {
   for (let x = 0; x < w; x++) colBrightness[x] /= sampleRows;
 
   const isSepCol = colBrightness.map(v => v > 230);
-
-  // Find separator strips
   const sepStrips = [];
   let cnt = 0;
   for (let x = 0; x < w; x++) {
@@ -788,36 +1210,31 @@ async function processImage(img, fileName) {
     if (ce - cs > MIN_COL_WIDTH) columns.push([cs, ce]);
   }
 
-  setProgress(20, `พบ ${columns.length} คอลัมน์ — เริ่มวิเคราะห์ทีละคอลัมน์...`);
-  await sleep(100);
+  fp(20, `พบ ${columns.length} คอลัมน์ — เริ่มวิเคราะห์...`);
+  await sleep(50);
 
-  // ─── Find posts per column using Blue Bar Anchor ─────
+  // ─── Find posts per column ─────────────────────────
   const allCrops = [];
   const colCounts = [];
-  const colPctEach = 50 / columns.length;
+  const colPctEach = 50 / Math.max(columns.length, 1);
 
   for (let ci = 0; ci < columns.length; ci++) {
     const [cx1, cx2] = columns[ci];
     const colW = cx2 - cx1;
     const colBase = 20 + ci * colPctEach;
 
-    setProgress(colBase, `คอลัมน์ ${ci+1}/${columns.length}: กำลังอ่านพิกเซล...`);
+    fp(colBase, `คอลัมน์ ${ci+1}/${columns.length}: กำลังอ่านพิกเซล...`);
     await sleep(0);
 
-    // Get entire column pixel data at once
     const colData = ctx.getImageData(cx1, 0, colW, h).data;
     const stride = colW * 4;
 
-    // ── Step 1: Classify each row ──────────────────────
-    setProgress(colBase + colPctEach * 0.15, `คอลัมน์ ${ci+1}/${columns.length}: กำลังวิเคราะห์แถว...`);
-    await sleep(0);
-
-    const isGray = new Uint8Array(h);   // gray separator rows
-    const isWhite = new Uint8Array(h);  // white/card background rows
+    const isGray = new Uint8Array(h);
+    const isWhite = new Uint8Array(h);
     const isBlue = new Uint8Array(h);
-    const rowBrightness = new Float32Array(h); // average brightness per row
-    const darkRatio = new Float32Array(h);     // fraction of dark pixels (text/image signal)
-    const DARK_PIXEL_THRESH = 180; // pixels below this brightness are "dark" (excludes card borders ~200+)
+    const rowBrightness = new Float32Array(h);
+    const darkRatio = new Float32Array(h);
+    const DARK_PIXEL_THRESH = 180;
 
     for (let y = 0; y < h; y++) {
       const rowOff = y * stride;
@@ -832,25 +1249,15 @@ async function processImage(img, fileName) {
         const br = (r + g + b) / 3;
         const maxDiff = Math.max(Math.abs(r - br), Math.abs(g - br), Math.abs(b - br));
 
-        // Gray separator: medium brightness + neutral color
-        if (br >= GRAY_SEP_MIN && br <= GRAY_SEP_MAX && maxDiff < GRAY_MAX_DIFF) {
-          grayCount++;
-        }
-        // White/card background: very bright
-        if (br >= WHITE_ROW_MIN) {
-          whiteCount++;
-        }
-        // Dark pixel: text characters, image content
-        if (br < DARK_PIXEL_THRESH) {
-          darkCount++;
-        }
+        if (br >= GRAY_SEP_MIN && br <= GRAY_SEP_MAX && maxDiff < GRAY_MAX_DIFF) grayCount++;
+        if (br >= WHITE_ROW_MIN) whiteCount++;
+        if (br < DARK_PIXEL_THRESH) darkCount++;
       }
       isGray[y] = (grayCount / colW) > GRAY_ROW_THRESH ? 1 : 0;
       isWhite[y] = (whiteCount / colW) > WHITE_ROW_THRESH ? 1 : 0;
       darkRatio[y] = darkCount / colW;
       rowBrightness[y] = (sumR + sumG + sumB) / (3 * colW);
 
-      // Blue check: row-AVERAGE signature (much more precise than per-pixel)
       const avgR = sumR / colW, avgB = sumB / colW;
       const avgBr = rowBrightness[y];
       const avgBmR = avgB - avgR;
@@ -858,10 +1265,7 @@ async function processImage(img, fileName) {
                    && avgBmR >= BLUE_BAR_BMR_MIN && avgBmR <= BLUE_BAR_BMR_MAX) ? 1 : 0;
     }
 
-    // ── Step 2: Find blue bar positions (anchor per post) ──
-    setProgress(colBase + colPctEach * 0.4, `คอลัมน์ ${ci+1}/${columns.length}: กำลังหา Blue Bar...`);
-    await sleep(0);
-
+    // Find blue bar positions
     const blueBarsRaw = [];
     let blueRun = 0;
     for (let y = 0; y < h; y++) {
@@ -877,7 +1281,6 @@ async function processImage(img, fileName) {
       blueBarsRaw.push({ top: h - blueRun, bottom: h, height: blueRun });
     }
 
-    // Filter: remove bars too close together (within 300px, keep tallest)
     const blueBars = [];
     for (const bar of blueBarsRaw) {
       const prev = blueBars[blueBars.length - 1];
@@ -888,71 +1291,40 @@ async function processImage(img, fileName) {
       }
     }
 
-    console.log(`[Col ${ci+1}] ${blueBarsRaw.length} raw → ${blueBars.length} blue bars`);
+    console.log(`[${fileName}][Col ${ci+1}] ${blueBarsRaw.length} raw → ${blueBars.length} blue bars`);
 
-    // ── Step 3: Find post boundaries using blue bars + min-darkRatio ──
-    // Between consecutive blue bars, the separator (gray gap) has the
-    // lowest darkRatio. Use smoothed 5-row window to find it.
-    setProgress(colBase + colPctEach * 0.6, `คอลัมน์ ${ci+1}/${columns.length}: กำลังหาขอบเขตโพสต์...`);
-    await sleep(0);
-
-    // Helper: find the separator Y between two blue bars
-    // The Mandala stats section is ~60-100px below the blue bar.
-    // The separator/card-gap is right after that (~80-150px from bar bottom).
-    // Search ONLY in +70 to +160 to avoid false positives from stats content
-    // (too early) or next post content (too late).
-    function findSepBetween(fromY, toY, debugLabel) {
+    // Find separator between consecutive blue bars
+    function findSepBetween(fromY, toY) {
       const range = toY - fromY;
       if (range < 80) return Math.floor((fromY + toY) / 2);
 
-      // Tight search in +65..+110 from blue bar bottom
-      // The Mandala section (stats + "ดูอัตรา" link + card padding) is ~65-90px.
-      // The card edge (white padding → dark gap) is right at the end.
-      // Keep range very tight to avoid cutting into next post.
       const nsStart = fromY + 65;
       const nsEnd = Math.min(fromY + 110, toY - 10);
 
       if (nsStart + 10 >= nsEnd) {
-        const fallback = Math.min(fromY + 82, Math.floor((fromY + toY) / 2));
-        if (debugLabel) console.log(`[${debugLabel}] short range, fallback Y:${fallback} (offset +${fallback - fromY})`);
-        return fallback;
+        return Math.min(fromY + 82, Math.floor((fromY + toY) / 2));
       }
 
-      // Strategy 1: Maximum row brightness in the range (card bottom padding = whitest area)
       let maxBr = 0, maxBrY = fromY + 82;
       for (let y = nsStart; y < nsEnd; y++) {
         if (rowBrightness[y] > maxBr) { maxBr = rowBrightness[y]; maxBrY = y; }
       }
 
-      // Strategy 2: Also check minimum darkRatio
       let bestAvg = 1, bestDrY = fromY + 82;
       for (let y = nsStart + 2; y < nsEnd - 2; y++) {
         const avg = (darkRatio[y-2] + darkRatio[y-1] + darkRatio[y] + darkRatio[y+1] + darkRatio[y+2]) / 5;
         if (avg < bestAvg) { bestAvg = avg; bestDrY = y; }
       }
 
-      // Use brightness-based if it found a bright area (card padding, br > 170)
-      // Otherwise fall back to darkRatio minimum
-      let bestY;
-      if (maxBr > 170) {
-        bestY = maxBrY;
-        if (debugLabel) console.log(`[${debugLabel}] maxBr=${Math.round(maxBr)} at Y:${bestY} (offset +${bestY - fromY})`);
-      } else {
-        bestY = bestDrY;
-        if (debugLabel) console.log(`[${debugLabel}] minDR=${bestAvg.toFixed(4)} at Y:${bestY} (offset +${bestY - fromY})`);
-      }
-      return bestY;
+      return maxBr > 170 ? maxBrY : bestDrY;
     }
 
     const posts = [];
-
     for (let bi = 0; bi < blueBars.length; bi++) {
       const bar = blueBars[bi];
 
-      // ── Post TOP ──
       let postTop;
       if (bi === 0) {
-        // First post: scan up from bar to find gray separator or column top
         postTop = 0;
         for (let y = bar.top - 1; y >= 0; y--) {
           if (isGray[y]) {
@@ -962,14 +1334,11 @@ async function processImage(img, fileName) {
           }
         }
       } else {
-        // Separator between previous bar and this bar
-        postTop = findSepBetween(blueBars[bi - 1].bottom, bar.top, bi < 3 ? `Col${ci+1} top${bi+1}` : null);
+        postTop = findSepBetween(blueBars[bi - 1].bottom, bar.top);
       }
 
-      // ── Post BOTTOM ──
       let postBottom;
       if (bi === blueBars.length - 1) {
-        // Last post: scan down from bar to find gray separator or column bottom
         postBottom = h;
         for (let y = bar.bottom + 30; y < h; y++) {
           if (isGray[y]) {
@@ -979,38 +1348,15 @@ async function processImage(img, fileName) {
           }
         }
       } else {
-        // Separator between this bar and next bar
-        postBottom = findSepBetween(bar.bottom, blueBars[bi + 1].top, bi < 3 ? `Col${ci+1} bot${bi+1}` : null);
-      }
-
-      // Debug: dump darkRatio profile below first bar of first column (chunked to avoid truncation)
-      if (ci === 0 && bi === 0) {
-        const dbgEnd = Math.min(bar.bottom + 300, h);
-        const chunkSize = 50;
-        for (let chunk = 0; chunk * chunkSize < dbgEnd - bar.bottom; chunk++) {
-          const lines = [];
-          const cStart = bar.bottom + chunk * chunkSize;
-          const cEnd = Math.min(cStart + chunkSize, dbgEnd);
-          for (let y = cStart; y < cEnd; y++) {
-            const off = y - bar.bottom;
-            const dr = darkRatio[y].toFixed(4);
-            const br = Math.round(rowBrightness[y]);
-            const g = isGray[y] ? 'G' : ' ';
-            const w = isWhite[y] ? 'W' : ' ';
-            const visual = '#'.repeat(Math.min(Math.round(darkRatio[y] * 200), 40));
-            lines.push(`+${String(off).padStart(3)}: dr=${dr} br=${br} ${g}${w} |${visual}`);
-          }
-          console.log(`[DEBUG] Col1 Bar1 bottom=${bar.bottom}, chunk ${chunk} (+${chunk*chunkSize} to +${Math.min((chunk+1)*chunkSize, dbgEnd - bar.bottom) - 1}):\n${lines.join('\n')}`);
-        }
+        postBottom = findSepBetween(bar.bottom, blueBars[bi + 1].top);
       }
 
       if (postBottom - postTop >= MIN_CARD_H) {
         posts.push({ top: postTop, bottom: postBottom });
-        if (bi < 3) console.log(`[Col ${ci+1}] Post ${bi+1}: ${postTop}-${postBottom} (${postBottom-postTop}px)`);
       }
     }
 
-    console.log(`[Col ${ci+1}] ${posts.length} posts, heights: [${posts.map(p => p.bottom - p.top).join(', ')}]`);
+    console.log(`[${fileName}][Col ${ci+1}] ${posts.length} posts`);
 
     for (let pi = 0; pi < posts.length; pi++) {
       const p = posts[pi];
@@ -1018,39 +1364,27 @@ async function processImage(img, fileName) {
     }
     colCounts.push(posts.length);
 
-    setProgress(colBase + colPctEach,
-      `คอลัมน์ ${ci+1}/${columns.length}: พบ ${posts.length} โพสต์ ✓`);
-    await sleep(150);
+    fp(colBase + colPctEach, `คอลัมน์ ${ci+1}/${columns.length}: ${posts.length} โพสต์ ✓`);
+    await sleep(50);
   }
 
-  // ─── Safety check ───────────────────────────────
   if (allCrops.length === 0) {
-    setProgress(100, 'ไม่พบโพสต์ — ลองตรวจสอบรูปอีกครั้ง');
-    await sleep(1000);
-    resetAll();
-    return;
+    return { fileName, blobs: [], names: [], thumbs: [], fullUrls: [], validations: [], cropMeta: [], colCounts: [], numCols: columns.length };
   }
 
   // ─── QA Validation ─────────────────────────────────
-  // Analyze each crop for completeness:
-  // 1. Has blue bar (การมีส่วนร่วม) inside the crop
-  // 2. Blue bar is in the lower portion (not at top = previous post's stats leaking)
-  // 3. Has content at top (not starting with dark separator)
-  // 4. Reasonable height (not too short = missing content)
-  setProgress(72, `กำลังตรวจสอบ ${allCrops.length} โพสต์...`);
-  await sleep(50);
+  fp(72, `กำลังตรวจสอบ ${allCrops.length} โพสต์...`);
+  await sleep(30);
 
-  postValidations = [];
+  const postValidations = [];
   for (const crop of allCrops) {
     const cx1 = crop.x1, cy1 = crop.y1, cx2 = crop.x2, cy2 = crop.y2;
     const cw = cx2 - cx1, ch = cy2 - cy1;
     const checks = { postHeight: ch, issues: [] };
 
-    // Sample the crop area from the original image
     const cropData = ctx.getImageData(cx1, cy1, cw, ch).data;
     const cStride = cw * 4;
 
-    // ── Check 1: Find blue bar position within crop ──
     let blueBarY = -1, blueBarCount = 0;
     for (let y = 0; y < ch; y++) {
       const rowOff = y * cStride;
@@ -1071,12 +1405,9 @@ async function processImage(img, fileName) {
     }
     checks.hasBlueBar = blueBarCount >= BLUE_BAR_MIN_H;
     checks.blueBarY = blueBarY;
-    checks.blueBarRatio = blueBarY >= 0 ? blueBarY / ch : -1; // position ratio (0=top, 1=bottom)
-
-    // ── Check 2: Blue bar in lower half (should be > 0.4 from top) ──
+    checks.blueBarRatio = blueBarY >= 0 ? blueBarY / ch : -1;
     checks.blueBarInLowerHalf = checks.blueBarRatio > 0.35;
 
-    // ── Check 3: Top content check — first 30px shouldn't be mostly dark ──
     let topDarkCount = 0, topTotalPx = 0;
     const topCheckH = Math.min(30, ch);
     for (let y = 0; y < topCheckH; y++) {
@@ -1090,7 +1421,6 @@ async function processImage(img, fileName) {
     }
     checks.topNotDark = (topDarkCount / topTotalPx) < 0.9;
 
-    // ── Check 4: Bottom has stats (last 80px should have content, not just dark/separator) ──
     let botBrightCount = 0, botTotalPx = 0;
     const botCheckH = Math.min(80, ch);
     for (let y = ch - botCheckH; y < ch; y++) {
@@ -1103,11 +1433,8 @@ async function processImage(img, fileName) {
       }
     }
     checks.bottomHasContent = (botBrightCount / botTotalPx) > 0.3;
-
-    // ── Check 5: Height range ──
     checks.heightOk = ch >= 300 && ch <= 1800;
 
-    // ── Compute overall score ──
     if (!checks.hasBlueBar) checks.issues.push('ไม่พบ Blue Bar');
     if (!checks.blueBarInLowerHalf && checks.hasBlueBar) checks.issues.push('Blue Bar อยู่สูงเกินไป');
     if (!checks.topNotDark) checks.issues.push('ด้านบนมืดผิดปกติ');
@@ -1122,13 +1449,99 @@ async function processImage(img, fileName) {
     postValidations.push(checks);
   }
 
-  const qaPass = postValidations.filter(v => v.status === 'pass').length;
-  const qaWarn = postValidations.filter(v => v.status === 'warn').length;
-  const qaFail = postValidations.filter(v => v.status === 'fail').length;
-  setProgress(75, `${allCrops.length} โพสต์ — ✅${qaPass} ⚠️${qaWarn} ❌${qaFail} — กำลังครอป...`);
-  await sleep(200);
+  // ─── Pass 2: Refine crop boundaries ─────────────────
+  fp(76, `Refine ขอบ ${allCrops.length} โพสต์...`);
+  await sleep(30);
 
-  // ─── Group into rows ──────────────────────────────
+  const REFINE_DARK_THRESH = 120;
+  const REFINE_DARK_RUN = 3;
+  const REFINE_MAX_TRIM = 150;
+
+  for (let i = 0; i < allCrops.length; i++) {
+    const crop = allCrops[i];
+    const cw = crop.x2 - crop.x1, ch = crop.y2 - crop.y1;
+    if (ch < 150) continue;
+
+    const marginX = Math.floor(cw * 0.2);
+    const sampleW = cw - marginX * 2;
+    if (sampleW < 20) continue;
+    const sampleData = ctx.getImageData(crop.x1 + marginX, crop.y1, sampleW, ch).data;
+    const sStride = sampleW * 4;
+
+    const rowBr = new Float32Array(ch);
+    for (let y = 0; y < ch; y++) {
+      let sum = 0;
+      const off = y * sStride;
+      for (let x = 0; x < sampleW; x++) {
+        const idx = off + x * 4;
+        sum += (sampleData[idx] + sampleData[idx+1] + sampleData[idx+2]) / 3;
+      }
+      rowBr[y] = sum / sampleW;
+    }
+
+    let trimTop = 0;
+    let inDarkZone = false;
+    for (let y = 0; y < Math.min(REFINE_MAX_TRIM, ch - 100); y++) {
+      if (rowBr[y] < REFINE_DARK_THRESH) {
+        inDarkZone = true;
+        trimTop = y + 1;
+      } else if (inDarkZone) {
+        let brightRun = 0;
+        for (let ry = y; ry < Math.min(y + 5, ch); ry++) {
+          if (rowBr[ry] >= REFINE_DARK_THRESH) brightRun++;
+        }
+        if (brightRun >= 3) break;
+      }
+    }
+
+    let trimBottom = 0;
+    for (let y = ch - 1; y >= Math.max(ch - REFINE_MAX_TRIM, 100); y--) {
+      let darkRun = 0;
+      for (let ry = y; ry >= Math.max(y - REFINE_DARK_RUN + 1, 0); ry--) {
+        if (rowBr[ry] < REFINE_DARK_THRESH) darkRun++;
+      }
+      if (darkRun >= REFINE_DARK_RUN) {
+        let darkGapTop = y - REFINE_DARK_RUN + 1;
+        while (darkGapTop > 0 && rowBr[darkGapTop - 1] < REFINE_DARK_THRESH) darkGapTop--;
+        trimBottom = ch - darkGapTop;
+        break;
+      }
+    }
+
+    if (trimTop > 2 || trimBottom > 2) {
+      crop.y1 += trimTop;
+      crop.y2 -= trimBottom;
+      crop.refined = true;
+      crop.trimTop = trimTop;
+      crop.trimBottom = trimBottom;
+    }
+  }
+
+  // Re-run QA after refine
+  for (let i = 0; i < allCrops.length; i++) {
+    const crop = allCrops[i];
+    const ch = crop.y2 - crop.y1;
+    const v = postValidations[i];
+    if (v) {
+      v.postHeight = ch;
+      v.heightOk = ch >= 300 && ch <= 1800;
+      if (crop.refined) {
+        v.trimInfo = `ตัด: บน ${crop.trimTop || 0}px, ล่าง ${crop.trimBottom || 0}px`;
+      }
+      v.issues = [];
+      if (!v.hasBlueBar) v.issues.push('ไม่พบ Blue Bar');
+      if (!v.blueBarInLowerHalf && v.hasBlueBar) v.issues.push('Blue Bar อยู่สูงเกินไป');
+      if (!v.topNotDark) v.issues.push('ด้านบนมืดผิดปกติ');
+      if (!v.bottomHasContent) v.issues.push('ด้านล่างไม่มีเนื้อหา');
+      if (!v.heightOk) v.issues.push(ch < 300 ? 'สั้นเกินไป' : 'ยาวเกินไป');
+      const passCount = [v.hasBlueBar, v.blueBarInLowerHalf, v.topNotDark,
+                         v.bottomHasContent, v.heightOk].filter(Boolean).length;
+      v.score = passCount;
+      v.status = passCount === 5 ? 'pass' : passCount >= 3 ? 'warn' : 'fail';
+    }
+  }
+
+  // ─── Sort into rows (for naming) ──────────────────
   allCrops.sort((a, b) => a.y1 - b.y1 || a.x1 - b.x1);
 
   const rows = [];
@@ -1145,143 +1558,20 @@ async function processImage(img, fileName) {
   curRow.sort((a, b) => a.x1 - b.x1);
   rows.push(curRow);
 
-  // ─── Pass 2: Refine crop boundaries ─────────────────
-  // Trim dark separator/gap pixels from top and bottom of each crop.
-  // Scan inward from edges to find where the white card actually begins/ends.
-  setProgress(76, `รอบ 2: กำลัง refine ขอบ ${allCrops.length} โพสต์...`);
-  await sleep(50);
-
-  const REFINE_DARK_THRESH = 120;   // rows darker than this in center strip = dark separator gap
-  const REFINE_DARK_RUN = 3;        // need 3+ consecutive dark rows to confirm separator
-  const REFINE_MAX_TRIM = 150;      // max pixels to trim from each edge (leaked content can be large)
-
-  for (let i = 0; i < allCrops.length; i++) {
-    const crop = allCrops[i];
-    const cw = crop.x2 - crop.x1, ch = crop.y2 - crop.y1;
-    if (ch < 150) continue; // too small to refine
-
-    // Sample center 60% of width to avoid side margins/shadows
-    const marginX = Math.floor(cw * 0.2);
-    const sampleW = cw - marginX * 2;
-    if (sampleW < 20) continue;
-    const sampleData = ctx.getImageData(crop.x1 + marginX, crop.y1, sampleW, ch).data;
-    const sStride = sampleW * 4;
-
-    // Compute row brightness for the center strip
-    const rowBr = new Float32Array(ch);
-    for (let y = 0; y < ch; y++) {
-      let sum = 0;
-      const off = y * sStride;
-      for (let x = 0; x < sampleW; x++) {
-        const idx = off + x * 4;
-        sum += (sampleData[idx] + sampleData[idx+1] + sampleData[idx+2]) / 3;
-      }
-      rowBr[y] = sum / sampleW;
-    }
-
-    // ── Trim TOP: find dark separator gap scanning from top down ──
-    // Pattern: [dark gap] → [bright card start]
-    // Find the LAST dark row before bright card content begins
-    let trimTop = 0;
-    let inDarkZone = false;
-    for (let y = 0; y < Math.min(REFINE_MAX_TRIM, ch - 100); y++) {
-      if (rowBr[y] < REFINE_DARK_THRESH) {
-        inDarkZone = true;
-        trimTop = y + 1; // trim up to and including this dark row
-      } else if (inDarkZone) {
-        // We exited the dark zone — check if next rows are bright (card content)
-        let brightRun = 0;
-        for (let ry = y; ry < Math.min(y + 5, ch); ry++) {
-          if (rowBr[ry] >= REFINE_DARK_THRESH) brightRun++;
-        }
-        if (brightRun >= 3) break; // confirmed card start
-        // If not enough bright rows, might be a brief bright spot in dark area
-      }
-    }
-
-    // ── Trim BOTTOM: find dark separator gap scanning from bottom up ──
-    // Pattern: [bright card end] → [dark gap] → [next post content]
-    // Find the dark separator, then trim everything from separator top downward
-    let trimBottom = 0;
-    let darkGapTop = -1;
-    // Scan from bottom up looking for a dark band (separator)
-    for (let y = ch - 1; y >= Math.max(ch - REFINE_MAX_TRIM, 100); y--) {
-      // Check for dark run at this position
-      let darkRun = 0;
-      for (let ry = y; ry >= Math.max(y - REFINE_DARK_RUN + 1, 0); ry--) {
-        if (rowBr[ry] < REFINE_DARK_THRESH) darkRun++;
-      }
-      if (darkRun >= REFINE_DARK_RUN) {
-        // Found dark separator — find its top edge
-        darkGapTop = y - REFINE_DARK_RUN + 1;
-        while (darkGapTop > 0 && rowBr[darkGapTop - 1] < REFINE_DARK_THRESH) darkGapTop--;
-        trimBottom = ch - darkGapTop;
-        break;
-      }
-    }
-
-    // Apply trim (only if meaningful — at least 3px)
-    if (trimTop > 2 || trimBottom > 2) {
-      crop.y1 += trimTop;
-      crop.y2 -= trimBottom;
-      crop.refined = true;
-      crop.trimTop = trimTop;
-      crop.trimBottom = trimBottom;
-    }
-
-    if (i % 20 === 0) {
-      setProgress(76 + (i / allCrops.length) * 4, `Refine ${i+1}/${allCrops.length}...`);
-      await sleep(0);
-    }
-  }
-
-  const refinedCount = allCrops.filter(c => c.refined).length;
-  setProgress(80, `Refine เสร็จ — ปรับ ${refinedCount}/${allCrops.length} โพสต์ — กำลังครอป...`);
-  await sleep(100);
-
-  // ─── Re-run QA on refined crops ─────────────────────
-  // Update postValidations with new dimensions
-  for (let i = 0; i < allCrops.length; i++) {
-    const crop = allCrops[i];
-    const ch = crop.y2 - crop.y1;
-    const v = postValidations[i];
-    if (v) {
-      v.postHeight = ch;
-      v.heightOk = ch >= 300 && ch <= 1800;
-      if (crop.refined) {
-        v.trimInfo = `ตัด: บน ${crop.trimTop || 0}px, ล่าง ${crop.trimBottom || 0}px`;
-      }
-      // Recheck issues
-      v.issues = [];
-      if (!v.hasBlueBar) v.issues.push('ไม่พบ Blue Bar');
-      if (!v.blueBarInLowerHalf && v.hasBlueBar) v.issues.push('Blue Bar อยู่สูงเกินไป');
-      if (!v.topNotDark) v.issues.push('ด้านบนมืดผิดปกติ');
-      if (!v.bottomHasContent) v.issues.push('ด้านล่างไม่มีเนื้อหา');
-      if (!v.heightOk) v.issues.push(ch < 300 ? 'สั้นเกินไป' : 'ยาวเกินไป');
-      const passCount = [v.hasBlueBar, v.blueBarInLowerHalf, v.topNotDark,
-                         v.bottomHasContent, v.heightOk].filter(Boolean).length;
-      v.score = passCount;
-      v.status = passCount === 5 ? 'pass' : passCount >= 3 ? 'warn' : 'fail';
-    }
-  }
-
   // ─── Crop & generate blobs ────────────────────────
-  croppedBlobs = [];
-  croppedNames = [];
-  fullDataUrls = [];
+  const blobs = [];
+  const names = [];
+  const fullUrls = [];
   const thumbs = [];
+  const sortedValidations = [];
+  const cropMeta = [];
 
   const cropCanvas = document.createElement('canvas');
   const cropCtx = cropCanvas.getContext('2d');
-  const cropStart = performance.now();
-
   let idx = 0;
-  const totalCrops = allCrops.length;
-  // Re-sort postValidations to match the row-grouped order
-  const sortedValidations = [];
 
-  // Track row boundaries for section headers
-  const cropMeta = []; // { rowIdx, colInRow, srcCol, srcPostIdx }
+  // Build a stable name prefix from the source file
+  const nameBase = fileName.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30);
 
   for (let ri = 0; ri < rows.length; ri++) {
     for (let ci = 0; ci < rows[ri].length; ci++) {
@@ -1291,18 +1581,16 @@ async function processImage(img, fileName) {
       cropCanvas.height = ch;
       cropCtx.drawImage(img, crop.x1, crop.y1, cw, ch, 0, 0, cw, ch);
 
-      const name = `post_${String(ri+1).padStart(2,'0')}_${String(ci+1).padStart(2,'0')}.png`;
+      const name = `${nameBase}_${String(ri+1).padStart(2,'0')}_${String(ci+1).padStart(2,'0')}.png`;
       const blob = await canvasToBlob(cropCanvas);
-      croppedBlobs.push(blob);
-      croppedNames.push(name);
-      fullDataUrls.push(cropCanvas.toDataURL('image/png'));
+      blobs.push(blob);
+      names.push(name);
+      fullUrls.push(URL.createObjectURL(blob));
       thumbs.push(cropCanvas.toDataURL('image/jpeg', 0.6));
 
-      // Find matching validation
       const vi = allCrops.indexOf(crop);
       sortedValidations.push(postValidations[vi]);
 
-      // Store metadata
       cropMeta.push({
         rowIdx: ri,
         colInRow: ci,
@@ -1311,38 +1599,49 @@ async function processImage(img, fileName) {
       });
 
       idx++;
-      const pct = 82 + (idx / totalCrops) * 16;
-      const elapsed = ((performance.now() - cropStart) / 1000).toFixed(1);
-      const perItem = (performance.now() - cropStart) / idx;
-      const remaining = ((totalCrops - idx) * perItem / 1000).toFixed(0);
-      setProgress(pct,
-        `ครอป ${idx}/${totalCrops} — ${elapsed}s ผ่านไป, ~${remaining}s เหลือ`);
+      fp(82 + (idx / allCrops.length) * 16, `ครอป ${idx}/${allCrops.length}`);
       await sleep(0);
     }
   }
-  postValidations = sortedValidations;
 
-  setProgress(100, 'เสร็จสิ้น!');
-  await sleep(300);
-
-  // ─── Show results ─────────────────────────────────
-  showResults(thumbs, columns.length, colCounts, rows.length, fileName, cropMeta);
+  return {
+    fileName,
+    blobs,
+    names,
+    thumbs,
+    fullUrls,
+    validations: sortedValidations,
+    cropMeta,
+    colCounts,
+    numCols: columns.length,
+  };
 }
 
-function showResults(thumbs, numCols, colCounts, numRows, fileName, cropMeta) {
+// ─── Show Results ───────────────────────────────────────
+function showResults() {
   document.getElementById('progressSection').style.display = 'none';
+  document.getElementById('queueSection').style.display = 'none';
   const section = document.getElementById('resultsSection');
   section.style.display = 'block';
 
-  // Stats
-  const qaPass = postValidations.filter(v => v.status === 'pass').length;
-  const qaWarn = postValidations.filter(v => v.status === 'warn').length;
-  const qaFail = postValidations.filter(v => v.status === 'fail').length;
-  const statsBar = document.getElementById('statsBar');
-  statsBar.innerHTML = `
+  // Aggregate stats
+  let totalPosts = 0, qaPass = 0, qaWarn = 0, qaFail = 0;
+  for (const r of sourceResults) {
+    totalPosts += r.blobs.length;
+    qaPass += r.validations.filter(v => v.status === 'pass').length;
+    qaWarn += r.validations.filter(v => v.status === 'warn').length;
+    qaFail += r.validations.filter(v => v.status === 'fail').length;
+  }
+
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-item">
+      <div class="stat-icon">📁</div>
+      <div class="stat-value">${sourceResults.length}</div>
+      <div class="stat-label">ไฟล์</div>
+    </div>
     <div class="stat-item">
       <div class="stat-icon">📋</div>
-      <div class="stat-value">${croppedBlobs.length}</div>
+      <div class="stat-value">${totalPosts}</div>
       <div class="stat-label">โพสต์ทั้งหมด</div>
     </div>
     <div class="stat-item">
@@ -1363,99 +1662,198 @@ function showResults(thumbs, numCols, colCounts, numRows, fileName, cropMeta) {
   `;
 
   document.getElementById('resultsTitle').textContent =
-    `ผลลัพธ์จาก "${fileName}"`;
+    `ผลลัพธ์ — ${totalPosts} โพสต์ จาก ${sourceResults.length} ไฟล์`;
 
-  // Grid — group by source column with section dividers
-  const grid = document.getElementById('postsGrid');
-  grid.innerHTML = '';
+  // Filter bar
+  buildFilterBar();
 
-  // Group items by source column
-  const colGroups = {};
-  for (let i = 0; i < thumbs.length; i++) {
-    const meta = (cropMeta && cropMeta[i]) || {};
-    const col = meta.srcCol != null ? meta.srcCol : 1;
-    if (!colGroups[col]) colGroups[col] = [];
-    colGroups[col].push(i);
+  // Grid
+  activeFilter = 'all';
+  renderGrid();
+}
+
+function buildFilterBar() {
+  const bar = document.getElementById('filterBar');
+  bar.innerHTML = '';
+
+  if (sourceResults.length <= 1) return;
+
+  const label = document.createElement('span');
+  label.className = 'filter-label';
+  label.textContent = 'กรอง:';
+  bar.appendChild(label);
+
+  const select = document.createElement('select');
+  select.className = 'filter-select';
+  select.id = 'filterSelect';
+
+  const totalPosts = sourceResults.reduce((s, r) => s + r.blobs.length, 0);
+  const allOpt = document.createElement('option');
+  allOpt.value = 'all';
+  allOpt.textContent = `ทั้งหมด (${totalPosts} โพสต์)`;
+  select.appendChild(allOpt);
+
+  for (let i = 0; i < sourceResults.length; i++) {
+    const r = sourceResults[i];
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `#${i + 1} — ${r.fileName} (${r.blobs.length})`;
+    select.appendChild(opt);
   }
 
-  const statusOrder = { pass: 0, warn: 1, fail: 2 };
-  const colKeys = Object.keys(colGroups).map(Number).sort((a, b) => a - b);
+  select.onchange = () => {
+    activeFilter = select.value === 'all' ? 'all' : parseInt(select.value);
+    renderGrid();
+  };
 
-  for (const col of colKeys) {
-    const indices = colGroups[col];
+  bar.appendChild(select);
+}
 
-    // Sort within column: by post index (original order)
-    indices.sort((a, b) => {
-      const ma = (cropMeta && cropMeta[a]) || {}, mb = (cropMeta && cropMeta[b]) || {};
-      return (ma.srcPostIdx || 0) - (mb.srcPostIdx || 0);
-    });
+function renderGrid() {
+  const grid = document.getElementById('postsGrid');
+  grid.innerHTML = '';
+  filteredIndices = [];
 
-    const passInCol = indices.filter(i => (postValidations[i] || {}).status === 'pass').length;
-    const warnInCol = indices.filter(i => (postValidations[i] || {}).status === 'warn').length;
-    const failInCol = indices.filter(i => (postValidations[i] || {}).status === 'fail').length;
+  const resultsToShow = activeFilter === 'all'
+    ? sourceResults.map((r, i) => ({ ...r, sourceIdx: i }))
+    : [{ ...sourceResults[activeFilter], sourceIdx: activeFilter }];
 
-    // Section header
-    const header = document.createElement('div');
-    header.className = 'row-section-header';
-    header.innerHTML = `
-      <div class="row-section-title">
-        <span class="row-section-num">คอลัมน์ ${col}</span>
-        <span class="row-section-count">${indices.length} โพส</span>
-        <span class="row-section-count" style="color:#2E7D32">✓ ${passInCol}</span>
-        ${warnInCol ? `<span class="row-section-count" style="color:#F57F17">⚠ ${warnInCol}</span>` : ''}
-        ${failInCol ? `<span class="row-section-count" style="color:#C62828">✗ ${failInCol}</span>` : ''}
-      </div>
-    `;
-    grid.appendChild(header);
-
-    // Cards
-    for (const i of indices) {
-      const v = postValidations[i] || {};
-      const meta = (cropMeta && cropMeta[i]) || {};
-      const card = document.createElement('div');
-      card.className = 'post-card';
-      card.dataset.origIdx = i;
-      card.onclick = () => openLightbox(i);
-
-      const badgeClass = v.status === 'pass' ? 'qa-pass' : v.status === 'warn' ? 'qa-warn' : 'qa-fail';
-      const badgeIcon = v.status === 'pass' ? '✓' : v.status === 'warn' ? '⚠' : '✗';
-      const badgeLabel = v.status === 'pass' ? 'ผ่าน' : v.status === 'warn' ? 'ตรวจสอบ' : 'ไม่ผ่าน';
-      const issueText = v.issues && v.issues.length > 0 ? v.issues.join(' · ') : '';
-      const trimText = v.trimInfo || '';
-      const postNum = meta.srcPostIdx || '?';
-
-      card.innerHTML = `
-        <span class="qa-badge ${badgeClass}">${badgeIcon} ${badgeLabel}</span>
-        <span class="col-badge">#${postNum}</span>
-        <img src="${thumbs[i]}" loading="lazy" alt="${croppedNames[i]}">
-        <div class="post-overlay">
-          <span class="post-overlay-text">คลิกเพื่อดูรูปใหญ่</span>
+  for (const result of resultsToShow) {
+    // Source file header (only in "all" mode with multiple files)
+    if (activeFilter === 'all' && sourceResults.length > 1) {
+      const srcHeader = document.createElement('div');
+      srcHeader.className = 'source-section-header';
+      const srcPass = result.validations.filter(v => v.status === 'pass').length;
+      const srcWarn = result.validations.filter(v => v.status === 'warn').length;
+      const srcFail = result.validations.filter(v => v.status === 'fail').length;
+      srcHeader.innerHTML = `
+        <div class="source-section-title">
+          <span>📁 #${result.sourceIdx + 1} ${result.fileName}</span>
+          <span style="font-size:13px;font-weight:500;color:#6A6E83">${result.blobs.length} โพสต์</span>
         </div>
-        <div class="post-label">
-          <span>${croppedNames[i]}</span>
-          <span class="dl-icon">⬇</span>
-        </div>
-        <div class="qa-details">
-          ${v.postHeight || 0}px · ${v.score || 0}/5
-          ${trimText ? ` · <span style="color:#7279FB">${trimText}</span>` : ''}
-          ${issueText ? `<br><span style="color:${v.status === 'fail' ? '#C62828' : '#F57F17'}">${issueText}</span>` : ''}
+        <div class="source-section-meta">
+          <span>${result.numCols} คอลัมน์</span>
+          <span style="color:#2E7D32">✓ ${srcPass}</span>
+          ${srcWarn ? `<span style="color:#F57F17">⚠ ${srcWarn}</span>` : ''}
+          ${srcFail ? `<span style="color:#C62828">✗ ${srcFail}</span>` : ''}
         </div>
       `;
-      grid.appendChild(card);
+      grid.appendChild(srcHeader);
+    }
+
+    // Group by source column
+    const colGroups = {};
+    for (let i = 0; i < result.blobs.length; i++) {
+      const meta = result.cropMeta[i] || {};
+      const col = meta.srcCol != null ? meta.srcCol : 1;
+      if (!colGroups[col]) colGroups[col] = [];
+      colGroups[col].push(i);
+    }
+
+    const colKeys = Object.keys(colGroups).map(Number).sort((a, b) => a - b);
+
+    for (const col of colKeys) {
+      const indices = colGroups[col];
+      indices.sort((a, b) => {
+        const ma = result.cropMeta[a] || {}, mb = result.cropMeta[b] || {};
+        return (ma.srcPostIdx || 0) - (mb.srcPostIdx || 0);
+      });
+
+      const passInCol = indices.filter(i => (result.validations[i] || {}).status === 'pass').length;
+      const warnInCol = indices.filter(i => (result.validations[i] || {}).status === 'warn').length;
+      const failInCol = indices.filter(i => (result.validations[i] || {}).status === 'fail').length;
+
+      // Collapsible section wrapper
+      const sectionId = `col-section-${result.sourceIdx}-${col}`;
+      const section = document.createElement('div');
+      section.className = 'col-section';
+      section.id = sectionId;
+
+      // Clickable header
+      const header = document.createElement('div');
+      header.className = 'col-section-header';
+      header.onclick = () => {
+        section.classList.toggle('collapsed');
+      };
+      header.innerHTML = `
+        <span class="col-section-toggle">▼</span>
+        <span class="col-section-num">คอลัมน์ ${col}</span>
+        <span class="col-section-count">${indices.length} โพส</span>
+        <div class="col-section-qa">
+          <span style="color:#2E7D32">✓ ${passInCol}</span>
+          ${warnInCol ? `<span style="color:#F57F17">⚠ ${warnInCol}</span>` : ''}
+          ${failInCol ? `<span style="color:#C62828">✗ ${failInCol}</span>` : ''}
+        </div>
+      `;
+      section.appendChild(header);
+
+      // Body (card grid)
+      const body = document.createElement('div');
+      body.className = 'col-section-body';
+
+      for (const i of indices) {
+        const v = result.validations[i] || {};
+        const meta = result.cropMeta[i] || {};
+
+        const flatIdx = filteredIndices.length;
+        filteredIndices.push({ sourceIdx: result.sourceIdx, cropIdx: i });
+
+        const card = document.createElement('div');
+        card.className = 'post-card';
+        card.onclick = () => openLightbox(flatIdx);
+
+        const badgeClass = v.status === 'pass' ? 'qa-pass' : v.status === 'warn' ? 'qa-warn' : 'qa-fail';
+        const badgeIcon = v.status === 'pass' ? '✓' : v.status === 'warn' ? '⚠' : '✗';
+        const badgeLabel = v.status === 'pass' ? 'ผ่าน' : v.status === 'warn' ? 'ตรวจสอบ' : 'ไม่ผ่าน';
+        const issueText = v.issues && v.issues.length > 0 ? v.issues.join(' · ') : '';
+        const trimText = v.trimInfo || '';
+        const postNum = meta.srcPostIdx || '?';
+
+        card.innerHTML = `
+          <span class="qa-badge ${badgeClass}">${badgeIcon} ${badgeLabel}</span>
+          <span class="col-badge">#${postNum}</span>
+          <img src="${result.thumbs[i]}" loading="lazy" alt="${result.names[i]}">
+          <div class="post-overlay">
+            <span class="post-overlay-text">คลิกเพื่อดูรูปใหญ่</span>
+          </div>
+          <div class="post-label">
+            <span>${result.names[i]}</span>
+            <span class="dl-icon">⬇</span>
+          </div>
+          <div class="qa-details">
+            ${v.postHeight || 0}px · ${v.score || 0}/5
+            ${trimText ? ` · <span style="color:#7279FB">${trimText}</span>` : ''}
+            ${issueText ? `<br><span style="color:${v.status === 'fail' ? '#C62828' : '#F57F17'}">${issueText}</span>` : ''}
+          </div>
+        `;
+        body.appendChild(card);
+      }
+
+      section.appendChild(body);
+      grid.appendChild(section);
     }
   }
 }
 
 // ─── Lightbox ───────────────────────────────────────────
-function updateLightboxInfo(i) {
-  document.getElementById('lightboxImg').src = fullDataUrls[i];
-  document.getElementById('lightboxName').textContent = croppedNames[i];
-  document.getElementById('lightboxCounter').textContent = `${i + 1} / ${croppedBlobs.length}`;
+function getLightboxItem(flatIdx) {
+  const entry = filteredIndices[flatIdx];
+  if (!entry) return null;
+  const r = sourceResults[entry.sourceIdx];
+  return { url: r.fullUrls[entry.cropIdx], name: r.names[entry.cropIdx], blob: r.blobs[entry.cropIdx] };
 }
 
-function openLightbox(i) {
-  lightboxIdx = i;
-  updateLightboxInfo(i);
+function updateLightboxInfo(flatIdx) {
+  const item = getLightboxItem(flatIdx);
+  if (!item) return;
+  document.getElementById('lightboxImg').src = item.url;
+  document.getElementById('lightboxName').textContent = item.name;
+  document.getElementById('lightboxCounter').textContent = `${flatIdx + 1} / ${filteredIndices.length}`;
+}
+
+function openLightbox(flatIdx) {
+  lightboxIdx = flatIdx;
+  updateLightboxInfo(flatIdx);
   document.getElementById('lightbox').classList.add('active');
 }
 
@@ -1465,16 +1863,23 @@ function closeLightbox() {
 }
 
 function navLightbox(dir) {
-  if (lightboxIdx < 0) return;
-  lightboxIdx = (lightboxIdx + dir + croppedBlobs.length) % croppedBlobs.length;
+  if (lightboxIdx < 0 || filteredIndices.length === 0) return;
+  lightboxIdx = (lightboxIdx + dir + filteredIndices.length) % filteredIndices.length;
   updateLightboxInfo(lightboxIdx);
 }
 
 function downloadLightboxCurrent() {
-  if (lightboxIdx >= 0) downloadOne(lightboxIdx);
+  if (lightboxIdx < 0) return;
+  const item = getLightboxItem(lightboxIdx);
+  if (!item) return;
+  const url = URL.createObjectURL(item.blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = item.name;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-// Keyboard nav
 document.addEventListener('keydown', e => {
   if (lightboxIdx < 0) return;
   if (e.key === 'Escape') closeLightbox();
@@ -1482,36 +1887,40 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') navLightbox(1);
 });
 
-// Click backdrop to close
 document.getElementById('lightbox').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeLightbox();
 });
 
 // ─── Downloads ──────────────────────────────────────────
-function downloadOne(i) {
-  const url = URL.createObjectURL(croppedBlobs[i]);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = croppedNames[i];
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 async function downloadAll() {
   const btn = document.getElementById('downloadAllBtn');
   btn.textContent = '⏳ กำลังสร้าง zip...';
   btn.disabled = true;
 
   const zip = new JSZip();
-  for (let i = 0; i < croppedBlobs.length; i++) {
-    zip.file(croppedNames[i], croppedBlobs[i]);
+
+  // Determine which results to include based on active filter
+  const resultsToZip = activeFilter === 'all'
+    ? sourceResults
+    : [sourceResults[activeFilter]];
+
+  for (const r of resultsToZip) {
+    // Create folder per source file
+    const folderName = r.fileName.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_\-\u0E00-\u0E7F ]/g, '_').substring(0, 50);
+    const folder = resultsToZip.length > 1 ? zip.folder(folderName) : zip;
+
+    for (let i = 0; i < r.blobs.length; i++) {
+      folder.file(r.names[i], r.blobs[i]);
+    }
   }
 
   const content = await zip.generateAsync({ type: 'blob' });
   const url = URL.createObjectURL(content);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'social-listening-crops.zip';
+  a.download = activeFilter === 'all'
+    ? 'social-listening-crops.zip'
+    : `${resultsToZip[0].fileName.replace(/\.[^.]+$/, '')}-crops.zip`;
   a.click();
   URL.revokeObjectURL(url);
 
@@ -1521,13 +1930,21 @@ async function downloadAll() {
 
 // ─── Reset ──────────────────────────────────────────────
 function resetAll() {
-  croppedBlobs = [];
-  croppedNames = [];
-  fullDataUrls = [];
-  postValidations = [];
+  // Revoke all object URLs to free memory
+  for (const r of sourceResults) {
+    for (const url of r.fullUrls) {
+      URL.revokeObjectURL(url);
+    }
+  }
+  sourceFiles = [];
+  sourceResults = [];
+  activeFilter = 'all';
+  filteredIndices = [];
   lightboxIdx = -1;
+  isProcessing = false;
   document.getElementById('resultsSection').style.display = 'none';
   document.getElementById('progressSection').style.display = 'none';
+  document.getElementById('queueSection').style.display = 'none';
   document.getElementById('dropzone').style.display = '';
   document.getElementById('fileInput').value = '';
 }
