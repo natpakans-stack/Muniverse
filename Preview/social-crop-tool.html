@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Listening Cropper — ครอปโพสต์อัตโนมัติ</title>
+<meta name="description" content="ครอปรูป screenshot จาก Social Listening tool ให้เป็นโพสต์แยกอัตโนมัติ ไม่ต้องลงโปรแกรม เปิดในเบราว์เซอร์ได้เลย">
+<meta name="theme-color" content="#1B1D22">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23EC599D'/><stop offset='100%25' stop-color='%237279FB'/></linearGradient></defs><rect width='100' height='100' rx='20' fill='url(%23g)'/><text x='50' y='68' text-anchor='middle' font-size='52'>✂</text></svg>">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans Thai', sans-serif;
+    background: #F0F1F4;
+    color: #1B1D22;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1B1D22 0%, #282160 100%);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #EC599D, #7279FB);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .header p {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  /* Drop zone */
+  .dropzone {
+    border: 2px dashed #CBCDD6;
+    border-radius: 20px;
+    background: #fff;
+    padding: 80px 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .dropzone:hover, .dropzone.drag-over {
+    border-color: #EC599D;
+    background: #FDEFF5;
+    transform: scale(1.005);
+  }
+
+  .dropzone-icon {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, #FDEFF5, #F1F2FF);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 20px;
+  }
+
+  .dropzone h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .dropzone p {
+    color: #6A6E83;
+    font-size: 14px;
+  }
+
+  .dropzone-hint {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 8px 20px;
+    background: #F8F8F9;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #9A9DAD;
+  }
+
+  /* Progress */
+  .progress-section {
+    display: none;
+    background: #fff;
+    border-radius: 20px;
+    padding: 48px 32px;
+    margin-top: 24px;
+    text-align: center;
+  }
+
+  .progress-title {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar-track {
+    background: #EBECEF;
+    border-radius: 8px;
+    height: 6px;
+    margin-top: 20px;
+    overflow: hidden;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .progress-bar-fill {
+    background: linear-gradient(90deg, #EC599D, #7279FB);
+    height: 100%;
+    border-radius: 8px;
+    width: 0%;
+    transition: width 0.3s;
+  }
+
+  .progress-text {
+    font-size: 14px;
+    color: #6A6E83;
+    margin-top: 12px;
+  }
+
+  /* Results */
+  .results-section {
+    display: none;
+    margin-top: 24px;
+  }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .results-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #6A6E83;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: #EC599D;
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: #D94488; }
+
+  .btn-secondary {
+    background: #F1F2FF;
+    color: #7279FB;
+  }
+
+  .btn-secondary:hover { background: #E0E2FF; }
+
+  .btn-group {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* Grid */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .post-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #EBECEF;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .post-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+    border-color: #EC599D40;
+  }
+
+  .post-card img {
+    width: 100%;
+    display: block;
+  }
+
+  .post-card .post-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(16,17,20,0.6) 0%, transparent 40%);
+    opacity: 0;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 40px;
+  }
+
+  .post-card:hover .post-overlay { opacity: 1; }
+
+  .post-overlay-text {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    padding: 6px 14px;
+    border-radius: 8px;
+  }
+
+  .post-card .post-label {
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #6A6E83;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FAFAFA;
+  }
+
+  .post-card .dl-icon {
+    opacity: 0;
+    transition: opacity 0.15s;
+    font-size: 16px;
+  }
+
+  .post-card:hover .dl-icon { opacity: 1; }
+
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 20px;
+    padding: 24px 32px;
+    background: linear-gradient(135deg, #fff 0%, #F8F8FF 100%);
+    border-radius: 16px;
+    border: 1px solid #EBECEF;
+  }
+
+  .stat-item {
+    text-align: center;
+    flex: 1;
+    position: relative;
+    padding: 8px 24px;
+  }
+
+  .stat-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 1px;
+    background: #EBECEF;
+  }
+
+  .stat-icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #EC599D, #7279FB);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: #6A6E83;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* Reset button */
+  .reset-link {
+    color: #7279FB;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(16,17,20,0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .lightbox.active { display: flex; }
+
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 75vh;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    object-fit: contain;
+  }
+
+  .lightbox-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .lightbox-name {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    color: #fff;
+    font-size: 32px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+
+  .lightbox-close:hover { opacity: 1; }
+
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 36px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+    background: none;
+    border: none;
+    padding: 16px;
+    user-select: none;
+  }
+
+  .lightbox-nav:hover { opacity: 1; }
+  .lightbox-prev { left: 12px; }
+  .lightbox-next { right: 12px; }
+
+  .btn-light {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    backdrop-filter: blur(8px);
+  }
+
+  .btn-light:hover { background: rgba(255,255,255,0.25); }
+
+  .lightbox-counter {
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: #9A9DAD;
+    font-size: 13px;
+  }
+
+  .footer a {
+    color: #7279FB;
+    text-decoration: none;
+  }
+
+  .footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">✂️</div>
+  <div>
+    <h1>Social Listening Cropper</h1>
+    <p>ลากรูป screenshot จาก Social Listening มาวาง — ครอปแยกเป็นโพสต์อัตโนมัติ</p>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Drop Zone -->
+  <div class="dropzone" id="dropzone">
+    <div class="dropzone-icon">🖼️</div>
+    <h2>ลากรูป screenshot มาวางตรงนี้</h2>
+    <p>หรือคลิกเพื่อเลือกไฟล์ — รองรับ PNG, JPG</p>
+    <div class="dropzone-hint">รองรับ Mandala, Zanroo, Wisesight และ Social Listening tools อื่นๆ</div>
+    <input type="file" id="fileInput" accept="image/*" style="display:none">
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-section" id="progressSection">
+    <div class="progress-title">กำลังวิเคราะห์รูป...</div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <div class="progress-text" id="progressText">เตรียมพร้อม...</div>
+  </div>
+
+  <!-- Results -->
+  <div class="results-section" id="resultsSection">
+    <div class="stats-bar" id="statsBar"></div>
+
+    <div class="results-header">
+      <h2 id="resultsTitle">ผลลัพธ์</h2>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="resetAll()">เริ่มใหม่</button>
+        <button class="btn btn-primary" id="downloadAllBtn" onclick="downloadAll()">
+          ⬇ ดาวน์โหลดทั้งหมด (.zip)
+        </button>
+      </div>
+    </div>
+
+    <div class="posts-grid" id="postsGrid"></div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)">&#8249;</button>
+  <button class="lightbox-nav lightbox-next" onclick="navLightbox(1)">&#8250;</button>
+  <img id="lightboxImg" src="" alt="">
+  <div class="lightbox-footer">
+    <span class="lightbox-counter" id="lightboxCounter"></span>
+    <span class="lightbox-name" id="lightboxName"></span>
+    <button class="btn btn-light" onclick="downloadLightboxCurrent()">⬇ ดาวน์โหลด</button>
+  </div>
+</div>
+
+<script>
+// ─── Config ─────────────────────────────────────────────
+const BG_MIN = 225;
+const BG_MAX = 253;
+const BG_ROW_THRESH = 0.85;
+const MIN_SEP_H = 8;
+const MIN_CARD_H = 100;
+const ROW_GROUP_TOL = 100;
+const MIN_COL_SEP_WIDTH = 5;
+const MIN_COL_WIDTH = 50;
+
+// ─── State ──────────────────────────────────────────────
+let croppedBlobs = [];
+let croppedNames = [];
+let fullDataUrls = [];  // full-res data URLs for lightbox
+let lightboxIdx = -1;
+
+// ─── Drop Zone ──────────────────────────────────────────
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+
+dropzone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+
+dropzone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropzone.classList.add('drag-over');
+});
+dropzone.addEventListener('dragleave', () => {
+  dropzone.classList.remove('drag-over');
+});
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('drag-over');
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+
+// ─── Main ───────────────────────────────────────────────
+function handleFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+
+  dropzone.style.display = 'none';
+  const progressSection = document.getElementById('progressSection');
+  progressSection.style.display = 'block';
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => processImage(img, file.name);
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function setProgress(pct, text) {
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = text;
+}
+
+async function processImage(img, fileName) {
+  const canvas = document.createElement('canvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0);
+
+  const w = img.width;
+  const h = img.height;
+  setProgress(10, `รูปขนาด ${w} x ${h} px — กำลังวิเคราะห์คอลัมน์...`);
+  await sleep(50);
+
+  // ─── Detect columns ────────────────────────────────
+  // Sample rows to get average column brightness
+  const sampleRows = 50;
+  const colBrightness = new Float32Array(w);
+  for (let sy = 0; sy < sampleRows; sy++) {
+    const y = Math.floor((sy / sampleRows) * h);
+    const rowData = ctx.getImageData(0, y, w, 1).data;
+    for (let x = 0; x < w; x++) {
+      const idx = x * 4;
+      colBrightness[x] += (rowData[idx] + rowData[idx+1] + rowData[idx+2]) / 3;
+    }
+  }
+  for (let x = 0; x < w; x++) colBrightness[x] /= sampleRows;
+
+  const isSepCol = colBrightness.map(v => v > 230);
+
+  // Find separator strips
+  const sepStrips = [];
+  let cnt = 0;
+  for (let x = 0; x < w; x++) {
+    if (isSepCol[x]) { cnt++; }
+    else {
+      if (cnt >= MIN_COL_SEP_WIDTH) sepStrips.push([x - cnt, x]);
+      cnt = 0;
+    }
+  }
+  if (cnt >= MIN_COL_SEP_WIDTH) sepStrips.push([w - cnt, w]);
+
+  const columns = [];
+  for (let i = 0; i < sepStrips.length - 1; i++) {
+    const cs = sepStrips[i][1];
+    const ce = sepStrips[i+1][0];
+    if (ce - cs > MIN_COL_WIDTH) columns.push([cs, ce]);
+  }
+
+  setProgress(25, `พบ ${columns.length} คอลัมน์ — กำลังหาโพสต์...`);
+  await sleep(50);
+
+  // ─── Find cards per column ─────────────────────────
+  const allCrops = [];
+  const colCounts = [];
+
+  for (let ci = 0; ci < columns.length; ci++) {
+    const [cx1, cx2] = columns[ci];
+    const colW = cx2 - cx1;
+
+    // Check each row if it's a separator
+    const isSep = new Uint8Array(h);
+    for (let y = 0; y < h; y++) {
+      const rowData = ctx.getImageData(cx1, y, colW, 1).data;
+      let bgCount = 0;
+      for (let x = 0; x < colW; x++) {
+        const idx = x * 4;
+        const br = (rowData[idx] + rowData[idx+1] + rowData[idx+2]) / 3;
+        if (br > BG_MIN && br < BG_MAX) bgCount++;
+      }
+      isSep[y] = (bgCount / colW) > BG_ROW_THRESH ? 1 : 0;
+    }
+
+    // Smooth
+    const smoothed = new Uint8Array(h);
+    let run = 0;
+    for (let y = 0; y < h; y++) {
+      if (isSep[y]) { run++; }
+      else {
+        if (run >= MIN_SEP_H) for (let j = y - run; j < y; j++) smoothed[j] = 1;
+        run = 0;
+      }
+    }
+    if (run >= MIN_SEP_H) for (let j = h - run; j < h; j++) smoothed[j] = 1;
+
+    // Extract regions
+    let inContent = false, start = 0, count = 0;
+    for (let y = 0; y < h; y++) {
+      if (!smoothed[y] && !inContent) { start = y; inContent = true; }
+      else if (smoothed[y] && inContent) {
+        if (y - start > MIN_CARD_H) { allCrops.push([cx1, start, cx2, y]); count++; }
+        inContent = false;
+      }
+    }
+    if (inContent && h - start > MIN_CARD_H) { allCrops.push([cx1, start, cx2, h]); count++; }
+    colCounts.push(count);
+
+    setProgress(25 + (ci + 1) / columns.length * 40,
+      `Col ${ci+1}: ${count} โพสต์`);
+    await sleep(10);
+  }
+
+  // ─── Group into rows ──────────────────────────────
+  allCrops.sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+
+  const rows = [];
+  let curRow = [allCrops[0]];
+  for (let i = 1; i < allCrops.length; i++) {
+    if (Math.abs(allCrops[i][1] - curRow[0][1]) < ROW_GROUP_TOL) {
+      curRow.push(allCrops[i]);
+    } else {
+      curRow.sort((a, b) => a[0] - b[0]);
+      rows.push(curRow);
+      curRow = [allCrops[i]];
+    }
+  }
+  curRow.sort((a, b) => a[0] - b[0]);
+  rows.push(curRow);
+
+  setProgress(75, `กำลังครอป ${allCrops.length} โพสต์...`);
+  await sleep(50);
+
+  // ─── Crop & generate blobs ────────────────────────
+  croppedBlobs = [];
+  croppedNames = [];
+  const thumbs = [];
+
+  const cropCanvas = document.createElement('canvas');
+  const cropCtx = cropCanvas.getContext('2d');
+
+  let idx = 0;
+  for (let ri = 0; ri < rows.length; ri++) {
+    for (let ci = 0; ci < rows[ri].length; ci++) {
+      const [x1, y1, x2, y2] = rows[ri][ci];
+      const cw = x2 - x1, ch = y2 - y1;
+      cropCanvas.width = cw;
+      cropCanvas.height = ch;
+      cropCtx.drawImage(img, x1, y1, cw, ch, 0, 0, cw, ch);
+
+      const name = `post_${String(ri+1).padStart(2,'0')}_${String(ci+1).padStart(2,'0')}.png`;
+      const blob = await canvasToBlob(cropCanvas);
+      croppedBlobs.push(blob);
+      croppedNames.push(name);
+      fullDataUrls.push(cropCanvas.toDataURL('image/png'));
+      thumbs.push(cropCanvas.toDataURL('image/jpeg', 0.6));
+
+      idx++;
+      if (idx % 5 === 0) {
+        setProgress(75 + (idx / allCrops.length) * 20,
+          `ครอป ${idx}/${allCrops.length}...`);
+        await sleep(5);
+      }
+    }
+  }
+
+  setProgress(100, 'เสร็จสิ้น!');
+  await sleep(300);
+
+  // ─── Show results ─────────────────────────────────
+  showResults(thumbs, columns.length, colCounts, rows.length, fileName);
+}
+
+function showResults(thumbs, numCols, colCounts, numRows, fileName) {
+  document.getElementById('progressSection').style.display = 'none';
+  const section = document.getElementById('resultsSection');
+  section.style.display = 'block';
+
+  // Stats
+  const statsBar = document.getElementById('statsBar');
+  statsBar.innerHTML = `
+    <div class="stat-item">
+      <div class="stat-icon">📋</div>
+      <div class="stat-value">${croppedBlobs.length}</div>
+      <div class="stat-label">โพสต์ทั้งหมด</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon">📊</div>
+      <div class="stat-value">${numCols}</div>
+      <div class="stat-label">คอลัมน์</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon">↕️</div>
+      <div class="stat-value">${numRows}</div>
+      <div class="stat-label">แถว</div>
+    </div>
+  `;
+
+  document.getElementById('resultsTitle').textContent =
+    `ผลลัพธ์จาก "${fileName}"`;
+
+  // Grid
+  const grid = document.getElementById('postsGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < thumbs.length; i++) {
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.onclick = () => openLightbox(i);
+    card.innerHTML = `
+      <img src="${thumbs[i]}" loading="lazy" alt="${croppedNames[i]}">
+      <div class="post-overlay">
+        <span class="post-overlay-text">คลิกเพื่อดูรูปใหญ่</span>
+      </div>
+      <div class="post-label">
+        <span>${croppedNames[i]}</span>
+        <span class="dl-icon">⬇</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+// ─── Lightbox ───────────────────────────────────────────
+function updateLightboxInfo(i) {
+  document.getElementById('lightboxImg').src = fullDataUrls[i];
+  document.getElementById('lightboxName').textContent = croppedNames[i];
+  document.getElementById('lightboxCounter').textContent = `${i + 1} / ${croppedBlobs.length}`;
+}
+
+function openLightbox(i) {
+  lightboxIdx = i;
+  updateLightboxInfo(i);
+  document.getElementById('lightbox').classList.add('active');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  lightboxIdx = -1;
+}
+
+function navLightbox(dir) {
+  if (lightboxIdx < 0) return;
+  lightboxIdx = (lightboxIdx + dir + croppedBlobs.length) % croppedBlobs.length;
+  updateLightboxInfo(lightboxIdx);
+}
+
+function downloadLightboxCurrent() {
+  if (lightboxIdx >= 0) downloadOne(lightboxIdx);
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (lightboxIdx < 0) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navLightbox(-1);
+  if (e.key === 'ArrowRight') navLightbox(1);
+});
+
+// Click backdrop to close
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+
+// ─── Downloads ──────────────────────────────────────────
+function downloadOne(i) {
+  const url = URL.createObjectURL(croppedBlobs[i]);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = croppedNames[i];
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function downloadAll() {
+  const btn = document.getElementById('downloadAllBtn');
+  btn.textContent = '⏳ กำลังสร้าง zip...';
+  btn.disabled = true;
+
+  const zip = new JSZip();
+  for (let i = 0; i < croppedBlobs.length; i++) {
+    zip.file(croppedNames[i], croppedBlobs[i]);
+  }
+
+  const content = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(content);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'social-listening-crops.zip';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  btn.textContent = '⬇ ดาวน์โหลดทั้งหมด (.zip)';
+  btn.disabled = false;
+}
+
+// ─── Reset ──────────────────────────────────────────────
+function resetAll() {
+  croppedBlobs = [];
+  croppedNames = [];
+  fullDataUrls = [];
+  lightboxIdx = -1;
+  document.getElementById('resultsSection').style.display = 'none';
+  document.getElementById('progressSection').style.display = 'none';
+  document.getElementById('dropzone').style.display = '';
+  document.getElementById('fileInput').value = '';
+}
+
+// ─── Utils ──────────────────────────────────────────────
+function canvasToBlob(canvas) {
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+}
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+</script>
+
+<div class="footer">
+  ทำงานในเบราว์เซอร์ — ไม่มีการอัปโหลดรูปไปที่ server ใดๆ &middot; Muniverse Team
+</div>
+
+</body>
+</html>
