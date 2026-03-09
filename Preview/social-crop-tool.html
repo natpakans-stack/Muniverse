@@ -539,6 +539,59 @@
     align-items: center;
     gap: 6px;
   }
+
+  /* Row section dividers */
+  .row-section-header {
+    grid-column: 1 / -1;
+    padding: 16px 0 8px;
+    border-top: 2px solid #EBECEF;
+    margin-top: 8px;
+  }
+
+  .row-section-header:first-child {
+    border-top: none;
+    margin-top: 0;
+  }
+
+  .row-section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+
+  .row-section-num {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1B1D22;
+  }
+
+  .row-section-count {
+    font-size: 13px;
+    color: #6A6E83;
+    font-weight: 500;
+  }
+
+  .row-section-cols {
+    font-size: 12px;
+    color: #9A9DAD;
+    line-height: 1.5;
+  }
+
+  /* Column source badge */
+  .col-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 5px;
+    z-index: 2;
+    background: rgba(16,17,20,0.6);
+    color: #fff;
+    backdrop-filter: blur(4px);
+  }
 </style>
 </head>
 <body>
@@ -546,7 +599,7 @@
 <div class="header">
   <div class="header-icon">✂️</div>
   <div>
-    <h1>Social Listening Cropper <span style="font-size:14px;font-weight:400;color:#9A9DAD">v1.5</span></h1>
+    <h1>Social Listening Cropper <span style="font-size:14px;font-weight:400;color:#9A9DAD">v2.0</span></h1>
     <p>ลากรูป screenshot จาก Social Listening มาวาง — ครอปแยกเป็นโพสต์อัตโนมัติ</p>
   </div>
 </div>
@@ -959,8 +1012,9 @@ async function processImage(img, fileName) {
 
     console.log(`[Col ${ci+1}] ${posts.length} posts, heights: [${posts.map(p => p.bottom - p.top).join(', ')}]`);
 
-    for (const p of posts) {
-      allCrops.push({ x1: cx1, y1: p.top, x2: cx2, y2: p.bottom });
+    for (let pi = 0; pi < posts.length; pi++) {
+      const p = posts[pi];
+      allCrops.push({ x1: cx1, y1: p.top, x2: cx2, y2: p.bottom, colIdx: ci, postIdx: pi });
     }
     colCounts.push(posts.length);
 
@@ -1091,6 +1145,126 @@ async function processImage(img, fileName) {
   curRow.sort((a, b) => a.x1 - b.x1);
   rows.push(curRow);
 
+  // ─── Pass 2: Refine crop boundaries ─────────────────
+  // Trim dark separator/gap pixels from top and bottom of each crop.
+  // Scan inward from edges to find where the white card actually begins/ends.
+  setProgress(76, `รอบ 2: กำลัง refine ขอบ ${allCrops.length} โพสต์...`);
+  await sleep(50);
+
+  const REFINE_DARK_THRESH = 120;   // rows darker than this in center strip = dark separator gap
+  const REFINE_DARK_RUN = 3;        // need 3+ consecutive dark rows to confirm separator
+  const REFINE_MAX_TRIM = 150;      // max pixels to trim from each edge (leaked content can be large)
+
+  for (let i = 0; i < allCrops.length; i++) {
+    const crop = allCrops[i];
+    const cw = crop.x2 - crop.x1, ch = crop.y2 - crop.y1;
+    if (ch < 150) continue; // too small to refine
+
+    // Sample center 60% of width to avoid side margins/shadows
+    const marginX = Math.floor(cw * 0.2);
+    const sampleW = cw - marginX * 2;
+    if (sampleW < 20) continue;
+    const sampleData = ctx.getImageData(crop.x1 + marginX, crop.y1, sampleW, ch).data;
+    const sStride = sampleW * 4;
+
+    // Compute row brightness for the center strip
+    const rowBr = new Float32Array(ch);
+    for (let y = 0; y < ch; y++) {
+      let sum = 0;
+      const off = y * sStride;
+      for (let x = 0; x < sampleW; x++) {
+        const idx = off + x * 4;
+        sum += (sampleData[idx] + sampleData[idx+1] + sampleData[idx+2]) / 3;
+      }
+      rowBr[y] = sum / sampleW;
+    }
+
+    // ── Trim TOP: find dark separator gap scanning from top down ──
+    // Pattern: [dark gap] → [bright card start]
+    // Find the LAST dark row before bright card content begins
+    let trimTop = 0;
+    let inDarkZone = false;
+    for (let y = 0; y < Math.min(REFINE_MAX_TRIM, ch - 100); y++) {
+      if (rowBr[y] < REFINE_DARK_THRESH) {
+        inDarkZone = true;
+        trimTop = y + 1; // trim up to and including this dark row
+      } else if (inDarkZone) {
+        // We exited the dark zone — check if next rows are bright (card content)
+        let brightRun = 0;
+        for (let ry = y; ry < Math.min(y + 5, ch); ry++) {
+          if (rowBr[ry] >= REFINE_DARK_THRESH) brightRun++;
+        }
+        if (brightRun >= 3) break; // confirmed card start
+        // If not enough bright rows, might be a brief bright spot in dark area
+      }
+    }
+
+    // ── Trim BOTTOM: find dark separator gap scanning from bottom up ──
+    // Pattern: [bright card end] → [dark gap] → [next post content]
+    // Find the dark separator, then trim everything from separator top downward
+    let trimBottom = 0;
+    let darkGapTop = -1;
+    // Scan from bottom up looking for a dark band (separator)
+    for (let y = ch - 1; y >= Math.max(ch - REFINE_MAX_TRIM, 100); y--) {
+      // Check for dark run at this position
+      let darkRun = 0;
+      for (let ry = y; ry >= Math.max(y - REFINE_DARK_RUN + 1, 0); ry--) {
+        if (rowBr[ry] < REFINE_DARK_THRESH) darkRun++;
+      }
+      if (darkRun >= REFINE_DARK_RUN) {
+        // Found dark separator — find its top edge
+        darkGapTop = y - REFINE_DARK_RUN + 1;
+        while (darkGapTop > 0 && rowBr[darkGapTop - 1] < REFINE_DARK_THRESH) darkGapTop--;
+        trimBottom = ch - darkGapTop;
+        break;
+      }
+    }
+
+    // Apply trim (only if meaningful — at least 3px)
+    if (trimTop > 2 || trimBottom > 2) {
+      crop.y1 += trimTop;
+      crop.y2 -= trimBottom;
+      crop.refined = true;
+      crop.trimTop = trimTop;
+      crop.trimBottom = trimBottom;
+    }
+
+    if (i % 20 === 0) {
+      setProgress(76 + (i / allCrops.length) * 4, `Refine ${i+1}/${allCrops.length}...`);
+      await sleep(0);
+    }
+  }
+
+  const refinedCount = allCrops.filter(c => c.refined).length;
+  setProgress(80, `Refine เสร็จ — ปรับ ${refinedCount}/${allCrops.length} โพสต์ — กำลังครอป...`);
+  await sleep(100);
+
+  // ─── Re-run QA on refined crops ─────────────────────
+  // Update postValidations with new dimensions
+  for (let i = 0; i < allCrops.length; i++) {
+    const crop = allCrops[i];
+    const ch = crop.y2 - crop.y1;
+    const v = postValidations[i];
+    if (v) {
+      v.postHeight = ch;
+      v.heightOk = ch >= 300 && ch <= 1800;
+      if (crop.refined) {
+        v.trimInfo = `ตัด: บน ${crop.trimTop || 0}px, ล่าง ${crop.trimBottom || 0}px`;
+      }
+      // Recheck issues
+      v.issues = [];
+      if (!v.hasBlueBar) v.issues.push('ไม่พบ Blue Bar');
+      if (!v.blueBarInLowerHalf && v.hasBlueBar) v.issues.push('Blue Bar อยู่สูงเกินไป');
+      if (!v.topNotDark) v.issues.push('ด้านบนมืดผิดปกติ');
+      if (!v.bottomHasContent) v.issues.push('ด้านล่างไม่มีเนื้อหา');
+      if (!v.heightOk) v.issues.push(ch < 300 ? 'สั้นเกินไป' : 'ยาวเกินไป');
+      const passCount = [v.hasBlueBar, v.blueBarInLowerHalf, v.topNotDark,
+                         v.bottomHasContent, v.heightOk].filter(Boolean).length;
+      v.score = passCount;
+      v.status = passCount === 5 ? 'pass' : passCount >= 3 ? 'warn' : 'fail';
+    }
+  }
+
   // ─── Crop & generate blobs ────────────────────────
   croppedBlobs = [];
   croppedNames = [];
@@ -1105,6 +1279,9 @@ async function processImage(img, fileName) {
   const totalCrops = allCrops.length;
   // Re-sort postValidations to match the row-grouped order
   const sortedValidations = [];
+
+  // Track row boundaries for section headers
+  const cropMeta = []; // { rowIdx, colInRow, srcCol, srcPostIdx }
 
   for (let ri = 0; ri < rows.length; ri++) {
     for (let ci = 0; ci < rows[ri].length; ci++) {
@@ -1125,8 +1302,16 @@ async function processImage(img, fileName) {
       const vi = allCrops.indexOf(crop);
       sortedValidations.push(postValidations[vi]);
 
+      // Store metadata
+      cropMeta.push({
+        rowIdx: ri,
+        colInRow: ci,
+        srcCol: (crop.colIdx != null ? crop.colIdx + 1 : ci + 1),
+        srcPostIdx: (crop.postIdx != null ? crop.postIdx + 1 : '?'),
+      });
+
       idx++;
-      const pct = 75 + (idx / totalCrops) * 20;
+      const pct = 82 + (idx / totalCrops) * 16;
       const elapsed = ((performance.now() - cropStart) / 1000).toFixed(1);
       const perItem = (performance.now() - cropStart) / idx;
       const remaining = ((totalCrops - idx) * perItem / 1000).toFixed(0);
@@ -1141,10 +1326,10 @@ async function processImage(img, fileName) {
   await sleep(300);
 
   // ─── Show results ─────────────────────────────────
-  showResults(thumbs, columns.length, colCounts, rows.length, fileName);
+  showResults(thumbs, columns.length, colCounts, rows.length, fileName, cropMeta);
 }
 
-function showResults(thumbs, numCols, colCounts, numRows, fileName) {
+function showResults(thumbs, numCols, colCounts, numRows, fileName, cropMeta) {
   document.getElementById('progressSection').style.display = 'none';
   const section = document.getElementById('resultsSection');
   section.style.display = 'block';
@@ -1180,47 +1365,84 @@ function showResults(thumbs, numCols, colCounts, numRows, fileName) {
   document.getElementById('resultsTitle').textContent =
     `ผลลัพธ์จาก "${fileName}"`;
 
-  // Grid — sort: pass first, then warn, then fail
+  // Grid — group by source column with section dividers
   const grid = document.getElementById('postsGrid');
   grid.innerHTML = '';
 
+  // Group items by source column
+  const colGroups = {};
+  for (let i = 0; i < thumbs.length; i++) {
+    const meta = (cropMeta && cropMeta[i]) || {};
+    const col = meta.srcCol != null ? meta.srcCol : 1;
+    if (!colGroups[col]) colGroups[col] = [];
+    colGroups[col].push(i);
+  }
+
   const statusOrder = { pass: 0, warn: 1, fail: 2 };
-  const sortedIndices = Array.from({ length: thumbs.length }, (_, i) => i)
-    .sort((a, b) => {
-      const va = postValidations[a] || {}, vb = postValidations[b] || {};
-      const sa = statusOrder[va.status] ?? 1, sb = statusOrder[vb.status] ?? 1;
-      if (sa !== sb) return sa - sb;
-      return (vb.score || 0) - (va.score || 0);
+  const colKeys = Object.keys(colGroups).map(Number).sort((a, b) => a - b);
+
+  for (const col of colKeys) {
+    const indices = colGroups[col];
+
+    // Sort within column: by post index (original order)
+    indices.sort((a, b) => {
+      const ma = (cropMeta && cropMeta[a]) || {}, mb = (cropMeta && cropMeta[b]) || {};
+      return (ma.srcPostIdx || 0) - (mb.srcPostIdx || 0);
     });
 
-  for (const i of sortedIndices) {
-    const v = postValidations[i] || {};
-    const card = document.createElement('div');
-    card.className = 'post-card';
-    card.dataset.origIdx = i;
-    card.onclick = () => openLightbox(i);
+    const passInCol = indices.filter(i => (postValidations[i] || {}).status === 'pass').length;
+    const warnInCol = indices.filter(i => (postValidations[i] || {}).status === 'warn').length;
+    const failInCol = indices.filter(i => (postValidations[i] || {}).status === 'fail').length;
 
-    const badgeClass = v.status === 'pass' ? 'qa-pass' : v.status === 'warn' ? 'qa-warn' : 'qa-fail';
-    const badgeIcon = v.status === 'pass' ? '✓' : v.status === 'warn' ? '⚠' : '✗';
-    const badgeLabel = v.status === 'pass' ? 'ผ่าน' : v.status === 'warn' ? 'ตรวจสอบ' : 'ไม่ผ่าน';
-    const issueText = v.issues && v.issues.length > 0 ? v.issues.join(' · ') : '';
-
-    card.innerHTML = `
-      <span class="qa-badge ${badgeClass}">${badgeIcon} ${badgeLabel}</span>
-      <img src="${thumbs[i]}" loading="lazy" alt="${croppedNames[i]}">
-      <div class="post-overlay">
-        <span class="post-overlay-text">คลิกเพื่อดูรูปใหญ่</span>
-      </div>
-      <div class="post-label">
-        <span>${croppedNames[i]}</span>
-        <span class="dl-icon">⬇</span>
-      </div>
-      <div class="qa-details">
-        ${v.postHeight || 0}px · ${v.score || 0}/5
-        ${issueText ? `<br><span style="color:${v.status === 'fail' ? '#C62828' : '#F57F17'}">${issueText}</span>` : ''}
+    // Section header
+    const header = document.createElement('div');
+    header.className = 'row-section-header';
+    header.innerHTML = `
+      <div class="row-section-title">
+        <span class="row-section-num">คอลัมน์ ${col}</span>
+        <span class="row-section-count">${indices.length} โพส</span>
+        <span class="row-section-count" style="color:#2E7D32">✓ ${passInCol}</span>
+        ${warnInCol ? `<span class="row-section-count" style="color:#F57F17">⚠ ${warnInCol}</span>` : ''}
+        ${failInCol ? `<span class="row-section-count" style="color:#C62828">✗ ${failInCol}</span>` : ''}
       </div>
     `;
-    grid.appendChild(card);
+    grid.appendChild(header);
+
+    // Cards
+    for (const i of indices) {
+      const v = postValidations[i] || {};
+      const meta = (cropMeta && cropMeta[i]) || {};
+      const card = document.createElement('div');
+      card.className = 'post-card';
+      card.dataset.origIdx = i;
+      card.onclick = () => openLightbox(i);
+
+      const badgeClass = v.status === 'pass' ? 'qa-pass' : v.status === 'warn' ? 'qa-warn' : 'qa-fail';
+      const badgeIcon = v.status === 'pass' ? '✓' : v.status === 'warn' ? '⚠' : '✗';
+      const badgeLabel = v.status === 'pass' ? 'ผ่าน' : v.status === 'warn' ? 'ตรวจสอบ' : 'ไม่ผ่าน';
+      const issueText = v.issues && v.issues.length > 0 ? v.issues.join(' · ') : '';
+      const trimText = v.trimInfo || '';
+      const postNum = meta.srcPostIdx || '?';
+
+      card.innerHTML = `
+        <span class="qa-badge ${badgeClass}">${badgeIcon} ${badgeLabel}</span>
+        <span class="col-badge">#${postNum}</span>
+        <img src="${thumbs[i]}" loading="lazy" alt="${croppedNames[i]}">
+        <div class="post-overlay">
+          <span class="post-overlay-text">คลิกเพื่อดูรูปใหญ่</span>
+        </div>
+        <div class="post-label">
+          <span>${croppedNames[i]}</span>
+          <span class="dl-icon">⬇</span>
+        </div>
+        <div class="qa-details">
+          ${v.postHeight || 0}px · ${v.score || 0}/5
+          ${trimText ? ` · <span style="color:#7279FB">${trimText}</span>` : ''}
+          ${issueText ? `<br><span style="color:${v.status === 'fail' ? '#C62828' : '#F57F17'}">${issueText}</span>` : ''}
+        </div>
+      `;
+      grid.appendChild(card);
+    }
   }
 }
 
