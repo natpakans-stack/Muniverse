@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0e0e12">
+  <title>Daily MU — ThinkTank Deck</title>
+  <style>
+    /* ===== Font: LINE Seed Sans TH (self-hosted) ===== */
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('../fonts/LINESeedSansTH_W_Th.woff2') format('woff2'); font-weight: 100; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('../fonts/LINESeedSansTH_W_Rg.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('../fonts/LINESeedSansTH_W_Bd.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('../fonts/LINESeedSansTH_W_XBd.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'LINE Seed Sans TH'; src: url('../fonts/LINESeedSansTH_W_He.woff2') format('woff2'); font-weight: 900; font-style: normal; font-display: swap; }
+
+    /* ===== Design Tokens ===== */
+    :root {
+      --primary-fg-high: #EC599D;
+      --primary-bg-lowest: #FDEFF5;
+      --primary-bg-mid: #EC599D;
+      --primary-border-mid: #F7BDD8;
+      --secondary-fg-high: #7279FB;
+      --secondary-bg-lowest: #F1F2FF;
+      --secondary-bg-mid: #7279FB;
+      --secondary-border-mid: #C7C9FD;
+      --gray-fg-high: #1B1D22;
+      --gray-fg-mid-on-white: #6A6E83;
+      --gray-fg-low-on-white: #9A9DAD;
+      --gray-bg-white: #FFFFFF;
+      --gray-bg-lightgray: #F8F8F9;
+      --gray-bg-midgray: #EBECEF;
+      --gray-bg-black: #1B1D22;
+      --support-sky-fg-low: #36B9E6;
+      --support-sky-bg-lowest: #E6F6FC;
+      --support-green-fg-low: #6ABC66;
+      --support-green-bg-lowest: #F0F8F0;
+      --support-orange-fg-low: #EC6F45;
+      --support-orange-bg-lowest: #FDF1EC;
+      --support-yellow-fg-low: #F5C542;
+      --support-yellow-bg-lowest: #FEF9EB;
+      --alpha-black-bg-mid: rgba(16, 17, 20, 0.7);
+      --alpha-white-bg-low: rgba(255, 255, 255, 0.1);
+      --alpha-white-bg-mid: rgba(255, 255, 255, 0.35);
+      --spacing-1: 4px; --spacing-2: 8px; --spacing-3: 12px;
+      --spacing-4: 16px; --spacing-5: 20px; --spacing-6: 24px;
+      --spacing-8: 32px; --spacing-10: 40px; --spacing-12: 48px;
+      --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+      --radius-xl: 16px; --radius-2xl: 24px; --radius-full: 9999px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+      --duration-fast: 200ms;
+      --duration-normal: 300ms;
+      --duration-slow: 500ms;
+      --easing-default: ease-in-out;
+      --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'LINE Seed Sans TH', sans-serif;
+      background: #0e0e12;
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      color: var(--gray-fg-high);
+    }
+
+    /* ===== Slide Viewport (fixed 1920×1080, scaled by JS) ===== */
+    .slide-viewport {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--gray-bg-white);
+      box-shadow: 0 0 60px rgba(0,0,0,0.3);
+      container-type: size;
+      transform-origin: 0 0;
+    }
+
+    /* ===== Slides ===== */
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(80px);
+      transition: opacity var(--duration-slow) var(--easing-default),
+                  transform var(--duration-slow) var(--easing-default),
+                  visibility 0s linear var(--duration-slow);
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .slide.active {
+      opacity: 1; visibility: visible; transform: translateX(0);
+      pointer-events: auto; z-index: 2;
+      transition: opacity var(--duration-slow) var(--easing-default),
+                  transform var(--duration-slow) var(--easing-default),
+                  visibility 0s linear 0s;
+    }
+    .slide.exit-left  { opacity:0; visibility:hidden; transform:translateX(-80px); z-index:1; }
+    .slide.exit-right { opacity:0; visibility:hidden; transform:translateX(80px);  z-index:1; }
+    .slide.enter-from-left  { transform: translateX(-80px); }
+    .slide.enter-from-right { transform: translateX(80px);  }
+
+    /* ===== Staggered Entrance Animations ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .slide.active .anim-item {
+      animation: fadeInUp 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      opacity: 0;
+    }
+    .slide.active .anim-item:nth-child(1)  { animation-delay: 0.08s; }
+    .slide.active .anim-item:nth-child(2)  { animation-delay: 0.16s; }
+    .slide.active .anim-item:nth-child(3)  { animation-delay: 0.24s; }
+    .slide.active .anim-item:nth-child(4)  { animation-delay: 0.32s; }
+    .slide.active .anim-item:nth-child(5)  { animation-delay: 0.40s; }
+    .slide.active .anim-item:nth-child(6)  { animation-delay: 0.48s; }
+    .slide.active .anim-item:nth-child(7)  { animation-delay: 0.56s; }
+    .slide.active .anim-item:nth-child(8)  { animation-delay: 0.64s; }
+    .slide.active .anim-item:nth-child(9)  { animation-delay: 0.72s; }
+    .slide.active .anim-item:nth-child(10) { animation-delay: 0.80s; }
+
+    .slide.active .anim-left {
+      animation: fadeInLeft 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      opacity: 0;
+    }
+    .slide.active .anim-right {
+      animation: fadeInRight 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      opacity: 0;
+    }
+    .slide.active .anim-right.anim-delay { animation-delay: 0.2s; }
+    .slide.active .anim-pop {
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      opacity: 0;
+    }
+
+    /* Mockup screen staggered entrance */
+    @keyframes mockupRise {
+      from { opacity: 0; transform: translateY(60px) scale(0.9) rotate(0deg); }
+      to   { opacity: 1; transform: translateY(0) scale(1) rotate(var(--mockup-rotate, 0deg)); }
+    }
+    .slide.active .anim-mockup {
+      animation: mockupRise 0.8s cubic-bezier(0.22,1,0.36,1) forwards;
+      opacity: 0;
+    }
+    .slide.active .anim-mockup-1 { animation-delay: 0.3s; }
+    .slide.active .anim-mockup-2 { animation-delay: 0.55s; }
+    .slide.active .anim-mockup-3 { animation-delay: 0.8s; }
+
+    /* Cover phone staggered entrance */
+    @keyframes phoneSlideUp {
+      from { opacity: 0; transform: var(--phone-start); }
+      to   { opacity: 1; transform: var(--phone-end); }
+    }
+    .slide.active .cover-phone-left {
+      --phone-start: translateX(calc(-50% - 280px)) translateY(80px) scale(0.9);
+      --phone-end: translateX(calc(-50% - 280px));
+      animation: phoneSlideUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
+      opacity: 0;
+    }
+    .slide.active .cover-phone-center {
+      --phone-start: translateX(-50%) translateY(80px) scale(0.9);
+      --phone-end: translateX(-50%);
+      animation: phoneSlideUp 0.9s cubic-bezier(0.22,1,0.36,1) 0s forwards;
+      opacity: 0;
+    }
+    .slide.active .cover-phone-right {
+      --phone-start: translateX(calc(-50% + 280px)) translateY(80px) scale(0.9);
+      --phone-end: translateX(calc(-50% + 280px));
+      animation: phoneSlideUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.4s forwards;
+      opacity: 0;
+    }
+
+    /* ===== Backgrounds ===== */
+    .bg-gradient-pastel { background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 25%, #e0e7ff 50%, #f0f9ff 75%, #fdf2f8 100%); }
+    .bg-gradient-dark   { background: linear-gradient(135deg, #1B1D22 0%, #282160 50%, #1B1D22 100%); }
+    .bg-gradient-violet { background: linear-gradient(135deg, #F1F2FF 0%, #FDEFF5 50%, #E6F6FC 100%); }
+    .bg-gradient-warm   { background: linear-gradient(135deg, #FDEFF5 0%, #FEF9EB 50%, #F1F2FF 100%); }
+    .bg-gradient-cool   { background: linear-gradient(135deg, #E6F6FC 0%, #F1F2FF 50%, #FDEFF5 100%); }
+
+    /* ===== Dark Slide ===== */
+    .dark-slide { color: #fff; }
+    .dark-slide .slide-header .section-label { color: rgba(255,255,255,0.5); }
+    .dark-slide .text-secondary { color: rgba(255,255,255,0.6) !important; }
+
+    /* ===== Decorative ===== */
+    .deco-circle { position: absolute; border-radius: 50%; opacity: 0.15; pointer-events: none; }
+    .deco-dots {
+      position: absolute; width: 120px; height: 120px; opacity: 0.08;
+      background-image: radial-gradient(circle, var(--secondary-fg-high) 2px, transparent 2px);
+      background-size: 16px 16px; pointer-events: none;
+    }
+
+    /* ===== Slide Header ===== */
+    .slide-header {
+      display: flex; align-items: center; gap: var(--spacing-3);
+      padding: 2.5% 4%; flex-shrink: 0;
+    }
+    .slide-header .logo-icon { width: 36px; height: auto; }
+    .slide-header .section-label {
+      font-size: clamp(14px, 1.1cqw, 16px); font-weight: 600;
+      color: var(--gray-fg-mid-on-white); text-transform: uppercase; letter-spacing: 1.5px;
+    }
+
+    /* ===== Slide Content ===== */
+    .slide-content {
+      flex: 1; display: flex; padding: 0 5% 3%; gap: 4%; min-height: 0;
+    }
+    .slide-content.centered { justify-content: center; align-items: center; text-align: center; }
+    .slide-content.two-col  { flex-direction: row; align-items: center; }
+    .col-text { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: var(--spacing-6); }
+    .col-visual { flex: 1; display: flex; justify-content: center; align-items: center; }
+
+    /* ===== Typography ===== */
+    .title-xl  { font-size: clamp(32px, 3.5cqw, 56px); font-weight: 800; line-height: 1.15; }
+    .title-lg  { font-size: clamp(22px, 2.5cqw, 40px); font-weight: 700; line-height: 1.2; }
+    .title-md  { font-size: clamp(18px, 2cqw, 32px);   font-weight: 700; line-height: 1.25; }
+    .body-lg   { font-size: clamp(14px, 1.4cqw, 22px);  font-weight: 400; line-height: 1.6; }
+    .body-md   { font-size: clamp(14px, 1.2cqw, 19px);  font-weight: 400; line-height: 1.6; }
+    .body-sm   { font-size: clamp(14px, 1cqw, 16px);    font-weight: 400; line-height: 1.5; }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary-fg-high), var(--secondary-fg-high));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .text-secondary { color: var(--gray-fg-mid-on-white); }
+    .text-white { color: #fff; }
+
+    /* ===== Cover ===== */
+    .cover-content {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; gap: var(--spacing-3); padding: 5%;
+    }
+    .cover-logo { width: clamp(48px, 5cqw, 72px); height: auto; }
+    .cover-date {
+      display: inline-flex; align-items: center; gap: var(--spacing-2);
+      padding: var(--spacing-2) var(--spacing-5);
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(10px);
+      font-size: clamp(11px, 1.1cqw, 17px); font-weight: 600;
+      color: var(--gray-fg-mid-on-white);
+    }
+
+    /* ===== Tags ===== */
+    .tag {
+      display: inline-flex; align-items: center; padding: var(--spacing-1) var(--spacing-3);
+      border-radius: var(--radius-full); font-size: clamp(14px, 1cqw, 15px); font-weight: 600;
+    }
+    .tag-primary   { background: var(--primary-bg-lowest); color: var(--primary-fg-high); }
+    .tag-secondary { background: var(--secondary-bg-lowest); color: var(--secondary-fg-high); }
+    .tag-sky       { background: var(--support-sky-bg-lowest); color: var(--support-sky-fg-low); }
+    .tag-green     { background: var(--support-green-bg-lowest); color: var(--support-green-fg-low); }
+    .tag-orange    { background: var(--support-orange-bg-lowest); color: var(--support-orange-fg-low); }
+    .flex-center-gap-2 { display: flex; align-items: center; gap: var(--spacing-2); flex-wrap: wrap; justify-content: center; }
+
+    /* ===== Screenshot Grid ===== */
+    .slide-content.column-gap-4 { flex-direction: column; gap: var(--spacing-4); align-items: center; justify-content: center; }
+    .screenshot-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-4);
+      width: 100%;
+      flex: 1;
+      align-content: center;
+      max-height: 75%;
+    }
+    .screenshot-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+    .phone-mockup {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border-radius: 32px;
+      background: #ffffff;
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.04),
+        0 4px 16px rgba(0,0,0,0.06),
+        0 12px 32px rgba(0,0,0,0.04);
+    }
+    .phone-mockup::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22%;
+      height: 3px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 3px;
+      z-index: 2;
+    }
+    .phone-mockup img {
+      max-height: 48cqh;
+      width: auto;
+      object-fit: contain;
+      border-radius: 24px;
+    }
+    .screenshot-item .screenshot-label {
+      font-size: clamp(10px, 0.8cqw, 13px);
+      color: var(--gray-fg-mid-on-white);
+      font-weight: 600;
+      text-align: center;
+    }
+    .mt-2 { margin-top: var(--spacing-2); }
+
+    /* ===== Agenda ===== */
+    .agenda-list { display: flex; flex-direction: column; gap: var(--spacing-5); width: 100%; }
+    .agenda-card {
+      display: flex; align-items: center; gap: var(--spacing-6);
+      padding: var(--spacing-6) var(--spacing-8);
+      background: var(--gray-bg-white); border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm); border: 1px solid var(--gray-bg-midgray);
+      transition: transform var(--duration-fast) var(--easing-default), box-shadow var(--duration-fast) var(--easing-default);
+    }
+    .agenda-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .agenda-num {
+      display: flex; align-items: center; justify-content: center;
+      width: clamp(36px, 3.5cqw, 56px); height: clamp(36px, 3.5cqw, 56px);
+      border-radius: var(--radius-lg); font-size: clamp(16px, 1.8cqw, 28px);
+      font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .agenda-card:nth-child(1) .agenda-num { background: var(--primary-fg-high); }
+    .agenda-card:nth-child(2) .agenda-num { background: var(--secondary-fg-high); }
+    .agenda-card:nth-child(3) .agenda-num { background: var(--support-sky-fg-low); }
+    .agenda-card:nth-child(4) .agenda-num { background: var(--support-green-fg-low); }
+    .agenda-card:nth-child(5) .agenda-num { background: var(--support-orange-fg-low); }
+    .agenda-card .agenda-text { flex: 1; }
+    .agenda-card .agenda-title { font-size: clamp(14px, 1.5cqw, 24px); font-weight: 700; margin-bottom: 2px; }
+    .agenda-card .agenda-desc { font-size: clamp(14px, 1cqw, 16px); color: var(--gray-fg-mid-on-white); }
+
+    /* ===== Section Tag ===== */
+    .section-tag { display: inline-flex; align-items: center; gap: var(--spacing-2); margin-bottom: var(--spacing-3); }
+    .section-tag .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .section-tag span { font-size: clamp(10px, 0.9cqw, 14px); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ===== Bullet List ===== */
+    .bullet-list { display: flex; flex-direction: column; gap: var(--spacing-4); list-style: none; }
+    .bullet-list li { display: flex; align-items: flex-start; gap: var(--spacing-3); font-size: clamp(12px, 1.2cqw, 19px); line-height: 1.55; color: var(--gray-fg-high); }
+    .bullet-list li::before { content: ''; flex-shrink: 0; width: clamp(8px, 0.7cqw, 10px); height: clamp(8px, 0.7cqw, 10px); border-radius: 50%; background: var(--primary-fg-high); margin-top: 0.45em; }
+    .bullet-list.secondary li::before { background: var(--secondary-fg-high); }
+
+    /* ===== Card Status ===== */
+    .card-status { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: var(--radius-full); font-size: clamp(10px, 0.9cqw, 14px); font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+    .card-status.wip { background: var(--support-sky-bg-lowest); color: var(--support-sky-fg-low); }
+    .card-status.done { background: var(--support-green-bg-lowest); color: #3D7B3A; }
+
+    /* ===== Live Demo Phone ===== */
+    .live-demo-wrap { display: flex; align-items: flex-start; justify-content: center; flex: 1; width: 100%; gap: var(--spacing-6); }
+    .live-demo-phone { position: relative; display: inline-flex; align-items: center; justify-content: center; padding: 10px; border-radius: 48px; background: #ffffff; box-shadow: 0 0 0 1px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.04); }
+    .live-demo-phone::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 22%; height: 4px; background: rgba(0,0,0,0.08); border-radius: 4px; z-index: 2; }
+    .live-demo-phone iframe { width: 36cqh; height: 78cqh; border: none; border-radius: 38px; background: #fff; }
+
+    /* ===== Feature Cards ===== */
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-5); width: 100%;
+    }
+    .feature-card {
+      background: var(--gray-bg-white); border-radius: var(--radius-xl);
+      padding: var(--spacing-8) var(--spacing-6); border: 1px solid var(--gray-bg-midgray);
+      display: flex; flex-direction: column; gap: var(--spacing-4);
+      transition: all var(--duration-fast) var(--easing-default);
+      box-shadow: var(--shadow-sm);
+    }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .feature-icon {
+      width: clamp(40px, 4cqw, 56px); height: clamp(40px, 4cqw, 56px);
+      border-radius: var(--radius-lg); display: flex; align-items: center;
+      justify-content: center; font-size: clamp(20px, 2cqw, 28px);
+    }
+    .feature-card h3 { font-size: clamp(14px, 1.3cqw, 20px); font-weight: 700; }
+    .feature-card p  { font-size: clamp(14px, 1.1cqw, 16px); color: var(--gray-fg-mid-on-white); line-height: 1.5; }
+
+    /* ===== How it Works ===== */
+    .flow-steps {
+      display: flex; align-items: center; gap: var(--spacing-6); width: 100%;
+    }
+    .flow-step {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: var(--spacing-4);
+    }
+    .flow-step-num {
+      width: clamp(48px, 4.5cqw, 64px); height: clamp(48px, 4.5cqw, 64px);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: clamp(18px, 1.8cqw, 28px); font-weight: 800; color: #fff;
+    }
+    .flow-step h3 { font-size: clamp(14px, 1.2cqw, 18px); font-weight: 700; }
+    .flow-step p  { font-size: clamp(14px, 1cqw, 16px); color: var(--gray-fg-mid-on-white); line-height: 1.5; }
+    .flow-arrow {
+      font-size: clamp(20px, 2cqw, 32px); color: var(--gray-bg-midgray);
+      flex-shrink: 0; margin-top: -32px;
+    }
+
+    /* ===== Problem / Solution Cards ===== */
+    .problem-list {
+      display: flex; flex-direction: column; gap: var(--spacing-4);
+    }
+    .problem-item {
+      display: flex; align-items: flex-start; gap: var(--spacing-4);
+      background: var(--gray-bg-white); border-radius: var(--radius-lg);
+      padding: var(--spacing-5) var(--spacing-6); border: 1px solid var(--gray-bg-midgray);
+      box-shadow: var(--shadow-sm);
+    }
+    .problem-item .icon-circle {
+      width: clamp(36px, 3.5cqw, 48px); height: clamp(36px, 3.5cqw, 48px);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: clamp(16px, 1.5cqw, 22px); flex-shrink: 0;
+    }
+    .problem-item h4 { font-size: clamp(14px, 1.2cqw, 18px); font-weight: 700; margin-bottom: var(--spacing-1); }
+    .problem-item p  { font-size: clamp(14px, 1.1cqw, 16px); color: var(--gray-fg-mid-on-white); line-height: 1.5; }
+
+    /* ===== Dark Feature Cards ===== */
+    .dark-feature-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-5); width: 100%;
+    }
+    .dark-feature-card {
+      background: rgba(255,255,255,0.06); border-radius: var(--radius-xl);
+      padding: var(--spacing-6); border: 1px solid rgba(255,255,255,0.1);
+      display: flex; flex-direction: column; gap: var(--spacing-3);
+      transition: all var(--duration-fast) var(--easing-default);
+    }
+    .dark-feature-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .dark-feature-card .card-icon {
+      font-size: clamp(24px, 2.2cqw, 32px);
+    }
+    .dark-feature-card h3 { font-size: clamp(14px, 1.3cqw, 20px); font-weight: 700; color: #fff; }
+    .dark-feature-card p  { font-size: clamp(14px, 1.1cqw, 16px); color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+    /* ===== Highlight Box ===== */
+    .highlight-box {
+      background: linear-gradient(135deg, var(--primary-bg-lowest), var(--secondary-bg-lowest));
+      border-radius: var(--radius-2xl); padding: var(--spacing-10) var(--spacing-12);
+      text-align: center; max-width: 900px; width: 100%;
+    }
+    .highlight-box .big-emoji {
+      font-size: clamp(48px, 5cqw, 72px); margin-bottom: var(--spacing-4);
+    }
+
+    /* ===== Use Case Cards ===== */
+    .usecase-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-5); width: 100%;
+    }
+    .usecase-card {
+      background: var(--gray-bg-white); border-radius: var(--radius-xl);
+      padding: var(--spacing-6); border: 1px solid var(--gray-bg-midgray);
+      display: flex; gap: var(--spacing-4); align-items: flex-start;
+      box-shadow: var(--shadow-sm);
+    }
+    .usecase-card .uc-icon {
+      font-size: clamp(28px, 2.5cqw, 40px); flex-shrink: 0;
+    }
+    .usecase-card h3 { font-size: clamp(14px, 1.2cqw, 18px); font-weight: 700; margin-bottom: var(--spacing-2); }
+    .usecase-card p  { font-size: clamp(14px, 1.1cqw, 16px); color: var(--gray-fg-mid-on-white); line-height: 1.5; }
+
+    /* ===== Roadmap ===== */
+    .roadmap-row {
+      display: flex; gap: var(--spacing-5); width: 100%;
+    }
+    .roadmap-phase {
+      flex: 1; border-radius: var(--radius-xl); padding: var(--spacing-6);
+      display: flex; flex-direction: column; gap: var(--spacing-3);
+    }
+    .roadmap-phase .phase-label {
+      font-size: clamp(14px, 1cqw, 15px); font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .roadmap-phase h3 { font-size: clamp(14px, 1.3cqw, 20px); font-weight: 700; }
+    .roadmap-phase ul {
+      list-style: none; display: flex; flex-direction: column; gap: var(--spacing-2);
+    }
+    .roadmap-phase li {
+      font-size: clamp(14px, 1.1cqw, 16px); color: var(--gray-fg-mid-on-white);
+      padding-left: var(--spacing-4); position: relative; line-height: 1.5;
+    }
+    .roadmap-phase li::before {
+      content: ''; position: absolute; left: 0; top: 7px;
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+
+    /* ===== Present Hint ===== */
+    .present-hint {
+      position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
+      font-size: clamp(14px, 1cqw, 15px); color: var(--gray-fg-low-on-white); opacity: 0.7;
+      pointer-events: none;
+    }
+    .present-hint kbd {
+      padding: 1px 6px; font-weight: 700; background: var(--gray-bg-white);
+      border: 1px solid var(--gray-bg-midgray); border-radius: var(--radius-sm);
+      box-shadow: 0 1px 0 var(--gray-bg-midgray);
+    }
+
+    /* ===== Navigation ===== */
+    .present-btn {
+      display: flex; align-items: center; gap: var(--spacing-2);
+      padding: var(--spacing-2) var(--spacing-4); border-radius: var(--radius-md);
+      border: none; background: var(--secondary-fg-high); cursor: pointer;
+      font-family: 'LINE Seed Sans TH', sans-serif;
+      font-size: clamp(14px, 1.1cqw, 16px); font-weight: 700; color: #fff;
+      transition: all var(--duration-fast) var(--easing-default);
+      box-shadow: var(--shadow-md);
+    }
+    .present-btn:hover { background: #5a60e8; box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+    .present-btn:active { transform: scale(0.97); }
+    .present-btn svg { width: clamp(14px, 1.1cqw, 18px); height: clamp(14px, 1.1cqw, 18px); }
+
+    .page-dropdown-wrap { position: relative; display: inline-block; }
+    .page-dropdown-btn {
+      display: flex; align-items: center; gap: var(--spacing-2);
+      padding: var(--spacing-1) var(--spacing-3); border-radius: var(--radius-full);
+      border: 1px solid transparent; background: transparent; cursor: pointer;
+      font-family: 'LINE Seed Sans TH', sans-serif;
+      font-size: clamp(14px, 1cqw, 15px); font-weight: 600;
+      color: var(--gray-fg-low-on-white); opacity: 0.45;
+      transition: all var(--duration-fast) var(--easing-default);
+    }
+    .page-dropdown-btn:hover { opacity: 1; background: rgba(0,0,0,0.04); border-color: var(--gray-bg-midgray); color: var(--gray-fg-high); }
+    .page-dropdown-wrap.open .page-dropdown-btn { opacity: 1; background: var(--gray-bg-white); border-color: var(--gray-bg-midgray); color: var(--gray-fg-high); box-shadow: var(--shadow-sm); }
+    .page-dropdown-btn svg { width: clamp(10px, 0.8cqw, 14px); height: clamp(10px, 0.8cqw, 14px); transition: transform var(--duration-fast); }
+    .page-dropdown-wrap.open .page-dropdown-btn svg { transform: rotate(180deg); }
+
+    .page-dropdown-menu {
+      display: none; position: absolute; top: calc(100% + 6px); right: 0;
+      background: var(--gray-bg-white); border: 1px solid var(--gray-bg-midgray);
+      border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+      padding: var(--spacing-2) 0; min-width: 220px; max-height: 60cqh; overflow-y: auto; z-index: 300;
+    }
+    .page-dropdown-wrap.open .page-dropdown-menu { display: block; }
+    .page-dropdown-item {
+      display: flex; align-items: center; gap: var(--spacing-2);
+      width: 100%; padding: var(--spacing-2) var(--spacing-3); border: none;
+      background: none; cursor: pointer; font-family: 'LINE Seed Sans TH', sans-serif;
+      font-size: clamp(14px, 1cqw, 15px); font-weight: 500;
+      color: var(--gray-fg-mid-on-white); text-align: left; white-space: nowrap;
+    }
+    .page-dropdown-item:hover { background: var(--gray-bg-lightgray); color: var(--gray-fg-high); }
+    .page-dropdown-item.active-page { color: var(--secondary-fg-high); font-weight: 700; background: var(--secondary-bg-lowest); }
+    .page-dropdown-item .slide-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: clamp(18px, 1.6cqw, 22px); height: clamp(18px, 1.6cqw, 22px);
+      border-radius: var(--radius-sm); background: var(--gray-bg-lightgray);
+      font-size: clamp(14px, 0.9cqw, 15px); font-weight: 700;
+    }
+
+    /* Dark dropdown */
+    .dark-dropdown .page-dropdown-btn { color: rgba(255,255,255,0.5); }
+    .dark-dropdown .page-dropdown-btn:hover { color: #fff; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+    .dark-dropdown.open .page-dropdown-btn { color: #fff; background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.2); }
+
+    .nav-bar {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 1.5% 4%; z-index: 100;
+    }
+    .nav-buttons { display: flex; align-items: center; gap: var(--spacing-2); }
+    .nav-btn, .nav-home-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: clamp(32px, 3cqw, 44px); height: clamp(32px, 3cqw, 44px);
+      border-radius: var(--radius-md); border: 1px solid var(--gray-bg-midgray);
+      background: var(--gray-bg-white); cursor: pointer;
+      color: var(--gray-fg-mid-on-white);
+      transition: all var(--duration-fast) var(--easing-default);
+    }
+    .nav-btn:hover, .nav-home-btn:hover { background: var(--gray-bg-lightgray); color: var(--gray-fg-high); }
+    .nav-btn svg, .nav-home-btn svg { width: clamp(14px, 1.2cqw, 18px); height: clamp(14px, 1.2cqw, 18px); }
+    .nav-home-btn { margin-right: var(--spacing-4); }
+    .nav-counter {
+      font-size: clamp(14px, 1.1cqw, 16px); color: var(--gray-fg-mid-on-white);
+      font-weight: 700; min-width: 50px; text-align: center; font-variant-numeric: tabular-nums;
+    }
+    .nav-bar.dark-nav .nav-btn, .nav-bar.dark-nav .nav-home-btn {
+      background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7);
+    }
+    .nav-bar.dark-nav .nav-btn:hover, .nav-bar.dark-nav .nav-home-btn:hover {
+      background: rgba(255,255,255,0.2); color: #fff;
+    }
+    .nav-bar.dark-nav .nav-counter { color: rgba(255,255,255,0.7); }
+
+    /* ===== Animations ===== */
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes pulse-glow { 0%,100% { box-shadow: 0 0 20px rgba(114,121,251,0.3); } 50% { box-shadow: 0 0 40px rgba(236,89,157,0.4); } }
+    .float-anim { animation: float 4s ease-in-out infinite; }
+
+    /* ===== Cover Hero Animations ===== */
+    .cover-mesh { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .cover-blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; }
+    .cover-blob-1 { width: 500px; height: 500px; background: rgba(236,89,157,0.35); top: -15%; left: -5%; animation: blob-move-1 12s ease-in-out infinite; }
+    .cover-blob-2 { width: 450px; height: 450px; background: rgba(114,121,251,0.3); top: -10%; right: -8%; animation: blob-move-2 14s ease-in-out infinite; }
+    .cover-blob-3 { width: 600px; height: 400px; background: rgba(54,185,230,0.2); bottom: 10%; left: 20%; animation: blob-move-3 16s ease-in-out infinite; }
+    .cover-blob-4 { width: 350px; height: 350px; background: rgba(236,89,157,0.25); bottom: -5%; right: 15%; animation: blob-move-1 10s ease-in-out infinite 3s; }
+    @keyframes blob-move-1 { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(60px,30px) scale(1.1); } 66% { transform: translate(-30px,-20px) scale(0.95); } }
+    @keyframes blob-move-2 { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(-50px,40px) scale(1.08); } 66% { transform: translate(40px,-30px) scale(0.92); } }
+    @keyframes blob-move-3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-40px) scale(1.12); } }
+
+    .cover-sparkles { position: absolute; inset: 0; pointer-events: none; }
+    .cover-star { position: absolute; color: rgba(255,255,255,0.9); filter: drop-shadow(0 0 3px rgba(236,89,157,0.5)); }
+    .cover-star:nth-child(1) { top: 12%; left: 10%; font-size: 14px; animation: star-twinkle 3s ease-in-out infinite; }
+    .cover-star:nth-child(2) { top: 8%; right: 12%; font-size: 20px; animation: star-twinkle 4s ease-in-out infinite 1s; }
+    .cover-star:nth-child(3) { top: 35%; left: 6%; font-size: 10px; animation: star-twinkle 3.5s ease-in-out infinite 0.5s; }
+    .cover-star:nth-child(4) { top: 20%; right: 8%; font-size: 12px; animation: star-twinkle 5s ease-in-out infinite 2s; }
+    .cover-star:nth-child(5) { top: 45%; right: 5%; font-size: 16px; animation: star-twinkle 4.5s ease-in-out infinite 1.5s; }
+    .cover-star:nth-child(6) { top: 28%; left: 20%; font-size: 8px; animation: star-twinkle 3s ease-in-out infinite 3s; }
+    .cover-star:nth-child(7) { top: 55%; left: 15%; font-size: 11px; animation: star-twinkle 5s ease-in-out infinite 0.8s; }
+    .cover-star:nth-child(8) { top: 15%; left: 40%; font-size: 9px; animation: star-twinkle 4s ease-in-out infinite 2.5s; }
+    @keyframes star-twinkle { 0%,100% { opacity: 0.2; transform: scale(0.8) rotate(0deg); } 50% { opacity: 1; transform: scale(1.2) rotate(20deg); } }
+
+    .cover-orbit { position: absolute; width: 650px; height: 650px; border: 1px solid rgba(114,121,251,0.08); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; animation: orbit-spin 40s linear infinite; }
+    .cover-orbit::before { content: '✦'; position: absolute; top: -6px; left: 50%; transform: translateX(-50%); color: rgba(114,121,251,0.3); font-size: 10px; }
+    .cover-orbit-2 { position: absolute; width: 850px; height: 850px; border: 1px dashed rgba(236,89,157,0.06); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; animation: orbit-spin 60s linear infinite reverse; }
+    @keyframes orbit-spin { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+    /* Zodiac — 12 icons matching landing page */
+    .cover-zodiac { position: absolute; pointer-events: none; opacity: 0.35; z-index: 1; }
+    .cover-zodiac img { width: 100%; height: 100%; object-fit: contain; animation: zodiac-shimmer 3s ease-in-out infinite; }
+    .cover-zodiac-2 img { animation-delay: 0.4s; }
+    .cover-zodiac-3 img { animation-delay: 0.8s; }
+    .cover-zodiac-4 img { animation-delay: 1.2s; }
+    .cover-zodiac-5 img { animation-delay: 1.6s; }
+    .cover-zodiac-6 img { animation-delay: 2s; }
+    .cover-zodiac-7 img { animation-delay: 0.3s; }
+    .cover-zodiac-8 img { animation-delay: 0.7s; }
+    .cover-zodiac-9 img { animation-delay: 1.1s; }
+    .cover-zodiac-10 img { animation-delay: 1.5s; }
+    .cover-zodiac-11 img { animation-delay: 1.9s; }
+    .cover-zodiac-12 img { animation-delay: 2.3s; }
+    @keyframes zodiac-shimmer { 0%,100% { opacity: 1; filter: brightness(1) drop-shadow(0 0 0 transparent); } 50% { opacity: 0.6; filter: brightness(1.3) drop-shadow(0 0 12px rgba(114,121,251,0.4)); } }
+    .cover-zodiac-1 { width: 150px; height: 150px; top: 2%; left: 1%; animation: zodiac-float-a 14s ease-in-out infinite; }
+    .cover-zodiac-2 { width: 95px; height: 95px; top: 8%; left: 28%; animation: zodiac-float-b 9s ease-in-out infinite 0.7s; }
+    .cover-zodiac-3 { width: 130px; height: 130px; top: 4%; right: 22%; animation: zodiac-float-c 11s ease-in-out infinite 3.2s; }
+    .cover-zodiac-4 { width: 80px; height: 80px; top: 1%; right: 2%; animation: zodiac-float-a 8s ease-in-out infinite 1.8s; }
+    .cover-zodiac-5 { width: 110px; height: 110px; top: 38%; left: 0%; animation: zodiac-float-b 13s ease-in-out infinite 4.1s; }
+    .cover-zodiac-6 { width: 70px; height: 70px; top: 22%; right: 6%; animation: zodiac-float-c 7s ease-in-out infinite 0.3s; }
+    .cover-zodiac-7 { width: 140px; height: 140px; bottom: 20%; left: 4%; animation: zodiac-float-a 12s ease-in-out infinite 2.6s; }
+    .cover-zodiac-8 { width: 85px; height: 85px; bottom: 45%; right: 1%; animation: zodiac-float-b 10s ease-in-out infinite 5s; }
+    .cover-zodiac-9 { width: 120px; height: 120px; top: 15%; left: 14%; animation: zodiac-float-c 15s ease-in-out infinite 1.2s; }
+    .cover-zodiac-10 { width: 75px; height: 75px; bottom: 35%; left: 22%; animation: zodiac-float-a 9s ease-in-out infinite 3.7s; }
+    .cover-zodiac-11 { width: 105px; height: 105px; bottom: 15%; right: 12%; animation: zodiac-float-b 11s ease-in-out infinite 0.9s; }
+    .cover-zodiac-12 { width: 60px; height: 60px; top: 42%; right: 18%; animation: zodiac-float-c 8s ease-in-out infinite 4.5s; }
+    @keyframes zodiac-float-a { 0%,100% { transform: translateY(0) rotate(0deg); } 25% { transform: translateY(-18px) rotate(8deg); } 50% { transform: translateY(5px) rotate(-4deg); } 75% { transform: translateY(-10px) rotate(2deg); } }
+    @keyframes zodiac-float-b { 0%,100% { transform: translateX(0) rotate(0deg); } 30% { transform: translateX(12px) rotate(-6deg); } 60% { transform: translateX(-8px) rotate(10deg); } }
+    @keyframes zodiac-float-c { 0%,100% { transform: translate(0,0) rotate(0deg); } 20% { transform: translate(10px,-14px) rotate(5deg); } 50% { transform: translate(-6px,8px) rotate(-7deg); } 80% { transform: translate(4px,-6px) rotate(3deg); } }
+
+    /* Orbs — 5 matching landing page */
+    .cover-orb { position: absolute; border-radius: 50%; pointer-events: none; filter: blur(1px); }
+    .cover-orb-1 { width: 8px; height: 8px; background: rgba(236,89,157,0.5); top: 18%; left: 12%; box-shadow: 0 0 20px 6px rgba(236,89,157,0.3); animation: orb-pulse 3s ease-in-out infinite; }
+    .cover-orb-2 { width: 6px; height: 6px; background: rgba(114,121,251,0.5); top: 25%; right: 15%; box-shadow: 0 0 16px 5px rgba(114,121,251,0.3); animation: orb-pulse 4s ease-in-out infinite 1s; }
+    .cover-orb-3 { width: 10px; height: 10px; background: rgba(54,185,230,0.4); bottom: 35%; left: 18%; box-shadow: 0 0 24px 8px rgba(54,185,230,0.25); animation: orb-pulse 5s ease-in-out infinite 0.5s; }
+    .cover-orb-4 { width: 5px; height: 5px; background: rgba(236,89,157,0.4); bottom: 30%; right: 10%; box-shadow: 0 0 14px 4px rgba(236,89,157,0.25); animation: orb-pulse 3.5s ease-in-out infinite 2s; }
+    .cover-orb-5 { width: 7px; height: 7px; background: rgba(114,121,251,0.45); top: 40%; left: 5%; box-shadow: 0 0 18px 6px rgba(114,121,251,0.25); animation: orb-pulse 4.5s ease-in-out infinite 1.5s; }
+    @keyframes orb-pulse { 0%,100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
+
+    /* Rings — matching landing page */
+    .cover-ring { position: absolute; border-radius: 50%; pointer-events: none; border: 2px solid transparent; }
+    .cover-ring-1 { width: 400px; height: 400px; top: 5%; left: -5%; border-color: rgba(236,89,157,0.12); animation: ring-float 8s ease-in-out infinite; }
+    .cover-ring-2 { width: 300px; height: 300px; top: 10%; right: -3%; border-color: rgba(114,121,251,0.1); border-style: dashed; animation: ring-float 10s ease-in-out infinite reverse; }
+    .cover-ring-3 { width: 200px; height: 200px; bottom: 25%; left: 8%; border-color: rgba(54,185,230,0.12); animation: ring-float 7s ease-in-out infinite 2s; }
+    @keyframes ring-float { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(15deg); } }
+
+    /* Constellations — matching landing page */
+    .cover-constellation { position: absolute; pointer-events: none; opacity: 0.12; }
+    .cover-constellation svg { width: 100%; height: 100%; }
+    .cover-constellation-1 { width: 200px; height: 150px; top: 12%; right: 8%; animation: constellation-fade 6s ease-in-out infinite; }
+    .cover-constellation-2 { width: 180px; height: 120px; bottom: 30%; left: 5%; animation: constellation-fade 8s ease-in-out infinite 3s; }
+    @keyframes constellation-fade { 0%,100% { opacity: 0.06; } 50% { opacity: 0.18; } }
+
+    .cover-gradient-title {
+      font-size: clamp(48px, 5cqw, 80px); font-weight: 900; line-height: 1.05;
+      letter-spacing: -2px; position: relative; z-index: 2;
+    }
+    .cover-gradient-title .gradient {
+      background: linear-gradient(135deg, var(--primary-fg-high) 0%, #c946a0 20%, var(--secondary-fg-high) 50%, var(--support-sky-fg-low) 80%, var(--primary-fg-high) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; background-size: 300% 300%;
+      animation: gradient-shift 6s ease-in-out infinite;
+    }
+    @keyframes gradient-shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+    /* ===== Cover Phone Showcase ===== */
+    .cover-phone-glow {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 1100px; height: 600px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(236,89,157,0.2) 0%, rgba(114,121,251,0.15) 30%, rgba(54,185,230,0.08) 60%, transparent 80%);
+      pointer-events: none; animation: phone-glow-pulse 5s ease-in-out infinite;
+    }
+    @keyframes phone-glow-pulse { 0%,100% { opacity: 0.7; transform: translateX(-50%) scale(1); } 50% { opacity: 1; transform: translateX(-50%) scale(1.05); } }
+
+    .cover-phone-showcase {
+      position: absolute; bottom: -180px; left: 50%; transform: translateX(-50%);
+      width: 1100px; height: 750px; display: flex; align-items: flex-start; justify-content: center;
+      z-index: 3;
+    }
+    .cover-phone {
+      position: absolute; border-radius: 44px; background: #fff; padding: 10px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .cover-phone img {
+      width: 100%; height: 100%; object-fit: cover; object-position: top;
+      border-radius: 34px; display: block;
+    }
+    .cover-phone-center {
+      width: 320px; height: 690px; z-index: 3; top: 0; left: 50%;
+      transform: translateX(-50%);
+    }
+    .cover-phone-left {
+      width: 280px; height: 610px; z-index: 2; top: 50px; left: 50%;
+      transform: translateX(calc(-50% - 280px));
+    }
+    .cover-phone-right {
+      width: 280px; height: 610px; z-index: 2; top: 50px; left: 50%;
+      transform: translateX(calc(-50% + 280px));
+    }
+
+    /* ===== Cover Hero Content ===== */
+    .cover-hero-content {
+      position: relative; z-index: 4;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: var(--spacing-2);
+      padding-top: 10%;
+    }
+    .cover-hero-title {
+      display: flex; align-items: center; gap: var(--spacing-4);
+      font-size: clamp(40px, 4.5cqw, 72px); font-weight: 800; line-height: 1;
+      color: var(--gray-fg-high);
+    }
+    .cover-hero-title svg { width: clamp(48px, 5cqw, 80px); height: auto; }
+    .cover-hero-subtitle {
+      font-size: clamp(14px, 1.4cqw, 22px); color: var(--gray-fg-mid-on-white);
+      margin-top: var(--spacing-1);
+    }
+
+    /* ===== Tarot Showcase (Slide) ===== */
+    .slide-tarot {
+      background: linear-gradient(180deg, #1a1245 0%, #2d1f6e 15%, #3d2a8a 30%, #5438a2 50%, #6342b0 65%, #4e35a0 80%, #2d1f6e 95%, #1a1245 100%);
+      color: #fff;
+    }
+    .slide-tarot::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 120% 80% at 50% 0%, rgba(114,121,251,0.15) 0%, transparent 60%),
+                  radial-gradient(ellipse 80% 60% at 80% 100%, rgba(236,89,157,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .slide-tarot .slide-header .section-label { color: rgba(255,255,255,0.5); }
+    .tarot-sparkle { position: absolute; pointer-events: none; z-index: 2; }
+    .tarot-sparkle-1 { top: 30%; left: 6%; animation: sparkle-float 5s ease-in-out infinite; }
+    .tarot-sparkle-2 { top: 15%; right: 5%; animation: sparkle-float 4s ease-in-out infinite 1s; }
+    .tarot-sparkle-3 { top: 50%; left: 40%; animation: sparkle-float 6s ease-in-out infinite 0.5s; }
+    .tarot-sparkle-4 { top: 10%; left: 25%; animation: sparkle-float 5.5s ease-in-out infinite 2s; }
+    .tarot-sparkle-5 { bottom: 15%; right: 12%; animation: sparkle-float 4.5s ease-in-out infinite 1.5s; }
+    @keyframes sparkle-float { 0%,100% { opacity: 0.4; transform: scale(1) rotate(0deg); } 50% { opacity: 1; transform: scale(1.2) rotate(15deg); } }
+
+    .slide-card-stack {
+      display: flex; justify-content: center; align-items: center;
+      width: 100%; padding: 20px 40px 40px; perspective: 1200px; overflow: hidden;
+      mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+    }
+    .slide-card-3d {
+      width: 110px; height: 197px; flex-shrink: 0; margin-left: -18px;
+      border-radius: 12px; perspective: 1200px;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), z-index 0s;
+      cursor: pointer; position: relative; z-index: 1;
+    }
+    .slide-card-3d:first-child { margin-left: 0; }
+    .slide-card-3d:hover { transform: translateY(-24px) scale(1.1); z-index: 20; }
+    .slide-card-3d:hover .slide-card-inner { transform: rotateY(180deg); }
+    /* Wave auto-flip */
+    .slide-card-3d.wave-open { animation: s-wave-up 2s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .slide-card-3d.wave-open .slide-card-inner { animation: s-wave-flip 2s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .slide-card-3d.wave-close { animation: s-wave-down 1.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .slide-card-3d.wave-close .slide-card-inner { animation: s-wave-unflip 1.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes s-wave-up { 0%{transform:translateY(0) scale(1)} 100%{transform:translateY(-20px) scale(1.05)} }
+    @keyframes s-wave-down { 0%{transform:translateY(-20px) scale(1.05)} 100%{transform:translateY(0) scale(1)} }
+    @keyframes s-wave-flip { 0%{transform:rotateY(0)} 100%{transform:rotateY(180deg)} }
+    @keyframes s-wave-unflip { 0%{transform:rotateY(180deg)} 100%{transform:rotateY(0)} }
+
+    .slide-card-inner {
+      width: 100%; height: 100%; position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+    .slide-card-face {
+      position: absolute; inset: 0; border-radius: 12px;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      overflow: hidden; background: #1a1540;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+    .slide-card-face.back { transform: rotateY(0deg); }
+    .slide-card-face.front { transform: rotateY(180deg); }
+    .slide-card-face img { width: 100%; height: 100%; object-fit: fill; border-radius: 12px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cover-blob, .cover-star, .cover-orbit, .cover-orbit-2,
+      .cover-zodiac, .cover-zodiac img, .cover-orb, .cover-ring,
+      .cover-gradient-title .gradient, .cover-phone-glow { animation: none !important; }
+      .cover-gradient-title .gradient { background-size: 100% 100%; }
+    }
+
+    /* ===== Stat Cards ===== */
+    .stat-row { display: flex; gap: var(--spacing-5); width: 100%; }
+    .stat-card {
+      flex: 1; background: var(--gray-bg-white); border-radius: var(--radius-xl);
+      padding: var(--spacing-6); border: 1px solid var(--gray-bg-midgray);
+      text-align: center; box-shadow: var(--shadow-sm);
+    }
+    .stat-card .stat-num {
+      font-size: clamp(28px, 3cqw, 48px); font-weight: 800; line-height: 1;
+      margin-bottom: var(--spacing-2);
+    }
+    .stat-card .stat-label {
+      font-size: clamp(14px, 1.1cqw, 16px); color: var(--gray-fg-mid-on-white);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Shared SVG Symbol -->
+<svg style="display:none;" aria-hidden="true">
+  <symbol id="mu-logo" viewBox="0 0 188.81 161.84">
+    <path fill="#01a9e0" d="M185.97,121.86c-.33-3.44-3.21-9.32-10.64-9.32-6.27,0-8.82,5.22-9.7,9.19-.58,2.63-2.91,8.93-8.23,13.44-6.42,5.45-9.81,5.14-14.46,6.62-4.64,1.48-7.06,3.92-7.87,7.87-.13.66-.2,1.34-.2,2.04,0,2.44.87,4.68,2.31,6.43,1.44,1.75,3.46,3.01,5.77,3.48.66.13,1.34.2,2.04.2h33.72c5.53,0,10.01-4.44,10.11-9.95l-.04-1.23-2.8-28.77Z"/>
+    <path fill="#65489d" d="M121.39,26.98c0,37.65-.01,39.92-.01,39.92,0,14.54-11.88,27.2-26.42,27.5-15.15.3-27.53-11.89-27.53-26.97h0V10.13c0-5.6-4.54-10.13-10.14-10.13H23.62c-5.6,0-10.14,4.53-10.14,10.13v57.29h0c0,45.41,37.39,82.08,83.06,80.9,43.99-1.13,78.78-37.77,78.78-81.77L175.29.02h-26.93c-12.6,0-26.97,9.45-26.97,26.96"/>
+    <path fill="#ef4f98" d="M67.43,10.07C67.39,4.51,62.88.02,57.32.02H23.6C18.03.02,13.52,4.51,13.49,10.07v.05S.17,149.88.17,149.88c-.11.6-.17,1.21-.17,1.84,0,5.59,4.53,10.12,10.11,10.12h33.72c5.59,0,10.12-4.53,10.12-10.12,0,0,.49-5.14,1.29-13.47,3.37-35.25,12.2-127.57,12.2-128.12v-.07Z"/>
+    <path fill="#282160" d="M55.23,138.26c3.88,2.15,7.96,3.99,12.2,5.49V10.13c0,.55-8.83,92.88-12.2,128.13"/>
+  </symbol>
+</svg>
+
+<!-- ===== Loading Screen ===== -->
+<div id="loadingScreen" style="
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#1a1245 0%,#2d1f6e 50%,#1a1245 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+  transition:opacity 0.6s ease,visibility 0s linear 0.6s;
+">
+  <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Asset/00-Splash/App-Logo.png" alt="Daily MU" style="width:96px;height:96px;border-radius:24px;animation:loading-breathe 2s ease-in-out infinite;">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <p style="font-family:'LINE Seed Sans TH',sans-serif;font-size:14px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;">Daily MU</p>
+    <div style="width:120px;height:3px;border-radius:3px;background:rgba(255,255,255,0.1);overflow:hidden;">
+      <div style="width:100%;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--primary-fg-high),var(--secondary-fg-high));animation:loading-bar 1.5s ease-in-out forwards;transform-origin:left;"></div>
+    </div>
+  </div>
+</div>
+<style>
+  @keyframes loading-breathe { 0%,100% { transform:scale(1);opacity:0.9; } 50% { transform:scale(1.05);opacity:1; } }
+  @keyframes loading-bar { 0% { transform:scaleX(0); } 100% { transform:scaleX(1); } }
+  #loadingScreen.hide { opacity:0;visibility:hidden; }
+</style>
+<script>
+  window.addEventListener('load', function(){
+    setTimeout(function(){ document.getElementById('loadingScreen').classList.add('hide'); }, 2000);
+  });
+</script>
+
+<div class="slide-viewport" id="slideViewport">
+
+  <!-- ============================== -->
+  <!-- SLIDE 0: COVER (Hero Style)    -->
+  <!-- ============================== -->
+  <div class="slide active" data-slide="0" style="background:linear-gradient(135deg,#f3e8ff 0%,#fce7f3 25%,#e0e7ff 50%,#f0f9ff 75%,#fdf2f8 100%);">
+    <!-- Zodiac Wheel from mutoday.com (single unit spinning) -->
+    <div style="position:absolute;top:50%;left:50%;width:1500px;height:1500px;pointer-events:none;z-index:0;animation:wheel-spin 100s linear infinite;">
+      <img src="astro/outer-astro.svg" alt="" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.15;">
+      <img src="astro/inner-astro.svg" alt="" style="position:absolute;top:50%;left:50%;width:50%;height:50%;transform:translate(-50%,-50%);opacity:0.2;">
+      <img src="astro/logo-glass.svg" alt="" style="position:absolute;top:50%;left:50%;width:12%;height:12%;transform:translate(-50%,-50%);opacity:0.15;">
+    </div>
+    <style>
+      @keyframes wheel-spin { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+    </style>
+
+    <!-- Animated mesh blobs -->
+    <div class="cover-mesh">
+      <div class="cover-blob cover-blob-1"></div>
+      <div class="cover-blob cover-blob-2"></div>
+      <div class="cover-blob cover-blob-3"></div>
+      <div class="cover-blob cover-blob-4"></div>
+    </div>
+    <!-- Sparkle stars -->
+    <div class="cover-sparkles">
+      <div class="cover-star">✦</div>
+      <div class="cover-star">✦</div>
+      <div class="cover-star">✦</div>
+      <div class="cover-star">✧</div>
+      <div class="cover-star">✦</div>
+      <div class="cover-star">✧</div>
+      <div class="cover-star">✦</div>
+      <div class="cover-star">✧</div>
+    </div>
+    <!-- Orbit rings -->
+    <div class="cover-orbit"></div>
+    <div class="cover-orbit-2"></div>
+    <!-- Floating zodiac signs — 12 icons -->
+    <div class="cover-zodiac cover-zodiac-1"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-1.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-2"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-2.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-3"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-3.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-4"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-4.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-5"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-5.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-6"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-6.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-7"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-7.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-8"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-8.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-9"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-9.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-10"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-10.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-11"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder-11.svg" alt="" loading="eager"></div>
+    <div class="cover-zodiac cover-zodiac-12"><img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/elements/Placeholder.svg" alt="" loading="eager"></div>
+    <!-- Floating rings -->
+    <div class="cover-ring cover-ring-1"></div>
+    <div class="cover-ring cover-ring-2"></div>
+    <div class="cover-ring cover-ring-3"></div>
+    <!-- Glowing orbs — 5 -->
+    <div class="cover-orb cover-orb-1"></div>
+    <div class="cover-orb cover-orb-2"></div>
+    <div class="cover-orb cover-orb-3"></div>
+    <div class="cover-orb cover-orb-4"></div>
+    <div class="cover-orb cover-orb-5"></div>
+    <!-- Constellation patterns -->
+    <div class="cover-constellation cover-constellation-1">
+      <svg viewBox="0 0 200 150" fill="none" stroke="rgba(114,121,251,0.5)" stroke-width="1">
+        <circle cx="30" cy="40" r="3" fill="rgba(114,121,251,0.6)"/><circle cx="80" cy="20" r="2" fill="rgba(114,121,251,0.5)"/><circle cx="140" cy="55" r="3" fill="rgba(114,121,251,0.6)"/><circle cx="170" cy="30" r="2" fill="rgba(114,121,251,0.4)"/><circle cx="100" cy="90" r="2.5" fill="rgba(114,121,251,0.5)"/><circle cx="160" cy="110" r="2" fill="rgba(114,121,251,0.4)"/>
+        <line x1="30" y1="40" x2="80" y2="20"/><line x1="80" y1="20" x2="140" y2="55"/><line x1="140" y1="55" x2="170" y2="30"/><line x1="140" y1="55" x2="100" y2="90"/><line x1="100" y1="90" x2="160" y2="110"/>
+      </svg>
+    </div>
+    <div class="cover-constellation cover-constellation-2">
+      <svg viewBox="0 0 180 120" fill="none" stroke="rgba(236,89,157,0.5)" stroke-width="1">
+        <circle cx="20" cy="60" r="2.5" fill="rgba(236,89,157,0.5)"/><circle cx="70" cy="30" r="2" fill="rgba(236,89,157,0.4)"/><circle cx="120" cy="50" r="3" fill="rgba(236,89,157,0.6)"/><circle cx="90" cy="90" r="2" fill="rgba(236,89,157,0.4)"/><circle cx="150" cy="80" r="2.5" fill="rgba(236,89,157,0.5)"/>
+        <line x1="20" y1="60" x2="70" y2="30"/><line x1="70" y1="30" x2="120" y2="50"/><line x1="120" y1="50" x2="90" y2="90"/><line x1="120" y1="50" x2="150" y2="80"/>
+      </svg>
+    </div>
+
+    <!-- White glow behind text -->
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:1200px;height:700px;background:radial-gradient(ellipse 80% 70% at 50% 30%,rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.6) 30%,transparent 70%);pointer-events:none;z-index:3;"></div>
+
+    <!-- Hero Content -->
+    <div class="cover-hero-content">
+      <div class="cover-hero-title">
+        <svg aria-hidden="true" viewBox="0 0 188.81 161.84"><use href="#mu-logo"/></svg>
+        Calendar
+      </div>
+      <p class="cover-hero-subtitle">ปฏิทินดูแลใจ ที่เข้าใจคุณ</p>
+      <p class="present-hint" style="position:relative;bottom:auto;left:auto;transform:none;margin-top:var(--spacing-4);">
+        กดปุ่ม <kbd>F</kbd> เพื่อเข้าโหมด Present
+      </p>
+    </div>
+
+    <!-- Phone glow -->
+    <div class="cover-phone-glow"></div>
+    <!-- 3 Phone Mockups -->
+    <div class="cover-phone-showcase">
+      <div class="cover-phone cover-phone-left">
+        <img src="images/profile.png" alt="Profile Screen">
+      </div>
+      <div class="cover-phone cover-phone-center">
+        <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:34px;display:block;">
+          <source src="https://natpakans-stack.github.io/Muniverse/Slide/Images/phone-showcase/home-demo.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="cover-phone cover-phone-right">
+        <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/phone-showcase/3.Card%20Result.png" alt="Tarot Result Screen">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 1: WHAT IS DAILY MU      -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-pastel" data-slide="1">
+    <div class="slide-header">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Daily MU &middot; Overview</span>
+    </div>
+
+    <div class="slide-content" style="flex-direction:column;align-items:center;justify-content:flex-start;gap:var(--spacing-5);padding:0 5% 2% !important;">
+      <!-- Header section -->
+      <div class="anim-item" style="text-align:center;max-width:900px;display:flex;flex-direction:column;align-items:center;margin-top:-60px;">
+        <span style="display:inline-block;padding:6px 20px;border-radius:var(--radius-full);border:1.5px solid rgba(0,0,0,0.1);font-size:clamp(14px,1.15cqw,17px);font-weight:600;color:var(--gray-fg-mid-on-white);margin-bottom:clamp(10px,1.2cqw,16px);">What is Daily MU</span>
+        <h2 style="font-size:clamp(30px,3.5cqw,56px);font-weight:800;color:var(--gray-fg-high);line-height:1.3;margin-bottom:clamp(8px,1cqw,14px);">
+          ไม่ใช่แค่แอปดูดวง<br>เราคือ <span style="color:var(--primary-fg-high);position:relative;display:inline-block;">AI Horoscope<svg style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:110%;height:12px;" viewBox="0 0 200 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 8C40 2 80 2 100 4C120 6 160 6 196 2" stroke="#EC599D" stroke-width="3" stroke-linecap="round"/></svg></span>
+        </h2>
+        <p style="font-size:clamp(14px,1.2cqw,18px);color:var(--gray-fg-mid-on-white);line-height:1.6;">
+          รวมทั้งดวงรายวัน ไพ่ทาโร่ เซียมซี ทำนายฝัน และศาสตร์ปาจื่อ ไว้ในแอปเดียวที่เข้าใจคุณ
+        </p>
+      </div>
+
+      <!-- Character peeking -->
+      <div class="anim-item" style="display:flex;justify-content:center;margin-bottom:-74px;z-index:5;pointer-events:none;">
+        <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week02/Asset/DailyMu_Login_Character.png" alt="" style="width:400px;height:auto;">
+      </div>
+
+      <!-- 3 Feature cards -->
+      <div class="anim-item" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-5);max-width:1200px;width:100%;">
+          <!-- Card 1 -->
+          <div style="background:rgba(255,255,255,0.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.6);border-radius:var(--radius-xl);padding:clamp(28px,3cqw,44px) clamp(20px,2cqw,32px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:clamp(12px,1.2cqw,20px);">
+            <div style="width:clamp(60px,5.5cqw,80px);height:clamp(60px,5.5cqw,80px);border-radius:50%;background:#FDE8D8;display:flex;align-items:center;justify-content:center;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1B1D22" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <h3 style="font-size:clamp(16px,1.4cqw,22px);font-weight:700;color:var(--gray-fg-high);">ดวงเฉพาะบุคคล</h3>
+            <p style="font-size:clamp(14px,1.15cqw,17px);color:var(--gray-fg-mid-on-white);line-height:1.65;">ไม่ใช่แค่ 12 ราศี แต่วิเคราะห์จากวัน-เวลา-สถานที่เกิด ให้คำแนะนำที่ตรงกับชีวิตจริงของคุณ</p>
+          </div>
+
+          <!-- Card 2 — highlighted with top border -->
+          <div style="background:rgba(255,255,255,0.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.6);border-top:3px solid var(--primary-fg-high);border-radius:var(--radius-xl);padding:clamp(28px,3cqw,44px) clamp(20px,2cqw,32px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:clamp(12px,1.2cqw,20px);">
+            <div style="width:clamp(60px,5.5cqw,80px);height:clamp(60px,5.5cqw,80px);border-radius:50%;background:#FDE8D8;display:flex;align-items:center;justify-content:center;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1B1D22" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C12 2 4.5 8 4.5 14a7.5 7.5 0 0015 0c0-6-7.5-12-7.5-12z"/><path d="M12 18v-6"/><path d="M9 15l3-3 3 3"/></svg>
+            </div>
+            <h3 style="font-size:clamp(16px,1.4cqw,22px);font-weight:700;color:var(--gray-fg-high);">AI วิเคราะห์ให้ทันที</h3>
+            <p style="font-size:clamp(14px,1.15cqw,17px);color:var(--gray-fg-mid-on-white);line-height:1.65;">เปิดไพ่ทาโร่ เขย่าเซียมซี เล่าฝัน — AI สรุปผลลัพธ์ให้อ่านง่าย พร้อมคำแนะนำที่ใช้ได้จริง</p>
+          </div>
+
+          <!-- Card 3 -->
+          <div style="background:rgba(255,255,255,0.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.6);border-radius:var(--radius-xl);padding:clamp(28px,3cqw,44px) clamp(20px,2cqw,32px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:clamp(12px,1.2cqw,20px);">
+            <div style="width:clamp(60px,5.5cqw,80px);height:clamp(60px,5.5cqw,80px);border-radius:50%;background:#FDE8D8;display:flex;align-items:center;justify-content:center;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1B1D22" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <h3 style="font-size:clamp(16px,1.4cqw,22px);font-weight:700;color:var(--gray-fg-high);">อยู่กับคุณทุกเช้า</h3>
+            <p style="font-size:clamp(14px,1.15cqw,17px);color:var(--gray-fg-mid-on-white);line-height:1.65;">อัปเดตพลังดวงทุกวัน สีมงคล เลขนำโชค ปฏิทินมงคล เริ่มต้นวันอย่างมั่นใจ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 2: AGENDA                -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-violet" data-slide="2">
+    <div class="slide-header">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Daily MU &middot; ThinkTank</span>
+    </div>
+
+    <div class="slide-content two-col" style="align-items:flex-start;padding-top:2%;">
+      <div class="col-text anim-left" style="justify-content:flex-start;">
+        <div class="section-tag">
+          <div class="dot" style="background:var(--secondary-fg-high);"></div>
+          <span class="text-secondary">Overview</span>
+        </div>
+        <h2 class="title-lg">Agenda</h2>
+        <p class="body-md text-secondary">สิ่งที่จะพูดวันนี้</p>
+
+        <div class="agenda-list">
+          <div class="agenda-card">
+            <div class="agenda-num">1</div>
+            <div class="agenda-text">
+              <div class="agenda-title">Problem &amp; Solution</div>
+              <div class="agenda-desc">ปัญหาที่เราเห็น และวิธีแก้ด้วย DailyMu</div>
+            </div>
+          </div>
+          <div class="agenda-card">
+            <div class="agenda-num">2</div>
+            <div class="agenda-text">
+              <div class="agenda-title">How It Works</div>
+              <div class="agenda-desc">ขั้นตอนการใช้งาน และฟีเจอร์หลัก</div>
+            </div>
+          </div>
+          <div class="agenda-card">
+            <div class="agenda-num">3</div>
+            <div class="agenda-text">
+              <div class="agenda-title">Key Features</div>
+              <div class="agenda-desc">ดูดวง, ไพ่ทาโร่, ทำนายฝัน, เซียมซี, โปรไฟล์</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-visual anim-right anim-delay" style="align-self:flex-end;">
+        <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Asset/01-OnBoadinging/Comp%201.gif" alt="Onboarding Character" style="max-height:72cqh;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 3: PROBLEM               -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-pastel" data-slide="3">
+    <div class="deco-circle" style="width:420px;height:420px;background:var(--primary-border-mid);top:-120px;right:-100px;"></div>
+    <div class="deco-circle" style="width:300px;height:300px;background:var(--secondary-border-mid);bottom:-80px;left:-80px;"></div>
+    <div class="deco-circle" style="width:180px;height:180px;background:var(--support-violet-bg-mid);top:40%;left:-40px;"></div>
+    <div class="deco-dots" style="top:15%;left:5%;"></div>
+    <div class="deco-dots" style="bottom:18%;right:6%;"></div>
+
+    <!-- Character: bottom left -->
+    <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week03/Asset/ShareSocialMedia_%E0%B8%9B%E0%B8%B5%E0%B8%99%E0%B8%9C%E0%B8%B2%201.png" alt="Climbing Character" style="position:absolute;bottom:0;left:0;height:128%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.1));z-index:1;">
+
+    <!-- Right: Problem Content -->
+    <div class="cover-content anim-right" style="align-items:flex-start;text-align:left;padding-left:45%;padding-right:5%;gap:var(--spacing-4);">
+      <div class="section-tag">
+        <div class="dot" style="background:var(--support-orange-fg-low);"></div>
+        <span style="font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--support-orange-fg-low);font-size:clamp(14px,1.1cqw,16px);">PROBLEM</span>
+      </div>
+
+      <h2 class="title-lg">ปัญหาที่เราเห็น</h2>
+      <p class="body-md text-secondary" style="max-width:500px;">ดวงรายวันแบบเดิมๆ ไม่ตอบโจทย์ผู้ใช้ยุคใหม่</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-4);margin-top:var(--spacing-3);width:100%;">
+        <!-- Card 1 -->
+        <div style="background:linear-gradient(135deg,rgba(255,255,255,0.95),rgba(255,237,213,0.3));border-radius:var(--radius-xl);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-md);display:flex;align-items:flex-start;gap:var(--spacing-4);border:1px solid rgba(255,165,0,0.12);">
+          <div style="flex-shrink:0;width:clamp(40px,3cqw,48px);height:clamp(40px,3cqw,48px);border-radius:var(--radius-lg);background:linear-gradient(135deg,#FF8C00,#FFA940);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(255,140,0,0.3);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <h4 style="font-size:clamp(14px,1.2cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">กระจัดกระจาย</h4>
+            <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">ดูดวง ไพ่ทาโร่ ปฏิทินมงคล อยู่คนละที่ ต้องเปิดหลายแอป</p>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div style="background:linear-gradient(135deg,rgba(255,255,255,0.95),rgba(237,233,254,0.3));border-radius:var(--radius-xl);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-md);display:flex;align-items:flex-start;gap:var(--spacing-4);border:1px solid rgba(114,121,251,0.12);">
+          <div style="flex-shrink:0;width:clamp(40px,3cqw,48px);height:clamp(40px,3cqw,48px);border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--secondary-fg-high),#9B8AFB);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(114,121,251,0.3);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <h4 style="font-size:clamp(14px,1.2cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">เนื้อหาซ้ำซาก</h4>
+            <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">คำทำนายคลุมเครือ ใช้ได้กับทุกวัน ไม่มีคำแนะนำที่นำไปทำได้จริง</p>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div style="background:linear-gradient(135deg,rgba(255,255,255,0.95),rgba(252,231,243,0.3));border-radius:var(--radius-xl);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-md);display:flex;align-items:flex-start;gap:var(--spacing-4);border:1px solid rgba(236,89,157,0.12);">
+          <div style="flex-shrink:0;width:clamp(40px,3cqw,48px);height:clamp(40px,3cqw,48px);border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary-fg-high),#F472B6);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(236,89,157,0.3);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <h4 style="font-size:clamp(14px,1.2cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">ขาดบริบทส่วนตัว</h4>
+            <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">ไม่รู้จักผู้ใช้ ไม่รู้วันเกิด ธาตุ หรือสิ่งที่สนใจ ทำนายแบบเหมาโหล</p>
+          </div>
+        </div>
+        <!-- Card 4 -->
+        <div style="background:linear-gradient(135deg,rgba(255,255,255,0.95),rgba(219,234,254,0.3));border-radius:var(--radius-xl);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-md);display:flex;align-items:flex-start;gap:var(--spacing-4);border:1px solid rgba(59,130,246,0.12);">
+          <div style="flex-shrink:0;width:clamp(40px,3cqw,48px);height:clamp(40px,3cqw,48px);border-radius:var(--radius-lg);background:linear-gradient(135deg,#3B82F6,#60A5FA);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(59,130,246,0.3);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <h4 style="font-size:clamp(14px,1.2cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">ขาดแรงจูงใจกลับมาใช้</h4>
+            <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">ดูดวงแล้วจบ ไม่มีเหตุผลให้กลับมาใช้ซ้ำทุกวัน</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 3: SOLUTION              -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-violet" data-slide="4">
+    <div class="slide-header">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Daily MU &middot; Solution</span>
+    </div>
+
+    <div class="slide-content two-col" style="align-items:center;">
+      <div class="col-text anim-left">
+        <div class="section-tag">
+          <div class="dot" style="background:var(--support-green-fg-low);"></div>
+          <span style="font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--support-green-fg-low);font-size:clamp(14px,1.1cqw,16px);">SOLUTION</span>
+        </div>
+        <h2 class="title-lg">AI ให้คำแนะนำที่ <span class="gradient-text">เฉพาะคุณ</span></h2>
+        <p class="body-md text-secondary">Daily MU ใช้ AI วิเคราะห์ข้อมูลส่วนตัว + ดวงชะตา แล้วสรุปผลให้อ่านง่าย</p>
+
+        <div style="display:flex;flex-direction:column;gap:var(--spacing-4);margin-top:var(--spacing-4);">
+          <!-- Card 1 -->
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-xl);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-md);display:flex;align-items:flex-start;gap:var(--spacing-4);border:1px solid rgba(114,121,251,0.12);">
+            <div style="flex-shrink:0;width:clamp(40px,3cqw,48px);height:clamp(40px,3cqw,48px);border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--secondary-fg-high),#9B8AFB);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(114,121,251,0.25);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <h4 style="font-size:clamp(14px,1.3cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">Personalized Horoscope</h4>
+              <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">อ่านจากวัน-เวลา-สถานที่เกิด + โปรไฟล์ ให้ดวงเฉพาะตัว</p>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-xl);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-md);display:flex;align-items:flex-start;gap:var(--spacing-4);border:1px solid rgba(236,89,157,0.12);">
+            <div style="flex-shrink:0;width:clamp(40px,3cqw,48px);height:clamp(40px,3cqw,48px);border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary-fg-high),#F472B6);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(236,89,157,0.25);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C12 2 4.5 8 4.5 14a7.5 7.5 0 0015 0c0-6-7.5-12-7.5-12z"/><path d="M12 18v-6"/><path d="M9 15l3-3 3 3"/></svg>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <h4 style="font-size:clamp(14px,1.3cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">AI-Driven Insights</h4>
+              <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">ประมวลผลข้อมูลจริง ให้คำแนะนำที่นำไปใช้ได้เลย</p>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-xl);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-md);display:flex;align-items:flex-start;gap:var(--spacing-4);border:1px solid rgba(59,130,246,0.12);">
+            <div style="flex-shrink:0;width:clamp(40px,3cqw,48px);height:clamp(40px,3cqw,48px);border-radius:var(--radius-lg);background:linear-gradient(135deg,#3B82F6,#60A5FA);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(59,130,246,0.25);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <h4 style="font-size:clamp(14px,1.3cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">Privacy First</h4>
+              <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">ข้อมูลถูกเข้ารหัส ไม่แชร์กับบุคคลที่สาม ผู้ใช้ควบคุมทุกอย่าง</p>
+            </div>
+          </div>
+          <!-- Card 4 -->
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-xl);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-md);display:flex;align-items:flex-start;gap:var(--spacing-4);border:1px solid rgba(34,197,94,0.12);">
+            <div style="flex-shrink:0;width:clamp(40px,3cqw,48px);height:clamp(40px,3cqw,48px);border-radius:var(--radius-lg);background:linear-gradient(135deg,#22C55E,#4ADE80);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(34,197,94,0.25);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <h4 style="font-size:clamp(14px,1.3cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">All-in-One Platform</h4>
+              <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">ดูดวง ไพ่ทาโร่ เซียมซี ทำนายฝัน ปฏิทินมงคล รวมไว้ที่เดียว</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: App Mockup -->
+      <div class="col-visual anim-right anim-delay" style="display:flex;align-items:center;justify-content:center;">
+        <img src="app-mockup.png" alt="DailyMu App Mockup" style="max-height:70cqh;width:auto;object-fit:contain;filter:drop-shadow(0 16px 40px rgba(114,121,251,0.2));">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 4: HOW IT WORKS          -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-cool" data-slide="5">
+    <div class="slide-header">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Daily MU &middot; How It Works</span>
+    </div>
+
+    <div class="slide-content two-col">
+      <div class="col-text anim-left">
+        <div class="section-tag">
+          <div class="dot" style="background:var(--support-sky-fg-low);"></div>
+          <span style="font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--support-sky-fg-low);font-size:clamp(14px,1.1cqw,16px);">HOW IT WORKS</span>
+        </div>
+        <h2 class="title-lg">ทำงานอย่างไร?</h2>
+        <p class="body-md text-secondary">จากข้อมูลผู้ใช้ สู่คำแนะนำรายวัน</p>
+
+        <div style="display:flex;flex-direction:column;gap:var(--spacing-4);margin-top:var(--spacing-4);">
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:var(--spacing-4);">
+            <div style="width:clamp(36px,3cqw,44px);height:clamp(36px,3cqw,44px);border-radius:50%;background:var(--primary-fg-high);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(14px,1.3cqw,20px);font-weight:800;flex-shrink:0;">1</div>
+            <div>
+              <h4 style="font-size:clamp(14px,1.3cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">สร้างโปรไฟล์</h4>
+              <p class="body-sm text-secondary">ผู้ใช้กรอกข้อมูลเกิด ความสนใจ เป้าหมาย</p>
+            </div>
+          </div>
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:var(--spacing-4);">
+            <div style="width:clamp(36px,3cqw,44px);height:clamp(36px,3cqw,44px);border-radius:50%;background:var(--secondary-fg-high);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(14px,1.3cqw,20px);font-weight:800;flex-shrink:0;">2</div>
+            <div>
+              <h4 style="font-size:clamp(14px,1.3cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">AI วิเคราะห์</h4>
+              <p class="body-sm text-secondary">AI อ่านข้อมูลโปรไฟล์ + ดวงชะตาประจำวัน</p>
+            </div>
+          </div>
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:var(--spacing-4);">
+            <div style="width:clamp(36px,3cqw,44px);height:clamp(36px,3cqw,44px);border-radius:50%;background:var(--support-sky-fg-low);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(14px,1.3cqw,20px);font-weight:800;flex-shrink:0;">3</div>
+            <div>
+              <h4 style="font-size:clamp(14px,1.3cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">สร้าง Insight</h4>
+              <p class="body-sm text-secondary">ประมวลผลเป็นคำแนะนำเฉพาะบุคคล</p>
+            </div>
+          </div>
+          <div style="background:var(--gray-bg-white);border-radius:var(--radius-lg);padding:var(--spacing-5) var(--spacing-6);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:var(--spacing-4);">
+            <div style="width:clamp(36px,3cqw,44px);height:clamp(36px,3cqw,44px);border-radius:50%;background:var(--support-green-fg-low);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(14px,1.3cqw,20px);font-weight:800;flex-shrink:0;">4</div>
+            <div>
+              <h4 style="font-size:clamp(14px,1.3cqw,18px);font-weight:700;color:var(--gray-fg-high);margin-bottom:2px;">แนะนำรายวัน</h4>
+              <p class="body-sm text-secondary">ผู้ใช้เปิดแอป เจอคำแนะนำที่ใช้ได้ทันที</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-visual anim-right anim-delay">
+        <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week02/Asset/DailyMu_Character_02.png" alt="Character Search" style="max-height:550px;width:auto;object-fit:contain;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 5: KEY FEATURES          -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-pastel" data-slide="6">
+    <div class="slide-header">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Daily MU &middot; Key Features</span>
+    </div>
+
+    <div class="slide-content" style="flex-direction:column;align-items:center;justify-content:flex-start;gap:var(--spacing-4);padding:0 5% 0 !important;margin-top:-160px;">
+      <div class="anim-item" style="text-align:center;">
+        <div class="section-tag" style="justify-content:center;">
+          <div class="dot" style="background:var(--primary-fg-high);"></div>
+          <span style="font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--primary-fg-high);font-size:clamp(14px,1.1cqw,16px);">KEY FEATURES</span>
+        </div>
+        <h2 class="title-lg" style="margin-top:var(--spacing-2);margin-bottom:var(--spacing-6);">ฟีเจอร์หลักใน <span class="gradient-text">Daily MU</span></h2>
+      </div>
+
+      <div class="anim-item" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-5);max-width:1200px;width:100%;">
+        <!-- Card 1: Home Dashboard -->
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;border:1px solid var(--gray-bg-midgray);transition:transform 0.3s ease,box-shadow 0.3s ease;">
+          <div style="position:relative;width:100%;height:clamp(180px,25cqh,280px);background:linear-gradient(135deg,var(--secondary-bg-lowest),var(--primary-bg-lowest));border-bottom:1px dashed rgba(114,121,251,0.2);display:flex;align-items:flex-start;justify-content:center;overflow:hidden;flex-shrink:0;padding:0;">
+            <img src="images/main-screen.png" alt="Home Dashboard" style="width:100%;height:100%;object-fit:cover;object-position:top;transition:transform 0.4s ease;">
+          </div>
+          <div style="padding:var(--spacing-3) var(--spacing-5) var(--spacing-4);flex:1;display:flex;flex-direction:column;">
+            <h3 style="font-size:clamp(14px,1.4cqw,20px);font-weight:700;color:var(--gray-fg-high);margin-bottom:4px;">Home Dashboard</h3>
+            <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">หน้าหลักพร้อม AI Summary Card ดวงรายวัน แนะนำสีมงคล และทักทายตามช่วงเวลา</p>
+          </div>
+        </div>
+
+        <!-- Card 2: ดูดวงรายวัน -->
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;border:1px solid var(--gray-bg-midgray);transition:transform 0.3s ease,box-shadow 0.3s ease;">
+          <div style="position:relative;width:100%;height:clamp(180px,25cqh,280px);background:linear-gradient(135deg,var(--primary-bg-lowest),var(--secondary-bg-lowest));border-bottom:1px dashed rgba(114,121,251,0.2);display:flex;align-items:flex-start;justify-content:center;overflow:hidden;flex-shrink:0;padding:0;">
+            <img src="images/ai-powered.png" alt="Daily Horoscope" style="width:100%;height:100%;object-fit:cover;object-position:top;transition:transform 0.4s ease;">
+          </div>
+          <div style="padding:var(--spacing-3) var(--spacing-5) var(--spacing-4);flex:1;display:flex;flex-direction:column;">
+            <h3 style="font-size:clamp(14px,1.4cqw,20px);font-weight:700;color:var(--gray-fg-high);margin-bottom:4px;">ดูดวงรายวัน</h3>
+            <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">ดวงรายวันตามราศี AI วิเคราะห์สรุป พร้อมแนะนำสีมงคลประจำวัน</p>
+          </div>
+        </div>
+
+        <!-- Card 3: ไพ่ทาโร่ -->
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;border:1px solid var(--gray-bg-midgray);transition:transform 0.3s ease,box-shadow 0.3s ease;">
+          <div style="position:relative;width:100%;height:clamp(180px,25cqh,280px);background:linear-gradient(135deg,var(--secondary-bg-lowest),#E6F6FC);border-bottom:1px dashed rgba(114,121,251,0.2);display:flex;align-items:flex-start;justify-content:center;overflow:hidden;flex-shrink:0;padding:0;">
+            <img src="images/22-cards.png" alt="Tarot" style="width:100%;height:100%;object-fit:cover;object-position:top;transition:transform 0.4s ease;">
+          </div>
+          <div style="padding:var(--spacing-3) var(--spacing-5) var(--spacing-4);flex:1;display:flex;flex-direction:column;">
+            <h3 style="font-size:clamp(14px,1.4cqw,20px);font-weight:700;color:var(--gray-fg-high);margin-bottom:4px;">ไพ่ทาโร่</h3>
+            <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">ไพ่ Major Arcana 22 ใบ พร้อมคำทำนาย และหน้า Detail ความหมายเชิงลึก</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="anim-item" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-5);max-width:1200px;width:100%;">
+        <!-- Card 4: เซียมซี -->
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;border:1px solid var(--gray-bg-midgray);transition:transform 0.3s ease,box-shadow 0.3s ease;">
+          <div style="position:relative;width:100%;height:clamp(180px,25cqh,280px);background:linear-gradient(135deg,#E6F6FC,var(--secondary-bg-lowest));border-bottom:1px dashed rgba(114,121,251,0.2);display:flex;align-items:flex-start;justify-content:center;overflow:hidden;flex-shrink:0;padding:0;">
+            <img src="images/interactive.png" alt="Siam Si" style="width:100%;height:100%;object-fit:cover;object-position:top;transition:transform 0.4s ease;">
+          </div>
+          <div style="padding:var(--spacing-3) var(--spacing-5) var(--spacing-4);flex:1;display:flex;flex-direction:column;">
+            <h3 style="font-size:clamp(14px,1.4cqw,20px);font-weight:700;color:var(--gray-fg-high);margin-bottom:4px;">เซียมซี</h3>
+            <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">เขย่ากระบอกเซียมซี animation ไม้เซียมซี แสดงผลเป็นการ์ดคำทำนาย</p>
+          </div>
+        </div>
+
+        <!-- Card 5: ทำนายฝัน -->
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;border:1px solid var(--gray-bg-midgray);transition:transform 0.3s ease,box-shadow 0.3s ease;">
+          <div style="position:relative;width:100%;height:clamp(180px,25cqh,280px);background:linear-gradient(135deg,var(--primary-bg-lowest),#FEF9EB);border-bottom:1px dashed rgba(114,121,251,0.2);display:flex;align-items:flex-start;justify-content:center;overflow:hidden;flex-shrink:0;padding:0;">
+            <img src="images/ai-dream.png" alt="Dream" style="width:100%;height:100%;object-fit:cover;object-position:top;transition:transform 0.4s ease;">
+          </div>
+          <div style="padding:var(--spacing-3) var(--spacing-5) var(--spacing-4);flex:1;display:flex;flex-direction:column;">
+            <h3 style="font-size:clamp(14px,1.4cqw,20px);font-weight:700;color:var(--gray-fg-high);margin-bottom:4px;">ทำนายฝัน</h3>
+            <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">เล่าความฝัน ให้ AI วิเคราะห์ความหมายและตีความเชิงลึก พร้อมคำแนะนำ</p>
+          </div>
+        </div>
+
+        <!-- Card 6: โปรไฟล์ -->
+        <div style="background:var(--gray-bg-white);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;border:1px solid var(--gray-bg-midgray);transition:transform 0.3s ease,box-shadow 0.3s ease;">
+          <div style="position:relative;width:100%;height:clamp(180px,25cqh,280px);background:linear-gradient(135deg,var(--primary-bg-lowest),var(--secondary-bg-lowest));border-bottom:1px dashed rgba(114,121,251,0.2);display:flex;align-items:flex-start;justify-content:center;overflow:hidden;flex-shrink:0;padding:0;">
+            <img src="images/profile-settings.png" alt="Profile" style="width:100%;height:100%;object-fit:cover;object-position:top;transition:transform 0.4s ease;">
+          </div>
+          <div style="padding:var(--spacing-3) var(--spacing-5) var(--spacing-4);flex:1;display:flex;flex-direction:column;">
+            <h3 style="font-size:clamp(14px,1.4cqw,20px);font-weight:700;color:var(--gray-fg-high);margin-bottom:4px;">โปรไฟล์ &amp; ตั้งค่า</h3>
+            <p style="font-size:clamp(14px,1cqw,15px);color:var(--gray-fg-mid-on-white);line-height:1.5;">จัดการโปรไฟล์ แก้ไขข้อมูลส่วนตัว ศูนย์ช่วยเหลือ และการตั้งค่าแอป</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 6: DAILY HOROSCOPE DEEP  -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-violet" data-slide="7">
+    <div class="slide-header" style="padding-bottom:0;">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Daily MU &middot; ดวงรายวัน &amp; ปฏิทินมงคล — Screenshots</span>
+    </div>
+
+    <div class="slide-content" style="flex-direction:column;align-items:center;justify-content:flex-start;gap:clamp(16px,1.5cqw,24px);padding:1% 4% 0;">
+      <!-- Title -->
+      <div class="anim-item" style="text-align:center;">
+        <h2 style="font-size:clamp(28px,3cqw,48px);font-weight:800;color:var(--secondary-fg-high);line-height:1.2;">ดวงรายวัน <span style="color:var(--gray-fg-low-on-white);font-size:0.5em;vertical-align:middle;">&#10038;</span> ปฏิทินมงคล</h2>
+        <p class="body-md text-secondary" style="margin-top:var(--spacing-2);">อัปเดตพลังดวงทุกวัน พร้อมปฏิทินวันมงคลรายเดือน</p>
+      </div>
+
+      <!-- 4 Phones row -->
+      <div class="anim-item" style="display:flex;align-items:flex-end;justify-content:center;gap:clamp(56px,5cqw,80px);">
+        <!-- Phone 1: ดวงรายวัน -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);">
+          <div style="width:clamp(160px,14cqw,250px);aspect-ratio:9/19.5;border-radius:clamp(14px,1.4cqw,24px);background:#fff;padding:clamp(3px,0.35cqw,5px);box-shadow:0 16px 48px rgba(114,121,251,0.12),0 4px 12px rgba(0,0,0,0.06);overflow:hidden;">
+            <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week02/Screenshots/Calendar%20%E2%80%94%20UI%20Screenshots1.png" alt="ดวงรายวัน" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:clamp(11px,1.1cqw,19px);">
+          </div>
+          <span style="font-size:clamp(12px,1cqw,16px);font-weight:600;color:var(--gray-fg-mid-on-white);">พลังงานอยู่ในจุดสมดุล</span>
+        </div>
+
+        <!-- Phone 2: ดวงวันประกาย -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);">
+          <div style="width:clamp(160px,14cqw,250px);aspect-ratio:9/19.5;border-radius:clamp(14px,1.4cqw,24px);background:#fff;padding:clamp(3px,0.35cqw,5px);box-shadow:0 16px 48px rgba(114,121,251,0.12),0 4px 12px rgba(0,0,0,0.06);overflow:hidden;">
+            <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week02/Screenshots/Calendar%20%E2%80%94%20UI%20Screenshots4.png" alt="ดวงวันประกาย" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:clamp(11px,1.1cqw,19px);">
+          </div>
+          <span style="font-size:clamp(12px,1cqw,16px);font-weight:600;color:var(--gray-fg-mid-on-white);">ดวงวันประกาย</span>
+        </div>
+
+        <!-- Phone 3: วันที่ควรระวัง -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);">
+          <div style="width:clamp(160px,14cqw,250px);aspect-ratio:9/19.5;border-radius:clamp(14px,1.4cqw,24px);background:#fff;padding:clamp(3px,0.35cqw,5px);box-shadow:0 16px 48px rgba(114,121,251,0.12),0 4px 12px rgba(0,0,0,0.06);overflow:hidden;">
+            <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week02/Screenshots/Calendar%20%E2%80%94%20UI%20Screenshots2.png" alt="วันที่ควรระวัง" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:clamp(11px,1.1cqw,19px);">
+          </div>
+          <span style="font-size:clamp(12px,1cqw,16px);font-weight:600;color:var(--gray-fg-mid-on-white);">วันที่ควรระวัง</span>
+        </div>
+
+        <!-- Phone 4: ปฏิทินรายเดือน -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);">
+          <div style="width:clamp(160px,14cqw,250px);aspect-ratio:9/19.5;border-radius:clamp(14px,1.4cqw,24px);background:#fff;padding:clamp(3px,0.35cqw,5px);box-shadow:0 16px 48px rgba(114,121,251,0.12),0 4px 12px rgba(0,0,0,0.06);overflow:hidden;">
+            <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week02/Screenshots/Calendar%20%E2%80%94%20UI%20Screenshots3.png" alt="ปฏิทินรายเดือน" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:clamp(11px,1.1cqw,19px);">
+          </div>
+          <span style="font-size:clamp(12px,1cqw,16px);font-weight:600;color:var(--gray-fg-mid-on-white);">ปฏิทินรายเดือน</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 7: TAROT                 -->
+  <!-- ============================== -->
+  <div class="slide slide-tarot" data-slide="8">
+    <div class="slide-header">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Daily MU &middot; Tarot</span>
+    </div>
+    <div class="tarot-sparkle tarot-sparkle-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255,255,255,0.5)"/></svg></div>
+    <div class="tarot-sparkle tarot-sparkle-2"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255,255,255,0.6)"/></svg></div>
+    <div class="tarot-sparkle tarot-sparkle-3"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255,255,255,0.4)"/></svg></div>
+    <div class="tarot-sparkle tarot-sparkle-4"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255,255,255,0.35)"/></svg></div>
+    <div class="tarot-sparkle tarot-sparkle-5"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255,255,255,0.45)"/></svg></div>
+
+    <div class="slide-content" style="flex-direction:column;align-items:center;justify-content:center;gap:var(--spacing-5);position:relative;z-index:1;margin-top:-300px;">
+      <div class="anim-item" style="text-align:center;">
+        <h2 style="font-size:clamp(28px,3cqw,48px);font-weight:700;color:#fff;line-height:1.2;">ไพ่ทาโร่ <span style="color:rgba(255,255,255,0.7);margin:0 8px;font-size:0.6em;">✦</span> โฉมใหม่</h2>
+        <p style="font-size:clamp(14px,1.2cqw,18px);color:rgba(255,255,255,0.55);line-height:1.8;max-width:600px;margin:0 auto;">ศาสตร์โบราณที่เราตีความใหม่ให้ทันสมัย ร่วมยุค AI — สนุกไปกับคาแรกเตอร์สุดน่ารัก</p>
+      </div>
+      <div class="slide-card-stack anim-item" id="slide-tarot-cards"></div>
+    </div>
+    <!-- Card Hand decoration at bottom -->
+    <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week02/Asset/Card-Hand.png" alt="Tarot Card Hand" style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:110%;max-height:340px;object-fit:contain;pointer-events:none;z-index:0;">
+  </div>
+  <script>
+    (function(){
+      const imgs = ['01_TheFool.png','02_TheMagician.png','03_TheHighPriestess.png','04_TheEmpress.png','05_TheEmperor.png','06_TheHierophant.png','07_TheLovers.png','08_TheChariot.png','09_Strength.png','10_TheHermit.png','11_TheHermit.png','12_Justice.png','13_TheHangedMan.png','14_Death.png','15_Temperance.png','16_TheDevil.png','17_TheTower.png','18_TheStar.png','19_TheMoon.png','20_TheSun.png','21_Judgement.png','22_TheWorld.png'];
+      const base = 'https://natpakans-stack.github.io/Muniverse/Slide/Images/Week02/Card/';
+      const area = document.getElementById('slide-tarot-cards');
+      if(!area) return;
+      imgs.forEach(img => {
+        const c = document.createElement('div'); c.className = 'slide-card-3d';
+        c.innerHTML = '<div class="slide-card-inner"><div class="slide-card-face back"><img src="'+base+'00_Card.png" alt="Back"></div><div class="slide-card-face front"><img src="'+base+img+'" alt="'+img.replace(/^\d+_/,'').replace('.png','')+'"></div></div>';
+        area.appendChild(c);
+      });
+      function triggerWaveFlip(){
+        const cards = area.querySelectorAll('.slide-card-3d'), center = Math.floor(cards.length/2);
+        cards.forEach((card,i) => { card.classList.remove('wave-open','wave-close');
+          const d = Math.abs(i-center)*80;
+          setTimeout(()=>card.classList.add('wave-open'), 300+d);
+          setTimeout(()=>{card.classList.remove('wave-open');card.classList.add('wave-close');}, 3000+d);
+          setTimeout(()=>card.classList.remove('wave-close'), 5500);
+        });
+      }
+      const ts = area.closest('.slide');
+      if(ts) new MutationObserver(()=>{if(ts.classList.contains('active'))triggerWaveFlip();}).observe(ts,{attributes:true,attributeFilter:['class']});
+    })();
+  </script>
+
+  <!-- ============================== -->
+  <!-- SLIDE 9: ไพ่ทาโร่ Screenshots   -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-pastel" data-slide="9">
+    <div class="slide-header">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Outcome A &middot; ไพ่ทาโร่ &mdash; Screenshots</span>
+    </div>
+
+    <div class="slide-content" style="flex-direction:column;align-items:center;justify-content:flex-start;gap:clamp(32px,3.5cqw,56px);padding:0 5% 2%;">
+      <div class="anim-item" style="text-align:center;">
+        <h2 style="font-size:clamp(24px,2.5cqw,40px);font-weight:800;color:var(--secondary-fg-high);line-height:1.2;">ไพ่ทาโร่ <span style="color:var(--gray-fg-low-on-white);font-size:0.5em;vertical-align:middle;">&#10038;</span> Screenshots</h2>
+      </div>
+      <div class="screenshot-grid" style="gap:var(--spacing-8);">
+        <div class="screenshot-item">
+          <div class="phone-mockup">
+            <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week03/Screenshots/Tarot/UI-01.png" alt="Tarot UI-01">
+          </div>
+          <span class="screenshot-label">หน้าเลือกไพ่</span>
+        </div>
+        <div class="screenshot-item">
+          <div class="phone-mockup">
+            <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week03/Screenshots/Tarot/UI-02.png" alt="Tarot UI-02">
+          </div>
+          <span class="screenshot-label">เลือกไพ่ 3 ใบ</span>
+        </div>
+        <div class="screenshot-item">
+          <div class="phone-mockup">
+            <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week03/Screenshots/Tarot/UI-03.png" alt="Tarot UI-03">
+          </div>
+          <span class="screenshot-label">ผลการทำนาย</span>
+        </div>
+        <div class="screenshot-item">
+          <div class="phone-mockup">
+            <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week03/Screenshots/Tarot/UI-04.png" alt="Tarot UI-04">
+          </div>
+          <span class="screenshot-label">รายละเอียดไพ่</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 10: เซียมซี (Combined)   -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-violet" data-slide="10">
+    <div class="slide-header">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Outcome B &middot; เซียมซี</span>
+    </div>
+
+    <!-- Character behind phone, pinned to right edge -->
+    <img src="https://natpakans-stack.github.io/Muniverse/Preview/siam-si/MicroService_FortuneSticks_Character.png" alt="Fortune Sticks Character" style="position:absolute;bottom:0;right:0;height:86%;max-height:none;object-fit:contain;pointer-events:none;z-index:1;">
+
+    <!-- Live demo phone (absolute, centered) -->
+    <div style="position:absolute;top:50%;left:55%;transform:translate(-50%,-50%);z-index:2;">
+      <div class="live-demo-phone">
+        <iframe src="https://natpakans-stack.github.io/Muniverse/Preview/siam-si/siam-si.html" title="เซียมซี Live Demo" loading="lazy" allow="autoplay"></iframe>
+      </div>
+    </div>
+
+    <!-- Left: Detail info (in flow) -->
+    <div class="slide-content two-col" style="position:relative;z-index:3;">
+      <div class="col-text anim-left" style="flex:0.45;">
+        <div class="section-tag">
+          <div class="dot" style="background:var(--secondary-fg-high);"></div>
+          <span class="text-secondary">Outcome B</span>
+        </div>
+        <h2 class="title-lg">เซียมซี</h2>
+        <p class="body-md text-secondary">UI + Mechanic เขย่าเซียมซีดิจิทัล</p>
+
+        <ul class="bullet-list secondary">
+          <li><strong>Shake Mechanic</strong> &mdash; เขย่ามือถือ / กดค้างเขย่า</li>
+          <li><strong>Stick Animation</strong> &mdash; ตะเกียบตก + เลขปรากฏ</li>
+          <li><strong>Result Card</strong> &mdash; แสดงผลเซียมซีพร้อมคำทำนาย</li>
+          <li><strong>Fortune Stick</strong> &mdash; UI ตะเกียบเซียมซี</li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 11: ทำนายฝัน (Combined)  -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-warm" data-slide="11">
+    <div class="slide-header">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Outcome C &middot; ทำนายฝัน</span>
+    </div>
+
+    <!-- Character behind, pinned to right-bottom (decorative) -->
+    <img src="https://natpakans-stack.github.io/Muniverse/Slide/Images/Week03/Asset/image%20698.png" alt="Dream Character" style="position:absolute;bottom:0;right:0;height:42%;max-height:none;object-fit:contain;pointer-events:none;z-index:1;opacity:0.85;">
+
+    <!-- Screen 1: Dream Loading — absolute, staggered -->
+    <div class="anim-mockup anim-mockup-1" style="--mockup-rotate:-2deg;position:absolute;left:42%;top:12%;z-index:2;width:260px;border-radius:24px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,0.28);border:2px solid rgba(255,255,255,0.12);">
+      <img src="images/dream-loading.png" alt="กำลังทำนายฝัน" style="width:100%;display:block;">
+    </div>
+    <!-- Screen 2: Dream Result — absolute, staggered -->
+    <div class="anim-mockup anim-mockup-2" style="--mockup-rotate:2deg;position:absolute;left:60%;top:18%;z-index:2;width:260px;border-radius:24px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,0.24);border:2px solid rgba(255,255,255,0.12);">
+      <img src="images/dream-result.png" alt="ผลทำนายฝัน" style="width:100%;display:block;">
+    </div>
+
+    <!-- Left: Detail info (in flow) -->
+    <div class="slide-content two-col" style="position:relative;z-index:3;">
+      <div class="col-text anim-left" style="flex:0.45;">
+        <div class="section-tag">
+          <div class="dot" style="background:var(--primary-fg-high);"></div>
+          <span class="text-secondary">Outcome C</span>
+        </div>
+        <h2 class="title-lg">ทำนายฝัน</h2>
+        <p class="body-md text-secondary">UI ทำนายความฝัน + Dream Card</p>
+
+        <ul class="bullet-list">
+          <li><strong>Dream Input</strong> &mdash; พิมพ์เล่าความฝัน / เลือกหมวด</li>
+          <li><strong>AI Analysis</strong> &mdash; วิเคราะห์ความฝันด้วย AI</li>
+          <li><strong>Dream Card</strong> &mdash; การ์ดสรุปผลทำนาย</li>
+          <li><strong>History</strong> &mdash; ประวัติความฝันที่เคยทำนาย</li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 12: BAJUE / MY PROFILE   -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-violet" data-slide="12">
+    <div class="slide-header">
+      <svg class="logo-icon" aria-hidden="true"><use href="#mu-logo"/></svg>
+      <span class="section-label">Daily MU &middot; ศาสตร์ปาจื่อ</span>
+    </div>
+
+    <div class="slide-content" style="flex-direction:column;align-items:center;justify-content:center;gap:clamp(20px,2.5cqw,36px);position:relative;z-index:1;padding:0 5%;margin-top:-8%;">
+      <!-- Title centered -->
+      <div class="anim-item" style="text-align:center;">
+        <h2 style="font-size:clamp(32px,3.5cqw,56px);font-weight:800;color:var(--secondary-fg-high);line-height:1.15;">ศาสตร์ปาจื่อ</h2>
+        <p class="body-lg text-secondary" style="margin-top:var(--spacing-2);max-width:500px;margin-left:auto;margin-right:auto;">
+          วิเคราะห์เชิงลึกจากวัน-เวลา-สถานที่เกิด สร้างโปรไฟล์ดวงชะตาเฉพาะคุณ
+        </p>
+      </div>
+
+      <!-- Phone + Feature cards row -->
+      <div class="anim-item" style="display:flex;align-items:center;justify-content:center;gap:clamp(32px,4cqw,64px);">
+        <!-- Left features -->
+        <div style="display:flex;flex-direction:column;gap:var(--spacing-4);align-items:flex-end;width:280px;">
+          <div style="display:flex;align-items:center;gap:var(--spacing-3);padding:var(--spacing-3) var(--spacing-5);background:rgba(255,255,255,0.7);border-radius:var(--radius-full);backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(114,121,251,0.08);">
+            <span style="font-size:clamp(13px,1.1cqw,17px);font-weight:600;color:var(--gray-fg-high);">โปรไฟล์ดวงชะตาส่วนตัว</span>
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--secondary-bg-lowest);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">&#128100;</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--spacing-3);padding:var(--spacing-3) var(--spacing-5);background:rgba(255,255,255,0.7);border-radius:var(--radius-full);backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(114,121,251,0.08);">
+            <span style="font-size:clamp(13px,1.1cqw,17px);font-weight:600;color:var(--gray-fg-high);">วิเคราะห์จากปาจื่อ</span>
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--secondary-bg-lowest);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">&#128197;</div>
+          </div>
+        </div>
+
+        <!-- Center: Video phone -->
+        <div class="live-demo-phone">
+          <video src="images/profile-demo.webm" autoplay loop muted playsinline style="width:24cqh;height:52cqh;border-radius:28px;object-fit:cover;background:#fff;"></video>
+        </div>
+
+        <!-- Right features -->
+        <div style="display:flex;flex-direction:column;gap:var(--spacing-4);align-items:flex-start;width:280px;">
+          <div style="display:flex;align-items:center;gap:var(--spacing-3);padding:var(--spacing-3) var(--spacing-5);background:rgba(255,255,255,0.7);border-radius:var(--radius-full);backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(114,121,251,0.08);">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--secondary-bg-lowest);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">&#128101;</div>
+            <span style="font-size:clamp(13px,1.1cqw,17px);font-weight:600;color:var(--gray-fg-high);">จัดการโปรไฟล์หลายคน</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--spacing-3);padding:var(--spacing-3) var(--spacing-5);background:rgba(255,255,255,0.7);border-radius:var(--radius-full);backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(114,121,251,0.08);">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--primary-bg-lowest);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">&#9734;</div>
+            <span style="font-size:clamp(13px,1.1cqw,17px);font-weight:600;color:var(--gray-fg-high);">ดูดวงชะตาประจำวัน</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 10: THANK YOU            -->
+  <!-- ============================== -->
+  <div class="slide bg-gradient-warm" data-slide="13" style="display:flex;flex-direction:row;padding:0;">
+    <!-- White bar (left): Logo top + QR bottom -->
+    <div style="width:260px;min-width:260px;height:100%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:var(--spacing-8) var(--spacing-6);box-shadow:4px 0 24px rgba(0,0,0,0.08);z-index:10;position:relative;">
+      <!-- Logo horizontal (top) -->
+      <img src="images/logo-horizontal.svg" alt="Calend Daily MU" style="width:180px;height:auto;">
+
+      <!-- QR Code (bottom) -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:var(--spacing-3);">
+        <div style="width:180px;height:180px;border-radius:var(--radius-xl);background:#f5f5f7;display:flex;align-items:center;justify-content:center;border:2px dashed #ccc;">
+          <span style="font-size:14px;color:#999;text-align:center;line-height:1.4;">QR Code<br>วางที่นี่</span>
+        </div>
+        <p style="font-size:12px;color:#888;text-align:center;line-height:1.4;margin:0;">สแกนเพื่อเปิดสไลด์</p>
+      </div>
+    </div>
+
+    <!-- Main content (right) -->
+    <div style="flex:1;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+      <div class="deco-circle" style="width:650px;height:650px;background:var(--primary-border-mid);top:-180px;right:-160px;"></div>
+      <div class="deco-circle" style="width:500px;height:500px;background:var(--secondary-border-mid);bottom:-150px;left:-120px;"></div>
+      <div class="deco-circle" style="width:280px;height:280px;background:rgba(236,89,157,0.06);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+      <div class="deco-dots" style="top:14%;left:6%;"></div>
+      <div class="deco-dots" style="bottom:14%;right:4%;"></div>
+
+      <!-- Floating gif elements (behind, prominent) -->
+      <img src="images/onboard-1.gif" alt="" style="position:absolute;top:2%;left:2%;width:360px;opacity:0.4;pointer-events:none;z-index:0;">
+      <img src="images/onboard-2.gif" alt="" style="position:absolute;bottom:2%;right:2%;width:340px;opacity:0.4;pointer-events:none;z-index:0;">
+      <img src="images/onboard-3.gif" alt="" style="position:absolute;top:4%;right:8%;width:300px;opacity:0.35;pointer-events:none;z-index:0;">
+
+      <div class="cover-content anim-pop" style="gap:var(--spacing-5);position:relative;z-index:1;max-width:860px;text-align:center;">
+        <svg class="cover-logo float-anim" aria-hidden="true" style="width:clamp(56px,6cqw,88px);"><use href="#mu-logo"/></svg>
+
+        <!-- Quote block -->
+        <div style="position:relative;padding:var(--spacing-8) var(--spacing-10);">
+          <!-- Opening quote mark -->
+          <span style="position:absolute;top:-24px;left:-20px;font-size:140px;line-height:1;font-family:Georgia,serif;color:var(--primary-fg-high);opacity:0.15;pointer-events:none;">&ldquo;</span>
+          <p style="font-size:clamp(16px,1.5cqw,22px);font-weight:700;color:var(--secondary-fg-high);text-transform:uppercase;letter-spacing:3px;margin-bottom:var(--spacing-4);opacity:0.7;">โจทย์คือ</p>
+          <h1 style="font-size:clamp(32px,3.2cqw,56px);font-weight:900;line-height:1.3;font-style:italic;"><span class="gradient-text"><span style="white-space:nowrap;">ทำอย่างไรถึงจะโปรโมทมูคาเลนดาร์</span>ในฟีเจอร์ประมาณนี้ให้ปังในยุค AI</span></h1>
+          <!-- Closing quote mark -->
+          <span style="position:absolute;bottom:-64px;right:-20px;font-size:140px;line-height:1;font-family:Georgia,serif;color:var(--primary-fg-high);opacity:0.15;pointer-events:none;">&rdquo;</span>
+        </div>
+
+        <div class="flex-center-gap-2 mt-2">
+          <span class="tag tag-primary">Daily MU</span>
+          <span class="tag tag-secondary">Muniverse</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- TOP BAR (Present + Dropdown)   -->
+  <!-- ============================== -->
+  <div style="position:absolute;top:1.5%;right:4%;z-index:200;display:flex;align-items:center;gap:var(--spacing-2);" id="topBar">
+    <button class="present-btn" id="presentBtn" onclick="enterPresent()" title="เข้าโหมด Present (F)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      <span>Present</span>
+    </button>
+
+    <div class="page-dropdown-wrap" id="pageDropdown" style="display:none;">
+      <button class="page-dropdown-btn" onclick="togglePageDropdown()">
+        <span id="dropdownLabel">Pages</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="page-dropdown-menu" id="pageDropdownMenu"></div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- BOTTOM NAV BAR                 -->
+  <!-- ============================== -->
+  <div class="nav-bar" id="navBar">
+    <button class="nav-home-btn" onclick="goToSlide(0)" title="Go to first slide" aria-label="Go to first slide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </button>
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="prevSlide()" title="Previous slide" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="nav-counter" id="navCounter">1/11</span>
+      <button class="nav-btn" onclick="nextSlide()" title="Next slide" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /slide-viewport -->
+
+<script>
+  // ===== Fixed-canvas scaling (1920×1080 → fit any screen) =====
+  function scaleViewport() {
+    const vp = document.getElementById('slideViewport');
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 1920, h / 1080);
+    const tx = (w - 1920 * scale) / 2;
+    const ty = (h - 1080 * scale) / 2;
+    vp.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+  }
+  window.addEventListener('resize', scaleViewport);
+  scaleViewport();
+
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  let currentSlide = parseInt(new URLSearchParams(location.search).get('slide')) || 0;
+  if (currentSlide > 0 && currentSlide < slides.length) {
+    slides[0].classList.remove('active');
+    slides[currentSlide].classList.add('active');
+  } else { currentSlide = 0; }
+  let isAnimating = false;
+
+  const slideTitles = [
+    'Cover',
+    'What is Daily MU',
+    'Agenda',
+    'ปัญหาที่เราเห็น',
+    'Solution',
+    'ทำงานอย่างไร?',
+    'Key Features',
+    'ดวงรายวัน',
+    'ไพ่ทาโร่',
+    'ไพ่ทาโร่ — Screenshots',
+    'เซียมซี',
+    'ทำนายฝัน',
+    'ศาสตร์ปาจื่อ',
+    'Thank You'
+  ];
+
+  // === Update Nav Bar State ===
+  function updateNavBar() {
+    document.getElementById('navCounter').textContent = `${currentSlide + 1}/${totalSlides}`;
+
+    const navBar = document.getElementById('navBar');
+    const isDark = slides[currentSlide].classList.contains('dark-slide');
+    navBar.classList.toggle('dark-nav', isDark);
+
+    const pageDropdown = document.getElementById('pageDropdown');
+    pageDropdown.classList.toggle('dark-dropdown', isDark);
+
+    const isFS = !!document.fullscreenElement;
+    const showPresent = currentSlide === 0 && !isFS;
+    document.getElementById('presentBtn').style.display = showPresent ? '' : 'none';
+    pageDropdown.style.display = showPresent ? 'none' : '';
+
+    if (typeof buildDropdownMenu === 'function') buildDropdownMenu();
+  }
+
+  // === Slide Navigation ===
+  function goToSlide(index) {
+    if (index === currentSlide || index < 0 || index >= totalSlides || isAnimating) return;
+    isAnimating = true;
+
+    const goingForward = index > currentSlide;
+    const oldSlide = slides[currentSlide];
+    const newSlide = slides[index];
+
+    oldSlide.classList.remove('active');
+    oldSlide.classList.add(goingForward ? 'exit-left' : 'exit-right');
+
+    newSlide.style.transition = 'none';
+    newSlide.classList.remove('exit-left', 'exit-right');
+    newSlide.classList.add(goingForward ? 'enter-from-right' : 'enter-from-left');
+
+    newSlide.offsetHeight; // force reflow
+    newSlide.style.transition = '';
+    newSlide.classList.remove('enter-from-right', 'enter-from-left');
+    newSlide.classList.add('active');
+
+    currentSlide = index;
+    history.replaceState(null, '', '?slide=' + index);
+    updateNavBar();
+
+    setTimeout(() => {
+      oldSlide.classList.remove('exit-left', 'exit-right');
+      isAnimating = false;
+    }, 500);
+  }
+
+  function nextSlide() { if (currentSlide < totalSlides - 1) goToSlide(currentSlide + 1); }
+  function prevSlide() { if (currentSlide > 0) goToSlide(currentSlide - 1); }
+
+  // === Keyboard Navigation ===
+  document.addEventListener('keydown', (e) => {
+    switch(e.key) {
+      case 'ArrowRight': case 'ArrowDown': case ' ':
+        e.preventDefault(); nextSlide(); break;
+      case 'ArrowLeft': case 'ArrowUp':
+        e.preventDefault(); prevSlide(); break;
+      case 'Home': e.preventDefault(); goToSlide(0); break;
+      case 'End':  e.preventDefault(); goToSlide(totalSlides - 1); break;
+      case 'f': case 'F': e.preventDefault(); enterPresent(); break;
+      case 'Escape':
+        if (document.fullscreenElement) document.exitFullscreen();
+        break;
+    }
+  });
+
+  // === Touch Support ===
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+  });
+
+  // === Fullscreen / Present Mode ===
+  function enterPresent() {
+    const el = document.querySelector('.slide-viewport');
+    if (!document.fullscreenElement) {
+      (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen).call(el);
+    } else {
+      (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+    }
+  }
+  document.addEventListener('fullscreenchange', () => { updateNavBar(); });
+
+  // === Pages Dropdown ===
+  function buildDropdownMenu() {
+    const menu = document.getElementById('pageDropdownMenu');
+    menu.innerHTML = '';
+    slideTitles.forEach((title, i) => {
+      const item = document.createElement('button');
+      item.className = 'page-dropdown-item' + (i === currentSlide ? ' active-page' : '');
+      item.innerHTML = `<span class="slide-num">${i + 1}</span> ${title}`;
+      item.onclick = () => { goToSlide(i); document.getElementById('pageDropdown').classList.remove('open'); };
+      menu.appendChild(item);
+    });
+  }
+
+  function togglePageDropdown() {
+    document.getElementById('pageDropdown').classList.toggle('open');
+  }
+
+  document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('pageDropdown');
+    if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+  });
+
+  // === Init ===
+  buildDropdownMenu();
+  updateNavBar();
+</script>
+</body>
+</html>
