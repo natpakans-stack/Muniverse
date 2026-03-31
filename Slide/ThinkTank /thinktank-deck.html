@@ -1562,7 +1562,7 @@
 
     <!-- NOTE: Live demo phone — iframe interactive, กดเล่นเซียมซีได้จริง
          slide-content ด้านล่างใช้ pointer-events:none เพื่อไม่บัง iframe -->
-    <div style="position:absolute;top:50%;left:55%;transform:translate(-50%,-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="position:absolute;top:50%;left:55%;transform:translate(-50%,-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:12px;">
       <div class="live-demo-phone">
         <iframe src="https://natpakans-stack.github.io/Muniverse/Preview/siam-si/siam-si.html" title="เซียมซี Live Demo" loading="lazy" allow="autoplay"></iframe>
       </div>
@@ -1868,8 +1868,14 @@
   function nextSlide() { if (currentSlide < totalSlides - 1) goToSlide(currentSlide + 1); }
   function prevSlide() { if (currentSlide > 0) goToSlide(currentSlide - 1); }
 
+  // === Helper: check if event target is inside an iframe container ===
+  function isInsideIframe(target) {
+    return target.closest && target.closest('.live-demo-phone');
+  }
+
   // === Keyboard Navigation ===
   document.addEventListener('keydown', (e) => {
+    if (isInsideIframe(e.target)) return;
     switch(e.key) {
       case 'ArrowRight': case 'ArrowDown': case ' ':
         e.preventDefault(); nextSlide(); break;
@@ -1884,10 +1890,14 @@
     }
   });
 
-  // === Touch Support ===
+  // === Touch Support (skip when touching iframe area) ===
   let touchStartX = 0;
-  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchstart', (e) => {
+    if (isInsideIframe(e.target)) return;
+    touchStartX = e.touches[0].clientX;
+  });
   document.addEventListener('touchend', (e) => {
+    if (isInsideIframe(e.target)) return;
     const diff = touchStartX - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
   });
