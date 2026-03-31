@@ -131,6 +131,10 @@
     .slide.enter-from-right { transform: translateX(80px);  }
 
     /* ===== Staggered Entrance Animations ===== */
+    @keyframes pulse-hint {
+      0%, 100% { opacity: 0.85; }
+      50% { opacity: 1; }
+    }
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(24px) scale(0.97); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -1556,16 +1560,21 @@
     <!-- Character behind phone, pinned to right edge -->
     <img src="https://natpakans-stack.github.io/Muniverse/Preview/siam-si/MicroService_FortuneSticks_Character.png" alt="Fortune Sticks Character" style="position:absolute;bottom:0;right:0;height:86%;max-height:none;object-fit:contain;pointer-events:none;z-index:1;">
 
-    <!-- Live demo phone (absolute, centered) -->
-    <div style="position:absolute;top:50%;left:55%;transform:translate(-50%,-50%);z-index:2;">
+    <!-- NOTE: Live demo phone — iframe interactive, กดเล่นเซียมซีได้จริง
+         slide-content ด้านล่างใช้ pointer-events:none เพื่อไม่บัง iframe -->
+    <div style="position:absolute;top:50%;left:55%;transform:translate(-50%,-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;">
       <div class="live-demo-phone">
         <iframe src="https://natpakans-stack.github.io/Muniverse/Preview/siam-si/siam-si.html" title="เซียมซี Live Demo" loading="lazy" allow="autoplay"></iframe>
       </div>
+      <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);color:#fff;font-size:clamp(11px,1.2cqh,14px);font-weight:500;letter-spacing:0.02em;animation:pulse-hint 2s ease-in-out infinite;">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80;"></span>
+        Interactive &mdash; กดเล่นได้จริง
+      </span>
     </div>
 
     <!-- Left: Detail info (in flow) -->
-    <div class="slide-content two-col" style="position:relative;z-index:3;">
-      <div class="col-text anim-left" style="flex:0.45;">
+    <div class="slide-content two-col" style="position:relative;z-index:3;pointer-events:none;">
+      <div class="col-text anim-left" style="flex:0.45;pointer-events:auto;">
         <div class="section-tag">
           <div class="dot" style="background:var(--secondary-fg-high);"></div>
           <span class="text-secondary">Outcome B</span>
